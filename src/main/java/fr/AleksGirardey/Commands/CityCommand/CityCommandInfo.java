@@ -20,54 +20,37 @@ public class CityCommandInfo implements CommandExecutor {
     public CommandResult execute(CommandSource commandSource, CommandContext commandContext) throws CommandException {
         if (commandSource instanceof Player)
         {
-            String  args = commandContext.<String>getOne("[city]").orElse(""),
-                    sql;
+            String  args = commandContext.<String>getOne("[city]").orElse("");
             int     argument = 0;
             Player player = (Player) commandSource;
-            Connection c = null;
-            PreparedStatement statement = null;
-            ResultSet rs = null;
 
+            try {
             if (args.equals("")) {
-                try {
-                    argument = Core.getPlayerHandler().getCity(player);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                argument = Core.getPlayerHandler().getCity(player);
                 if (argument == 0) {
                     player.sendMessage(Text.of("You don't belong to a city bro !"));
                     return CommandResult.empty();
                 }
             } else {
-                try {
-                    argument = Core.getCityHandler().getCityFromName(args);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                argument = Core.getCityHandler().getCityFromName(args);
                 if (argument == 0) {
                     player.sendMessage(Text.of("City '" + args + "' does not exist."));
                     return CommandResult.empty();
                 }
             }
-            try {
-                sql = "SELECT * FROM `City` WHERE `city_id` = ?;";
-                c = Core.getDatabaseHandler().getConnection();
-                statement = c.prepareStatement(sql);
-                statement.setInt(1, argument);
-                rs = statement.executeQuery();
-                if (rs.next()) {
-                    player.sendMessage(Text.of("---===| " + rs.getString("city_displayName") + "[" + Core.getCityHandler().getCitizens(rs.getInt("city_id")).length + "] |===---"));
-                    player.sendMessage(Text.of("Mayor: " + Core.getPlayerHandler().get(rs.getString("city_playerOwner"), PlayerHandler.sql_tables.get(PlayerHandler.sql_values.NAME))));
-                    player.sendMessage(Text.of("Citizens: " + Utils.getListFromTableString(Core.getCityHandler().getCitizens(rs.getInt("city_id")), 1)));
-                    player.sendMessage(Text.of("Tag: " + rs.getString("city_tag")));
-                }
-                statement.close();
-                c.close();
-                rs.close();
+                player.sendMessage(Text.of("---===| " + Core.getCityHandler().getElement(argument, "city_displayName")
+                        + "[" + Core.getCityHandler().getCitizens(argument).length + "] |===---"));
+                player.sendMessage(Text.of("Mayor: " + Core.getPlayerHandler().get(
+                        Core.getCityHandler().<String>getElement(argument, "city_playerOwner"),
+                "player_displayName")));
+                player.sendMessage(Text.of("Citizens: " + Utils.getListFromTableString(Core.getCityHandler().getCitizens(argument), 1)));
+                player.sendMessage(Text.of("Tag: " + Core.getCityHandler().getElement(
+                        argument,
+                        "city_tag")));
+                return CommandResult.success();
             } catch (SQLException e) {
-                System.out.println(e.toString());
+                e.printStackTrace();
             }
-            return CommandResult.success();
         }
         return CommandResult.empty();
     }

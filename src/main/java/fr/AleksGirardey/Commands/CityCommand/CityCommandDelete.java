@@ -22,7 +22,7 @@ public class CityCommandDelete implements CommandExecutor{
                 if (Core.getPlayerHandler().isOwner(player))
                 {
                     id = Core.getPlayerHandler().getCity(player);
-                    name = Core.getCityHandler().getDisplayName(id);
+                    name = Core.getCityHandler().<String>getElement(id, "city_displayName");
                     Core.getPlugin().getServer().getBroadcastChannel().send(
                             Text.of("[BREAKING NEWS] " + name + " has fallen !"));
                     Core.getCityHandler().delete(id);

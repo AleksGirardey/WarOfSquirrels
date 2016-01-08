@@ -16,6 +16,13 @@ public abstract class CityCommandSetDiplomacy extends CityCommand{
 
     protected abstract void NewDiplomacy(int cityId1, int cityId2);
 
+    protected void Annouce(int cityId1, int cityId2, String relation) {
+        Core.Send("[Diplomacy Alert] " + Core.getCityHandler().<String>getElement(cityId1, "city_displayName")
+                + " now treat "
+                + Core.getCityHandler().<String>getElement(cityId2, "city_displayName")
+                + " as " + relation + ".");
+    }
+
     protected boolean CanDoIt(Player player) {
         PlayerHandler   playerHandler = Core.getPlayerHandler();
 

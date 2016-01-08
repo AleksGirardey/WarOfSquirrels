@@ -31,7 +31,7 @@ public class CityCommandUnclaim implements CommandExecutor {
                 z = chunk.getZ();
                 id = ph.getCity(player);
                 if (ch.exists(x, z) && !ch.isHomeblock(x, z)) {
-                    if (cih.getCityOwner(id).equals(player.getUniqueId().toString())) {
+                    if (cih.<String>getElement(id, "city_playerOwner").equals(player.getUniqueId().toString())) {
                         ch.delete(x, z);
                         player.sendMessage(
                                 Text.of("Chunk unclaimed."));

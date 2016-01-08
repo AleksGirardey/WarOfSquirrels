@@ -25,14 +25,8 @@ public class CityCommandSetEnemy extends CityCommandSetDiplomacy {
     }
 
     protected void NewDiplomacy(int cityId1, int cityId2) {
-        CityHandler cityHandler = Core.getCityHandler();
-
         try {
-            Core.Send("[Diplomacy Alert] "
-                    + cityHandler.getDisplayName(cityId1)
-                    + " now treat "
-                    + cityHandler.getDisplayName(cityId2)
-                    + " as enemy.");
+            Annouce(cityId1, cityId2, "enemy");
             Core.getCityHandler().setEnemy(cityId1, cityId2);
         } catch (SQLException e) {
             e.printStackTrace();

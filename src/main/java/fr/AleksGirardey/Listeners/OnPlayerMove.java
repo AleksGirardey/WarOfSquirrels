@@ -37,14 +37,15 @@ public class OnPlayerMove {
                         id1 = ch.getCity(chunk1.getX(), chunk2.getZ());
                         id2 = ch.getCity(chunk1.getX(), chunk2.getZ());
                         if (id1 != id2)
-                            player.sendMessage(Text.of("~~" + Core.getCityHandler().getDisplayName(id2)));
-
+                            player.sendMessage(
+                                    Text.of("~~" + Core.getCityHandler().<String>getElement(id2, "city_displayCityName")));
                     } else
                         player.sendMessage(Text.of("~~ Wilderness ~~"));
                 } else {
                     if (c2) {
-                        id2 = ch.getCity((int) chunk2.getX(), (int) chunk2.getZ());
-                        player.sendMessage(Text.of("~~ " + Core.getCityHandler().getDisplayName(id2) + " ~~"));
+                        id2 = ch.getCity(chunk2.getX(), chunk2.getZ());
+                        player.sendMessage(Text.of(
+                                "~~ " + Core.getCityHandler().<String>getElement(id2, "city_displayName") + " ~~"));
                     }
                 }
             }

@@ -89,27 +89,26 @@ public class PermissionHandler {
         }
     }
 
-    public boolean          ableTo(Player player, String chunkId, String perm) throws SQLException {
+    public boolean          ableTo(Player player, int chunkId, String perm) throws SQLException {
         PlayerHandler       plh = Core.getPlayerHandler();
         ChunkHandler        chh = Core.getChunkHandler();
         CityHandler         cih = Core.getCityHandler();
-        int                 chunk = Integer.parseInt(chunkId), permId;
+        int                 cityIdChunk, permId, cityIdPlayer;
 
-        if (chunkId == null) {
-            getLogger().info("CHUNKID IS NULL");
-            return false;
-        }
-        else
-            permId = Integer.parseInt(cih.getPerm(String.valueOf(chh.getCity(chunk))));
+        cityIdChunk = chh.getCity(chunkId);
+        permId = cih.<Integer>getElement(cityIdChunk, "city_permissionId");
+        cityIdPlayer = plh.getCity(player);
 
         if (plh.getCity(player) != 0) {
-            if (plh.getCity(player) == chh.getCity(chunk)) {
-                if (cih.getCityOwner(plh.getCity(player)).equals(player.getUniqueId().toString()))
+            if (cityIdPlayer == cityIdChunk) {
+                if (cih.<String>getElement(
+                        cityIdChunk,
+                        "city_playerOwner"
+                ).equals(player.getUniqueId().toString()))
                     return true;
-                else
-                    return (getPerm(permId,"permission_resident" + perm));
-            }
-            /* ADD ALLIES */
+                return (getPerm(permId, "permission_resident" + perm));
+            } else if (cih.areAllies(cityIdChunk, cityIdPlayer))
+                return (getPerm(permId, "permission_allies" + perm));
         }
         return getPerm(permId, "permission_outside" + perm);
     }

@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `Diplomacy` (
   `diplomacy_id` INT AUTO_INCREMENT,
   `diplomacy_mainCityId` INT,
   `diplomacy_subCityId` INT,
-  `diplomacy_relation` INT DEFAULT 0,
+  `diplomacy_relation` BOOLEAN,
   PRIMARY KEY (`diplomacy_id`),
   FOREIGN KEY (`diplomacy_mainCityId`)
     REFERENCES `City`(`city_id`)

@@ -3,6 +3,7 @@ package fr.AleksGirardey.Handlers;
 import com.google.inject.Inject;
 import fr.AleksGirardey.Main;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.Statement;
 import org.slf4j.Logger;
 import org.spongepowered.api.entity.living.player.Player;
 
@@ -14,54 +15,138 @@ import java.sql.SQLException;
 public class CityHandler {
 
     private Logger  logger;
+    private Statement   _statement;
 
     @Inject
     public CityHandler(Logger logger) {
         this.logger = logger;
+        this._statement = new Statement();
     }
 
-    public void             add(Player player, String displayName) throws SQLException {
-        Connection          c = null;
-        PreparedStatement   statement = null;
+    public void             add(Player player, String displayName) {
+        String          sql = "INSERT INTO `City` (`city_displayName`, `city_tag`, `city_playerOwner`) VALUES (?, ?, ?);";
 
         try {
-            String          sql = "INSERT INTO `City` (`city_displayName`, `city_tag`, `city_playerOwner`) VALUES (?, ?, ?);";
+            _statement.NewQuery(sql);
+            _statement.getStatement().setString(1, displayName);
+            _statement.getStatement().setString(2, displayName.substring(0, 5));
+            _statement.getStatement().setString(3, player.getUniqueId().toString());
+            _statement.Update();
+            _statement.Close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void             delete(int id){
+        String          sql = "DELETE FROM `City` WHERE `city_id` = ?;";
+        try {
+            _statement.NewQuery(sql);
+            _statement.getStatement().setInt(1, id);
+            _statement.Update();
+            _statement.Close();
+            Core.getChunkHandler().deleteCity(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public <T> T              getElement(int id, String element){
+        T       res = null;
+        String  sql = "SELECT * FROM `City` WHERE `city_id` = ?;";
+
+        try {
+            _statement.NewQuery(sql);
+            _statement.getStatement().setInt(1, id);
+            if (_statement.Execute().next())
+                res = (T) _statement.getResult().getObject(element);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    public int           getCityFromName(String name) throws SQLException {
+        Connection          c = null;
+        PreparedStatement   statement = null;
+        ResultSet           rs = null;
+        int                 res = 0;
+
+        try {
+            String          sql = "SELECT `city_id` FROM `City` WHERE `city_displayName` = ?;";
 
             c = Core.getDatabaseHandler().getConnection();
             statement = c.prepareStatement(sql);
-            statement.setString(1, displayName);
-            statement.setString(2, displayName.substring(0, 5));
-            statement.setString(3, player.getUniqueId().toString());
-            statement.executeUpdate();
+            statement.setString(1, name);
+            rs = statement.executeQuery();
+            if (rs.next())
+                res = rs.getInt("city_id");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             if (statement != null) statement.close();
             if (c != null) c.close();
+            if (rs != null) rs.close();
         }
+        return (res);
     }
 
-    public void             delete(int id) throws SQLException {
-        Connection          c = null;
-        PreparedStatement   statement = null;
+    public String[][]           getCitizens(int id) throws SQLException {
+        Connection              c = null;
+        PreparedStatement       statement = null;
+        ResultSet               rs = null;
+        String[][]              res = null;
+        int                     i = 0, size = 0;
 
         try {
-            String          sql = "DELETE FROM `City` WHERE `city_id` = ?;";
+            String              sql = "SELECT * FROM `Player` WHERE `player_cityId` = ?;";
 
             c = Core.getDatabaseHandler().getConnection();
             statement = c.prepareStatement(sql);
             statement.setInt(1, id);
-            Core.getChunkHandler().deleteCity(id);
-            statement.executeUpdate();
+            rs = statement.executeQuery();
+            rs.last();
+            size = rs.getRow();
+            rs.beforeFirst();
+            getLogger().error("[Get Citizens] rs size : " + size);
+            res = new String[size][4];
+            while (rs.next()) {
+                res[i][0] = rs.getString("player_uuid");
+                res[i][1] = rs.getString("player_displayName");
+                res[i][2] = rs.getString("player_score");
+                res[i][3] = rs.getString("player_cityId");
+                i++;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             if (statement != null) statement.close();
             if (c != null) c.close();
+            if (rs != null) rs.close();
         }
+        return (res);
     }
 
-    public String           getPerm(String id) throws SQLException {
+    public boolean  areAllies(int owner, int player) {
+        String      sql = "SELECT `diplomacy_relation` FROM `Diplomacy` WHERE `diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?;";
+
+        try {
+            _statement.NewQuery(sql);
+            _statement.getStatement().setInt(1, owner);
+            _statement.getStatement().setInt(2, player);
+            if (_statement.Execute().next())
+                return (_statement.getResult().getBoolean("diplomacy_relation"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private Logger getLogger() {
+        return logger;
+    }
+
+/*    public String           getPerm(String id) throws SQLException {
         Connection          c = null;
         PreparedStatement   statement = null;
         ResultSet           rs = null;
@@ -101,31 +186,6 @@ public class CityHandler {
             rs = statement.executeQuery();
             if (rs.next())
                 res = rs.getString("city_displayName");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (statement != null) statement.close();
-            if (c != null) c.close();
-            if (rs != null) rs.close();
-        }
-        return (res);
-    }
-
-    public int           getCityFromName(String name) throws SQLException {
-        Connection          c = null;
-        PreparedStatement   statement = null;
-        ResultSet           rs = null;
-        int                 res = 0;
-
-        try {
-            String          sql = "SELECT `city_id` FROM `City` WHERE `city_displayName` = ?;";
-
-            c = Core.getDatabaseHandler().getConnection();
-            statement = c.prepareStatement(sql);
-            statement.setString(1, name);
-            rs = statement.executeQuery();
-            if (rs.next())
-                res = rs.getInt("city_id");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -184,43 +244,7 @@ public class CityHandler {
             if (rs != null) rs.close();
         }
         return (res);
-    }
-
-    public String[][]           getCitizens(int id) throws SQLException {
-        Connection              c = null;
-        PreparedStatement       statement = null;
-        ResultSet               rs = null;
-        String[][]              res = null;
-        int                     i = 0, size = 0;
-
-        try {
-            String              sql = "SELECT * FROM `Player` WHERE `player_cityId` = ?;";
-
-            c = Core.getDatabaseHandler().getConnection();
-            statement = c.prepareStatement(sql);
-            statement.setInt(1, id);
-            rs = statement.executeQuery();
-            rs.last();
-            size = rs.getRow();
-            rs.beforeFirst();
-            getLogger().error("[Get Citizens] rs size : " + size);
-            res = new String[size][4];
-            while (rs.next()) {
-                res[i][0] = rs.getString("player_uuid");
-                res[i][1] = rs.getString("player_displayName");
-                res[i][2] = rs.getString("player_score");
-                res[i][3] = rs.getString("player_cityId");
-                i++;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (statement != null) statement.close();
-            if (c != null) c.close();
-            if (rs != null) rs.close();
-        }
-        return (res);
-    }
+    }*/
 
     public void                 setAlly(int cityId1, int cityId2) throws SQLException {
         Connection          c = null;
@@ -314,9 +338,5 @@ public class CityHandler {
             if (c != null) c.close();
             if (rs != null) rs.close();
         }
-    }
-
-    private Logger getLogger() {
-        return logger;
     }
 }

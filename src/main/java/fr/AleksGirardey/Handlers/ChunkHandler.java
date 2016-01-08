@@ -225,11 +225,11 @@ public class ChunkHandler {
         }
     }
 
-    public String             getId(int x, int z) throws SQLException {
+    public int             getId(int x, int z) throws SQLException {
         Connection          c = null;
         PreparedStatement   statement = null;
         ResultSet           rs = null;
-        String              id = null;
+        int                 id = 0;
 
         try {
             String          sql = "SELECT `chunk_id` FROM `Chunk` WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
@@ -240,7 +240,7 @@ public class ChunkHandler {
             statement.setInt(2, z);
             rs = statement.executeQuery();
             if (rs.next())
-                id = rs.getString("chunk_id");
+                id = rs.getInt("chunk_id");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

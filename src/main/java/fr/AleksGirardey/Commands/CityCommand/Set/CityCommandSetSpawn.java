@@ -41,7 +41,7 @@ public class CityCommandSetSpawn implements CommandExecutor {
                 }
                 cityPlayer = plh.getCity(player);
                 if (cityPlayer != 0 && cityPlayer == cityChunk) {
-                    if (cih.getCityOwner(cityChunk).equals(player.getUniqueId().toString())) {
+                    if (cih.<String>getElement(cityChunk, "city_playerOwner").equals(player.getUniqueId().toString())) {
                         if (chh.setSpawn(new Chunk(player), x, y, z))
                             player.sendMessage(Text.of("Spawn set."));
                         else

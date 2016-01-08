@@ -24,7 +24,10 @@ public class OnPlayerDestroy {
             chunk = new Chunk(x, z);
             try {
                 if (Core.getChunkHandler().exists(chunk.getX(), chunk.getZ()))
-                    if (!Core.getPermissionHandler().ableTo(player, Core.getChunkHandler().getId(chunk.getX(), chunk.getZ()), "Build"))
+                    if (!Core.getPermissionHandler().ableTo(
+                            player,
+                            Core.getChunkHandler().getId(chunk.getX(), chunk.getZ()),
+                            "Build"))
                         event.setCancelled(true);
             } catch (SQLException e) {
                 e.printStackTrace();
