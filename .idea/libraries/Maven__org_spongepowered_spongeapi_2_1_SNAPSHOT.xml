@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.spongepowered:spongeapi:2.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/spongepowered/spongeapi/2.1-SNAPSHOT/spongeapi-2.1-20160101.061445-272.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/spongepowered/spongeapi/2.1-SNAPSHOT/spongeapi-2.1-20160101.061445-272-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/spongepowered/spongeapi/2.1-SNAPSHOT/spongeapi-2.1-20160101.061445-272-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
