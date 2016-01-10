@@ -29,7 +29,7 @@ public class CityCommandUnclaim implements CommandExecutor {
                 Chunk chunk = new Chunk(player);
                 x = chunk.getX();
                 z = chunk.getZ();
-                id = ph.getCity(player);
+                id = ph.<Integer>getElement(player, "player_cityId");
                 if (ch.exists(x, z) && !ch.isHomeblock(x, z)) {
                     if (cih.<String>getElement(id, "city_playerOwner").equals(player.getUniqueId().toString())) {
                         ch.delete(x, z);

@@ -3,6 +3,7 @@ package fr.AleksGirardey.Handlers;
 import com.google.inject.Inject;
 import fr.AleksGirardey.Main;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.Statement;
 import org.slf4j.Logger;
 import org.spongepowered.api.entity.living.player.Player;
 
@@ -14,78 +15,73 @@ import java.sql.SQLException;
 public class PermissionHandler {
 
     private Logger logger;
+    private Statement _statement;
 
     @Inject
     public PermissionHandler(Logger logger) {
         this.logger = logger;
+        this._statement = new Statement();
     }
 
-    public void             add(int id) throws SQLException {
-        Connection          c = null;
-        PreparedStatement   statement = null;
+    public void             add(int id) {
+        String          sql = "INSERT INTO `Permission`(`permission_id`) VALUES (?);";
 
         try {
-            String          sql = "INSERT INTO `Permission`(`permission_id`) VALUES (?);";
-
-            c = Core.getDatabaseHandler().getConnection();
-            statement = c.prepareStatement(sql);
-            statement.setInt(1, id);
-            statement.executeUpdate();
+            _statement.NewQuery(sql);
+            _statement.getStatement().setInt(1, id);
+            _statement.Update();
             sql = "UPDATE `City` SET `city_permissionId` = ? WHERE `city_id` = ?;";
-            statement = c.prepareStatement(sql);
-            statement.setInt(1, id);
-            statement.setInt(2, id);
-            statement.executeUpdate();
+            _statement.NewQuery(sql);
+            _statement.getStatement().setInt(1, id);
+            _statement.getStatement().setInt(2, id);
+            _statement.getStatement().executeUpdate();
+            _statement.Close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) statement.close();
-            if (c != null) c.close();
         }
     }
 
-    private boolean         getPerm(int id, String perm) throws SQLException {
-        Connection          c = null;
-        PreparedStatement   statement = null;
-        ResultSet           rs = null;
-        boolean             res = false;
-
+    public void             delete(int id) {
+        String          sql = "DELETE FROM `Permission` WHERE `permission_id` = ?;";
         try {
-            String          sql = "SELECT * FROM `Permission` WHERE `permission_id` = ?;";
-
-            c = Core.getDatabaseHandler().getConnection();
-            statement = c.prepareStatement(sql);
-            statement.setInt(1, id);
-            rs = statement.executeQuery();
-            rs.next();
-            res = rs.getBoolean(perm);
+            _statement.NewQuery(sql);
+            _statement.getStatement().setInt(1, id);
+            _statement.Update();
+            _statement.Close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) statement.close();
-            if (c != null) c.close();
+        }
+
+    }
+
+    private boolean         getPerm(int id, String perm) {
+        boolean             res = false;
+        String              sql = "SELECT * FROM `Permission` WHERE `permission_id` = ?;";
+
+        try {
+            _statement.NewQuery(sql);
+            _statement.getStatement().setInt(1, id);
+            if (_statement.Execute().next())
+                res = _statement.getResult().getBoolean(perm);
+            _statement.Close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return (res);
     }
 
     private void            setPerm(int id, String perm, boolean value) throws SQLException {
-        Connection          c = null;
-        PreparedStatement   statement = null;
+        String          sql = "UPDATE `Permission` SET ? = ? WHERE `permission_id` = ?;";
 
         try {
-            String          sql = "UPDATE `Permission` SET ? = ? WHERE `permission_id` = ?;";
-
-            c = Core.getDatabaseHandler().getConnection();
-            statement = c.prepareStatement(sql);
-            statement.setString(1, perm);
-            statement.setBoolean(2, value);
-            statement.setInt(3, id);
-            statement.executeUpdate();
+            _statement.NewQuery(sql);
+            _statement.getStatement().setString(1, perm);
+            _statement.getStatement().setBoolean(2, value);
+            _statement.getStatement().setInt(3, id);
+            _statement.Update();
+            _statement.Close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) statement.close();
-            if (c != null) c.close();
         }
     }
 
@@ -97,9 +93,9 @@ public class PermissionHandler {
 
         cityIdChunk = chh.getCity(chunkId);
         permId = cih.<Integer>getElement(cityIdChunk, "city_permissionId");
-        cityIdPlayer = plh.getCity(player);
+        cityIdPlayer = plh.<Integer>getElement(player, "player_cityId");
 
-        if (plh.getCity(player) != 0) {
+        if (cityIdPlayer != 0) {
             if (cityIdPlayer == cityIdChunk) {
                 if (cih.<String>getElement(
                         cityIdChunk,

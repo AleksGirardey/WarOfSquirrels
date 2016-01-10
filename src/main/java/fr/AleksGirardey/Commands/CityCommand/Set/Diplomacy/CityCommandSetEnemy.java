@@ -1,12 +1,9 @@
 package fr.AleksGirardey.Commands.CityCommand.Set.Diplomacy;
 
-import fr.AleksGirardey.Handlers.CityHandler;
 import fr.AleksGirardey.Objects.Core;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
-
-import java.sql.SQLException;
 
 public class CityCommandSetEnemy extends CityCommandSetDiplomacy {
     @Override
@@ -25,11 +22,7 @@ public class CityCommandSetEnemy extends CityCommandSetDiplomacy {
     }
 
     protected void NewDiplomacy(int cityId1, int cityId2) {
-        try {
-            Annouce(cityId1, cityId2, "enemy");
-            Core.getCityHandler().setEnemy(cityId1, cityId2);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Annouce(cityId1, cityId2, "enemy");
+        Core.getCityHandler().setDiplomacy(cityId1, cityId2, false);
     }
 }

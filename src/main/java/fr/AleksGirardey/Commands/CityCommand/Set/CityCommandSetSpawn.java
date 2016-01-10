@@ -1,5 +1,6 @@
 package fr.AleksGirardey.Commands.CityCommand.Set;
 
+import fr.AleksGirardey.Commands.CityCommand.CityCommandAssistant;
 import fr.AleksGirardey.Handlers.ChunkHandler;
 import fr.AleksGirardey.Handlers.CityHandler;
 import fr.AleksGirardey.Handlers.PlayerHandler;
@@ -17,44 +18,32 @@ import org.spongepowered.api.world.Location;
 
 import java.sql.SQLException;
 
-public class CityCommandSetSpawn implements CommandExecutor {
-    public CommandResult execute(CommandSource commandSource, CommandContext commandContext) throws CommandException {
-        if (commandSource instanceof Player) {
-            Player player = (Player) commandSource;
-            int x = player.getLocation().getBlockX(),
-                y = player.getLocation().getBlockY(),
-                z = player.getLocation().getBlockZ();
-            CityHandler     cih = Core.getCityHandler();
-            ChunkHandler    chh = Core.getChunkHandler();
-            PlayerHandler   plh = Core.getPlayerHandler();
-            int             cityPlayer, cityChunk;
-            Location        pL = player.getLocation();
+public class CityCommandSetSpawn extends CityCommandAssistant {
+    @Override
+    protected boolean SpecialCheck(Player player, CommandContext context) {
+        Chunk chunk = new Chunk(player);
+        ChunkHandler    chh = null;
+        int             playerCityId = 0;
 
-            try {
-                Chunk chunk = new Chunk(player);
+        chh = Core.getChunkHandler();
+        playerCityId = Core.getPlayerHandler().<Integer>getElement(player, "player_cityId");
 
-                if (chh.exists(chunk.getX(), chunk.getZ()))
-                    cityChunk = chh.getCity(chunk.getX(), chunk.getZ());
-                else {
-                    player.sendMessage(Text.of("This chunk belongs to mother nature."));
-                    return CommandResult.empty();
-                }
-                cityPlayer = plh.getCity(player);
-                if (cityPlayer != 0 && cityPlayer == cityChunk) {
-                    if (cih.<String>getElement(cityChunk, "city_playerOwner").equals(player.getUniqueId().toString())) {
-                        if (chh.setSpawn(new Chunk(player), x, y, z))
-                            player.sendMessage(Text.of("Spawn set."));
-                        else
-                            player.sendMessage(Text.of("You can't set your spawn there, you need to go on your Homeblock or on an outpost."));
-                    } else
-                        player.sendMessage(Text.of("You don't have the permission to do that."));
-                } else {
-                    player.sendMessage(Text.of("This is not in your city"));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return CommandResult.empty();
+        return chh.exists(chunk.getX(), chunk.getZ())
+                && chh.getCity(chunk.getX(), chunk.getZ()) == playerCityId
+                && (chh.isHomeblock(chunk.getX(), chunk.getZ())
+                || chh.isOutpost(chunk.getX(), chunk.getZ()));
+    }
+
+    @Override
+    protected CommandResult ExecCommand(Player player, CommandContext context) {
+        int             x, y, z;
+
+        x = player.getLocation().getBlockX();
+        y = player.getLocation().getBlockY();
+        z = player.getLocation().getBlockZ();
+
+        Core.getChunkHandler().setSpawn(new Chunk(player), x, y, z);
+        player.sendMessage(Text.of("Spawn set."));
+        return CommandResult.success();
     }
 }

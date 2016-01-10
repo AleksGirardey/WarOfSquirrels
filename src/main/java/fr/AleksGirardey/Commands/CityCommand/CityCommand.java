@@ -1,5 +1,6 @@
 package fr.AleksGirardey.Commands.CityCommand;
 
+import fr.AleksGirardey.Objects.Core;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -9,7 +10,9 @@ import org.spongepowered.api.entity.living.player.Player;
 
 public abstract class CityCommand implements CommandExecutor {
 
-    protected abstract boolean CanDoIt(Player player);
+    protected boolean CanDoIt(Player player) {
+        return Core.getPlayerHandler().<Integer>getElement(player, "player_cityId") != 0;
+    };
 
     protected abstract boolean SpecialCheck(Player player, CommandContext context);
 

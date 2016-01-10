@@ -27,7 +27,9 @@ CREATE TABLE IF NOT EXISTS `City` (
   `city_permissionId` INT,
   PRIMARY KEY (`city_id`),
   FOREIGN KEY (`city_permissionId`)
-  REFERENCES `Permission`(`permission_id`));
+  REFERENCES `Permission`(`permission_id`)
+  ON DELETE CASCADE
+);
 
 CREATE TABLE IF NOT EXISTS `Chunk` (
   `chunk_id` INT AUTO_INCREMENT,
@@ -42,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `Chunk` (
   PRIMARY KEY (`chunk_id`),
   FOREIGN KEY (`chunk_cityId`)
   REFERENCES `City`(`city_id`)
-    ON DELETE SET NULL
+  ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `Diplomacy` (

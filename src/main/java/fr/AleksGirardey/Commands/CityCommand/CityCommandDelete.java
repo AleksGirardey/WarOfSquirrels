@@ -16,22 +16,20 @@ public class CityCommandDelete implements CommandExecutor{
     public CommandResult execute(CommandSource commandSource, CommandContext commandContext) throws CommandException {
         if (commandSource instanceof Player) {
             Player  player = (Player) commandSource;
-            int     id;
+            int     id, permId;
             String  name = null;
-            try {
-                if (Core.getPlayerHandler().isOwner(player))
-                {
-                    id = Core.getPlayerHandler().getCity(player);
-                    name = Core.getCityHandler().<String>getElement(id, "city_displayName");
-                    Core.getPlugin().getServer().getBroadcastChannel().send(
-                            Text.of("[BREAKING NEWS] " + name + " has fallen !"));
-                    Core.getCityHandler().delete(id);
-                }
-                else
-                    player.sendMessage(Text.of("[City] You don't have the permission."));
-            } catch (SQLException e) {
-                e.printStackTrace();
+
+            if (Core.getPlayerHandler().isOwner(player))
+            {
+                id = Core.getPlayerHandler().<Integer>getElement(player, "player_cityId");
+                name = Core.getCityHandler().<String>getElement(id, "city_displayName");
+                permId = Core.getCityHandler().<Integer>getElement(id, "city_permissionId");
+                Core.getCityHandler().delete(id);
+                Core.getPermissionHandler().delete(permId);
+                Core.Send("[BREAKING NEWS] " + name + " has fallen !");
             }
+            else
+                player.sendMessage(Text.of("[City] You don't have the permission."));
             return CommandResult.success();
         }
         return CommandResult.empty();

@@ -1,6 +1,6 @@
 package fr.AleksGirardey.Commands.CityCommand.Set.Diplomacy;
 
-import fr.AleksGirardey.Commands.CityCommand.CityCommand;
+import fr.AleksGirardey.Commands.CityCommand.CityCommandAssistant;
 import fr.AleksGirardey.Handlers.CityHandler;
 import fr.AleksGirardey.Handlers.PlayerHandler;
 import fr.AleksGirardey.Objects.Core;
@@ -9,10 +9,9 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
-import java.sql.SQLException;
 import java.util.Collection;
 
-public abstract class CityCommandSetDiplomacy extends CityCommand{
+public abstract class CityCommandSetDiplomacy extends CityCommandAssistant{
 
     protected abstract void NewDiplomacy(int cityId1, int cityId2);
 
@@ -24,17 +23,8 @@ public abstract class CityCommandSetDiplomacy extends CityCommand{
     }
 
     protected boolean CanDoIt(Player player) {
-        PlayerHandler   playerHandler = Core.getPlayerHandler();
-
-        player.sendMessage(Text.of("[CityCommandSetDiplomacy] CanDoIt"));
-        try {
-            if (playerHandler.getCity(player) != 0
-                    && (playerHandler.isOwner(player)
-                    /* || playerHandler.isAssistant(player)*/))
-                return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        if (super.CanDoIt(player))
+            return true;
         player.sendMessage(Text.of("You need to belong to a city or you are not enough influent to do diplomacy"));
         return false;
     }
@@ -48,22 +38,17 @@ public abstract class CityCommandSetDiplomacy extends CityCommand{
         if (context.hasAny("<city>"))
             citiesNames = context.<String>getAll("<city>");
 
-        try {
-            if (cityHandler.getCityFromName(cityName) == 0) {
-                player.sendMessage(Text.of("City '" + cityName + "' doesn't exist !"));
-                return false;
-            }
-            if (citiesNames != null)
-                for (String name : citiesNames)
-                    if (cityHandler.getCityFromName(name) == 0) {
-                        player.sendMessage(Text.of("City '" + name + "' doesn't exist !"));
-                        return false;
-                    }
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (cityHandler.getCityFromName(cityName) == 0) {
+            player.sendMessage(Text.of("City '" + cityName + "' doesn't exist !"));
+            return false;
         }
-        return false;
+        if (citiesNames != null)
+            for (String name : citiesNames)
+                if (cityHandler.getCityFromName(name) == 0) {
+                    player.sendMessage(Text.of("City '" + name + "' doesn't exist !"));
+                    return false;
+                }
+        return true;
     }
 
     protected CommandResult ExecCommand(Player player, CommandContext context) {
@@ -73,24 +58,18 @@ public abstract class CityCommandSetDiplomacy extends CityCommand{
         CityHandler             cityHandler = Core.getCityHandler();
         int                     cityId;
 
-        player.sendMessage(Text.of("[CityCommandSetDiplomacy] ExecCommand"));
         if (context.hasAny("<city>"))
             citiesNames = context.<String>getAll("<city>");
-        try {
-            cityId = playerHandler.getCity(player);
-            NewDiplomacy(
-                    cityId,
-                    cityHandler.getCityFromName(cityName));
-            if (citiesNames != null)
-                for (String name : citiesNames)
-                    NewDiplomacy(
-                            cityId,
-                            cityHandler.getCityFromName(name)
-                    );
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
+        cityId = playerHandler.<Integer>getElement(player, "player_cityId");
+        NewDiplomacy(
+            cityId,
+            cityHandler.getCityFromName(cityName));
+        if (citiesNames != null)
+            for (String name : citiesNames)
+                NewDiplomacy(
+                        cityId,
+                        cityHandler.getCityFromName(name));
         return CommandResult.success();
     }
 }

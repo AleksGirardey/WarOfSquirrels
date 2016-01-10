@@ -23,10 +23,8 @@ public class CityCommandInfo implements CommandExecutor {
             String  args = commandContext.<String>getOne("[city]").orElse("");
             int     argument = 0;
             Player player = (Player) commandSource;
-
-            try {
             if (args.equals("")) {
-                argument = Core.getPlayerHandler().getCity(player);
+                argument = Core.getPlayerHandler().<Integer>getElement(player, "player_cityId");
                 if (argument == 0) {
                     player.sendMessage(Text.of("You don't belong to a city bro !"));
                     return CommandResult.empty();
@@ -38,19 +36,18 @@ public class CityCommandInfo implements CommandExecutor {
                     return CommandResult.empty();
                 }
             }
-                player.sendMessage(Text.of("---===| " + Core.getCityHandler().getElement(argument, "city_displayName")
-                        + "[" + Core.getCityHandler().getCitizens(argument).length + "] |===---"));
-                player.sendMessage(Text.of("Mayor: " + Core.getPlayerHandler().get(
-                        Core.getCityHandler().<String>getElement(argument, "city_playerOwner"),
-                "player_displayName")));
-                player.sendMessage(Text.of("Citizens: " + Utils.getListFromTableString(Core.getCityHandler().getCitizens(argument), 1)));
-                player.sendMessage(Text.of("Tag: " + Core.getCityHandler().getElement(
-                        argument,
-                        "city_tag")));
-                return CommandResult.success();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            player.sendMessage(Text.of("---===| " + Core.getCityHandler().getElement(argument, "city_displayName")
+                + "[" + Core.getCityHandler().getCitizens(argument).length + "] |===---"));
+            player.sendMessage(
+                Text.of("Mayor: "
+                        + Core.getPlayerHandler().<String>getElement(
+                            Core.getCityHandler().<String>getElement(argument, "city_playerOwner"),
+                            "player_displayName")));
+            player.sendMessage(Text.of("Citizens: " + Utils.getListFromTableString(Core.getCityHandler().getCitizens(argument), 1)));
+            player.sendMessage(Text.of("Tag: " + Core.getCityHandler().getElement(
+                    argument,
+                    "city_tag")));
+            return CommandResult.success();
         }
         return CommandResult.empty();
     }

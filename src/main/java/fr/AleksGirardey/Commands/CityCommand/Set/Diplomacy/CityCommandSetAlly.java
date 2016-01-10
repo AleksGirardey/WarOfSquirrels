@@ -27,11 +27,7 @@ public class CityCommandSetAlly extends CityCommandSetDiplomacy {
 
     @Override
     protected void NewDiplomacy(int cityId1, int cityId2) {
-        try {
-            Annouce(cityId1, cityId2, "ally");
-            Core.getCityHandler().setAlly(cityId1, cityId2);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Annouce(cityId1, cityId2, "ally");
+        Core.getCityHandler().setDiplomacy(cityId1, cityId2, true);
     }
 }

@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 public class Utils {
 
+    @Deprecated
     public static int getPlayerPos(Player player, String pos) {
         if (pos.equals("X"))
             return player.getLocation().getBlockX();
@@ -35,60 +36,46 @@ public class Utils {
         return (res);
     }
 
-    public static boolean checkCityName(String name) throws SQLException {
-        Connection c = null;
-        PreparedStatement statement = null;
-        ResultSet rs = null;
+    public static boolean checkCityName(String name) {
+        Statement statement= null;
+        String sql = "SELECT `city_displayName` FROM `City` WHERE `city_displayName` = ?;";
 
-        if (!name.matches("[A-Za-z0-9]+"))
+        if (!name.matches("[A-Za-z0-9]+") || name.length() > 34)
             return (false);
         try {
-            String sql = "SELECT `city_displayName` FROM `City` WHERE `city_displayName` = ?;";
-
-            c = Core.getDatabaseHandler().getConnection();
-            statement = c.prepareStatement(sql);
-            statement.setString(1, name);
-            rs = statement.executeQuery();
-            if (rs.first())
+            statement = new Statement(sql);
+            statement.getStatement().setString(1, name);
+            if (statement.Execute().first())
                 return (false);
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) statement.close();
-            if (c != null) c.close();
-            if (rs != null) rs.close();
         }
         return (true);
     }
 
-    public static Location<World> getNearestSpawn(Player player) throws SQLException {
+    public static Location<World> getNearestSpawn(Player player) {
         PlayerHandler plh = Core.getPlayerHandler();
-        Connection c = null;
-        PreparedStatement statement = null;
-        ResultSet rs = null;
+        Statement statement = null;
+
         Location<World> pLocation = player.getLocation(), save = null;
         Vector3d chunk = null;
+        String sql = "SELECT `chunk_respawnX`, `chunk_respawnY`, `chunk_respawnZ` FROM `Chunk` WHERE `chunk_cityId` = ? AND (`chunk_homeblock` = TRUE OR `chunk_outpost` = TRUE);";
 
         try {
-            String sql = "SELECT `chunk_respawnX`, `chunk_respawnY`, `chunk_respawnZ` FROM `Chunk` WHERE `chunk_cityId` = ? AND (`chunk_homeblock` = TRUE OR `chunk_outpost` = TRUE);";
-
-            c = Core.getDatabaseHandler().getConnection();
-            statement = c.prepareStatement(sql);
-            statement.setInt(1, plh.getCity(player));
-            rs = statement.executeQuery();
-            while (rs.next()) {
-                chunk = new Vector3d(rs.getDouble("chunk_respawnX"), rs.getDouble("chunk_respawnY"), rs.getDouble("chunk_respawnZ"));
+            statement = new Statement(sql);
+            statement.getStatement().setInt(1, plh.<Integer>getElement(player, "player_cityId"));
+            statement.Execute();
+            while (statement.getResult().next()) {
+                chunk = new Vector3d(
+                        statement.getResult().getDouble("chunk_respawnX"),
+                        statement.getResult().getDouble("chunk_respawnY"),
+                        statement.getResult().getDouble("chunk_respawnZ"));
                 if (save == null || pLocation.getPosition().distance(chunk) < pLocation.getPosition().distance(save.getPosition())) {
                     save = player.getWorld().getLocation(chunk);
                 }
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) statement.close();
-            if (c != null) c.close();
-            if (rs != null) rs.close();
         }
         return (save);
     }

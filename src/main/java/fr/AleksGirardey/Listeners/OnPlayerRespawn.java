@@ -1,6 +1,5 @@
 package fr.AleksGirardey.Listeners;
 
-import fr.AleksGirardey.Handlers.PlayerHandler;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Utils;
 import org.spongepowered.api.entity.Transform;
@@ -18,13 +17,9 @@ public class OnPlayerRespawn {
         Player              player = event.getTargetEntity();
         Transform<World>    transform;
 
-        try {
-            if (Core.getPlayerHandler().getCity(player) != 0) {
-                transform = new Transform<World>(Utils.getNearestSpawn(player));
-                event.setToTransform(transform);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (Core.getPlayerHandler().<Integer>getElement(player, "player_cityId") != 0) {
+            transform = new Transform<World>(Utils.getNearestSpawn(player));
+            event.setToTransform(transform);
         }
     }
 }

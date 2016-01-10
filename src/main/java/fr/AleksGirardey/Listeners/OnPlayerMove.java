@@ -20,37 +20,31 @@ public class OnPlayerMove {
         boolean             c1, c2;
         Chunk               chunk1 = new Chunk(player), chunk2 = new Chunk(player);
 
-        try {
-            chunk1.setX(event.getFromTransform().getLocation().getBlockX() / 16);
-            chunk1.setZ(event.getFromTransform().getLocation().getBlockZ() / 16);
-            chunk2.setX(event.getToTransform().getLocation().getBlockX() / 16);
-            chunk2.setZ(event.getToTransform().getLocation().getBlockZ() / 16);
+        chunk1.setX(event.getFromTransform().getLocation().getBlockX() / 16);
+        chunk1.setZ(event.getFromTransform().getLocation().getBlockZ() / 16);
+        chunk2.setX(event.getToTransform().getLocation().getBlockX() / 16);
+        chunk2.setZ(event.getToTransform().getLocation().getBlockZ() / 16);
 
+        if (!chunk1.equals(chunk2)) {
+            c1 = ch.exists( chunk1.getX(), chunk1.getZ());
+            c2 = ch.exists( chunk2.getX(), chunk2.getZ());
 
-
-            if (!chunk1.equals(chunk2)) {
-                c1 = ch.exists( chunk1.getX(), chunk1.getZ());
-                c2 = ch.exists( chunk2.getX(), chunk2.getZ());
-
-                if (c1) {
-                    if (c2) {
-                        id1 = ch.getCity(chunk1.getX(), chunk2.getZ());
-                        id2 = ch.getCity(chunk1.getX(), chunk2.getZ());
-                        if (id1 != id2)
-                            player.sendMessage(
-                                    Text.of("~~" + Core.getCityHandler().<String>getElement(id2, "city_displayCityName")));
-                    } else
-                        player.sendMessage(Text.of("~~ Wilderness ~~"));
-                } else {
-                    if (c2) {
-                        id2 = ch.getCity(chunk2.getX(), chunk2.getZ());
-                        player.sendMessage(Text.of(
-                                "~~ " + Core.getCityHandler().<String>getElement(id2, "city_displayName") + " ~~"));
-                    }
+            if (c1) {
+                if (c2) {
+                    id1 = ch.getCity(chunk1.getX(), chunk2.getZ());
+                    id2 = ch.getCity(chunk1.getX(), chunk2.getZ());
+                    if (id1 != id2)
+                        player.sendMessage(
+                                Text.of("~~" + Core.getCityHandler().<String>getElement(id2, "city_displayCityName")));
+                } else
+                    player.sendMessage(Text.of("~~ Wilderness ~~"));
+            } else {
+                if (c2) {
+                    id2 = ch.getCity(chunk2.getX(), chunk2.getZ());
+                    player.sendMessage(Text.of(
+                            "~~ " + Core.getCityHandler().<String>getElement(id2, "city_displayName") + " ~~"));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 }
