@@ -18,6 +18,7 @@ public class Core {
     static CityHandler cityHandler;
     static ChunkHandler chunkHandler;
     static PermissionHandler permissionHandler;
+    static BroadcastHandler broadcastHandler;
 
     public static void          initCore(Logger logger, Game game) {
         logger.info("Core initialization...");
@@ -27,18 +28,11 @@ public class Core {
             e.printStackTrace();
         }
         plugin = game;
-        logger.info("Creating Player Handler...");
         playerHandler = new PlayerHandler(logger);
-        logger.info("Player Handler : OK\n" +
-                "Creating City Handler...");
         cityHandler = new CityHandler(logger);
-        logger.info("City Handler : OK\n" +
-                "Creating Chunk Handler...");
         chunkHandler = new ChunkHandler();
-        logger.info("Chunk Handler : OK\n" +
-                "Creating Permission Handler...");
         permissionHandler = new PermissionHandler(logger);
-        logger.info("Permission Handler : OK and Core is now ready to use.");
+        broadcastHandler = new BroadcastHandler();
     }
 
     public void close() throws SQLException {
@@ -66,6 +60,8 @@ public class Core {
     public static PermissionHandler getPermissionHandler() {
         return permissionHandler;
     }
+
+    public static BroadcastHandler  getBroadcastHandler() { return broadcastHandler; }
 
     public static void Send(String message) {
         plugin.getServer().getBroadcastChannel().send(Text.of(message));

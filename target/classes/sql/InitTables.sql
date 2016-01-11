@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS `Player` (
   `player_displayName` char(45) NOT NULL,
   `player_score` INT DEFAULT 0,
   `player_cityId` INT DEFAULT NULL,
+  `player_assistant` BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (`player_uuid`));
 
 CREATE TABLE IF NOT EXISTS `City` (

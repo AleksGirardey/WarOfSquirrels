@@ -1,16 +1,12 @@
 package fr.AleksGirardey.Handlers;
 
 
-import java.sql.PreparedStatement;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Statement;
 import org.slf4j.Logger;
 import org.spongepowered.api.entity.living.player.Player;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 
 public class PlayerHandler {
     private Logger logger;
@@ -54,7 +50,7 @@ public class PlayerHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return (res != null ? (T) res : null);
+        return (T) res;
     }
 
     public <T> void     setElement(Player player, String element, T value) {
@@ -62,13 +58,13 @@ public class PlayerHandler {
     }
 
     public <T> void     setElement(String uuid, String element, T value) {
-        String          sql = "UPDATE `Player` SET ? = ? WHERE `player_uuid` = ?;";
+        String          sql = "UPDATE `Player` SET `Player`.`" + element + "` = ? WHERE `player_uuid` = ?;";
 
         try {
             _statement.NewQuery(sql);
-            _statement.getStatement().setString(1, element);
-            _statement.getStatement().setObject(2, value);
-            _statement.getStatement().setString(3, uuid);
+            //_statement.getStatement().setObject(1, element);
+            _statement.getStatement().setObject(1, value);
+            _statement.getStatement().setString(2, uuid);
             _statement.Update();
             _statement.Close();
         } catch (SQLException e) {
@@ -94,16 +90,11 @@ public class PlayerHandler {
     public Boolean isOwner(Player player){
         return (player.getUniqueId().toString().equals(
                 Core.getCityHandler().<String>getElement(
-                        this.<Integer>getElement(player, "player_id"),
+                        this.<Integer>getElement(player, "player_cityId"),
                         "city_playerOwner")));
     }
 
     public boolean exists(Player player) {
         return (this.<String>getElement(player, "player_displayName") != null);
-    }
-
-    /* NEED TO BE IMPLEMENTED */
-    public boolean isAssistant(Player player) {
-        return false;
     }
 }

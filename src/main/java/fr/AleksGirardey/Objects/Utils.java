@@ -23,6 +23,19 @@ public class Utils {
             return player.getLocation().getBlockZ();
     }
 
+    public static String getListFromTableString(String[] list) {
+        String  res = "";
+        int i = 0;
+
+        while (i < list.length) {
+            res += list[i];
+            if (i != list.length -1)
+                res += ", ";
+            i++;
+        }
+        return res;
+    }
+
     public static String getListFromTableString(String[][] list, int index) {
         String res = "";
         int i = 0;

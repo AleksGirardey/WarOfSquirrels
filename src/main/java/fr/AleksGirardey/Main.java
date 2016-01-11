@@ -1,11 +1,12 @@
 package fr.AleksGirardey;
 
 import com.google.inject.Inject;
-import fr.AleksGirardey.Commands.CityCommand.*;
-import fr.AleksGirardey.Commands.CityCommand.Set.*;
-import fr.AleksGirardey.Commands.CityCommand.Set.Diplomacy.CityCommandSetAlly;
-import fr.AleksGirardey.Commands.CityCommand.Set.Diplomacy.CityCommandSetEnemy;
-import fr.AleksGirardey.Commands.CityCommand.Set.Diplomacy.CityCommandSetNeutral;
+import fr.AleksGirardey.Commands.City.*;
+import fr.AleksGirardey.Commands.City.Set.*;
+import fr.AleksGirardey.Commands.City.Set.Diplomacy.CityCommandSetAlly;
+import fr.AleksGirardey.Commands.City.Set.CityCommandSetAssistant;
+import fr.AleksGirardey.Commands.City.Set.Diplomacy.CityCommandSetEnemy;
+import fr.AleksGirardey.Commands.City.Set.Diplomacy.CityCommandSetNeutral;
 import fr.AleksGirardey.Listeners.*;
 import fr.AleksGirardey.Objects.Core;
 import org.slf4j.Logger;
@@ -33,15 +34,14 @@ public class Main {
         File        f = new File ("WarOfSquirrels");
         CommandSpec cityCommandSpec;
         CommandSpec info, create, delete, claim, unclaim, set, help;
-        CommandSpec setHelp, setSpawn, setAlly, setNeutral, setEnemy;
+        CommandSpec setHelp, setSpawn, setAlly, setNeutral, setEnemy, setMayor, setAssistant;
 
-        logger.debug("Please, wait for the War Of Squirrels plugin to be initialized");
+        logger.info("Please, wait for the War Of Squirrels plugin to be initialized");
         if (!f.exists())
             if (!f.mkdir())
                 logger.error("Can't create plugin directory");
 
             Core.initCore(logger, game);
-            logger.info("Registering events..");
             game.getEventManager().registerListeners(this, new OnPlayerLogin());
             game.getEventManager().registerListeners(this, new OnPlayerMove());
             game.getEventManager().registerListeners(this, new OnPlayerRespawn());
@@ -49,8 +49,6 @@ public class Main {
             game.getEventManager().registerListeners(this, new OnPlayerContainer());
             game.getEventManager().registerListeners(this, new OnPlayerSwitch());
             game.getEventManager().registerListeners(this, new OnPlayerDestroy());
-            logger.info("Event registered.\n" +
-                    "Command builder...");
 
             info = CommandSpec.builder()
                     .description(Text.of("Give city information"))
@@ -131,6 +129,22 @@ public class Main {
                     )
                     .build();
 
+            setMayor = CommandSpec.builder()
+                    .description(Text.of("Set this citizen as mayor"))
+                    .executor(new CityCommandSetMayor())
+                    .arguments(
+                            GenericArguments.onlyOne(GenericArguments.string(Text.of("[resident]")))
+                    )
+                    .build();
+
+            setAssistant = CommandSpec.builder()
+                .description(Text.of("Set this citizen as assistant"))
+                .executor(new CityCommandSetAssistant())
+                .arguments(
+                        GenericArguments.onlyOne(GenericArguments.string(Text.of("[resident]")))
+                )
+                .build();
+
             set = CommandSpec.builder()
                     .description(Text.of("Commands related to new attribution in your city"))
                     .child(setHelp, "help", "?")
@@ -138,6 +152,8 @@ public class Main {
                     .child(setAlly, "ally")
                     .child(setEnemy, "enemy")
                     .child(setNeutral, "neutral")
+                    .child(setMayor, "mayor")
+                    .child(setAssistant, "assistant")
                     .build();
 
             help = CommandSpec.builder()
@@ -156,12 +172,8 @@ public class Main {
                     .child(set, "set")
                     .build();
 
-
-            logger.info("Command build.\n" +
-                    "Register Command...");
             game.getCommandManager().register(this, cityCommandSpec, "city", "c");
-            logger.info("Command registered.\n" +
-                    "Welcome in the War Of Squirrels. Have fun !");
+            logger.info("Welcome in the War Of Squirrels. Have fun !");
     }
 
     public Logger getLogger() { return logger; }

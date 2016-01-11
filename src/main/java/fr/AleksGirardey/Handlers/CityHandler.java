@@ -128,16 +128,62 @@ public class CityHandler {
         return (res);
     }
 
+    public String[]         getDiplomacy(int id, boolean relation) {
+        String[]            resultat = null;
+        int                 i = 0, size = 0;
+        String              sql = "SELECT `city_displayName` FROM `City`,`Diplomacy` WHERE ((`City`.`city_id` = `Diplomacy`.`diplomacy_mainCityId` AND `Diplomacy`.`diplomacy_subCityId` = ?)" +
+                "OR (`City`.`city_id` = `Diplomacy`.`diplomacy_subCityId` AND `Diplomacy`.`diplomacy_mainCityId` = ?)) AND `Diplomacy`.`diplomacy_relation` = ?;";
+
+        try {
+            _statement.NewQuery(sql);
+            _statement.getStatement().setInt(1, id);
+            _statement.getStatement().setInt(2, id);
+            _statement.getStatement().setBoolean(3, relation);
+            _statement.Execute().last();
+            size = _statement.getResult().getRow();
+            _statement.getResult().beforeFirst();
+            resultat = new String[size];
+            while (_statement.getResult().next()) {
+                resultat[i] = _statement.getResult().getString("city_displayName");
+                i++;
+            }
+            _statement.Close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultat;
+    }
+
     public boolean  areAllies(int owner, int player) {
-        String      sql = "SELECT `diplomacy_relation` FROM `Diplomacy` WHERE `diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?;";
+        String      sql = "SELECT `diplomacy_relation` FROM `Diplomacy` WHERE ((`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?)" +
+                        "OR (`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?));";
 
         try {
             _statement.NewQuery(sql);
             _statement.getStatement().setInt(1, owner);
             _statement.getStatement().setInt(2, player);
+            _statement.getStatement().setInt(3, player);
+            _statement.getStatement().setInt(4, owner);
             if (_statement.Execute().next())
                 return (_statement.getResult().getBoolean("diplomacy_relation"));
-            else return areAllies(player, owner);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean  exists(int owner, int player) {
+        String      sql = "SELECT `diplomacy_relation` FROM `Diplomacy` WHERE ((`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?)" +
+                "OR (`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?));";
+
+        try {
+            _statement.NewQuery(sql);
+            _statement.getStatement().setInt(1, owner);
+            _statement.getStatement().setInt(2, player);
+            _statement.getStatement().setInt(3, player);
+            _statement.getStatement().setInt(4, owner);
+            if (_statement.Execute().next())
+                return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -168,53 +214,27 @@ public class CityHandler {
         }
     }
 
-    public void                 setNeutral(int cityId1, int cityId2) throws SQLException {
-        Connection          c = null;
-        PreparedStatement   statement = null;
+    public void                 setNeutral(int cityId1, int cityId2) {
+        String  sql = "DELETE FROM `Diplomacy` WHERE ((`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?)" +
+                "OR (`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?));";
 
         try {
-            DeleteDoubleDiplomacyLinks(cityId1, cityId2);
-
-            String          sql = "INSERT INTO `Diplomacy` (`diplomacy_mainCityId`, `diplomacy_subCityId`, `diplomacy_relation`) VALUES (?, ?, 0);";
-
-            c = Core.getDatabaseHandler().getConnection();
-            statement = c.prepareStatement(sql);
-            statement.setInt(1, cityId1);
-            statement.setInt(2, cityId2);
-            statement.executeUpdate();
+            _statement.NewQuery(sql);
+            _statement.getStatement().setInt(1, cityId1);
+            _statement.getStatement().setInt(1, cityId2);
+            _statement.getStatement().setInt(1, cityId2);
+            _statement.getStatement().setInt(1, cityId1);
+            _statement.Update();
+            _statement.Close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) statement.close();
-            if (c != null) c.close();
         }
     }
 
-    private void DeleteDoubleDiplomacyLinks(int cityId1, int cityId2) throws SQLException {
-        Connection          c = null;
-        PreparedStatement   statement = null;
-        ResultSet           rs = null;
+    public void setMayor(String s, int playerCityId) {
+        String uuid = this.<String>getElement(playerCityId, "city_playerOwner");
 
-        try {
-            String          sql = "SELECT `diplomacy_id` FROM `Diplomacy` WHERE `diplomacy_mainCityId` = ? AND `diplomacy_subCItyId` = ?;",
-                            remove = "DELETE FROM `Diplomacy` WHERE `diplomacy_id` = ?;";
-
-            c = Core.getDatabaseHandler().getConnection();
-            statement = c.prepareStatement(sql);
-            statement.setInt(1, cityId1);
-            statement.setInt(2, cityId2);
-            rs = statement.executeQuery();
-            if (rs.next()) {
-                statement = c.prepareStatement(remove);
-                statement.setInt(1, rs.getInt("diplomacy_id"));
-                statement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (statement != null) statement.close();
-            if (c != null) c.close();
-            if (rs != null) rs.close();
-        }
+        this.<String>setElement(playerCityId, "city_playerOwner", s);
+        Core.getPlayerHandler().<Boolean>setElement(uuid, "player_isAssistant", true);
     }
 }
