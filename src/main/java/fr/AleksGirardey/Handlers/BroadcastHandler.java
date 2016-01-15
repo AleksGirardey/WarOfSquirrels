@@ -14,6 +14,11 @@ public class BroadcastHandler {
     public BroadcastHandler() {
     }
 
+    public void cityInvitationSend(Player player, Player sender, int cityId) {
+        player.sendMessage(Text.of(Core.getPlayerHandler().<String>getElement(sender, "player_displayName") + " invite you to join "
+                + Core.getCityHandler().<String>getElement(cityId, "city_displayName")));
+    }
+
     public void cityChannel(int cityId, String message) {
         String[][]      citizens = Core.getCityHandler().getCitizens(cityId);
         List<String> uuids = new ArrayList<String>();

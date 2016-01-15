@@ -1,12 +1,14 @@
 package fr.AleksGirardey;
 
 import com.google.inject.Inject;
+import fr.AleksGirardey.Commands.AcceptCommand;
 import fr.AleksGirardey.Commands.City.*;
 import fr.AleksGirardey.Commands.City.Set.*;
 import fr.AleksGirardey.Commands.City.Set.Diplomacy.CityCommandSetAlly;
 import fr.AleksGirardey.Commands.City.Set.CityCommandSetAssistant;
 import fr.AleksGirardey.Commands.City.Set.Diplomacy.CityCommandSetEnemy;
 import fr.AleksGirardey.Commands.City.Set.Diplomacy.CityCommandSetNeutral;
+import fr.AleksGirardey.Commands.RefuseCommand;
 import fr.AleksGirardey.Listeners.*;
 import fr.AleksGirardey.Objects.Core;
 import org.slf4j.Logger;
@@ -32,8 +34,8 @@ public class Main {
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
         File        f = new File ("WarOfSquirrels");
-        CommandSpec cityCommandSpec;
-        CommandSpec info, create, delete, claim, unclaim, set, help;
+        CommandSpec cityCommandSpec, accept, refuse;
+        CommandSpec info, create, delete, claim, unclaim, set, help, add, remove;
         CommandSpec setHelp, setSpawn, setAlly, setNeutral, setEnemy, setMayor, setAssistant;
 
         logger.info("Please, wait for the War Of Squirrels plugin to be initialized");
@@ -41,7 +43,7 @@ public class Main {
             if (!f.mkdir())
                 logger.error("Can't create plugin directory");
 
-            Core.initCore(logger, game);
+            Core.initCore(logger, game, this);
             game.getEventManager().registerListeners(this, new OnPlayerLogin());
             game.getEventManager().registerListeners(this, new OnPlayerMove());
             game.getEventManager().registerListeners(this, new OnPlayerRespawn());
@@ -81,6 +83,28 @@ public class Main {
             unclaim = CommandSpec.builder()
                     .description(Text.of("Make this chunk belongs to mother nature"))
                     .executor(new CityCommandUnclaim())
+                    .build();
+
+            add = CommandSpec.builder()
+                    .description(Text.of("Invite a player to join your city"))
+                    .arguments(
+                            GenericArguments.onlyOne(GenericArguments.string(Text.of("[player]"))),
+                            GenericArguments.optional(
+                                    GenericArguments.repeated(
+                                            GenericArguments.onlyOne(GenericArguments.string(Text.of("<player>"))),
+                                            10)))
+                    .executor(new CityAddCommand())
+                    .build();
+
+            remove = CommandSpec.builder()
+                    .description(Text.of("Invite a player to join your city"))
+                    .arguments(
+                            GenericArguments.onlyOne(GenericArguments.string(Text.of("[player]"))),
+                            GenericArguments.optional(
+                                    GenericArguments.repeated(
+                                            GenericArguments.onlyOne(GenericArguments.string(Text.of("<player>"))),
+                                            10)))
+                    .executor(new CityRemoveCommand())
                     .build();
 
             setHelp = CommandSpec.builder()
@@ -170,9 +194,23 @@ public class Main {
                     .child(claim, "claim")
                     .child(unclaim, "unclaim")
                     .child(set, "set")
+                    .child(add, "add", "invite")
+                    .child(remove, "remove", "kick")
+                    .build();
+
+            accept = CommandSpec.builder()
+                    .description(Text.of("Accept a pending invitation."))
+                    .executor(new AcceptCommand())
+                    .build();
+
+            refuse = CommandSpec.builder()
+                    .description(Text.of("Refuse a pending invitation."))
+                    .executor(new RefuseCommand())
                     .build();
 
             game.getCommandManager().register(this, cityCommandSpec, "city", "c");
+            game.getCommandManager().register(this, accept, "accept", "a");
+            game.getCommandManager().register(this, refuse, "refuse", "r");
             logger.info("Welcome in the War Of Squirrels. Have fun !");
     }
 

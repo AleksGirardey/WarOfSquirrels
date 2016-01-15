@@ -237,4 +237,16 @@ public class CityHandler {
         this.<String>setElement(playerCityId, "city_playerOwner", s);
         Core.getPlayerHandler().<Boolean>setElement(uuid, "player_isAssistant", true);
     }
+
+    public boolean isLimitReached(int cityId) {
+        return false;
+    }
+
+    public void newCitizen(Player player, int city) {
+        if (Core.getPlayerHandler().<Integer>getElement(player, "player_cityId") == null
+                && !isLimitReached(city)) {
+            Core.getPlayerHandler().setElement(player, "player_cityId", city);
+            Core.getBroadcastHandler().cityChannel(city, player.getDisplayNameData().displayName() + " join the city");
+        }
+    }
 }

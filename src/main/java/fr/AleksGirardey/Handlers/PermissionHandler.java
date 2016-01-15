@@ -89,11 +89,12 @@ public class PermissionHandler {
         PlayerHandler       plh = Core.getPlayerHandler();
         ChunkHandler        chh = Core.getChunkHandler();
         CityHandler         cih = Core.getCityHandler();
-        int                 cityIdChunk, permId, cityIdPlayer;
+        int                 cityIdChunk, permId, cityIdPlayer = 0;
 
         cityIdChunk = chh.getCity(chunkId);
         permId = cih.<Integer>getElement(cityIdChunk, "city_permissionId");
-        cityIdPlayer = plh.<Integer>getElement(player, "player_cityId");
+        if (plh.<Integer>getElement(player, "player_cityId") != null)
+            cityIdPlayer = plh.<Integer>getElement(player, "player_cityId");
 
         if (cityIdPlayer != 0) {
             if (cityIdPlayer == cityIdChunk) {
