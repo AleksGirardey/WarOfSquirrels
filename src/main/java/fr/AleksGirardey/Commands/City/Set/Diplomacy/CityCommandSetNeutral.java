@@ -21,7 +21,8 @@ public class CityCommandSetNeutral extends CityCommandSetDiplomacy{
         return super.ExecCommand(player, context);
     }
 
-    protected void NewDiplomacy(int cityId1, int cityId2) {
+    protected void NewDiplomacy(Player player, int cityId2) {
+        int     cityId1 = Core.getPlayerHandler().<Integer>getElement(player, "player_cityId");
         Annouce(cityId1, cityId2, "neutral");
         Core.getCityHandler().setNeutral(cityId1, cityId2);
     }

@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CityHandler {
 
@@ -121,6 +123,25 @@ public class CityHandler {
                 res[i][3] = _statement.getResult().getString("player_cityId");
                 i++;
             }
+            _statement.Close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return (res);
+    }
+
+    public List<String>     getAssistants(int id) {
+        int                 size = 0, i = 0;
+        List<String>        res = new ArrayList<String>();
+        String              sql = "SELECT `player_uuid` FROM `Player` WHERE `player_cityId` = ? AND `player_assistant` = ?;";
+
+        try {
+            _statement.NewQuery(sql);
+            _statement.getStatement().setInt(1, id);
+            _statement.getStatement().setBoolean(2, true);
+            _statement.Execute();
+            while (_statement.getResult().next())
+                 res.add(_statement.getResult().getString("player_uuid"));
             _statement.Close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -246,7 +267,9 @@ public class CityHandler {
         if (Core.getPlayerHandler().<Integer>getElement(player, "player_cityId") == null
                 && !isLimitReached(city)) {
             Core.getPlayerHandler().setElement(player, "player_cityId", city);
-            Core.getBroadcastHandler().cityChannel(city, player.getDisplayNameData().displayName() + " join the city");
+            Core.getBroadcastHandler().cityChannel(
+                    city,
+                    Core.getPlayerHandler().<String>getElement(player, "player_displayName") + " join the city");
         }
     }
 }

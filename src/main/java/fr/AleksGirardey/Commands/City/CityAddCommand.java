@@ -2,6 +2,7 @@ package fr.AleksGirardey.Commands.City;
 
 import fr.AleksGirardey.Commands.CityCommandAssistant;
 import fr.AleksGirardey.Handlers.PlayerHandler;
+import fr.AleksGirardey.Main;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Invitations.CityInvitation;
 import fr.AleksGirardey.Objects.Invitations.Invitation;
@@ -19,6 +20,7 @@ public class CityAddCommand extends CityCommandAssistant {
 
         if (playerHandler.getUuidFromName(context.<String>getOne("[player]").get()) != null)
         {
+            Core.Send("SpecialCheck");
             if (context.hasAny("<player>")) {
                 Collection<String> players = context.<String>getAll("<player>");
 
@@ -44,8 +46,8 @@ public class CityAddCommand extends CityCommandAssistant {
         cityId = Core.getPlayerHandler().<Integer>getElement(player, "player_cityId");
         if (tmp != null && online.contains(tmp))
         {
-            Invitation invitation = new CityInvitation(tmp, player, cityId);
-            Core.getInvitationHandler().addInvitation(invitation);
+            final Invitation invitation = new CityInvitation(tmp, player, cityId);
+            Core.getInvitationHandler().createInvitation(invitation);
             if (context.hasAny("<player>")){
                 Collection<String>  players = context.<String>getAll("<player>");
 
@@ -54,7 +56,7 @@ public class CityAddCommand extends CityCommandAssistant {
                     playerUUID = playerHandler.getUuidFromName(pl);
                     tmp = Core.getPlugin().getServer().getPlayer(UUID.fromString(playerUUID)).orElse(null);
                     if (tmp != null && online.contains(tmp))
-                        Core.getInvitationHandler().addInvitation(new CityInvitation(tmp, player, cityId));
+                        Core.getInvitationHandler().createInvitation(new CityInvitation(tmp, player, cityId));
                 }
             }
         }

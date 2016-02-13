@@ -24,11 +24,24 @@ public class BroadcastHandler {
         List<String> uuids = new ArrayList<String>();
 
         for (String[] uuid : citizens)
-            uuids.add(uuid[1]);
-
-        for (Player player : Core.getPlugin().getServer().getOnlinePlayers()) {
+            uuids.add(uuid[0]);
+        for (Player player : Core.getPlugin().getServer().getOnlinePlayers())
             if (uuids.contains(player.getUniqueId().toString()))
                 player.sendMessage(Text.of(message));
+    }
+
+    public void         allianceInvitationSend(int citySender, int cityId) {
+        List<String>    assistants = Core.getCityHandler().getAssistants(cityId);
+        String          mayor = Core.getCityHandler().<String>getElement(cityId, "city_playerOwner");
+        List<Player>    targets = new ArrayList<Player>();
+
+        for (Player player : Core.getPlugin().getServer().getOnlinePlayers())
+            if (assistants.contains(player.getUniqueId().toString())
+                    || mayor.equals(player.getUniqueId().toString()))
+                targets.add(player);
+
+        for (Player p : targets) {
+            p.sendMessage(Text.of("City " + Core.getCityHandler().<String>getElement(citySender, "city_displayName") + " want to be your ally. Use /accept or /refuse to send a reply."));
         }
     }
 }

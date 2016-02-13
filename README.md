@@ -6,10 +6,11 @@ Features :
 - Player auto-created at connection
 - Cities -> Create, Delete, Set diplomacy/Mayor
 - Cities assistant grade, Set perms
+- Invitation Ally / Join City
 
 ToDo :
 
-- Cities invitations
+- Correction setMayor setAssistant
 - Changement des permissions
 - Wars
 

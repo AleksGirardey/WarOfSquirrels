@@ -13,7 +13,7 @@ import java.util.Collection;
 
 public abstract class CityCommandSetDiplomacy extends CityCommandAssistant{
 
-    protected abstract void NewDiplomacy(int cityId1, int cityId2);
+    protected abstract void NewDiplomacy(Player player, int cityId2);
 
     protected void Annouce(int cityId1, int cityId2, String relation) {
         Core.Send("[Diplomacy Alert] " + Core.getCityHandler().<String>getElement(cityId1, "city_displayName")
@@ -62,13 +62,12 @@ public abstract class CityCommandSetDiplomacy extends CityCommandAssistant{
             citiesNames = context.<String>getAll("<city>");
 
         cityId = playerHandler.<Integer>getElement(player, "player_cityId");
-        NewDiplomacy(
-            cityId,
+        NewDiplomacy(player,
             cityHandler.getCityFromName(cityName));
         if (citiesNames != null)
             for (String name : citiesNames)
                 NewDiplomacy(
-                        cityId,
+                        player,
                         cityHandler.getCityFromName(name));
         return CommandResult.success();
     }

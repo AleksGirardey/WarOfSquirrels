@@ -21,7 +21,8 @@ public class CityCommandSetEnemy extends CityCommandSetDiplomacy {
         return super.ExecCommand(player, context);
     }
 
-    protected void NewDiplomacy(int cityId1, int cityId2) {
+    protected void NewDiplomacy(Player player, int cityId2) {
+        int     cityId1 = Core.getPlayerHandler().<Integer>getElement(player, "player_cityId");
         Annouce(cityId1, cityId2, "enemy");
         Core.getCityHandler().setDiplomacy(cityId1, cityId2, false);
     }

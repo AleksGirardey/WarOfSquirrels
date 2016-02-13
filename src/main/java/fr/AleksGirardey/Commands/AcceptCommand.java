@@ -13,7 +13,7 @@ public class AcceptCommand implements CommandExecutor{
     public CommandResult execute(CommandSource commandSource, CommandContext commandContext) throws CommandException {
         if (commandSource instanceof Player) {
             Player player = (Player) commandSource;
-            if (Core.getInvitationHandler().acceptInvitation(player))
+            if (Core.getInvitationHandler().handleInvitation(player, true))
                 return CommandResult.success();
         }
         return CommandResult.empty();
