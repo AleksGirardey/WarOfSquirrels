@@ -70,14 +70,13 @@ public class PermissionHandler {
         return (res);
     }
 
-    private void            setPerm(int id, String perm, boolean value) throws SQLException {
-        String          sql = "UPDATE `Permission` SET ? = ? WHERE `permission_id` = ?;";
+    public void            setPerm(int id, String perm, boolean value) {
+        String          sql = "UPDATE `Permission` SET `Permission`.`" + perm + "` = ? WHERE `permission_id` = ?;";
 
         try {
             _statement.NewQuery(sql);
-            _statement.getStatement().setString(1, perm);
-            _statement.getStatement().setBoolean(2, value);
-            _statement.getStatement().setInt(3, id);
+            _statement.getStatement().setBoolean(1, value);
+            _statement.getStatement().setInt(2, id);
             _statement.Update();
             _statement.Close();
         } catch (SQLException e) {
@@ -108,6 +107,27 @@ public class PermissionHandler {
                 return (getPerm(permId, "permission_allies" + perm));
         }
         return getPerm(permId, "permission_outside" + perm);
+    }
+
+    public String           getString(int cityId) {
+        String              res = "";
+        int                 permId = Core.getCityHandler().<Integer>getElement(cityId, "city_permissionId");
+
+        res += "O [";
+        res += (getPerm(permId, "permission_outsideBuild") ? "B" : "-");
+        res += (getPerm(permId, "permission_outsideContainer") ? "C" : "-");
+        res += (getPerm(permId, "permission_outsideSwitch") ? "S" : "-");
+        res += "] | A [";
+        res += (getPerm(permId, "permission_alliesBuild") ? "B" : "-");
+        res += (getPerm(permId, "permission_alliesContainer") ? "C" : "-");
+        res += (getPerm(permId, "permission_alliesSwitch") ? "S" : "-");
+        res += "] | R [";
+        res += (getPerm(permId, "permission_residentBuild") ? "B" : "-");
+        res += (getPerm(permId, "permission_residentContainer") ? "C" : "-");
+        res += (getPerm(permId, "permission_residentSwitch") ? "S" : "-");
+        res += "]";
+
+        return res;
     }
 
     private Logger getLogger() {

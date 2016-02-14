@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class Utils {
 
@@ -33,6 +34,23 @@ public class Utils {
                 res += ", ";
             i++;
         }
+        return res;
+    }
+
+    public static String getStringFromUuidList(List<String> list) {
+        String      res = "";
+        int         i = 0;
+
+        for (String str : list) {
+            if (i != 0)
+                res += ", ";
+            res += Core.getPlayerHandler().<String>getElement(str, "player_displayName");
+            i++;
+        }
+
+        if (i != 1)
+            res = res.substring(0, res.length() - 3);
+
         return res;
     }
 

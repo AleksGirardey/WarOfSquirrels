@@ -31,11 +31,12 @@ public class CityHandler {
 
     public void             add(Player player, String displayName) {
         String          sql = "INSERT INTO `City` (`city_displayName`, `city_tag`, `city_playerOwner`) VALUES (?, ?, ?);";
-
+        String          substr = "";
         try {
             _statement.NewQuery(sql);
             _statement.getStatement().setString(1, displayName);
-            _statement.getStatement().setString(2, displayName.substring(0, 5));
+            substr = displayName.length() <= 5 ? displayName : displayName.substring(0, 5);
+            _statement.getStatement().setString(2, substr);
             _statement.getStatement().setString(3, player.getUniqueId().toString());
             _statement.Update();
             _statement.Close();
@@ -74,13 +75,12 @@ public class CityHandler {
     }
 
     public <T> void         setElement(int id, String element, T value) {
-        String              sql = "UPDATE `City` SET ? = ? WHERE `city_id` = ?;";
+        String              sql = "UPDATE `City` SET `City`.`" + element + "` = ? WHERE `city_id` = ?;";
 
         try {
             _statement.NewQuery(sql);
-            _statement.getStatement().setString(1, element);
-            _statement.getStatement().setObject(2, value);
-            _statement.getStatement().setInt(3, id);
+            _statement.getStatement().setObject(1, value);
+            _statement.getStatement().setInt(2, id);
             _statement.Update();
             _statement.Close();
         } catch (SQLException e) {
@@ -223,6 +223,7 @@ public class CityHandler {
     public void     setDiplomacy(int senderId, int receiverId, boolean relation) {
         String          sql = "INSERT INTO `Diplomacy` (`diplomacy_mainCityId`, `diplomacy_subCityId`, `diplomacy_relation`) VALUES (?, ?, ?);";
 
+        setNeutral(senderId, receiverId);
         try {
             _statement.NewQuery(sql);
             _statement.getStatement().setInt(1, senderId);
@@ -242,9 +243,9 @@ public class CityHandler {
         try {
             _statement.NewQuery(sql);
             _statement.getStatement().setInt(1, cityId1);
-            _statement.getStatement().setInt(1, cityId2);
-            _statement.getStatement().setInt(1, cityId2);
-            _statement.getStatement().setInt(1, cityId1);
+            _statement.getStatement().setInt(2, cityId2);
+            _statement.getStatement().setInt(3, cityId2);
+            _statement.getStatement().setInt(4, cityId1);
             _statement.Update();
             _statement.Close();
         } catch (SQLException e) {
@@ -254,9 +255,11 @@ public class CityHandler {
 
     public void setMayor(String s, int playerCityId) {
         String uuid = this.<String>getElement(playerCityId, "city_playerOwner");
+        String newMayor = Core.getPlayerHandler().getUuidFromName(s);
 
-        this.<String>setElement(playerCityId, "city_playerOwner", s);
-        Core.getPlayerHandler().<Boolean>setElement(uuid, "player_isAssistant", true);
+        this.<String>setElement(playerCityId, "city_playerOwner", newMayor);
+        Core.getPlayerHandler().<Boolean>setElement(uuid, "player_assistant", true);
+        Core.getPlayerHandler().<Boolean>setElement(newMayor, "player_assistant", false);
     }
 
     public boolean isLimitReached(int cityId) {

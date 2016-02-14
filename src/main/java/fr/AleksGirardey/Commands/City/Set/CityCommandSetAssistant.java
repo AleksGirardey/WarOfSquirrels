@@ -23,12 +23,13 @@ public class CityCommandSetAssistant extends CityCommandSetMayor {
 
     @Override
     protected CommandResult ExecCommand(Player player, CommandContext context) {
+        String uuid = Core.getPlayerHandler().getUuidFromName(context.<String>getOne("[resident]").get());
         Core.getPlayerHandler().setElement(
-                context.<String>getOne("[resident]").get(),
+                uuid,
                 "player_assistant",
                 true);
         Core.getBroadcastHandler().cityChannel(Core.getPlayerHandler().<Integer>getElement(player, "player_cityId"),
-                context.<String>getOne("[resident]") + " is now the new mayor.");
+                context.<String>getOne("[resident]") + " is now assistant.");
         return CommandResult.success();
     }
 }

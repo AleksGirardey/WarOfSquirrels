@@ -34,7 +34,6 @@ public class CityCommandSetMayor extends CityCommandMayor {
         Core.getCityHandler().setMayor(
                 context.<String>getOne("[resident]").get(),
                 playerCityId);
-        Core.getBroadcastHandler().cityChannel(playerCityId, context.<String>getOne("[resident]") + " is now the new mayor.");
         return CommandResult.success();
     }
 }

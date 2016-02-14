@@ -10,8 +10,6 @@ Features :
 
 ToDo :
 
-- Correction setMayor setAssistant
-- Changement des permissions
 - Wars
 
 Tests :

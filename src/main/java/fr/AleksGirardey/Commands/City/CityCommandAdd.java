@@ -13,7 +13,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import java.util.Collection;
 import java.util.UUID;
 
-public class CityAddCommand extends CityCommandAssistant {
+public class CityCommandAdd extends CityCommandAssistant {
     @Override
     protected boolean SpecialCheck(Player player, CommandContext context) {
         PlayerHandler   playerHandler = Core.getPlayerHandler();
