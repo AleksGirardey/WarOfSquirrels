@@ -5,7 +5,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
 
-public class CityCommandSetEnemy extends CityCommandSetDiplomacy {
+public class SetNeutral extends SetDiplomacy {
     @Override
     protected boolean CanDoIt(Player player) {
         return super.CanDoIt(player);
@@ -23,7 +23,7 @@ public class CityCommandSetEnemy extends CityCommandSetDiplomacy {
 
     protected void NewDiplomacy(Player player, int cityId2) {
         int     cityId1 = Core.getPlayerHandler().<Integer>getElement(player, "player_cityId");
-        Annouce(cityId1, cityId2, "enemy");
-        Core.getCityHandler().setDiplomacy(cityId1, cityId2, false);
+        Annouce(cityId1, cityId2, "neutral");
+        Core.getCityHandler().setNeutral(cityId1, cityId2);
     }
 }

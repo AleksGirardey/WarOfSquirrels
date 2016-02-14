@@ -1,13 +1,13 @@
 package fr.AleksGirardey.Commands.City.Set;
 
-import fr.AleksGirardey.Commands.CityCommandMayor;
+import fr.AleksGirardey.Commands.City.CityCommandMayor;
 import fr.AleksGirardey.Objects.Core;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
-public class CityCommandSetMayor extends CityCommandMayor {
+public class SetMayor extends CityCommandMayor {
 
     @Override
     protected boolean SpecialCheck(Player player, CommandContext context) {

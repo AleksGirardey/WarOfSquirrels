@@ -1,6 +1,6 @@
 package fr.AleksGirardey.Commands.City.Set.Permissions;
 
-import fr.AleksGirardey.Commands.CityCommandAssistant;
+import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Objects.Core;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;

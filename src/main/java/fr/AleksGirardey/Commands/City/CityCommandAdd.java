@@ -1,8 +1,6 @@
 package fr.AleksGirardey.Commands.City;
 
-import fr.AleksGirardey.Commands.CityCommandAssistant;
 import fr.AleksGirardey.Handlers.PlayerHandler;
-import fr.AleksGirardey.Main;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Invitations.CityInvitation;
 import fr.AleksGirardey.Objects.Invitations.Invitation;

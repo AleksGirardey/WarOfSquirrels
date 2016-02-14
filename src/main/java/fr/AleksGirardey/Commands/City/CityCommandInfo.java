@@ -1,6 +1,5 @@
 package fr.AleksGirardey.Commands.City;
 
-import fr.AleksGirardey.Commands.CityCommand;
 import fr.AleksGirardey.Handlers.CityHandler;
 import fr.AleksGirardey.Handlers.PlayerHandler;
 import fr.AleksGirardey.Objects.Core;

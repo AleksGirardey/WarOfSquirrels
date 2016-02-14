@@ -1,6 +1,5 @@
-package fr.AleksGirardey.Commands;
+package fr.AleksGirardey.Commands.City;
 
-import fr.AleksGirardey.Commands.CityCommand;
 import fr.AleksGirardey.Objects.Core;
 import org.spongepowered.api.entity.living.player.Player;
 

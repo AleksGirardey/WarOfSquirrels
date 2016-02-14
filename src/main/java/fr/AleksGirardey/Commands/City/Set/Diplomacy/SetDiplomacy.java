@@ -1,6 +1,6 @@
 package fr.AleksGirardey.Commands.City.Set.Diplomacy;
 
-import fr.AleksGirardey.Commands.CityCommandAssistant;
+import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Handlers.CityHandler;
 import fr.AleksGirardey.Handlers.PlayerHandler;
 import fr.AleksGirardey.Objects.Core;
@@ -11,7 +11,7 @@ import org.spongepowered.api.text.Text;
 
 import java.util.Collection;
 
-public abstract class CityCommandSetDiplomacy extends CityCommandAssistant{
+public abstract class SetDiplomacy extends CityCommandAssistant{
 
     protected abstract void NewDiplomacy(Player player, int cityId2);
 
@@ -34,7 +34,7 @@ public abstract class CityCommandSetDiplomacy extends CityCommandAssistant{
         Collection<String>  citiesNames = null;
         CityHandler         cityHandler = Core.getCityHandler();
 
-        player.sendMessage(Text.of("[CityCommandSetDiplomacy] SpecialCheck"));
+        player.sendMessage(Text.of("[SetDiplomacy] SpecialCheck"));
         if (context.hasAny("<city>"))
             citiesNames = context.<String>getAll("<city>");
 

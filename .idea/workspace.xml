@@ -7,38 +7,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c78201bf-ac41-4539-bcf0-2443f96ab20d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/Build/PermBuild.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/Build/PermBuildAllies.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/Build/PermBuildOutside.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/Build/PermBuildResident.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/CityCommandSetPerm.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/Container/PermContainer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/Container/PermContainerAllies.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/Container/PermContainerOutside.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/Container/PermContainerResident.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/Switch/PermSwitch.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/Switch/PermSwitchAllies.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/Switch/PermSwitchOutside.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/Switch/PermSwitchResident.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityAddCommand.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/Set/CityRemoveCommand.class" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityAddCommand.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandAdd.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/CityRemoveCommand.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandRemove.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandInfo.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandInfo.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/Set/CityCommandSetAssistant.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/Set/CityCommandSetAssistant.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/Set/CityCommandSetMayor.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/Set/CityCommandSetMayor.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/CityHandler.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/CityHandler.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Main.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Main.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Utils.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Utils.class" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/CityCommandSetAssistant.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/SetAssistant.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/CityCommandSetHelp.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/SetHelp.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/CityCommandSetMayor.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/SetMayor.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/CityCommandSetSpawn.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/SetSpawn.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/CityCommandSetAlly.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/SetAlly.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/CityCommandSetDiplomacy.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/SetDiplomacy.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/CityCommandSetEnemy.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/SetEnemy.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/CityCommandSetNeutral.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/SetNeutral.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/CityCommand.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommand.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/CityCommandAssistant.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandAssistant.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/CityCommandMayor.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandMayor.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandAdd.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandAdd.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandClaim.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandClaim.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandCreate.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandCreate.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandDelete.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandDelete.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandHelp.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandHelp.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandInfo.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/CityCommandSetAssistant.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/CityCommandSetAssistant.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/CityCommandSetMayor.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/CityCommandSetMayor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/CityHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/CityHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/PermissionHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/PermissionHandler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandRemove.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandRemove.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandUnclaim.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandUnclaim.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/CityCommandSetPerm.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Permissions/CityCommandSetPerm.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Main.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Utils.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Utils.java" />
     </list>
     <ignored path="WarOfSquirrels.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -80,8 +70,8 @@
           <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Main.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.6332454">
-                  <caret line="302" column="51" selection-start-line="302" selection-start-column="51" selection-end-line="302" selection-end-column="51" />
+                <state vertical-scroll-proportion="0.5031447">
+                  <caret line="301" column="51" selection-start-line="301" selection-start-column="51" selection-end-line="301" selection-end-column="51" />
                   <folding />
                 </state>
               </provider>
@@ -91,7 +81,7 @@
             <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandInfo.java">
               <provider selected="true" editor-type-id="text-editor">
                 <state vertical-scroll-proportion="0.0">
-                  <caret line="61" column="47" selection-start-line="61" selection-start-column="47" selection-end-line="61" selection-end-column="47" />
+                  <caret line="60" column="47" selection-start-line="60" selection-start-column="47" selection-end-line="60" selection-end-column="47" />
                   <folding />
                 </state>
               </provider>
@@ -104,7 +94,7 @@
           <file leaf-file-name="PermissionHandler.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/PermissionHandler.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.3469657">
+                <state vertical-scroll-proportion="0.27568135">
                   <caret line="78" column="46" selection-start-line="78" selection-start-column="46" selection-end-line="78" selection-end-column="46" />
                   <folding>
                     <element signature="e#4060#4069#0" expanded="true" />
@@ -440,40 +430,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Objects" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Invitations" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="WarOfSquirrels" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="WarOfSquirrels" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="AleksGirardey" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="Listeners" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -535,78 +491,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="Commands" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="WarOfSquirrels" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="WarOfSquirrels" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="AleksGirardey" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Commands" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="City" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="WarOfSquirrels" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="WarOfSquirrels" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="AleksGirardey" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Commands" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="City" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Set" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1143,20 +1027,20 @@
       <workItem from="1452852880694" duration="2218000" />
       <workItem from="1452938561077" duration="6230000" />
       <workItem from="1455123897439" duration="29999000" />
-      <workItem from="1455467194434" duration="11875000" />
+      <workItem from="1455467194434" duration="12593000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="296636000" />
+    <option name="totallyTimeSpent" value="297354000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="51" y="24" width="1869" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19938962" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19938962" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1164,7 +1048,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32858595" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24558587" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24558587" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960325" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1228,14 +1112,14 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/CityCommandSetHelp.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/SetHelp.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3364116">
           <caret line="24" column="5" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/CityCommandSetSpawn.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/SetSpawn.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="33" column="62" selection-start-line="33" selection-start-column="62" selection-end-line="33" selection-end-column="62" />
@@ -1249,7 +1133,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/CityCommandMayor.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandMayor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.13852243">
           <caret line="8" column="40" selection-start-line="8" selection-start-column="40" selection-end-line="8" selection-end-column="40" />
@@ -1284,7 +1168,7 @@
         <state vertical-scroll-proportion="0.11006289">
           <caret line="11" column="5" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
           <folding>
-            <element signature="e#472#473#0" expanded="false" />
+            <element signature="e#421#422#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1330,7 +1214,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/CityCommand.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommand.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="26" selection-start-line="0" selection-start-column="26" selection-end-line="0" selection-end-column="26" />
@@ -1393,7 +1277,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/CityCommandAssistant.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandAssistant.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.15831135">
           <caret line="9" column="39" selection-start-line="9" selection-start-column="39" selection-end-line="9" selection-end-column="39" />
@@ -1421,7 +1305,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/CityCommandSetAlly.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/SetAlly.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="27" column="94" selection-start-line="27" selection-start-column="94" selection-end-line="27" selection-end-column="94" />
@@ -1429,32 +1313,32 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/CityCommandSetEnemy.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/SetEnemy.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="24" column="95" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="95" />
           <folding>
-            <element signature="e#849#858#0" expanded="false" />
+            <element signature="e#827#836#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/CityCommandSetNeutral.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/SetNeutral.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.37598944">
           <caret line="24" column="95" selection-start-line="24" selection-start-column="95" selection-end-line="24" selection-end-column="95" />
           <folding>
-            <element signature="e#850#859#0" expanded="false" />
+            <element signature="e#829#838#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/CityCommandSetAssistant.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/SetAssistant.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="31" column="73" selection-start-line="31" selection-start-column="73" selection-end-line="31" selection-end-column="73" />
           <folding>
-            <element signature="e#990#998#0" expanded="false" />
+            <element signature="e#968#976#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1486,10 +1370,10 @@
         <state vertical-scroll-proportion="0.37598944">
           <caret line="23" column="19" selection-start-line="23" selection-start-column="19" selection-end-line="23" selection-end-column="19" />
           <folding>
-            <element signature="e#485#493#0" expanded="false" />
-            <element signature="e#565#574#0" expanded="false" />
-            <element signature="e#721#729#0" expanded="false" />
-            <element signature="e#977#985#0" expanded="false" />
+            <element signature="e#430#438#0" expanded="false" />
+            <element signature="e#510#519#0" expanded="false" />
+            <element signature="e#666#674#0" expanded="false" />
+            <element signature="e#922#930#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1514,12 +1398,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/CityCommandSetMayor.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/SetMayor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.45597485">
           <caret line="34" column="59" selection-start-line="34" selection-start-column="59" selection-end-line="34" selection-end-column="59" />
           <folding>
-            <element signature="e#1286#1294#0" expanded="true" />
+            <element signature="e#1280#1288#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1532,7 +1416,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/CityCommandSetDiplomacy.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/Diplomacy/SetDiplomacy.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="63" column="76" selection-start-line="63" selection-start-column="76" selection-end-line="63" selection-end-column="76" />
@@ -1678,9 +1562,9 @@
           <caret line="18" column="65" selection-start-line="18" selection-start-column="65" selection-end-line="18" selection-end-column="65" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#495#503#0" expanded="true" />
-            <element signature="e#665#674#0" expanded="true" />
-            <element signature="e#994#1003#0" expanded="true" />
+            <element signature="e#500#508#0" expanded="true" />
+            <element signature="e#670#679#0" expanded="true" />
+            <element signature="e#999#1008#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1688,14 +1572,14 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandInfo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="61" column="47" selection-start-line="61" selection-start-column="47" selection-end-line="61" selection-end-column="47" />
+          <caret line="60" column="47" selection-start-line="60" selection-start-column="47" selection-end-line="60" selection-end-column="47" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/PermissionHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3469657">
+        <state vertical-scroll-proportion="0.27568135">
           <caret line="78" column="46" selection-start-line="78" selection-start-column="46" selection-end-line="78" selection-end-column="46" />
           <folding>
             <element signature="e#4060#4069#0" expanded="true" />
@@ -1709,8 +1593,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6332454">
-          <caret line="302" column="51" selection-start-line="302" selection-start-column="51" selection-end-line="302" selection-end-column="51" />
+        <state vertical-scroll-proportion="0.5031447">
+          <caret line="301" column="51" selection-start-line="301" selection-start-column="51" selection-end-line="301" selection-end-column="51" />
           <folding />
         </state>
       </provider>

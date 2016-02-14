@@ -1,6 +1,5 @@
 package fr.AleksGirardey.Commands.City;
 
-import fr.AleksGirardey.Commands.CityCommandMayor;
 import fr.AleksGirardey.Objects.Core;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;

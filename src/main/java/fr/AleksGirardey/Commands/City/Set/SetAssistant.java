@@ -5,7 +5,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
 
-public class CityCommandSetAssistant extends CityCommandSetMayor {
+public class SetAssistant extends SetMayor {
 
     @Override
     protected boolean SpecialCheck(Player player, CommandContext context) {

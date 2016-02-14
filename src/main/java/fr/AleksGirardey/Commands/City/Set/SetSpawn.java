@@ -1,6 +1,6 @@
 package fr.AleksGirardey.Commands.City.Set;
 
-import fr.AleksGirardey.Commands.CityCommandAssistant;
+import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Handlers.ChunkHandler;
 import fr.AleksGirardey.Objects.Chunk;
 import fr.AleksGirardey.Objects.Core;
@@ -9,7 +9,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
-public class CityCommandSetSpawn extends CityCommandAssistant {
+public class SetSpawn extends CityCommandAssistant {
     @Override
     protected boolean SpecialCheck(Player player, CommandContext context) {
         Chunk chunk = new Chunk(player);

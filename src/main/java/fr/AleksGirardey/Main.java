@@ -4,10 +4,10 @@ import com.google.inject.Inject;
 import fr.AleksGirardey.Commands.AcceptCommand;
 import fr.AleksGirardey.Commands.City.*;
 import fr.AleksGirardey.Commands.City.Set.*;
-import fr.AleksGirardey.Commands.City.Set.Diplomacy.CityCommandSetAlly;
-import fr.AleksGirardey.Commands.City.Set.CityCommandSetAssistant;
-import fr.AleksGirardey.Commands.City.Set.Diplomacy.CityCommandSetEnemy;
-import fr.AleksGirardey.Commands.City.Set.Diplomacy.CityCommandSetNeutral;
+import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetAlly;
+import fr.AleksGirardey.Commands.City.Set.SetAssistant;
+import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetEnemy;
+import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetNeutral;
 import fr.AleksGirardey.Commands.City.Set.Permissions.Build.PermBuild;
 import fr.AleksGirardey.Commands.City.Set.Permissions.Build.PermBuildAllies;
 import fr.AleksGirardey.Commands.City.Set.Permissions.Build.PermBuildOutside;
@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.command.TabCompleteEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
@@ -127,17 +126,17 @@ public class Main {
 
             setHelp = CommandSpec.builder()
                     .description(Text.of("Display /city set help"))
-                    .executor(new CityCommandSetHelp())
+                    .executor(new SetHelp())
                     .build();
 
             setSpawn = CommandSpec.builder()
                     .description(Text.of("Set a new spawn for the city"))
-                    .executor(new CityCommandSetSpawn())
+                    .executor(new SetSpawn())
                     .build();
 
             setAlly = CommandSpec.builder()
                     .description(Text.of("Set a city as ally"))
-                    .executor(new CityCommandSetAlly())
+                    .executor(new SetAlly())
                     .arguments(
                             GenericArguments.onlyOne(GenericArguments.string(Text.of("[city]"))),
                             GenericArguments.optional(
@@ -149,7 +148,7 @@ public class Main {
 
             setEnemy = CommandSpec.builder()
                     .description(Text.of("Set a city as enemy"))
-                    .executor(new CityCommandSetEnemy())
+                    .executor(new SetEnemy())
                     .arguments(
                             GenericArguments.onlyOne(GenericArguments.string(Text.of("[city]"))),
                             GenericArguments.optional(
@@ -161,7 +160,7 @@ public class Main {
 
             setNeutral = CommandSpec.builder()
                     .description(Text.of("Set a city as neutral"))
-                    .executor(new CityCommandSetNeutral())
+                    .executor(new SetNeutral())
                     .arguments(
                             GenericArguments.onlyOne(GenericArguments.string(Text.of("[city]"))),
                             GenericArguments.optional(
@@ -173,7 +172,7 @@ public class Main {
 
             setMayor = CommandSpec.builder()
                     .description(Text.of("Set this citizen as mayor"))
-                    .executor(new CityCommandSetMayor())
+                    .executor(new SetMayor())
                     .arguments(
                             GenericArguments.onlyOne(GenericArguments.string(Text.of("[resident]")))
                     )
@@ -181,7 +180,7 @@ public class Main {
 
             setAssistant = CommandSpec.builder()
                 .description(Text.of("Set this citizen as assistant"))
-                .executor(new CityCommandSetAssistant())
+                .executor(new SetAssistant())
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text.of("[resident]")))
                 )

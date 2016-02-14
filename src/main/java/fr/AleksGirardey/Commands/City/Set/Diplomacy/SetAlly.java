@@ -7,7 +7,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
 
 
-public class CityCommandSetAlly extends CityCommandSetDiplomacy {
+public class SetAlly extends SetDiplomacy {
     @Override
     protected boolean CanDoIt(Player player) {
         return super.CanDoIt(player);
