@@ -38,10 +38,10 @@ import java.io.File;
 public class Main {
 
     @Inject
-    private Logger logger;
+    private Game    game;
 
     @Inject
-    private Game    game;
+    private Logger logger;
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
