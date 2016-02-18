@@ -2,6 +2,7 @@ package fr.AleksGirardey.Handlers;
 
 import fr.AleksGirardey.Main;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.War;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
@@ -43,5 +44,9 @@ public class BroadcastHandler {
         for (Player p : targets) {
             p.sendMessage(Text.of("City " + Core.getCityHandler().<String>getElement(citySender, "city_displayName") + " want to be your ally. Use /accept or /refuse to send a reply."));
         }
+    }
+
+    public void         warAnnounce(War war, War.WarState    state) {
+
     }
 }

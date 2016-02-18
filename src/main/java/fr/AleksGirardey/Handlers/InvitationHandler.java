@@ -18,16 +18,17 @@ public class InvitationHandler {
         this.invitationList = new ArrayList<Invitation>();
     }
 
-    public void         createInvitation(final Invitation invitation) {
+    public void         createInvitation(Invitation invitation) {
         Scheduler scheduler = Core.getPlugin().getScheduler();
         Task.Builder    builder = scheduler.createTaskBuilder();
 
-        invitation.setTask(
-                builder.execute(new Runnable() {
-                    public void run() {
-                        Core.getInvitationHandler().deleteTask(invitation); }})
-                        .delay(30, TimeUnit.SECONDS)
-                        .submit(Core.getMain()));
+        Task            task = builder.execute(() -> {
+            Core.getInvitationHandler().deleteTask(invitation);
+        })
+                .delay(15, TimeUnit.SECONDS)
+                .submit(Core.getMain());
+
+        invitation.setTask(task);
         invitationList.add(invitation);
     }
 

@@ -30,11 +30,10 @@ public abstract class SetDiplomacy extends CityCommandAssistant{
     }
 
     protected boolean SpecialCheck(Player player, CommandContext context) {
-        String              cityName = context.<String>getOne("[city]").get();
+        /*String              cityName = context.<String>getOne("[city]").get();
         Collection<String>  citiesNames = null;
         CityHandler         cityHandler = Core.getCityHandler();
 
-        player.sendMessage(Text.of("[SetDiplomacy] SpecialCheck"));
         if (context.hasAny("<city>"))
             citiesNames = context.<String>getAll("<city>");
 
@@ -47,7 +46,7 @@ public abstract class SetDiplomacy extends CityCommandAssistant{
                 if (cityHandler.getCityFromName(name) == 0) {
                     player.sendMessage(Text.of("City '" + name + "' doesn't exist !"));
                     return false;
-                }
+                }*/
         return true;
     }
 

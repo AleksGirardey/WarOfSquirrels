@@ -13,6 +13,7 @@ public class OnPlayerDestroy {
 
     @Listener
     public void onPlayerDestroy(ChangeBlockEvent.Break event) {
+
         if (event.getCause().containsType(Player.class)) {
             final Player  player = event.getCause().first(Player.class).orElseGet(null);
             int     x, z;

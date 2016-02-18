@@ -18,7 +18,7 @@ public class CityCommandInfo extends CityCommand {
 
     @Override
     protected boolean SpecialCheck(Player player, CommandContext context) {
-        String      arg = null;
+/*        String      arg = null;
 
         arg = context.<String>getOne("[city]").orElse("");
 
@@ -35,7 +35,8 @@ public class CityCommandInfo extends CityCommand {
                 player.sendMessage(Text.of("City '" + arg + "' does not exist."));
         }
 
-        return false;
+        return false;*/
+        return  true;
     }
 
     @Override

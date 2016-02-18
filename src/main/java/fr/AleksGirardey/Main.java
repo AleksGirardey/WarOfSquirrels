@@ -22,11 +22,14 @@ import fr.AleksGirardey.Commands.City.Set.Permissions.Switch.PermSwitchOutside;
 import fr.AleksGirardey.Commands.City.Set.Permissions.Switch.PermSwitchResident;
 import fr.AleksGirardey.Commands.RefuseCommand;
 import fr.AleksGirardey.Listeners.*;
+import fr.AleksGirardey.Objects.CommandElements.ElementCitizen;
+import fr.AleksGirardey.Objects.CommandElements.ElementCity;
 import fr.AleksGirardey.Objects.Core;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.command.TabCompleteEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
@@ -47,7 +50,7 @@ public class Main {
     public void onServerStart(GameStartedServerEvent event) {
         File        f = new File ("WarOfSquirrels");
         CommandSpec cityCommandSpec, accept, refuse;
-        CommandSpec info, create, delete, claim, unclaim, set, help, add, remove;
+        CommandSpec info, create, delete, claim, unclaim, set, help, add, remove, list, leave;
         CommandSpec setHelp, setSpawn, setAlly, setNeutral,
                 setEnemy, setMayor, setAssistant, setPerm,
                 setContainerAll, setBuildAll, setSwitchAll;
@@ -74,8 +77,7 @@ public class Main {
                     .executor(new CityCommandInfo())
                     .arguments(
                             GenericArguments.optional(
-                                    GenericArguments.onlyOne(
-                                            GenericArguments.string(Text.of("[city]"))))
+                                    GenericArguments.onlyOne(new ElementCity(Text.of("[city]"))))
                     )
                     .build();
 
@@ -105,23 +107,28 @@ public class Main {
             add = CommandSpec.builder()
                     .description(Text.of("Invite a player to join your city"))
                     .arguments(
-                            GenericArguments.onlyOne(GenericArguments.string(Text.of("[player]"))),
-                            GenericArguments.optional(
-                                    GenericArguments.repeated(
-                                            GenericArguments.onlyOne(GenericArguments.string(Text.of("<player>"))),
-                                            10)))
+                            GenericArguments.onlyOne(GenericArguments.player(Text.of("[player]"))),
+                            GenericArguments.repeated(
+                                    GenericArguments.optional(
+                                            GenericArguments.onlyOne(GenericArguments.player(Text.of("<player>"))))
+                                    , 10))
                     .executor(new CityCommandAdd())
                     .build();
 
             remove = CommandSpec.builder()
                     .description(Text.of("Kick a player from your city"))
                     .arguments(
-                            GenericArguments.onlyOne(GenericArguments.string(Text.of("[citizen]"))),
-                            GenericArguments.optional(
-                                    GenericArguments.repeated(
-                                            GenericArguments.onlyOne(GenericArguments.string(Text.of("<citizen>"))),
-                                            10)))
+                            GenericArguments.onlyOne(new ElementCitizen(Text.of("[citizen]"))),
+                            GenericArguments.repeated(
+                                    GenericArguments.optional(
+                                            GenericArguments.onlyOne(new ElementCitizen(Text.of("<citizen>"))))
+                                    , 10))
                     .executor(new CityCommandRemove())
+                    .build();
+
+            leave = CommandSpec.builder()
+                    .description(Text.of("Leave the city"))
+                    .executor(new CityCommandLeave())
                     .build();
 
             setHelp = CommandSpec.builder()
@@ -138,43 +145,40 @@ public class Main {
                     .description(Text.of("Set a city as ally"))
                     .executor(new SetAlly())
                     .arguments(
-                            GenericArguments.onlyOne(GenericArguments.string(Text.of("[city]"))),
+                            GenericArguments.onlyOne(new ElementCity(Text.of("[city]"))),
                             GenericArguments.optional(
                                     GenericArguments.repeated(
-                                            GenericArguments.onlyOne(GenericArguments.string(Text.of("<city>"))),
-                                            10))
-                    )
+                                            new ElementCity(Text.of("<city>")),
+                                            10)))
                     .build();
 
             setEnemy = CommandSpec.builder()
                     .description(Text.of("Set a city as enemy"))
                     .executor(new SetEnemy())
                     .arguments(
-                            GenericArguments.onlyOne(GenericArguments.string(Text.of("[city]"))),
+                            GenericArguments.onlyOne(new ElementCity(Text.of("[city]"))),
                             GenericArguments.optional(
                                     GenericArguments.repeated(
-                                            GenericArguments.onlyOne(GenericArguments.string(Text.of("<city>"))),
-                                            10))
-                    )
+                                            new ElementCity(Text.of("<city>")),
+                                            10)))
                     .build();
 
             setNeutral = CommandSpec.builder()
                     .description(Text.of("Set a city as neutral"))
                     .executor(new SetNeutral())
                     .arguments(
-                            GenericArguments.onlyOne(GenericArguments.string(Text.of("[city]"))),
+                            GenericArguments.onlyOne(new ElementCity(Text.of("[city]"))),
                             GenericArguments.optional(
                                     GenericArguments.repeated(
-                                            GenericArguments.onlyOne(GenericArguments.string(Text.of("<city>"))),
-                                            10))
-                    )
+                                            new ElementCity(Text.of("<city>")),
+                                            10)))
                     .build();
 
             setMayor = CommandSpec.builder()
                     .description(Text.of("Set this citizen as mayor"))
                     .executor(new SetMayor())
                     .arguments(
-                            GenericArguments.onlyOne(GenericArguments.string(Text.of("[resident]")))
+                            GenericArguments.onlyOne(new ElementCitizen(Text.of("[resident]")))
                     )
                     .build();
 
@@ -319,6 +323,11 @@ public class Main {
                     .executor(new CityCommandHelp())
                     .build();
 
+            list = CommandSpec.builder()
+                    .description(Text.of("City list"))
+                    .executor(new CityCommandList())
+                    .build();
+
             cityCommandSpec = CommandSpec.builder()
                     .description(Text.of("Commands related to your city"))
                     .child(help, "help", "?")
@@ -330,6 +339,8 @@ public class Main {
                     .child(set, "set")
                     .child(add, "add", "invite")
                     .child(remove, "remove", "kick")
+                    .child(leave, "leave")
+                    .child(list, "list", "l")
                     .build();
 
             accept = CommandSpec.builder()

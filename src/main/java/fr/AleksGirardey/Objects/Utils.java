@@ -42,15 +42,11 @@ public class Utils {
         int         i = 0;
 
         for (String str : list) {
-            if (i != 0)
+            if (i != 0 && i != list.size() - 1)
                 res += ", ";
             res += Core.getPlayerHandler().<String>getElement(str, "player_displayName");
             i++;
         }
-
-        if (i != 1)
-            res = res.substring(0, res.length() - 3);
-
         return res;
     }
 

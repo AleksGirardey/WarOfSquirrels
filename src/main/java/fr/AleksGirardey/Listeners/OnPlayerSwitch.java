@@ -4,9 +4,13 @@ import fr.AleksGirardey.Objects.Chunk;
 import fr.AleksGirardey.Objects.Core;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.effect.particle.ParticleType;
+import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -45,13 +49,12 @@ public class OnPlayerSwitch {
         z = event.getTargetBlock().getLocation().get().getBlockZ();
         chunk = new Chunk(x, z);
         try {
-            if (Core.getChunkHandler().exists(chunk.getX(), chunk.getZ()))
-                if (SwitchableBlocks.contains(event.getTargetBlock().getState().getType()) &&
-                        !Core.getPermissionHandler().ableTo(
-                                player,
-                                Core.getChunkHandler().getId(chunk.getX(), chunk.getZ()),
-                                "Switch"))
+            if (Core.getChunkHandler().exists(chunk.getX(), chunk.getZ())) {
+                if (SwitchableBlocks.contains(event.getTargetBlock().getState().getType()) && !Core.getPermissionHandler().ableTo(player,
+                        Core.getChunkHandler().getId(chunk.getX(), chunk.getZ()),
+                        "Switch"))
                     event.setCancelled(true);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

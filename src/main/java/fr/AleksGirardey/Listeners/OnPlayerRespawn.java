@@ -17,7 +17,7 @@ public class OnPlayerRespawn {
         Player              player = event.getTargetEntity();
         Transform<World>    transform;
 
-        if (Core.getPlayerHandler().<Integer>getElement(player, "player_cityId") != 0) {
+        if (Core.getPlayerHandler().<Integer>getElement(player, "player_cityId") != null) {
             transform = new Transform<World>(Utils.getNearestSpawn(player));
             event.setToTransform(transform);
         }

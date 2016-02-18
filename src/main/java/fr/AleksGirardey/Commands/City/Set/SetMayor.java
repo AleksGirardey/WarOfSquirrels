@@ -11,7 +11,7 @@ public class SetMayor extends CityCommandMayor {
 
     @Override
     protected boolean SpecialCheck(Player player, CommandContext context) {
-        String      newMayor = null;
+/*        String      newMayor = null;
         String      [][]citizens = null;
 
         newMayor =  context.<String>getOne("[resident]").get();
@@ -23,7 +23,8 @@ public class SetMayor extends CityCommandMayor {
             if (citizen[1].equals(newMayor))
                 return true;
         player.sendMessage(Text.of("Can't find '" + newMayor + "' in your citizens"));
-        return false;
+        return false;*/
+        return true;
     }
 
     @Override

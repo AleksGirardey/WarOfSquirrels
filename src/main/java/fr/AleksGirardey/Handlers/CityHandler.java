@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CityHandler {
@@ -52,6 +53,9 @@ public class CityHandler {
             _statement.getStatement().setInt(1, id);
             _statement.Update();
             _statement.Close();
+            for (String assistant : this.getAssistants(id)) {
+                Core.getPlayerHandler().setElement(Core.getPlayerHandler().getUuidFromName(assistant), "player_assistant", false);
+            }
             Core.getChunkHandler().deleteCity(id);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -128,6 +132,23 @@ public class CityHandler {
             e.printStackTrace();
         }
         return (res);
+    }
+
+    public List<String>     getCitizensList(int id) {
+        List<String>        citizens = new ArrayList<String>();
+        String              sql = "SELECT `player_displayName` FROM `Player` WHERE `player_cityId` = ?;";
+
+        try  {
+            _statement.NewQuery(sql);
+            _statement.getStatement().setInt(1, id);
+            _statement.Execute();
+            while (_statement.getResult().next())
+                citizens.add(_statement.getResult().getString("player_displayName"));
+            _statement.Close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return citizens;
     }
 
     public List<String>     getAssistants(int id) {
@@ -275,4 +296,24 @@ public class CityHandler {
                     Core.getPlayerHandler().<String>getElement(player, "player_displayName") + " join the city");
         }
     }
+
+    public List<String> getCityNameList() {
+        String          sql = "SELECT `city_displayName` FROM `City`;";
+        List<String>    cities = new ArrayList<String>();
+
+        try {
+            _statement.NewQuery(sql);
+            _statement.Execute();
+            while (_statement.getResult().next())
+                cities.add(_statement.getResult().getString("city_displayName"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cities;
+    }
+
+    public List<Player>     getOnlinePlayers(int cityId) {
+        return Collections.emptyList();
+    }
+
 }
