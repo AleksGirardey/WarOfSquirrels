@@ -106,4 +106,16 @@ public class Utils {
         }
         return (save);
     }
+
+    public static String getStringFromPlayerList(List<Player> list) {
+        String  res = "";
+        int i = 0;
+
+        for (Player p : list) {
+            res += Core.getPlayerHandler().<String>getElement(p, "player_displayName");
+            if (i != list.size() - 1)
+                res += ", ";
+        }
+        return res;
+    }
 }

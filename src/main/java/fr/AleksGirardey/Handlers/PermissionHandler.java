@@ -85,10 +85,10 @@ public class PermissionHandler {
     }
 
     public boolean          ableTo(Player player, int chunkId, String perm) throws SQLException {
-        PlayerHandler       plh = Core.getPlayerHandler();
-        ChunkHandler        chh = Core.getChunkHandler();
-        CityHandler         cih = Core.getCityHandler();
-        int                 cityIdChunk, permId, cityIdPlayer = 0;
+        PlayerHandler plh = Core.getPlayerHandler();
+        ChunkHandler chh = Core.getChunkHandler();
+        CityHandler cih = Core.getCityHandler();
+        int cityIdChunk, permId, cityIdPlayer = 0;
 
         cityIdChunk = chh.getCity(chunkId);
         permId = cih.<Integer>getElement(cityIdChunk, "city_permissionId");

@@ -11,7 +11,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class Invitation {
     public enum Reason    {
         City,
-        Alliance
+        Alliance,
+        PartyWar,
     }
 
     protected Player            _player;

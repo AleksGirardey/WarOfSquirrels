@@ -12,18 +12,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public class CityHandler {
 
     private Logger  logger;
-    private Statement   _statement;
 
     @Inject
     public CityHandler(Logger logger) {
         this.logger = logger;
-        this._statement = new Statement();
     }
 
     private Logger getLogger() {
@@ -33,8 +32,10 @@ public class CityHandler {
     public void             add(Player player, String displayName) {
         String          sql = "INSERT INTO `City` (`city_displayName`, `city_tag`, `city_playerOwner`) VALUES (?, ?, ?);";
         String          substr = "";
+        Statement   _statement = null;
+
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.getStatement().setString(1, displayName);
             substr = displayName.length() <= 5 ? displayName : displayName.substring(0, 5);
             _statement.getStatement().setString(2, substr);
@@ -48,8 +49,10 @@ public class CityHandler {
 
     public void             delete(int id){
         String          sql = "DELETE FROM `City` WHERE `city_id` = ?;";
+        Statement   _statement = null;
+
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.getStatement().setInt(1, id);
             _statement.Update();
             _statement.Close();
@@ -65,9 +68,10 @@ public class CityHandler {
     public <T> T              getElement(int id, String element){
         T       res = null;
         String  sql = "SELECT * FROM `City` WHERE `city_id` = ?;";
+        Statement   _statement = null;
 
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.getStatement().setInt(1, id);
             if (_statement.Execute().next())
                 res = (T) _statement.getResult().getObject(element);
@@ -80,9 +84,10 @@ public class CityHandler {
 
     public <T> void         setElement(int id, String element, T value) {
         String              sql = "UPDATE `City` SET `City`.`" + element + "` = ? WHERE `city_id` = ?;";
+        Statement   _statement = null;
 
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.getStatement().setObject(1, value);
             _statement.getStatement().setInt(2, id);
             _statement.Update();
@@ -95,9 +100,10 @@ public class CityHandler {
     public int           getCityFromName(String name){
         int                 res = 0;
         String          sql = "SELECT `city_id` FROM `City` WHERE `city_displayName` = ?;";
+        Statement   _statement = null;
 
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.getStatement().setString(1, name);
             if (_statement.Execute().next())
                 res = _statement.getResult().getInt("city_id");
@@ -112,9 +118,10 @@ public class CityHandler {
         String[][]              res = null;
         int                     i = 0, size = 0;
         String                  sql = "SELECT * FROM `Player` WHERE `player_cityId` = ?;";
+        Statement   _statement = null;
 
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.getStatement().setInt(1, id);
             _statement.Execute().last();
             size = _statement.getResult().getRow();
@@ -137,9 +144,10 @@ public class CityHandler {
     public List<String>     getCitizensList(int id) {
         List<String>        citizens = new ArrayList<String>();
         String              sql = "SELECT `player_displayName` FROM `Player` WHERE `player_cityId` = ?;";
+        Statement   _statement = null;
 
-        try  {
-            _statement.NewQuery(sql);
+        try {
+            _statement = new Statement(sql);
             _statement.getStatement().setInt(1, id);
             _statement.Execute();
             while (_statement.getResult().next())
@@ -155,9 +163,10 @@ public class CityHandler {
         int                 size = 0, i = 0;
         List<String>        res = new ArrayList<String>();
         String              sql = "SELECT `player_uuid` FROM `Player` WHERE `player_cityId` = ? AND `player_assistant` = ?;";
+        Statement   _statement = null;
 
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.getStatement().setInt(1, id);
             _statement.getStatement().setBoolean(2, true);
             _statement.Execute();
@@ -175,9 +184,10 @@ public class CityHandler {
         int                 i = 0, size = 0;
         String              sql = "SELECT `city_displayName` FROM `City`,`Diplomacy` WHERE ((`City`.`city_id` = `Diplomacy`.`diplomacy_mainCityId` AND `Diplomacy`.`diplomacy_subCityId` = ?)" +
                 "OR (`City`.`city_id` = `Diplomacy`.`diplomacy_subCityId` AND `Diplomacy`.`diplomacy_mainCityId` = ?)) AND `Diplomacy`.`diplomacy_relation` = ?;";
+        Statement   _statement = null;
 
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.getStatement().setInt(1, id);
             _statement.getStatement().setInt(2, id);
             _statement.getStatement().setBoolean(3, relation);
@@ -199,9 +209,10 @@ public class CityHandler {
     public boolean  areAllies(int owner, int player) {
         String      sql = "SELECT `diplomacy_relation` FROM `Diplomacy` WHERE ((`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?)" +
                         "OR (`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?));";
+        Statement   _statement = null;
 
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.getStatement().setInt(1, owner);
             _statement.getStatement().setInt(2, player);
             _statement.getStatement().setInt(3, player);
@@ -214,12 +225,32 @@ public class CityHandler {
         return false;
     }
 
+    public boolean  areEnemies(int cityA, int cityD) {
+        String      sql = "SELECT `diplomacy_relation` FROM `Diplomacy` WHERE ((`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?)" +
+                "or (`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?));";
+        Statement   _statement = null;
+
+        try {
+            _statement = new Statement(sql);
+            _statement.getStatement().setInt(1, cityA);
+            _statement.getStatement().setInt(2, cityD);
+            _statement.getStatement().setInt(3, cityD);
+            _statement.getStatement().setInt(4, cityA);
+            if (_statement.Execute().next())
+                return (!_statement.getResult().getBoolean("diplomacy_relation"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean  exists(int owner, int player) {
         String      sql = "SELECT `diplomacy_relation` FROM `Diplomacy` WHERE ((`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?)" +
                 "OR (`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?));";
+        Statement   _statement = null;
 
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.getStatement().setInt(1, owner);
             _statement.getStatement().setInt(2, player);
             _statement.getStatement().setInt(3, player);
@@ -241,12 +272,13 @@ public class CityHandler {
 
     }
 
-    public void     setDiplomacy(int senderId, int receiverId, boolean relation) {
+    public void         setDiplomacy(int senderId, int receiverId, boolean relation) {
         String          sql = "INSERT INTO `Diplomacy` (`diplomacy_mainCityId`, `diplomacy_subCityId`, `diplomacy_relation`) VALUES (?, ?, ?);";
-
         setNeutral(senderId, receiverId);
+        Statement   _statement = null;
+
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.getStatement().setInt(1, senderId);
             _statement.getStatement().setInt(2, receiverId);
             _statement.getStatement().setBoolean(3, relation);
@@ -257,12 +289,13 @@ public class CityHandler {
         }
     }
 
-    public void                 setNeutral(int cityId1, int cityId2) {
+    public void         setNeutral(int cityId1, int cityId2) {
         String  sql = "DELETE FROM `Diplomacy` WHERE ((`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?)" +
                 "OR (`diplomacy_mainCityId` = ? AND `diplomacy_subCityId` = ?));";
+        Statement   _statement = null;
 
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.getStatement().setInt(1, cityId1);
             _statement.getStatement().setInt(2, cityId2);
             _statement.getStatement().setInt(3, cityId2);
@@ -274,7 +307,7 @@ public class CityHandler {
         }
     }
 
-    public void setMayor(String s, int playerCityId) {
+    public void         setMayor(String s, int playerCityId) {
         String uuid = this.<String>getElement(playerCityId, "city_playerOwner");
         String newMayor = Core.getPlayerHandler().getUuidFromName(s);
 
@@ -283,7 +316,7 @@ public class CityHandler {
         Core.getPlayerHandler().<Boolean>setElement(newMayor, "player_assistant", false);
     }
 
-    public boolean isLimitReached(int cityId) {
+    public boolean      isLimitReached(int cityId) {
         return false;
     }
 
@@ -300,9 +333,10 @@ public class CityHandler {
     public List<String> getCityNameList() {
         String          sql = "SELECT `city_displayName` FROM `City`;";
         List<String>    cities = new ArrayList<String>();
+        Statement   _statement = null;
 
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.Execute();
             while (_statement.getResult().next())
                 cities.add(_statement.getResult().getString("city_displayName"));
@@ -313,7 +347,48 @@ public class CityHandler {
     }
 
     public List<Player>     getOnlinePlayers(int cityId) {
-        return Collections.emptyList();
+        Collection<Player>  onlines = Core.getPlugin().getServer().getOnlinePlayers();
+        List<Player>        players = new ArrayList<>();
+
+        for (Player p : onlines) {
+            if (Core.getPlayerHandler().<Integer>getElement(p, "player_cityId") == cityId)
+                players.add(p);
+        }
+        return players;
     }
 
+    public List<Integer>    getEnemies(int cityId) {
+        String          sql = "SELECT `city_id` FROM `City`;";
+        List<Integer>   list = new ArrayList<>();
+
+        Statement   _statement = null;
+
+        try {
+            _statement = new Statement(sql);
+            _statement.Execute();
+            while (_statement.getResult().next())
+                if (areEnemies(cityId, _statement.getResult().getInt("city_id")))
+                    list.add(_statement.getResult().getInt("city_id"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<String>     getEnemiesName(int cityId) {
+        String              sql = "SELECT * FROM `City`;";
+        List<String>        list = new ArrayList<>();
+        Statement   _statement = null;
+
+        try {
+            _statement = new Statement(sql);
+            _statement.Execute();
+            while (_statement.getResult().next())
+                if (areEnemies(cityId, _statement.getResult().getInt("city_id")))
+                    list.add(_statement.getResult().getString("city_displayName"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

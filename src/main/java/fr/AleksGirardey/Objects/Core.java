@@ -25,6 +25,7 @@ public class Core {
     static BroadcastHandler     broadcastHandler;
     static InvitationHandler    invitationHandler;
     static WarHandler           warHandler;
+    static PartyHandler         partyHandler;
 
     public static void          initCore(Logger logger, Game game, Main main) {
         logger.info("Core initialization...");
@@ -42,6 +43,7 @@ public class Core {
         broadcastHandler = new BroadcastHandler();
         invitationHandler = new InvitationHandler();
         warHandler = new WarHandler();
+        partyHandler = new PartyHandler();
     }
 
     public void close() throws SQLException {
@@ -77,6 +79,8 @@ public class Core {
     public static InvitationHandler getInvitationHandler() { return invitationHandler; }
 
     public static WarHandler    getWarHandler() { return warHandler; }
+
+    public static PartyHandler  getPartyHandler() { return partyHandler; }
 
     public static void Send(String message) {
         plugin.getServer().getBroadcastChannel().send(Text.of(message));

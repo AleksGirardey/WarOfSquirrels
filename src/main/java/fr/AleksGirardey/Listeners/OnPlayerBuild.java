@@ -49,10 +49,15 @@ public class OnPlayerBuild {
             chunk = new Chunk(x, z);
             try {
                 if (Core.getChunkHandler().exists(chunk.getX(), chunk.getZ())) {
+                    int chunkId = Core.getChunkHandler().getId(chunk.getX(), chunk.getZ());
                     if (!Core.getPermissionHandler().ableTo(
                             player,
-                            Core.getChunkHandler().getId(chunk.getX(), chunk.getZ()),
+                            chunkId,
                             "Build")) {
+                        if (Core.getWarHandler().Contains(player)
+                                && Core.getWarHandler().ableTo(player, chunkId))
+                            Core.getWarHandler().getWar(player).addRollbackBlock(
+                                    event.getTransactions().get(0).getOriginal());
                         event.setCancelled(true);
                     }
                 }
@@ -61,50 +66,5 @@ public class OnPlayerBuild {
             }
         }
     }
-
-/*
-    public void             dropItems(Location<World> location, Player player) {
-        Extent              extent = location.getExtent();
-        Optional<Entity>    stack = extent.createEntity(
-                EntityTypes.ITEM,
-                location.getPosition());
-
-        Optional<ItemStack> tmp = player.getItemInHand();
-
-        if (stack.isPresent()) {
-            //Entity          itemstack = stack.get();
-            Item            item = (Item) stack.get();
-
-            //itemstack.offer(Keys.REPRESENTED_ITEM, tmp.get().createSnapshot());
-            //extent.spawnEntity(itemstack, Cause.of(player));
-            item.offer(Keys.REPRESENTED_ITEM, tmp.get().createSnapshot());
-            extent.spawnEntity(item, Cause.of(player));
-        }
-    }
-
-    public void     resetHand(Player player) {
-        ItemStack   hand = player.getItemInHand().get();
-
-            player.getInventory().
-        for (Inventory slot : player.getInventory().query(Hotbar.class).slots()) {
-            if (slot.contains(hand)) {
-                Core.Send("Clear !");
-                slot.clear();
-            }
-        }
-//        Core.Send("[ItemInHand - After] " + player.getItemInHand().get().getQuantity());
-    }*/
-
-
-        /*        Core.Send("ItemStack IsPresent : " + tmp.isPresent() + " - Entity IsPresent : " + e.isPresent());
-        Core.Send("[B] ItemInHand : " + player.getItemInHand().get().getItem().getType().toString() + "[" + player.getItemInHand().get().getQuantity() + "]");
-        player.getItemInHand().get().setQuantity(1);
-        Core.Send("[A] ItemInHand : " + player.getItemInHand().get().getItem().getType().toString() + "[" + player.getItemInHand().get().getQuantity() + "]");
-        if (tmp.isPresent() && e.isPresent()) {
-            Item i = (Item) e.get();
-
-            i.offer( Keys.REPRESENTED_ITEM, tmp.get().createSnapshot());
-            world.spawnEntity(i, Cause.of(this));
-        }*/
 }
 

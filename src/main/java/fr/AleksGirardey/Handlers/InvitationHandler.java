@@ -33,7 +33,7 @@ public class InvitationHandler {
     }
 
     public void         deleteTask(Invitation invitation) {
-        invitation.refuse();
+        //invitation.refuse();
         this.invitationList.remove(invitation);
     }
 
@@ -56,7 +56,7 @@ public class InvitationHandler {
         return false;
     }
 
-    public void addInvitation(Invitation invitation) { invitationList.add(invitation); }
+    //public void addInvitation(Invitation invitation) { invitationList.add(invitation); }
 
     public void RefreshInvitations() { invitationList.remove(0); }
 }

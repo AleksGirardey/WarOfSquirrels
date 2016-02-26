@@ -40,9 +40,10 @@ public class PlayerHandler {
     public <T> T        getElement(String uuid, String element) {
         String sql = "SELECT * FROM `Player` WHERE `player_uuid` = ?;";
         Object res = null;
+        Statement   _statement;
 
         try {
-            _statement.NewQuery(sql);
+            _statement = new Statement(sql);
             _statement.getStatement().setString(1, uuid);
             if (_statement.Execute().next())
                 res = _statement.getResult().getObject(element);

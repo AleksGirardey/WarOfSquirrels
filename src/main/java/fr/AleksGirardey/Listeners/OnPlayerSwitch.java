@@ -40,7 +40,7 @@ public class OnPlayerSwitch {
     }
 
     @Listener
-    public void     OnPlayerSwitch(InteractBlockEvent event) {
+    public void     OnPlayerSwitch(InteractBlockEvent.Secondary event) {
         Player player = (Player) event.getCause().getNamedCauses().get("Source");
         int     x, z;
         Chunk   chunk;

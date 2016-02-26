@@ -21,6 +21,7 @@ public class DatabaseHandler {
     private Logger logger;
     private HikariConfig            config;
     private HikariDataSource        dataSource;
+    private Connection              connection;
 
     @Inject
     public DatabaseHandler(Logger logger) throws IOException, SQLException {
@@ -49,6 +50,7 @@ public class DatabaseHandler {
         dataSource = new HikariDataSource(config);
         getLogger().info("Everything went good.");
         this.init();
+        connection = dataSource.getConnection();
     }
 
     public void                 init() throws SQLException {
@@ -84,7 +86,7 @@ public class DatabaseHandler {
     }
 
     public Connection       getConnection() throws SQLException {
-        return dataSource.getConnection();
+        return connection;
     }
 
     public HikariConfig     getConfig() {

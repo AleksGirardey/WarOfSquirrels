@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Statement {
-    private Connection      _connection = null;
+    private Connection              _connection = null;
     private PreparedStatement       _statement = null;
     private ResultSet               _result = null;
 

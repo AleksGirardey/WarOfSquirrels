@@ -7,10 +7,16 @@ Features :
 - Cities -> Create, Delete, Set diplomacy/Mayor
 - Cities assistant grade, Set perms
 - Invitation Ally / Join City
+- Party pour déclarer des guerres
+- guerres + rollback (a tester)
 
 ToDo :
 
-- Wars
+- PeaceTime
+- Distance City-City / City-AP
+- Capture system & Target System
+- Save RollbackList en BDD (en cas de crash)
+- Reincarnation (X secondes while u get OS by everything)
 
 Tests :
 

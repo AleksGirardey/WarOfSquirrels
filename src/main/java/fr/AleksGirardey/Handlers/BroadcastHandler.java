@@ -2,6 +2,7 @@ package fr.AleksGirardey.Handlers;
 
 import fr.AleksGirardey.Main;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.PartyWar;
 import fr.AleksGirardey.Objects.War;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -47,6 +48,24 @@ public class BroadcastHandler {
     }
 
     public void         warAnnounce(War war, War.WarState    state) {
+        String          message = "";
+        if (state == War.WarState.Preparation)
+            message = war.getAttackerName() + " attacks " + war.getDefenderName() + " prepare yourself for the fight. You have 2 minutes before the hostilities starts !";
+        else if (state == War.WarState.War)
+            message = "Let the war... BEGIN !";
+        else
+            message = "Care, you have 1 min to evacuate the city before the place got rollbacked";
 
+        for (Player p : war.getProtagonists())
+            p.sendMessage(Text.of(message));
+    }
+
+    public void         partyChannel(PartyWar party, String message) {
+        for (Player p : party.toList())
+            p.sendMessage(Text.of(message));
+    }
+
+    public void         partyInvitation(Player sender, Player receiver) {
+        receiver.sendMessage(Text.of(Core.getPlayerHandler().<String>getElement(sender, "player_displayName") + " invite you to join his party. Type /accept or /refuse to respond."));
     }
 }

@@ -13,10 +13,9 @@ public class OnPlayerDestroy {
 
     @Listener
     public void onPlayerDestroy(ChangeBlockEvent.Break event) {
-
         if (event.getCause().containsType(Player.class)) {
             final Player  player = event.getCause().first(Player.class).orElseGet(null);
-            int     x, z;
+            int     x, z, chunkId;
             Chunk chunk;
 
             if (player == null) return;
@@ -24,12 +23,21 @@ public class OnPlayerDestroy {
             z = event.getTransactions().get(0).getOriginal().getLocation().get().getBlockZ();
             chunk = new Chunk(x, z);
             try {
-                if (Core.getChunkHandler().exists(chunk.getX(), chunk.getZ()))
+                if (Core.getChunkHandler().exists(chunk.getX(), chunk.getZ())) {
+                    chunkId = Core.getChunkHandler().getId(chunk.getX(), chunk.getZ());
                     if (!Core.getPermissionHandler().ableTo(
                             player,
-                            Core.getChunkHandler().getId(chunk.getX(), chunk.getZ()),
-                            "Build"))
-                        event.setCancelled(true);
+                            chunkId,
+                            "Build")) {
+                        if (Core.getWarHandler().Contains(player)
+                                && Core.getWarHandler().ableTo(player, chunkId))
+                            Core.getWarHandler().getWar(player).addRollbackBlock(
+                                    event.getTransactions().get(0).getOriginal());
+                        else
+                            event.setCancelled(true);
+
+                    }
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
