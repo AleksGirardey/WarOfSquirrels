@@ -13,7 +13,10 @@ public class WarJoin extends CityCommand {
         War             war = context.<War>getOne("[ally]").get();
         int             cityId = Core.getPlayerHandler().<Integer>getElement(player, "player_cityId");
 
-        return Core.getCityHandler().areAllies(war.getAttacker(), cityId) || Core.getCityHandler().areAllies(war.getDefender(), cityId);
+        return Core.getCityHandler().areAllies(war.getAttacker(), cityId)
+                || Core.getCityHandler().areAllies(war.getDefender(), cityId)
+                || war.getAttacker() == cityId
+                || war.getDefender() == cityId;
     }
 
     @Override
@@ -21,9 +24,11 @@ public class WarJoin extends CityCommand {
         int         cityId = Core.getPlayerHandler().<Integer>getElement(player, "player_cityId");
         War         war = context.<War>getOne("[ally]").get();
 
-        if (Core.getCityHandler().areAllies(war.getAttacker(), cityId))
+        if (Core.getCityHandler().areAllies(war.getAttacker(), cityId)
+                || cityId == war.getAttacker())
             war.addAttacker(player);
-        else if (Core.getCityHandler().areAllies(war.getDefender(), cityId))
+        else if (Core.getCityHandler().areAllies(war.getDefender(), cityId)
+                || cityId == war.getDefender())
             war.addDefender(player);
         return CommandResult.success();
     }

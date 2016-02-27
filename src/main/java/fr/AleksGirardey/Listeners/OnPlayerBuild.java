@@ -58,7 +58,8 @@ public class OnPlayerBuild {
                                 && Core.getWarHandler().ableTo(player, chunkId))
                             Core.getWarHandler().getWar(player).addRollbackBlock(
                                     event.getTransactions().get(0).getOriginal());
-                        event.setCancelled(true);
+                        else
+                            event.setCancelled(true);
                     }
                 }
             } catch (SQLException e) {

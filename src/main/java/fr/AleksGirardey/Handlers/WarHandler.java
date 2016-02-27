@@ -70,7 +70,7 @@ public class WarHandler {
 
         return  /*getWar(player).getPhase().equals(WarState.War)
                 &&*/ Contains(player)
-                && getWar(player).contains(cityId);
+                && getWar(player).getDefender() == cityId;
     }
 
     public List<String>     getCitiesList() {

@@ -56,6 +56,10 @@ public class BroadcastHandler {
         else
             message = "Care, you have 1 min to evacuate the city before the place got rollbacked";
 
+        warAnnounce(war, message);
+    }
+
+    public void         warAnnounce(War war, String message) {
         for (Player p : war.getProtagonists())
             p.sendMessage(Text.of(message));
     }

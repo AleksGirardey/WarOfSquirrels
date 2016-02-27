@@ -1,21 +1,18 @@
 package fr.AleksGirardey.Objects;
 
 import fr.AleksGirardey.Objects.WarTask.WarTask;
-import javafx.util.Pair;
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.scheduler.Scheduler;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 public class War {
@@ -52,6 +49,7 @@ public class War {
         _attackersLimit = _defenders.size() + 1;
         _state = WarState.Preparation;
         _tag = setTag(attacker, defender);
+        Core.Send("A war is about to start ! " + _attackerName + " attack " + _defenderName + " !");
         launchPreparation();
     }
 
@@ -66,6 +64,8 @@ public class War {
             player.sendMessage(Text.of("You can't join this war, wait for defenders to join"));
             return false;
         }
+        Core.getBroadcastHandler().warAnnounce(this, Core.getPlayerHandler().<String>getElement(player, "player_displayName") +
+                " join as Attacker ! [" + _attackers.size() + "/" + _attackersLimit + "]");
         _attackers.add(player);
         return true;
     }
@@ -73,17 +73,22 @@ public class War {
     public boolean      addDefender(Player player) {
         _defenders.add(player);
         ++_attackersLimit;
+        Core.getBroadcastHandler().warAnnounce(this, Core.getPlayerHandler().<String>getElement(player, "player_displayName") +
+                " join as Defender ! [" + _attackers.size() + "/" + _attackersLimit + "]");
         return true;
     }
 
     public void         addRollbackBlock(BlockSnapshot block) {
-        Core.Send("New block save : " + block.getState().getType().toString() + " en [" + block.getLocation().get().getBlockX()
+        Core.Send("New block save : " + block.getState().getType().getName() + " en [" + block.getLocation().get().getBlockX()
                 + ";" + block.getLocation().get().getBlockY()
                 + ";" + block.getLocation().get().getBlockZ()
                 + "]");
-        this._rollbackBlocks.add(new Pair<>(
-                block.getLocation().get(),
-                block.getState().getType()) ); }
+        Pair<Location<World>, BlockType>        pair =
+                new Pair<Location<World>, BlockType>(
+                        block.getLocation().get(),
+                        block.getState().getType());
+        this._rollbackBlocks.add(pair);
+    }
 
     public void         addDefenderPoints(int points) {
         this._defenderPoints += points;
@@ -141,8 +146,23 @@ public class War {
     }
 
     private void        rollback() {
+        Core.Send("Starting rollback of '" + _rollbackBlocks.size() + "' blocks.");
         for (Pair<Location<World>, BlockType> pair: _rollbackBlocks) {
-            pair.getKey().setBlockType(pair.getValue());
+            /*pair.getL().setBlockType(pair.getR());
+            pair.getL().offer(
+                    Keys.REPRESENTED_BLOCK,
+                    Core.getPlugin()
+                            .getRegistry()
+                            .createBuilder(BlockState.Builder.class)
+                            .blockType(pair.getR())
+                            .build());*/
+            pair.getL().setBlock(
+                    Core.getPlugin()
+                    .getRegistry()
+                    .getType(BlockType.class, pair.getR().getName())
+                            .get()
+                            .getDefaultState());
+            Core.Send("Creation of '" + pair.getR() + "' done.");
         }
     }
 
@@ -221,10 +241,14 @@ public class War {
 
         if (_attackers.contains(player))
             _attackers.remove(player);
-        else if (_defenders.contains(player) && cityId != _cityDefender)
+        else if (_defenders.contains(player) && cityId != _cityDefender) {
             _defenders.remove(player);
+            --_attackersLimit;
+        }
         else
             return false;
+        Core.getBroadcastHandler().warAnnounce(this, Core.getPlayerHandler().<String>getElement(player, "player_displayName") +
+                " left the war [" + _attackers.size() + "/" + _attackersLimit + "]");
         return true;
     }
 
