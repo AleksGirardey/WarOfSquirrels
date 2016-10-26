@@ -1,10 +1,6 @@
 package fr.AleksGirardey.Commands.City;
 
 import fr.AleksGirardey.Objects.Core;
-<<<<<<< HEAD
-=======
-import fr.AleksGirardey.Objects.Utils;
->>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;

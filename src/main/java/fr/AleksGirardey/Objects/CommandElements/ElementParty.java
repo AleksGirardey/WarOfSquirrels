@@ -1,11 +1,7 @@
 package fr.AleksGirardey.Objects.CommandElements;
 
 import fr.AleksGirardey.Objects.Core;
-<<<<<<< HEAD
 import fr.AleksGirardey.Objects.War.PartyWar;
-=======
-import fr.AleksGirardey.Objects.PartyWar;
->>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;

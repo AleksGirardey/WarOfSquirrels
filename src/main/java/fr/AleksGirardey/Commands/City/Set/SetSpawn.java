@@ -2,11 +2,7 @@ package fr.AleksGirardey.Commands.City.Set;
 
 import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Handlers.ChunkHandler;
-<<<<<<< HEAD
 import fr.AleksGirardey.Objects.Cuboide.Chunk;
-=======
-import fr.AleksGirardey.Objects.Chunk;
->>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
 import fr.AleksGirardey.Objects.Core;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;

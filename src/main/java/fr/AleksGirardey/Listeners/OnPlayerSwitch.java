@@ -1,6 +1,5 @@
 package fr.AleksGirardey.Listeners;
 
-<<<<<<< HEAD
 import fr.AleksGirardey.Objects.Cuboide.Chunk;
 import fr.AleksGirardey.Objects.Core;
 import org.spongepowered.api.block.BlockType;
@@ -8,19 +7,6 @@ import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
-=======
-import fr.AleksGirardey.Objects.Chunk;
-import fr.AleksGirardey.Objects.Core;
-import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.effect.particle.ParticleType;
-import org.spongepowered.api.entity.Item;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.block.InteractBlockEvent;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
->>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
 
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -17,7 +17,6 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-<<<<<<< HEAD
 <!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -31,8 +30,6 @@
                     </execution>
                 </executions>
             </plugin> -->
-=======
->>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
         </plugins>
     </build>
     <repositories>
@@ -57,42 +54,21 @@
         <dependency>
             <groupId>org.spongepowered</groupId>
             <artifactId>spongeapi</artifactId>
-<<<<<<< HEAD
             <version>5.0.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-=======
-            <version>3.1.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- HikariCP -->
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>2.4.1</version>
-        </dependency>
->>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
         <!--Mysql Jdbc -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.6</version>
         </dependency>
-<<<<<<< HEAD
         <!-- HikariCP -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>2.4.5</version>
         </dependency>
-=======
-        <!--PermissionEx 3.0
-        <dependency>
-            <groupId>ru.tehkode</groupId>
-            <artifactId>PermissionsEx</artifactId>
-            <version>1.22</version>
-        </dependency> -->
->>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
     </dependencies>
 
 </project>
