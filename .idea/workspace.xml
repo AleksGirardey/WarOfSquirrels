@@ -6,199 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="baffb63b-c971-4e38-9336-ca8bfa3abbec" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/WarOfSquirrels-1.0-SNAPSHOT.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/Chat/ChatCity.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/Chat/ChatGlobal.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/Chat/ChatShout.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/Chat/SendCity.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/Chat/SendNormal.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/Chat/SendShout.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/Cubo/CuboCommandAdd.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/Cubo/CuboCommandMode.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/Party/PartyLeave.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/CuboHandler.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerChat.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerConnection.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerCubo.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Channels/CityChannel.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Channels/GlobalChannel.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/City/InfoCity.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/City/Rank.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Cuboide/Chunk.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Cuboide/Cubo.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Cuboide/CuboVector.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Database/GlobalCity.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Database/GlobalCubo.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Database/GlobalDiplomacy.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Database/GlobalPermission.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Database/GlobalPlayer.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Database/Statement.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Messages/AdminMessage.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Messages/CityMessage.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Messages/WandererMessage.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Utilitaires/ConfigLoader.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Utilitaires/Utils.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/War/PartyWar.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/War/War$WarState.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/War/War.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/War/WarTask.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_ben_manes_caffeine_caffeine_2_3_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_ben_manes_caffeine_guava_2_3_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_spongepowered_event_gen_core_2_0_0_SNAPSHOT.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_spongepowered_plugin_meta_0_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/Chat/ChatCity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/Chat/ChatGlobal.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/Chat/ChatShout.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/Chat/SendCity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/Chat/SendNormal.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/Chat/SendShout.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Cubo/CuboCommandAdd.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Cubo/CuboCommandMode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/Party/PartyLeave.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/CuboHandler.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerChat.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerConnection.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerCubo.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Channels/CityChannel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Channels/GlobalChannel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/City/InfoCity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/City/Rank.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/CommandElements/ElementAlly.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Cuboide/Cubo.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Cuboide/CuboVector.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Database/GlobalCity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Database/GlobalCubo.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Database/GlobalDiplomacy.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Database/GlobalPermission.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Database/GlobalPlayer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Messages/AdminMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Messages/CityMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Messages/WandererMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Utilitaires/ConfigLoader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/config/WOS.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/config/WOS.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/classes/mcmod.info" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/dataSources.ids" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/dataSources.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_spongepowered_event_gen_core_1_0_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Events/WarBreakEvent.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Chunk.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Events/WarBreakEvent.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/PartyWar.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Statement.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Utils.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/War$WarState.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/War.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/WarTask/WarTask.class" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/.idea/artifacts/WarOfSquirrels_jar.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/WarOfSquirrels.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_flowpowered_flow_math_1_0_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_flowpowered_flow_math_1_0_3.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_zaxxer_HikariCP_2_4_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_zaxxer_HikariCP_2_4_5.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_14.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_21.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_spongepowered_spongeapi_3_1_0_SNAPSHOT.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_spongepowered_spongeapi_5_0_0_SNAPSHOT.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Chunk.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Cuboide/Chunk.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Pair.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Utilitaires/Pair.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/PartyWar.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/War/PartyWar.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Statement.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Database/Statement.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Utils.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Utilitaires/Utils.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/War.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/War/War.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/WarTask/WarTask.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/War/WarTask.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Pair.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Utilitaires/Pair.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandAssistant.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandAssistant.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandClaim.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandClaim.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandCreate.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandCreate.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandDelete.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandDelete.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandInfo.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandInfo.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandList.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandList.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandRemove.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandRemove.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandUnclaim.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/CityCommandUnclaim.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/Set/SetSpawn.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/City/Set/SetSpawn.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/Commands.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/Commands.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/Party/PartyCreate.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/Party/PartyCreate.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/Party/PartyInvite.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/Party/PartyInvite.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/War/DeclareWar.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/War/DeclareWar.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/War/ForceWinAttacker.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/War/ForceWinAttacker.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/War/ForceWinDefender.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/War/ForceWinDefender.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/War/WarInfo.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/War/WarInfo.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/War/WarJoin.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/War/WarJoin.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/War/WarLeave.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Commands/War/WarLeave.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/BroadcastHandler.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/BroadcastHandler.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/ChunkHandler.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/ChunkHandler.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/CityHandler.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/CityHandler.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/InvitationHandler.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/InvitationHandler.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/PartyHandler.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/PartyHandler.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/PermissionHandler.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/PermissionHandler.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/PlayerHandler.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/PlayerHandler.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/WarHandler.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Handlers/WarHandler.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerBuild.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerBuild.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerContainer.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerContainer.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerDeath.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerDeath.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerDestroy.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerDestroy.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerMove.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerMove.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerRespawn.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerRespawn.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerSwitch.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Listeners/OnPlayerSwitch.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Main.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Main.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/CommandElements/ElementParty.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/CommandElements/ElementParty.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/CommandElements/ElementWar.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/CommandElements/ElementWar.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/CommandElements/PartyRemove.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/CommandElements/PartyRemove.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Core.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Core.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Invitations/AllianceInvitation.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Invitations/AllianceInvitation.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Invitations/CityInvitation.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Invitations/CityInvitation.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Invitations/PartyWarInvitation.class" afterPath="$PROJECT_DIR$/target/classes/fr/AleksGirardey/Objects/Invitations/PartyWarInvitation.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WarOfSquirrels.iml" afterPath="$PROJECT_DIR$/WarOfSquirrels.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandAssistant.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandAssistant.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandClaim.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandClaim.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandCreate.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandCreate.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandDelete.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandDelete.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandInfo.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandList.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandList.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandRemove.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandRemove.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandUnclaim.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandUnclaim.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/SetSpawn.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/SetSpawn.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/Commands.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/Commands.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/Party/PartyCreate.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/Party/PartyCreate.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/Party/PartyInvite.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/Party/PartyInvite.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/War/DeclareWar.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/War/DeclareWar.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/War/ForceWinAttacker.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/War/ForceWinAttacker.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/War/ForceWinDefender.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/War/ForceWinDefender.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/War/WarInfo.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/War/WarInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/War/WarJoin.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/War/WarJoin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/War/WarLeave.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/War/WarLeave.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/BroadcastHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/BroadcastHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/ChunkHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/ChunkHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/CityHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/CityHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/DatabaseHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/DatabaseHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/PartyHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/PartyHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/PermissionHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/PermissionHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/PlayerHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/PlayerHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/WarHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/WarHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerBuild.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerBuild.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerContainer.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerContainer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerDeath.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerDeath.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerDestroy.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerDestroy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerMove.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerMove.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerRespawn.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerRespawn.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerSwitch.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Listeners/OnPlayerSwitch.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Main.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/CommandElements/ElementParty.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/CommandElements/ElementParty.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/CommandElements/PartyRemove.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/CommandElements/PartyRemove.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Core.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Core.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Invitations/CityInvitation.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Invitations/CityInvitation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Invitations/PartyWarInvitation.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/Invitations/PartyWarInvitation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/sql/InitTables.sql" afterPath="$PROJECT_DIR$/src/main/resources/sql/InitTables.sql" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/sql/InitTables.sql" afterPath="$PROJECT_DIR$/target/classes/sql/InitTables.sql" />
-    </list>
+    <list default="true" id="baffb63b-c971-4e38-9336-ca8bfa3abbec" name="Default" comment="" />
     <ignored path="WarOfSquirrels.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -234,8 +42,8 @@
           <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Main.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="555">
-                  <caret line="347" column="92" selection-start-line="347" selection-start-column="92" selection-end-line="347" selection-end-column="92" />
+                <state relative-caret-position="585">
+                  <caret line="349" column="25" selection-start-line="349" selection-start-column="25" selection-end-line="349" selection-end-column="25" />
                   <folding />
                 </state>
               </provider>
@@ -1311,12 +1119,12 @@
       <workItem from="1473018288103" duration="45469000" />
       <workItem from="1473801017883" duration="1386000" />
       <workItem from="1474194400297" duration="21285000" />
-      <workItem from="1477389108016" duration="643000" />
+      <workItem from="1477389108016" duration="1245000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="100760000" />
+    <option name="totallyTimeSpent" value="101362000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1855" height="1056" extended-state="6" />
@@ -1760,14 +1568,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/CommandElements/ElementEnemy.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="36" column="5" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/CommandElements/ElementAlly.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
@@ -1803,10 +1603,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/CommandElements/ElementEnemy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="36" column="5" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="555">
-          <caret line="347" column="92" selection-start-line="347" selection-start-column="92" selection-end-line="347" selection-end-column="92" />
+        <state relative-caret-position="585">
+          <caret line="349" column="25" selection-start-line="349" selection-start-column="25" selection-end-line="349" selection-end-column="25" />
           <folding />
         </state>
       </provider>
