@@ -3,7 +3,11 @@ package fr.AleksGirardey.Commands.Party;
 import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Invitations.PartyWarInvitation;
+<<<<<<< HEAD
 import fr.AleksGirardey.Objects.War.PartyWar;
+=======
+import fr.AleksGirardey.Objects.PartyWar;
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;

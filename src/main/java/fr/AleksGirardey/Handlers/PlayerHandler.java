@@ -2,7 +2,11 @@ package fr.AleksGirardey.Handlers;
 
 
 import fr.AleksGirardey.Objects.Core;
+<<<<<<< HEAD
 import fr.AleksGirardey.Objects.Database.Statement;
+=======
+import fr.AleksGirardey.Objects.Statement;
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
 import org.slf4j.Logger;
 import org.spongepowered.api.entity.living.player.Player;
 
@@ -10,19 +14,33 @@ import java.sql.SQLException;
 
 public class PlayerHandler {
     private Logger logger;
+<<<<<<< HEAD
 
     public PlayerHandler(Logger logger) {
         this.logger = logger;
+=======
+    private Statement   _statement;
+
+    public PlayerHandler(Logger logger) {
+        this.logger = logger;
+        this._statement = new Statement();
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
     }
 
     private Logger getLogger() { return logger; }
 
     public void add(Player player) {
         String sql = "INSERT INTO `Player` (`player_uuid`, `player_displayName`) values (?, ?);";
+<<<<<<< HEAD
         Statement   _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+
+        try {
+            _statement.NewQuery(sql);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setString(1, player.getUniqueId().toString());
             _statement.getStatement().setString(2, player.getName());
             _statement.Update();
@@ -59,10 +77,17 @@ public class PlayerHandler {
 
     public <T> void     setElement(String uuid, String element, T value) {
         String          sql = "UPDATE `Player` SET `Player`.`" + element + "` = ? WHERE `player_uuid` = ?;";
+<<<<<<< HEAD
         Statement   _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+
+        try {
+            _statement.NewQuery(sql);
+            //_statement.getStatement().setObject(1, element);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setObject(1, value);
             _statement.getStatement().setString(2, uuid);
             _statement.Update();
@@ -74,10 +99,17 @@ public class PlayerHandler {
 
     public String   getUuidFromName(String name) {
         String      res = null, sql = "SELECT `player_uuid` FROM `Player` WHERE `player_displayName` = ?;";
+<<<<<<< HEAD
         Statement   _statement;
 
         try {
             _statement = new Statement(sql);_statement.getStatement().setString(1, name);
+=======
+
+        try {
+            _statement.NewQuery(sql);
+            _statement.getStatement().setString(1, name);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             if (_statement.Execute().next())
                 res = _statement.getResult().getString("player_uuid");
             _statement.Close();

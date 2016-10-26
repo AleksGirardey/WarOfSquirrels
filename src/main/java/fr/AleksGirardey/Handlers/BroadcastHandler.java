@@ -1,17 +1,29 @@
 package fr.AleksGirardey.Handlers;
 
+<<<<<<< HEAD
 import fr.AleksGirardey.Objects.Channels.GlobalChannel;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.War.PartyWar;
 import fr.AleksGirardey.Objects.War.War;
+=======
+import fr.AleksGirardey.Main;
+import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.PartyWar;
+import fr.AleksGirardey.Objects.War;
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
 import java.util.ArrayList;
+<<<<<<< HEAD
+=======
+import java.util.Collection;
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
 import java.util.List;
 
 public class BroadcastHandler {
 
+<<<<<<< HEAD
     private GlobalChannel   global;
 
     public BroadcastHandler() {
@@ -26,13 +38,29 @@ public class BroadcastHandler {
 
     public GlobalChannel        getGlobalChannel() { return global; }
 
+=======
+    public BroadcastHandler() {
+    }
+
+    public void cityInvitationSend(Player player, Player sender, int cityId) {
+        player.sendMessage(Text.of(Core.getPlayerHandler().<String>getElement(sender, "player_displayName") + " invite you to join "
+                + Core.getCityHandler().<String>getElement(cityId, "city_displayName")));
+    }
+
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
     public void cityChannel(int cityId, String message) {
         String[][]      citizens = Core.getCityHandler().getCitizens(cityId);
         List<String> uuids = new ArrayList<String>();
 
         for (String[] uuid : citizens)
             uuids.add(uuid[0]);
+<<<<<<< HEAD
         Core.getPlugin().getServer().getOnlinePlayers().stream().filter(player -> uuids.contains(player.getUniqueId().toString())).forEach(player -> player.sendMessage(Text.of(message)));
+=======
+        for (Player player : Core.getPlugin().getServer().getOnlinePlayers())
+            if (uuids.contains(player.getUniqueId().toString()))
+                player.sendMessage(Text.of(message));
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
     }
 
     public void         allianceInvitationSend(int citySender, int cityId) {

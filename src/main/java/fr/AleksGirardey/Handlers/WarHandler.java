@@ -1,8 +1,14 @@
 package fr.AleksGirardey.Handlers;
 
 import fr.AleksGirardey.Objects.Core;
+<<<<<<< HEAD
 import fr.AleksGirardey.Objects.War.PartyWar;
 import fr.AleksGirardey.Objects.War.War;
+=======
+import fr.AleksGirardey.Objects.PartyWar;
+import fr.AleksGirardey.Objects.War;
+import fr.AleksGirardey.Objects.War.WarState;
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
@@ -64,6 +70,7 @@ public class WarHandler {
         return false;
     }
 
+<<<<<<< HEAD
     public boolean      ContainsDefender(int cityId) {
         for (War war : wars)
             if (war.getDefender() == cityId)
@@ -76,6 +83,13 @@ public class WarHandler {
 
         return  getWar(player).getPhase().equals("War")
                 && Contains(player)
+=======
+    public boolean      ableTo(Player player, int chunkId) {
+        int cityId = Core.getChunkHandler().getCity(chunkId);
+
+        return  /*getWar(player).getPhase().equals(WarState.War)
+                &&*/ Contains(player)
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
                 && getWar(player).getDefender() == cityId;
     }
 

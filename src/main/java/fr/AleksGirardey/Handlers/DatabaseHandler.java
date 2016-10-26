@@ -16,7 +16,11 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+<<<<<<< HEAD
 public class    DatabaseHandler {
+=======
+public class DatabaseHandler {
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
 
     private Logger logger;
     private HikariConfig            config;

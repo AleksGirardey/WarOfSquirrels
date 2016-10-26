@@ -14,7 +14,10 @@ public class CityInvitation extends Invitation {
 
     @Override
     public void accept() {
+<<<<<<< HEAD
         Core.getInfoCityMap().get(_cityId).getChannel().addMember(_player);
+=======
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
         Core.getCityHandler().newCitizen(_player, _cityId);
     }
 

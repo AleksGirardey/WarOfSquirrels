@@ -1,5 +1,6 @@
 package fr.AleksGirardey.Handlers;
 
+<<<<<<< HEAD
 import fr.AleksGirardey.Objects.*;
 import fr.AleksGirardey.Objects.Cuboide.Chunk;
 import fr.AleksGirardey.Objects.Database.Statement;
@@ -14,15 +15,40 @@ import java.util.List;
 
 public class ChunkHandler {
     public      ChunkHandler() {}
+=======
+import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.Chunk;
+import fr.AleksGirardey.Objects.Statement;
+import org.spongepowered.api.entity.living.player.Player;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class ChunkHandler {
+
+    private Statement   _statement;
+    
+    public      ChunkHandler() {
+        _statement = new Statement();
+    }
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
 
     public boolean          exists(int posX, int posZ){
         boolean             bool = false;
         String              sql = "SELECT `chunk_id` FROM `Chunk` "
                                     + "WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
+<<<<<<< HEAD
         Statement _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+
+        try {
+            _statement.NewQuery(sql);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setInt(1, posX);
             _statement.getStatement().setInt(2, posZ);
             bool = _statement.Execute().first();
@@ -39,10 +65,16 @@ public class ChunkHandler {
     public void             add(int posX, int posZ, int id) {
             String          sql = "INSERT INTO `Chunk`(`chunk_posX`, `chunk_posZ`, `chunk_cityId`) " +
                     "VALUES (? , ? , ?);";
+<<<<<<< HEAD
         Statement           _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+
+        try {
+            _statement.NewQuery(sql);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setInt(1, posX);
             _statement.getStatement().setInt(2, posZ);
             _statement.getStatement().setInt(3, id);
@@ -56,10 +88,16 @@ public class ChunkHandler {
     public void                 addOutpost(Player player, int posX, int posZ) {
         String              sql = "INSERT INTO `Chunk`(`chunk_posX`, `chunk_posZ`, `chunk_cityId`, `chunk_outpost`, `chunk_respawnZ`, `chunk_respawnY`, `chunk_respawnZ`)"
                                     + "VALUES (?, ?, ?, TRUE, ?, ?, ?);";
+<<<<<<< HEAD
         Statement           _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+
+        try {
+            _statement.NewQuery(sql);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setInt(1, posX);
             _statement.getStatement().setInt(2, posZ);
             _statement.getStatement().setInt(3, Core.getPlayerHandler().<Integer>getElement(player, "player_cityId"));
@@ -75,10 +113,16 @@ public class ChunkHandler {
 
     public void                 addHomeblock(int posX, int posZ) {
         String                  sql = "UPDATE `Chunk` SET `chunk_homeblock` = TRUE WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
+<<<<<<< HEAD
         Statement           _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+
+        try {
+            _statement.NewQuery(sql);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setInt(1, posX);
             _statement.getStatement().setInt(2, posZ);
             _statement.Update();
@@ -91,10 +135,16 @@ public class ChunkHandler {
     public boolean              isOutpost(int posX, int posZ) {
         String                  sql = "SELECT `chunk_outpost` FROM `Chunk` WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
         boolean                 res = false;
+<<<<<<< HEAD
         Statement           _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+
+        try {
+            _statement.NewQuery(sql);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setInt(1, posX);
             _statement.getStatement().setInt(2, posZ);
             if (_statement.Execute().next())
@@ -109,10 +159,16 @@ public class ChunkHandler {
     public boolean              isHomeblock(int posX, int posZ) {
         String                  sql = "SELECT `chunk_homeblock` FROM `Chunk` WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
         boolean                 res = false;
+<<<<<<< HEAD
         Statement           _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+
+        try {
+            _statement.NewQuery(sql);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setInt(1, posX);
             _statement.getStatement().setInt(2, posZ);
             if (_statement.Execute().next())
@@ -128,10 +184,16 @@ public class ChunkHandler {
         int                     res = 0;
         String                  sql = "SELECT `chunk_cityId` FROM `Chunk`" +
                                 " WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
+<<<<<<< HEAD
         Statement           _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+
+        try {
+            _statement.NewQuery(sql);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setInt(1, posX);
             _statement.getStatement().setInt(2, posZ);
             if (_statement.Execute().next())
@@ -146,10 +208,16 @@ public class ChunkHandler {
     public int              getId(int x, int z) {
         int                 id = 0;
         String              sql = "SELECT `chunk_id` FROM `Chunk` WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
+<<<<<<< HEAD
         Statement           _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+
+        try {
+            _statement.NewQuery(sql);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setInt(1, x);
             _statement.getStatement().setInt(2, z);
             if (_statement.Execute().next())
@@ -165,10 +233,16 @@ public class ChunkHandler {
         int                 res = 0;
         String              sql = "SELECT `chunk_cityId` FROM `Chunk`" +
                             " WHERE `chunk_id` = ?;";
+<<<<<<< HEAD
         Statement           _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+
+        try {
+            _statement.NewQuery(sql);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setInt(1, id);
             if (_statement.Execute().next()) {
                 res = _statement.getResult().getInt("chunk_cityId");
@@ -182,10 +256,16 @@ public class ChunkHandler {
 
     public void             delete(int x, int z) {
         String              sql = "DELETE FROM `Chunk` WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
+<<<<<<< HEAD
         Statement           _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+
+        try {
+            _statement.NewQuery(sql);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setInt(1, x);
             _statement.getStatement().setInt(2, z);
             _statement.Update();
@@ -197,10 +277,16 @@ public class ChunkHandler {
 
     public void             deleteCity(int id) {
             String          sql = "DELETE FROM `Chunk` WHERE `chunk_cityId` = ?;";
+<<<<<<< HEAD
         Statement           _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+
+        try{
+            _statement.NewQuery(sql);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setInt(1, id);
             _statement.Update();
             _statement.Close();
@@ -210,12 +296,20 @@ public class ChunkHandler {
     }
 
     public boolean             setSpawn(Chunk chunk, int x, int y, int z) {
+<<<<<<< HEAD
         String      sql = "UPDATE `Chunk` SET `chunk_respawnX` = ?, `chunk_respawnY` = ?, `chunk_respawnZ` = ? " +
                     "WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
         Statement           _statement;
 
         try {
             _statement = new Statement(sql);
+=======
+        try {
+            String      sql = "UPDATE `Chunk` SET `chunk_respawnX` = ?, `chunk_respawnY` = ?, `chunk_respawnZ` = ? " +
+                    "WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
+
+            _statement.NewQuery(sql);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
             _statement.getStatement().setInt(1, x);
             _statement.getStatement().setInt(2, y);
             _statement.getStatement().setInt(3, z);
@@ -230,6 +324,7 @@ public class ChunkHandler {
         return false;
     }
 
+<<<<<<< HEAD
     public boolean canBePlaced(int cityId, int x, int z, boolean b) {
         if (b) {
             Core.Send("ALLO");
@@ -300,5 +395,9 @@ public class ChunkHandler {
             e.printStackTrace();
         }
         return  i;
+=======
+    public boolean canBePlaced(int x, int z, boolean b) {
+        return true;
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
     }
 }

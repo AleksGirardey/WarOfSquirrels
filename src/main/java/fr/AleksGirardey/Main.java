@@ -2,10 +2,14 @@ package fr.AleksGirardey;
 
 import com.google.inject.Inject;
 import fr.AleksGirardey.Commands.AcceptCommand;
+<<<<<<< HEAD
 import fr.AleksGirardey.Commands.Chat.*;
 import fr.AleksGirardey.Commands.City.*;
 import fr.AleksGirardey.Commands.City.Cubo.CuboCommandAdd;
 import fr.AleksGirardey.Commands.City.Cubo.CuboCommandMode;
+=======
+import fr.AleksGirardey.Commands.City.*;
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
 import fr.AleksGirardey.Commands.City.Set.*;
 import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetAlly;
 import fr.AleksGirardey.Commands.City.Set.SetAssistant;
@@ -23,6 +27,7 @@ import fr.AleksGirardey.Commands.City.Set.Permissions.Switch.PermSwitch;
 import fr.AleksGirardey.Commands.City.Set.Permissions.Switch.PermSwitchAllies;
 import fr.AleksGirardey.Commands.City.Set.Permissions.Switch.PermSwitchOutside;
 import fr.AleksGirardey.Commands.City.Set.Permissions.Switch.PermSwitchResident;
+<<<<<<< HEAD
 import fr.AleksGirardey.Commands.Party.*;
 import fr.AleksGirardey.Commands.War.*;
 import fr.AleksGirardey.Commands.RefuseCommand;
@@ -58,12 +63,39 @@ public class Main {
 
     public static String        path = "WarOfSquirrels";
 
+=======
+import fr.AleksGirardey.Commands.War.*;
+import fr.AleksGirardey.Commands.Party.PartyCreate;
+import fr.AleksGirardey.Commands.Party.PartyDelete;
+import fr.AleksGirardey.Commands.Party.PartyInfo;
+import fr.AleksGirardey.Commands.Party.PartyInvite;
+import fr.AleksGirardey.Commands.RefuseCommand;
+import fr.AleksGirardey.Listeners.*;
+import fr.AleksGirardey.Objects.CommandElements.*;
+import fr.AleksGirardey.Objects.Core;
+import org.slf4j.Logger;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.service.permission.PermissionService;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.command.spec.CommandSpec;
+
+import java.io.File;
+
+@Plugin(id = "WOS", name = "War Of Squirrels", version = "1.0")
+public class Main {
+
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
     @Inject
     private Game    game;
 
     @Inject
     private Logger logger;
 
+<<<<<<< HEAD
     @Inject
     @DefaultConfig(sharedRoot = true)
     private ConfigurationLoader<CommentedConfigurationNode> configManager;
@@ -82,6 +114,27 @@ public class Main {
                 logger.error("Can't create plugin directory");
 
         Core.initCore(logger, game, this, configManager);
+=======
+    @Listener
+    public void onServerStart(GameStartedServerEvent event) {
+        File        f = new File ("WarOfSquirrels");
+        CommandSpec cityCommandSpec, accept, refuse;
+        CommandSpec info, create, delete, claim, unclaim, set, help, add, remove, list, leave;
+        CommandSpec setHelp, setSpawn, setAlly, setNeutral,
+                setEnemy, setMayor, setAssistant, setPerm,
+                setContainerAll, setBuildAll, setSwitchAll;
+        CommandSpec setBuild, setBuildO, setBuildA, setBuildR;
+        CommandSpec setContainer, setContainerO, setContainerA, setContainerR;
+        CommandSpec setSwitch, setSwitchO, setSwitchA, setSwitchR;
+        CommandSpec party, partyDelete, partyCreate, partyInvite, partyRemove;
+
+        logger.info("Please, wait for the War Of Squirrels plugin to be initialized");
+        if (!f.exists())
+            if (!f.mkdir())
+                logger.error("Can't create plugin directory");
+
+        Core.initCore(logger, game, this);
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
         game.getEventManager().registerListeners(this, new OnPlayerLogin());
         game.getEventManager().registerListeners(this, new OnPlayerMove());
         game.getEventManager().registerListeners(this, new OnPlayerRespawn());
@@ -90,6 +143,7 @@ public class Main {
         game.getEventManager().registerListeners(this, new OnPlayerSwitch());
         game.getEventManager().registerListeners(this, new OnPlayerDestroy());
         game.getEventManager().registerListeners(this, new OnPlayerDeath());
+<<<<<<< HEAD
         game.getEventManager().registerListeners(this, new OnPlayerConnection());
         game.getEventManager().registerListeners(this, new OnPlayerChat());
         game.getEventManager().registerListeners(this, new OnPlayerCubo());
@@ -108,6 +162,9 @@ public class Main {
         CommandSpec         setSwitch, setSwitchO, setSwitchA, setSwitchR, setCubo;
         CommandSpec         party, partyDelete, partyCreate, partyInvite, partyRemove, partyLeave;
         
+=======
+
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
         info = CommandSpec.builder()
                 .description(Text.of("Give city information"))
                 .executor(new CityCommandInfo())
@@ -165,11 +222,14 @@ public class Main {
                 .executor(new CityCommandLeave())
                 .build();
 
+<<<<<<< HEAD
         cubo = CommandSpec.builder()
                 .description(Text.of("Activate/Deactivate cubo mode"))
                 .executor(new CuboCommandMode())
                 .build();
 
+=======
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
         setHelp = CommandSpec.builder()
                 .description(Text.of("Display /city set help"))
                 .executor(new SetHelp())
@@ -340,6 +400,7 @@ public class Main {
                 .child(setContainerAll, "containerAll", "cAll")
                 .child(setSwitch, "switch", "s")
                 .child(setSwitchAll, "switchAll", "sAll")
+<<<<<<< HEAD
                 .executor(new PermCity())
                 .arguments(
                         GenericArguments.onlyOne(new ElementAlly(Text.of("[city]"))),
@@ -354,6 +415,8 @@ public class Main {
                 .executor(new CuboCommandAdd())
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text.of("[name]"))))
+=======
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
                 .build();
 
         set = CommandSpec.builder()
@@ -366,7 +429,10 @@ public class Main {
                 .child(setMayor, "mayor")
                 .child(setAssistant, "assistant")
                 .child(setPerm, "perm", "p")
+<<<<<<< HEAD
                 .child(setCubo, "cubo", "c")
+=======
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
                 .build();
 
         help = CommandSpec.builder()
@@ -392,11 +458,14 @@ public class Main {
                 .child(remove, "remove", "kick")
                 .child(leave, "leave")
                 .child(list, "list", "l")
+<<<<<<< HEAD
                 .child(cubo, "cubo", "c")
                 .executor(new CityCommandInfo())
                 .arguments(
                         GenericArguments.optional(
                                 GenericArguments.onlyOne(new ElementCity(Text.of("[city]")))))
+=======
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
                 .build();
 
         accept = CommandSpec.builder()
@@ -434,11 +503,14 @@ public class Main {
                 .executor(new PartyDelete())
                 .build();
 
+<<<<<<< HEAD
         partyLeave = CommandSpec.builder()
                 .description(Text.of("Leave your party"))
                 .executor(new PartyLeave())
                 .build();
 
+=======
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
         party = CommandSpec.builder()
                 .description(Text.of("Build a party before going on war"))
                 .executor(new PartyInfo())
@@ -446,7 +518,10 @@ public class Main {
                 .child(partyInvite, "invite", "add")
                 .child(partyRemove, "remove", "r")
                 .child(partyDelete, "delete", "d")
+<<<<<<< HEAD
                 .child(partyLeave, "leave", "l")
+=======
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
                 .build();
 
         CommandSpec war, forceWinAttacker, forceWinDefender;
@@ -508,6 +583,7 @@ public class Main {
                 .child(warlist, "list")
                 .build();
 
+<<<<<<< HEAD
         CommandCallable     chat, lock, lockShout, lockCity, unlock, normal, shout, city;
 
         lockShout = CommandSpec.builder()
@@ -578,11 +654,14 @@ public class Main {
                 })
                 .build();
 
+=======
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
         game.getCommandManager().register(this, cityCommandSpec, "city", "c");
         game.getCommandManager().register(this, party, "party", "p");
         game.getCommandManager().register(this, war, "war", "w");
         game.getCommandManager().register(this, accept, "accept", "a");
         game.getCommandManager().register(this, refuse, "refuse", "r");
+<<<<<<< HEAD
         game.getCommandManager().register(this, chat, "chat", "ch");
         game.getCommandManager().register(this, normal, "dire", "d");
         game.getCommandManager().register(this, shout, "cri", "cr");
@@ -600,5 +679,10 @@ public class Main {
         Core.close();
     }
 
+=======
+        logger.info("Welcome in the War Of Squirrels. Have fun !");
+    }
+
+>>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
     public Logger getLogger() { return logger; }
 }
