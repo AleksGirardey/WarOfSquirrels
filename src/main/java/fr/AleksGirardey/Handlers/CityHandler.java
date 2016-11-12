@@ -3,6 +3,7 @@ package fr.AleksGirardey.Handlers;
 import com.google.inject.Inject;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.City.InfoCity;
+import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.Database.GlobalCity;
 import fr.AleksGirardey.Objects.Database.GlobalDiplomacy;
 import fr.AleksGirardey.Objects.Database.GlobalPlayer;
@@ -17,62 +18,47 @@ import java.util.*;
 public class CityHandler {
 
     private Logger  logger;
+    private Map<Integer, City>      cities = new HashMap<>();
 
     @Inject
     public CityHandler(Logger logger) {
         this.logger = logger;
+        this.populate();
     }
 
     private Logger getLogger() {
         return logger;
     }
 
-    public void             add(Player player, String displayName) {
-        String          sql = "INSERT INTO `City` (`"
-                + GlobalCity.displayName
-                + "`, `"+ GlobalCity.tag
-                + "`, `"+ GlobalCity.playerOwner
-                + "`, `"+ GlobalCity.permRes
-                + "`, `"+ GlobalCity.permAllies
-                + "`, `"+ GlobalCity.permOutside
-                + "`) VALUES (?, ?, ?, ?, ? , ?);";
-        String                  substr = "";
-        Statement               _statement = null;
-        PermissionHandler       ph = Core.getPermissionHandler();
+    private void        populate() {
+        String          sql = "SELECT * FROM `" + GlobalCity.tableName + "`";
+        City            city;
 
         try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setString(1, displayName);
-            substr = displayName.length() <= 5 ? displayName : displayName.substring(0, 5);
-            _statement.getStatement().setString(2, substr);
-            _statement.getStatement().setString(3, player.getUniqueId().toString());
-            _statement.getStatement().setInt(4, ph.add(true, true, true));
-            _statement.getStatement().setInt(5, ph.add(false, false, true));
-            _statement.getStatement().setInt(6, ph.add(false, false, false));
-            _statement.Update();
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void             delete(int id){
-        String          sql = "DELETE FROM `City` WHERE `city_id` = ?;";
-        Statement   _statement = null;
-
-        try {
-            Core.getChunkHandler().deleteCity(id);
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, id);
-            _statement.Update();
-            _statement.Close();
-            for (String assistant : this.getAssistants(id)) {
-                Core.getPlayerHandler().setElement(Core.getPlayerHandler().getUuidFromName(assistant), GlobalPlayer.assistant, false);
+            Statement   statement = new Statement(sql);
+            statement.Execute();
+            while (statement.getResult().next()) {
+                city = new City(statement.getResult());
+                this.cities.put(city.getId(), city);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    public City             add(Player player, String displayName) {
+        City                newOne = new City(
+                displayName,
+                player,
+                Core.getPermissionHandler().add(true, true, true),
+                Core.getPermissionHandler().add(false, false, true),
+                Core.getPermissionHandler().add(false, false, false));
+
+        cities.put(newOne.getId(), newOne);
+        return newOne;
+    }
+
+    public void             delete(int id){ cities.remove(id); }
 
     public <T> T            getElement(int id, String element){
         T       res = null;
@@ -169,7 +155,6 @@ public class CityHandler {
     }
 
     public List<String>     getAssistants(int id) {
-        int                 size = 0, i = 0;
         List<String>        res = new ArrayList<String>();
         String              sql = "SELECT `player_uuid` FROM `Player` WHERE `player_cityId` = ? AND `player_assistant` = ?;";
         Statement   _statement = null;
@@ -413,6 +398,23 @@ public class CityHandler {
             while (_statement.getResult().next())
                 if (areEnemies(cityId, _statement.getResult().getInt("city_id")))
                     list.add(_statement.getResult().getString("city_displayName"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<String>     getAlliesName(int cityId) {
+        String              sql = "SELECT * FROM `City`;";
+        List<String>        list = new ArrayList<>();
+        Statement           _statement = null;
+
+        try {
+            _statement = new Statement(sql);
+            _statement.Execute();
+            while (_statement.getResult().next())
+                if (areAllies(cityId, _statement.getResult().getInt(GlobalCity.id)))
+                    list.add(_statement.getResult().getString(GlobalCity.displayName));
         } catch (SQLException e) {
             e.printStackTrace();
         }

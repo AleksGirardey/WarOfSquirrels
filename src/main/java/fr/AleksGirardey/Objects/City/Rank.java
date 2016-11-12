@@ -7,7 +7,7 @@ public class Rank {
     String      prefixMayor;
     String      prefixAssistant;
     int         chunkMax;
-    TextColor color;
+    TextColor   color;
 
     public Rank(
             String name,

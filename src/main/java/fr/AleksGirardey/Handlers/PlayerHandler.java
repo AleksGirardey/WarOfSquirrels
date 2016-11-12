@@ -4,9 +4,14 @@ package fr.AleksGirardey.Handlers;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Database.Statement;
 import org.slf4j.Logger;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.service.user.UserStorageService;
 
 import java.sql.SQLException;
+import java.util.Optional;
+import java.util.UUID;
 
 public class PlayerHandler {
     private Logger logger;
@@ -16,6 +21,13 @@ public class PlayerHandler {
     }
 
     private Logger getLogger() { return logger; }
+
+
+    public Optional<User>       getUser(UUID uuid) {
+        Optional<UserStorageService>    userStorageService =
+                Sponge.getServiceManager().provide(UserStorageService.class);
+        return userStorageService.get().get(uuid);
+    }
 
     public void add(Player player) {
         String sql = "INSERT INTO `Player` (`player_uuid`, `player_displayName`) values (?, ?);";

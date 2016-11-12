@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ElementAlly extends CommandElement{
 
-    protected ElementAlly(@Nullable Text key) {
+    public ElementAlly(@Nullable Text key) {
         super(key);
     }
 

@@ -1,0 +1,11 @@
+[
+    {
+        "modid": "wos",
+        "name": "War Of Squirrels",
+        "version": "1.0",
+        "description": "BASTOOOOOOON",
+        "requiredMods": [
+            "spongeapi@5.0.0-SNAPSHOT"
+        ]
+    }
+]

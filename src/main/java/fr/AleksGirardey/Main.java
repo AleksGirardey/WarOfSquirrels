@@ -8,6 +8,7 @@ import fr.AleksGirardey.Commands.City.Cubo.CuboCommandAdd;
 import fr.AleksGirardey.Commands.City.Cubo.CuboCommandMode;
 import fr.AleksGirardey.Commands.City.Set.*;
 import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetAlly;
+import fr.AleksGirardey.Commands.City.Set.Permissions.PermCity;
 import fr.AleksGirardey.Commands.City.Set.SetAssistant;
 import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetEnemy;
 import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetNeutral;

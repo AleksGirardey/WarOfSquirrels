@@ -12,11 +12,13 @@ Features :
 
 ToDo :
 
+- Hybrid handlers, load at launch & save after every actions
+
 - PeaceTime
 - Distance City-City / City-AP
-- Capture system & Target System
+- Capture & Target System
 - Save RollbackList en BDD (en cas de crash)
-- Reincarnation (X secondes while u get OS by everything)
+- Reincarnation (X seconds while u are OS by everything)
 
 Tests :
 

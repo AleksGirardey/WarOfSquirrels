@@ -6,4 +6,5 @@ public class GlobalDiplomacy {
     public static String        sub = "diplomacy_subCityId";
     public static String        relation = "diplomacy_relation";
     public static String        permId = "diplomacy_permissionId";
+    public static String        tableName = "Diplomacy";
 }
