@@ -2,6 +2,9 @@ package fr.AleksGirardey.Handlers;
 
 import com.google.inject.Inject;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.Cuboide.Chunk;
+import fr.AleksGirardey.Objects.DBObject.City;
+import fr.AleksGirardey.Objects.DBObject.Permission;
 import fr.AleksGirardey.Objects.Database.GlobalCity;
 import fr.AleksGirardey.Objects.Database.GlobalPermission;
 import fr.AleksGirardey.Objects.Database.GlobalPlayer;
@@ -10,80 +13,57 @@ import org.slf4j.Logger;
 import org.spongepowered.api.entity.living.player.Player;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PermissionHandler {
 
     private Logger logger;
+    private Map<Integer, Permission> permissionMap = new HashMap<>();
 
     @Inject
     public PermissionHandler(Logger logger) {
         this.logger = logger;
+        this.populate();
     }
 
-    public int              add(boolean build, boolean container, boolean swi) {
-        String          sql = "INSERT INTO `Permission`(`permission_build`, `permission_container`, `permission_switch`) VALUES (?, ?, ?);";
-        Statement       _statement;
-        int             id = 0;
+    private void        populate() {
+        String          sql = "SELECT * FROM `" + GlobalPermission.tableName + "`;";
+        Permission      permission;
 
         try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setBoolean(1, build);
-            _statement.getStatement().setBoolean(2, container);
-            _statement.getStatement().setBoolean(3, swi);
-            _statement.Update();
-            id = _statement.getKeys().getInt(1);
-            _statement.Close();
+            Statement   statement = new Statement(sql);
+            statement.Execute();
+            while (statement.getResult().next()) {
+                permission = new Permission(statement.getResult());
+                permissionMap.put(permission.getId(), permission);
+            }
+            statement.Close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return id;
     }
 
-    public void             delete(int id) {
-        String          sql = "DELETE FROM `Permission` WHERE `permission_id` = ?;";
-        Statement       _statement;
+    public Permission       add(boolean build, boolean container, boolean swi) {
+        Permission          permission = new Permission(build, container, swi);
+        this.permissionMap.put(permission.getId(), permission);
 
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, id);
-            _statement.Update();
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        return permission;
     }
 
-    private boolean         getPerm(int id, String perm) {
-        boolean             res = false;
-        String              sql = "SELECT * FROM `Permission` WHERE `permission_id` = ?;";
-        Statement       _statement;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, id);
-            if (_statement.Execute().next())
-                res = _statement.getResult().getBoolean(perm);
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return (res);
+    public void     delete(Permission perm) {
+        this.permissionMap.remove(perm.getId());
     }
 
-    public void            setPerm(int id, String perm, boolean value) {
-        String          sql = "UPDATE `Permission` SET `Permission`.`" + perm + "` = ? WHERE `permission_id` = ?;";
-        Statement       _statement;
+    public void     delete(int id) {
+        this.permissionMap.remove(id);
+    }
 
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setBoolean(1, value);
-            _statement.getStatement().setInt(2, id);
-            _statement.Update();
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public Permission     get(int id) { return permissionMap.get(id); }
+
+/*
+    public boolean          ableTo(Player player, int chunkId) {
+        return false;
     }
 
     public boolean          ableTo(Player player, int chunkId, String perm) throws SQLException {
@@ -110,24 +90,17 @@ public class PermissionHandler {
         }
         permId = cityHandler.<Integer>getElement(cityId, option);
         return getPerm(permId, "permission_" + perm);
-    }
+    } */
 
-    public String           getString(int cityId) {
+    public String           toString(City city) {
         String              res = "";
-        int                 permId = Core.getCityHandler().<Integer>getElement(cityId, "city_permissionId");
 
-        res += "O [";
-        res += (getPerm(permId, "permission_outsideBuild") ? "B" : "-");
-        res += (getPerm(permId, "permission_outsideContainer") ? "C" : "-");
-        res += (getPerm(permId, "permission_outsideSwitch") ? "S" : "-");
+        res += "R [";
+        res += (city.getPermRes().toString());
         res += "] | A [";
-        res += (getPerm(permId, "permission_alliesBuild") ? "B" : "-");
-        res += (getPerm(permId, "permission_alliesContainer") ? "C" : "-");
-        res += (getPerm(permId, "permission_alliesSwitch") ? "S" : "-");
-        res += "] | R [";
-        res += (getPerm(permId, "permission_residentBuild") ? "B" : "-");
-        res += (getPerm(permId, "permission_residentContainer") ? "C" : "-");
-        res += (getPerm(permId, "permission_residentSwitch") ? "S" : "-");
+        res += (city.getPermAllies().toString());
+        res += "] | O [";
+        res += (city.getPermOutside().toString());
         res += "]";
 
         return res;

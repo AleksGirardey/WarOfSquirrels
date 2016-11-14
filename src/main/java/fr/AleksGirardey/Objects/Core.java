@@ -33,6 +33,7 @@ public class Core {
     private static WarHandler               warHandler;
     private static PartyHandler             partyHandler;
     private static CuboHandler              cuboHandler;
+    private static DiplomacyHandler         diplomacyHandler;
     private static Map<Integer, InfoCity>   infoCityMap;
 
     public static void          initCore(
@@ -59,6 +60,7 @@ public class Core {
         warHandler = new WarHandler();
         partyHandler = new PartyHandler();
         cuboHandler = new CuboHandler(logger);
+        diplomacyHandler = new DiplomacyHandler(logger);
         infoCityMap = getCityHandler().getCityMap();
     }
 
@@ -117,4 +119,6 @@ public class Core {
     public static ConfigLoader  getConfig() { return _config; }
 
     public static CuboHandler   getCuboHandler() { return cuboHandler; }
+
+    public static DiplomacyHandler  getDiplomacyHandler() { return diplomacyHandler; }
 }

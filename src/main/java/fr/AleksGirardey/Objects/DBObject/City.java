@@ -1,16 +1,18 @@
 package fr.AleksGirardey.Objects.DBObject;
 
-import fr.AleksGirardey.Main;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Database.GlobalCity;
-import fr.AleksGirardey.Objects.Database.GlobalPermission;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.Player;
+import fr.AleksGirardey.Objects.Database.GlobalPlayer;
+import fr.AleksGirardey.Objects.Database.Statement;
 import org.spongepowered.api.entity.living.player.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class City extends DBObject {
     private String      _primaryKeyName = GlobalCity.id;
@@ -26,14 +28,14 @@ public class City extends DBObject {
     private String      displayName;
     private String      tag;
     private int         rank;
-    private User        owner;
+    private DBPlayer    owner;
     private Permission  permRes;
     private Permission  permAllies;
     private Permission  permOutside;
 
-    private Map<String, User> citizens = new HashMap<>();
+    private Map<String, DBPlayer> citizens = new HashMap<>();
 
-    public City(String _displayName, Player _owner,
+    public City(String _displayName, DBPlayer _owner,
                 Permission _res, Permission _allies, Permission _outside) {
         super();
         displayName = _displayName;
@@ -47,7 +49,7 @@ public class City extends DBObject {
                 + displayName + "`, `"
                 + tag + "`, `"
                 + "0`, `"
-                + owner.getUniqueId().toString() + "`, `"
+                + owner.getUser().getUniqueId().toString() + "`, `"
                 + permRes.getId() + "`, `"
                 + permAllies.getId() + "`, `"
                 + permOutside.getId()+ "`");
@@ -59,9 +61,7 @@ public class City extends DBObject {
         displayName = rs.getString(GlobalCity.displayName);
         tag = rs.getString(GlobalCity.tag);
         rank = rs.getInt(GlobalCity.rank);
-        owner = Core.getPlayerHandler().getUser(
-                UUID.fromString(
-                        rs.getString(GlobalCity.playerOwner))).orElse(null);
+        owner = Core.getPlayerHandler().get(rs.getString(GlobalCity.playerOwner));
         permRes = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permRes));
         permAllies = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permAllies));
         permOutside = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permOutside));
@@ -71,7 +71,22 @@ public class City extends DBObject {
     }
 
     private void        populate() {
-        
+        String          sql = "SELECT * FROM `" + GlobalPlayer.tableName + "` WHERE `"
+                + GlobalPlayer.cityId + "` = " + _primaryKeyValue;
+
+        try {
+            Statement   statement = new Statement(sql);
+            statement.Execute();
+
+            while (statement.getResult().next()) {
+                ResultSet rs = statement.getResult();
+                citizens.put(rs.getString(GlobalPlayer.displayName),
+                        Core.getPlayerHandler().get(rs.getString(GlobalPlayer.uuid)));
+            }
+            statement.Close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setDisplayName(String displayName) {
@@ -89,9 +104,9 @@ public class City extends DBObject {
         this.edit(GlobalCity.rank, "" + rank);
     }
 
-    public void setOwner(Player owner) {
+    public void setOwner(DBPlayer owner) {
         this.owner = owner;
-        this.edit(GlobalCity.playerOwner, owner.getUniqueId().toString());
+        this.edit(GlobalCity.playerOwner, owner.getUser().getUniqueId().toString());
     }
 
     public void setPermRes(Permission permRes) {
@@ -125,7 +140,7 @@ public class City extends DBObject {
         return rank;
     }
 
-    public Player getOwner() {
+    public DBPlayer getOwner() {
         return owner;
     }
 
@@ -137,7 +152,17 @@ public class City extends DBObject {
         return permAllies;
     }
 
-    public Permission getPermOutside() {
+    public Permission   getPermOutside() {
         return permOutside;
+    }
+
+    public Collection<DBPlayer> getCitizens() { return citizens.values(); }
+
+    public Collection<DBPlayer> getAssistants() {
+        return getCitizens().stream().filter(DBPlayer::isAssistant).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public Boolean      contains(User user) {
+        return citizens.containsValue(user);
     }
 }

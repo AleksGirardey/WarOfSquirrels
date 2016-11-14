@@ -3,6 +3,7 @@ package fr.AleksGirardey.Objects.DBObject;
 import fr.AleksGirardey.Objects.Database.GlobalPermission;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Permission extends DBObject{
     private String          _primaryKeyName = GlobalPermission.id;
@@ -25,8 +26,21 @@ public class Permission extends DBObject{
                 + (switch_ ? "TRUE" : "FALSE") + "`");
     }
 
-    public Permission(ResultSet rs) {
+    public Permission(ResultSet rs) throws SQLException {
+        build = rs.getBoolean(GlobalPermission.build);
+        container = rs.getBoolean(GlobalPermission.container);
+        switch_ = rs.getBoolean(GlobalPermission.switch_);
+    }
 
+    @Override
+    public String       toString() {
+        String          res = "";
+
+        res += (this.build ? "B" : "-");
+        res += (this.container ? "C" : "-");
+        res += (this.switch_ ? "S" : "-");
+
+        return res;
     }
 
     public void setBuild(Boolean build) {
