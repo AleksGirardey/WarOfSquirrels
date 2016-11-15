@@ -3,7 +3,7 @@ package fr.AleksGirardey.Objects.Utilitaires;
 import com.flowpowered.math.vector.Vector2d;
 import com.flowpowered.math.vector.Vector3d;
 import fr.AleksGirardey.Handlers.PlayerHandler;
-import fr.AleksGirardey.Objects.Cuboide.Chunk;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Cuboide.Cubo;
 import fr.AleksGirardey.Objects.Database.Statement;

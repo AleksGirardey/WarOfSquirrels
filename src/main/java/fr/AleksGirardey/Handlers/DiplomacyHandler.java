@@ -37,8 +37,7 @@ public class DiplomacyHandler {
                 this.diplomacies.put(diplomacy.getId(), diplomacy);
                 if (!diplomacyMap.containsKey(diplomacy.getMain()))
                     this.diplomacyMap.put(diplomacy.getMain(), new ArrayList<>());
-                else
-                    this.diplomacyMap.get(diplomacy.getMain()).add(diplomacy);
+                this.diplomacyMap.get(diplomacy.getMain()).add(diplomacy);
             }
             statement.Close();
         } catch (SQLException e) {

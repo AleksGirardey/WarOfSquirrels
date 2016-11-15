@@ -2,7 +2,7 @@ package fr.AleksGirardey.Commands.City.Set;
 
 import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Handlers.ChunkHandler;
-import fr.AleksGirardey.Objects.Cuboide.Chunk;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.Core;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;

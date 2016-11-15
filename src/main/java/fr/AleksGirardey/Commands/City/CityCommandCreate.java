@@ -7,7 +7,7 @@ import fr.AleksGirardey.Handlers.PlayerHandler;
 import fr.AleksGirardey.Objects.*;
 import fr.AleksGirardey.Objects.Channels.CityChannel;
 import fr.AleksGirardey.Objects.City.InfoCity;
-import fr.AleksGirardey.Objects.Cuboide.Chunk;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import org.spongepowered.api.command.CommandResult;

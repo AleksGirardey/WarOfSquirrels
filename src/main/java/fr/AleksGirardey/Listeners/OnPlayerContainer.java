@@ -1,6 +1,6 @@
 package fr.AleksGirardey.Listeners;
 
-import fr.AleksGirardey.Objects.Cuboide.Chunk;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.Core;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;

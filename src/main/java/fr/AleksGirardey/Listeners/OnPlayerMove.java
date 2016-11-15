@@ -1,7 +1,7 @@
 package fr.AleksGirardey.Listeners;
 
 import fr.AleksGirardey.Handlers.ChunkHandler;
-import fr.AleksGirardey.Objects.Cuboide.Chunk;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.Core;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;

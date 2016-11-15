@@ -1,235 +1,90 @@
 package fr.AleksGirardey.Handlers;
 
-import fr.AleksGirardey.Objects.*;
-import fr.AleksGirardey.Objects.Cuboide.Chunk;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
+import fr.AleksGirardey.Objects.DBObject.City;
+import fr.AleksGirardey.Objects.Database.GlobalChunk;
 import fr.AleksGirardey.Objects.Database.Statement;
-import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
-import fr.AleksGirardey.Objects.Utilitaires.Utils;
-import org.spongepowered.api.entity.living.player.Player;
+import org.slf4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ChunkHandler {
-    public      ChunkHandler() {}
+
+    private Map<Integer, Chunk>         chunks;
+    private Map<City, List<Chunk>>      chunkMap;
+
+    private Logger                      logger;
+
+    public      ChunkHandler(Logger logger) {
+        this.logger = logger;
+        this.populate();
+    }
+
+    private void    populate() {
+        String      sql = "SELET * FROM `" + GlobalChunk.tableName + "`;";
+        Chunk       chunk;
+
+        try {
+            Statement   statement = new Statement(sql);
+            statement.Execute();
+            while (statement.getResult().next()) {
+                chunk = new Chunk(statement.getResult());
+                this.chunks.put(chunk.getId(), chunk);
+                if (!chunkMap.containsKey(chunk.getCity()))
+                    this.chunkMap.put(chunk.getCity(), new ArrayList<>());
+                this.chunkMap.get(chunk.getCity()).add(chunk);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Chunk            get(int id) { return chunks.get(id); }
+
+    public Chunk            get(int posX, int posZ) {
+        for (Chunk chunk : chunks.values())
+            if (chunk.getPosX() == posX
+                    && chunk.getPosZ() == posZ)
+                return chunk;
+        return null;
+    }
+
+    public List<Chunk>      get(City city) { return chunkMap.get(city); }
 
     public boolean          exists(int posX, int posZ){
-        boolean             bool = false;
-        String              sql = "SELECT `chunk_id` FROM `Chunk` "
-                                    + "WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
-        Statement _statement;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, posX);
-            _statement.getStatement().setInt(2, posZ);
-            bool = _statement.Execute().first();
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return (bool);
-    }
-
-    public boolean          exists(Chunk chunk)
-    { return exists(chunk.getX(), chunk.getZ()); }
-
-    public void             add(int posX, int posZ, int id) {
-            String          sql = "INSERT INTO `Chunk`(`chunk_posX`, `chunk_posZ`, `chunk_cityId`) " +
-                    "VALUES (? , ? , ?);";
-        Statement           _statement;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, posX);
-            _statement.getStatement().setInt(2, posZ);
-            _statement.getStatement().setInt(3, id);
-            _statement.Update();
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void                 addOutpost(Player player, int posX, int posZ) {
-        String              sql = "INSERT INTO `Chunk`(`chunk_posX`, `chunk_posZ`, `chunk_cityId`, `chunk_outpost`, `chunk_respawnZ`, `chunk_respawnY`, `chunk_respawnZ`)"
-                                    + "VALUES (?, ?, ?, TRUE, ?, ?, ?);";
-        Statement           _statement;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, posX);
-            _statement.getStatement().setInt(2, posZ);
-            _statement.getStatement().setInt(3, Core.getPlayerHandler().<Integer>getElement(player, "player_cityId"));
-            _statement.getStatement().setInt(4, player.getLocation().getBlockX());
-            _statement.getStatement().setInt(5, player.getLocation().getBlockY());
-            _statement.getStatement().setInt(6, player.getLocation().getBlockZ());
-            _statement.Update();
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void                 addHomeblock(int posX, int posZ) {
-        String                  sql = "UPDATE `Chunk` SET `chunk_homeblock` = TRUE WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
-        Statement           _statement;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, posX);
-            _statement.getStatement().setInt(2, posZ);
-            _statement.Update();
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean              isOutpost(int posX, int posZ) {
-        String                  sql = "SELECT `chunk_outpost` FROM `Chunk` WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
-        boolean                 res = false;
-        Statement           _statement;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, posX);
-            _statement.getStatement().setInt(2, posZ);
-            if (_statement.Execute().next())
-                res = _statement.getResult().getBoolean("chunk_outpost");
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return (res);
-    }
-
-    public boolean              isHomeblock(int posX, int posZ) {
-        String                  sql = "SELECT `chunk_homeblock` FROM `Chunk` WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
-        boolean                 res = false;
-        Statement           _statement;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, posX);
-            _statement.getStatement().setInt(2, posZ);
-            if (_statement.Execute().next())
-                res = _statement.getResult().getBoolean("chunk_homeblock");
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return (res);
-    }
-
-    public int               getCity(int posX, int posZ) {
-        int                     res = 0;
-        String                  sql = "SELECT `chunk_cityId` FROM `Chunk`" +
-                                " WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
-        Statement           _statement;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, posX);
-            _statement.getStatement().setInt(2, posZ);
-            if (_statement.Execute().next())
-                res = _statement.getResult().getInt("chunk_cityId");
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return (res);
-    }
-
-    public int              getId(int x, int z) {
-        int                 id = 0;
-        String              sql = "SELECT `chunk_id` FROM `Chunk` WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
-        Statement           _statement;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, x);
-            _statement.getStatement().setInt(2, z);
-            if (_statement.Execute().next())
-                id = _statement.getResult().getInt("chunk_id");
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return (id);
-    }
-
-    public int              getCity(int id) {
-        int                 res = 0;
-        String              sql = "SELECT `chunk_cityId` FROM `Chunk`" +
-                            " WHERE `chunk_id` = ?;";
-        Statement           _statement;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, id);
-            if (_statement.Execute().next()) {
-                res = _statement.getResult().getInt("chunk_cityId");
-            }
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return (res);
-    }
-
-    public void             delete(int x, int z) {
-        String              sql = "DELETE FROM `Chunk` WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
-        Statement           _statement;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, x);
-            _statement.getStatement().setInt(2, z);
-            _statement.Update();
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void             deleteCity(int id) {
-            String          sql = "DELETE FROM `Chunk` WHERE `chunk_cityId` = ?;";
-        Statement           _statement;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, id);
-            _statement.Update();
-            _statement.Close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean             setSpawn(Chunk chunk, int x, int y, int z) {
-        String      sql = "UPDATE `Chunk` SET `chunk_respawnX` = ?, `chunk_respawnY` = ?, `chunk_respawnZ` = ? " +
-                    "WHERE `chunk_posX` = ? AND `chunk_posZ` = ?;";
-        Statement           _statement;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, x);
-            _statement.getStatement().setInt(2, y);
-            _statement.getStatement().setInt(3, z);
-            _statement.getStatement().setInt(4, chunk.getX());
-            _statement.getStatement().setInt(5, chunk.getZ());
-            _statement.Update();
-            _statement.Close();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        for (Chunk chunk : chunks.values())
+            if (chunk.getPosX() == posX
+                    && chunk.getPosZ() == posZ)
+                return true;
         return false;
     }
 
+    public boolean          exists(Chunk chunk) { return exists(chunk.getPosX(), chunk.getPosZ()); }
+
+    public void             add(Chunk chunk) {
+        this.chunks.put(chunk.getId(), chunk);
+        if (!chunkMap.containsKey(chunk.getCity()))
+            chunkMap.put(chunk.getCity(), new ArrayList<>());
+        this.chunkMap.get(chunk.getCity()).add(chunk);
+    }
+
+    public void             delete(Chunk chunk) {
+        this.chunks.remove(chunk.getId());
+        this.chunkMap.get(chunk.getCity()).remove(chunk);
+    }
+
+    public void             deleteCity(City city) {
+        for (Chunk c : chunkMap.get(city))
+            chunks.remove(c.getId());
+        chunkMap.remove(city);
+    }
+
+    public boolean      canBePlaced() { return false; }
+/*
     public boolean canBePlaced(int cityId, int x, int z, boolean b) {
         if (b) {
             Core.Send("ALLO");
@@ -246,59 +101,23 @@ public class ChunkHandler {
                 || getCity(x - 1, z) == cityId
                 || getCity(x, z + 1) == cityId
                 || getCity(x, z - 1) == cityId);
-    }
+    } */
 
-    public List<Chunk> getHomeblockList() {
-        String              sql = "SELECT `chunk_posX`, `chunk_posZ` FROM `Chunk` WHERE `chunk_homeblock` = TRUE;";
-        Statement           _statement;
-        List<Chunk>         list = new ArrayList<Chunk>(Collections.emptyList());
+    public List<Chunk>  getHomeblockList() {
+        List<Chunk>     list = new ArrayList<>();
 
-        try {
-            _statement = new Statement(sql);
-            _statement.Execute();
-            while (_statement.getResult().next()) {
-                Chunk chunk = new Chunk(0, 0);
-                chunk.setX(_statement.getResult().getInt("chunk_posX"));
-                chunk.setZ(_statement.getResult().getInt("chunk_posZ"));
-                list.add(chunk);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        for (Chunk c : chunks.values())
+            if (c.isHomeblock())
+                list.add(c);
         return list;
     }
 
-    public int getSize(int city) {
-        String          sql = "SELECT `chunk_id` FROM `Chunk` WHERE `chunk_cityId` = ?;";
-        Statement       _statement;
-        int             i = 0;
-
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, city);
-            _statement.Execute();
-            while (_statement.getResult().next())
-                i++;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return i;
+    public List<Chunk>  getOupostList(City city) {
+        return chunkMap.get(city).stream().filter(c -> c.isOutpost()).collect(Collectors.toList());
     }
 
-    public int getOutpostSize(int city) {
-        String      sql = "SELECT `chunk_id` FROM `Chunk` WHERE `chunk_cityId` = ? AND `chunk_outpost` = TRUE;";
-        int         i = 0;
-        Statement   _statement;
 
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setInt(1, city);
-            _statement.Execute();
-            while (_statement.getResult().next())
-                i++;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return  i;
-    }
+    public int getSize(City city) { return (chunkMap.get(city).size() - getOupostList(city).size()); }
+
+    public int getOutpostSize(City city) { return getOupostList(city).size(); }
 }

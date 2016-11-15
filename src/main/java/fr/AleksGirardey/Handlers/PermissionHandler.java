@@ -1,16 +1,11 @@
 package fr.AleksGirardey.Handlers;
 
 import com.google.inject.Inject;
-import fr.AleksGirardey.Objects.Core;
-import fr.AleksGirardey.Objects.Cuboide.Chunk;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.Permission;
-import fr.AleksGirardey.Objects.Database.GlobalCity;
 import fr.AleksGirardey.Objects.Database.GlobalPermission;
-import fr.AleksGirardey.Objects.Database.GlobalPlayer;
 import fr.AleksGirardey.Objects.Database.Statement;
 import org.slf4j.Logger;
-import org.spongepowered.api.entity.living.player.Player;
 
 import java.sql.SQLException;
 import java.util.HashMap;

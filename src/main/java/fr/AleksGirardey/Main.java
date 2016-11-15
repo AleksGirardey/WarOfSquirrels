@@ -28,7 +28,7 @@ import fr.AleksGirardey.Commands.Party.*;
 import fr.AleksGirardey.Commands.War.*;
 import fr.AleksGirardey.Commands.RefuseCommand;
 import fr.AleksGirardey.Listeners.*;
-import fr.AleksGirardey.Objects.Cuboide.Chunk;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.CommandElements.*;
 import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.Core;
