@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Objects.CommandElements;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;
@@ -18,33 +19,35 @@ public class ElementCitizenOnline extends ElementCitizen {
     }
 
     @Override
-    protected Object parseValue(CommandSource commandSource, CommandArgs commandArgs) throws ArgumentParseException {
-        Object o = super.parseValue(commandSource, commandArgs);
-        Player  player = (Player) commandSource;
-
-        List<Player> onlines = Core.getCityHandler().getOnlinePlayers(Core.getPlayerHandler().<Integer>getElement(player, "player_cityId"));
+    protected Object        parseValue(CommandSource commandSource, CommandArgs commandArgs) throws ArgumentParseException {
+        Object              o = super.parseValue(commandSource, commandArgs);
+        DBPlayer            player = Core.getPlayerHandler().get((Player) commandSource);
+        List<Player>        onlines = Core.getCityHandler().getOnlinePlayers(player.getCity());
 
         for (Player p : onlines) {
-            if (Core.getPlayerHandler().<String>getElement(p, "player_displayName").equals(o))
+            DBPlayer    pl = Core.getPlayerHandler().get(p);
+
+            if (pl.getDisplayName().equals(o))
                 return p;
         }
         throw commandArgs.createError(Text.of("You need to invite an online player from your city"));
     }
 
     @Override
-    public List<String> complete(CommandSource commandSource, CommandArgs commandArgs, CommandContext commandContext) {
+    public List<String>     complete(CommandSource commandSource, CommandArgs commandArgs, CommandContext commandContext) {
         List<String>        list = super.complete(commandSource, commandArgs, commandContext);
         List<String>        res = new ArrayList<>();
         List<Player>        onlines;
         String              name;
+        DBPlayer            player = Core.getPlayerHandler().get((Player) commandSource);
 
         if (list.isEmpty())
             return list;
-        onlines = Core.getCityHandler().getOnlinePlayers(Core.getPlayerHandler().<Integer>getElement((Player) commandSource, "player_cityId"));
+        onlines = Core.getCityHandler().getOnlinePlayers(player.getCity());
         for (Player p : onlines) {
-            name = Core.getPlayerHandler().<String>getElement(p, "player_displayName");
-            if (list.contains(name))
-                list.add(name);
+            DBPlayer    pl = Core.getPlayerHandler().get(p);
+            if (list.contains(pl.getDisplayName()))
+                list.add(pl.getDisplayName());
         }
         return res;
     }

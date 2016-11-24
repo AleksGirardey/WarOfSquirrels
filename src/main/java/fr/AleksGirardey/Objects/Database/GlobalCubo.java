@@ -14,4 +14,5 @@ public class GlobalCubo {
     public static String        BposX = "cubo_BposX";
     public static String        BposY = "cubo_BposY";
     public static String        BposZ = "cubo_BposZ";
+    public static String        tableName = "Cubo";
 }

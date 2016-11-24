@@ -1,22 +1,23 @@
 package fr.AleksGirardey.Objects.War;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class        PartyWar {
-    public Player   leader;
-    List<Player>    players;
+public class                    PartyWar {
+    private DBPlayer            leader;
+    private List<DBPlayer>      players;
 
-    public          PartyWar(Player player) {
+    public          PartyWar(DBPlayer player) {
         leader = player;
         players = new ArrayList<>();
     }
 
-    public void     addPlayer(Player player) {
+    public void     addPlayer(DBPlayer player) {
         players.add(player);
     }
 
@@ -24,8 +25,8 @@ public class        PartyWar {
         String      list = "";
         int         i = 0;
 
-        for (Player p : players) {
-            list += Core.getPlayerHandler().<String>getElement(p, "player_displayName");
+        for (DBPlayer p : players) {
+            list += p.getDisplayName();
             if (i != players.size() - 1)
                 list += ", ";
             ++i;
@@ -35,10 +36,10 @@ public class        PartyWar {
 
     public int      size() { return players.size() + 1; }
 
-    public void     remove(Player player) { players.remove(player); }
+    public void     remove(DBPlayer player) { players.remove(player); }
 
-    public List<Player> toList() {
-        List<Player>    list = new ArrayList<>(players);
+    public List<DBPlayer> toList() {
+        List<DBPlayer>    list = new ArrayList<>(players);
         list.add(leader);
         return list;
     }
@@ -47,14 +48,20 @@ public class        PartyWar {
         leader.sendMessage(Text.of(message));
     }
 
-    public boolean  contains(Player player) { return players.contains(player) || leader.equals(player); }
+    public boolean  contains(DBPlayer player) { return players.contains(player) || leader.equals(player); }
 
     public boolean  createCityCheck() {
-        for (Player p : players)
-            if (Core.getPlayerHandler().<Integer>getElement(p, "player_cityId") != null)
+        for (DBPlayer p : players)
+            if (p.getCity() != null)
                 return false;
-        if (Core.getPlayerHandler().<Integer>getElement(leader, "player_cityId") != null)
-            return false;
-        return true;
+        return leader.getCity() == null;
+    }
+
+    public DBPlayer getLeader() {
+        return leader;
+    }
+
+    public void setLeader(DBPlayer leader) {
+        this.leader = leader;
     }
 }

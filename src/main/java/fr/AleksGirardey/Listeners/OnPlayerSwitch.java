@@ -2,6 +2,7 @@ package fr.AleksGirardey.Listeners;
 
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.living.player.Player;
@@ -12,9 +13,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OnPlayerSwitch {
+public class                OnPlayerSwitch {
 
-    static List<BlockType> SwitchableBlocks;
+    private static List<BlockType>  SwitchableBlocks;
 
     static {
         SwitchableBlocks = new ArrayList<BlockType>();
@@ -36,23 +37,17 @@ public class OnPlayerSwitch {
     }
 
     @Listener
-    public void     OnPlayerSwitch(InteractBlockEvent.Secondary event) {
-        Player player = (Player) event.getCause().getNamedCauses().get("Source");
-        int     x, z;
-        Chunk   chunk;
+    public void             OnPlayerSwitch(InteractBlockEvent.Secondary event) {
+        DBPlayer            player = Core.getPlayerHandler().get((Player) event.getCause().getNamedCauses().get("Source"));
+        int                 x, z;
+        Chunk               chunk;
 
         x = event.getTargetBlock().getLocation().get().getBlockX();
         z = event.getTargetBlock().getLocation().get().getBlockZ();
-        chunk = new Chunk(x, z);
-        try {
-            if (Core.getChunkHandler().exists(chunk.getX(), chunk.getZ())) {
-                if (SwitchableBlocks.contains(event.getTargetBlock().getState().getType()) && !Core.getPermissionHandler().ableTo(player,
-                        Core.getChunkHandler().getId(chunk.getX(), chunk.getZ()),
-                        "Switch"))
-                    event.setCancelled(true);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (Core.getChunkHandler().exists(x / 16, z / 16)) {
+            if (SwitchableBlocks.contains(event.getTargetBlock().getState().getType()) &&
+                    !Core.getPermissionHandler().ableTo(player,Core.getChunkHandler().get(x / 16, z / 16), "Switch", event.getTargetBlock().getPosition()))
+                event.setCancelled(true);
         }
     }
 }

@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Objects.CommandElements;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;
@@ -23,11 +24,10 @@ public class ElementCitizen extends CommandElement {
         String      name = commandArgs.next();
 
         if (commandSource instanceof Player) {
-            Player player = (Player) commandSource;
+            DBPlayer player = Core.getPlayerHandler().get((Player) commandSource);
 
-            if (Core.getPlayerHandler().<Integer>getElement(player, "player_cityId") != null
-                && Core.getCityHandler().getCitizensList(
-                    Core.getPlayerHandler().<Integer>getElement(player, "player_cityId"))
+            if (player.getCity() != null && Core.getCityHandler()
+                    .getCitizensList(player.getCity())
                     .contains(name))
                 return name;
         }
@@ -35,12 +35,12 @@ public class ElementCitizen extends CommandElement {
     }
 
     @Override
-    public List<String> complete(CommandSource commandSource, CommandArgs commandArgs, CommandContext commandContext) {
+    public List<String>         complete(CommandSource commandSource, CommandArgs commandArgs, CommandContext commandContext) {
         if (commandSource instanceof Player) {
-            Player player = (Player) commandSource;
+            DBPlayer player = Core.getPlayerHandler().get((Player) commandSource);
 
-            if (Core.getPlayerHandler().<Integer>getElement(player, "player_cityId") != null)
-                return Core.getCityHandler().getCitizensList(Core.getPlayerHandler().<Integer>getElement(player, "player_cityId"));
+            if (player.getCity() != null)
+                return Core.getCityHandler().getCitizensList(player.getCity());
         }
         return Collections.emptyList();
     }

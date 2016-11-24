@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Handlers;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Invitations.Invitation;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Scheduler;
@@ -37,7 +38,7 @@ public class InvitationHandler {
         this.invitationList.remove(invitation);
     }
 
-    public boolean      handleInvitation(Player player, boolean isAccepted) {
+    public boolean      handleInvitation(DBPlayer player, boolean isAccepted) {
         Invitation inv = null;
 
         for (Invitation invitation : invitationList)

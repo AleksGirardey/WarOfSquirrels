@@ -8,10 +8,7 @@ import org.spongepowered.api.entity.living.player.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class City extends DBObject {
@@ -53,6 +50,7 @@ public class City extends DBObject {
                 + permRes.getId() + "`, `"
                 + permAllies.getId() + "`, `"
                 + permOutside.getId()+ "`");
+        writeLog();
     }
 
     public City(ResultSet rs) throws SQLException {
@@ -68,6 +66,7 @@ public class City extends DBObject {
 
         //get Players name with this ID;
         this.populate();
+        writeLog();
     }
 
     private void        populate() {
@@ -162,7 +161,46 @@ public class City extends DBObject {
         return getCitizens().stream().filter(DBPlayer::isAssistant).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public Boolean      contains(User user) {
-        return citizens.containsValue(user);
+    public Boolean      contains(DBPlayer player) {
+        return citizens.containsValue(player);
+    }
+
+    public void         addCitizen(DBPlayer player) {
+        this.citizens.put(player.getDisplayName(), player);
+    }
+
+    public void         removeCitizen(DBPlayer player) {
+        this.citizens.remove(player.getDisplayName());
+    }
+
+    public String   getAssistantsAsString() {
+        String      message = "";
+        Collection<DBPlayer> list = getAssistants();
+        int         i = 0, max = list.size();
+
+        for (DBPlayer p : list) {
+            message += p.getDisplayName();
+            if (i != max - 1)
+                message += ", ";
+        }
+        return message;
+    }
+
+    public String   getCitizensAsString() {
+        String      message = "";
+        Collection<DBPlayer> list = getCitizens();
+        int         i = 0, max = list.size();
+
+        for (DBPlayer p : list) {
+            message += p.getDisplayName();
+            if (i != max - 1)
+                message += ", ";
+        }
+        return message;
+    }
+
+    public void     writeLog() {
+
+        Core.getLogger().info("[Creating] City '" + getDisplayName() + "' ");
     }
 }

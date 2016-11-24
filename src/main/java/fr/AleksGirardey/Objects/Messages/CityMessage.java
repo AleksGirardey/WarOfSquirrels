@@ -1,7 +1,6 @@
 package fr.AleksGirardey.Objects.Messages;
 
-import fr.AleksGirardey.Objects.Core;
-import org.spongepowered.api.entity.living.player.Player;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.channel.MessageReceiver;
@@ -13,11 +12,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
-public class CityMessage implements MessageChannel{
+public class        CityMessage implements MessageChannel{
 
-    private Player _player;
+    private         DBPlayer _player;
 
-    public CityMessage(Player player) {
+    public          CityMessage(DBPlayer player) {
         super();
         _player = player;
     }
@@ -25,8 +24,7 @@ public class CityMessage implements MessageChannel{
     @Override
     public Optional<Text> transformMessage(@Nullable Object sender, MessageReceiver recipient, Text original, ChatType type) {
         Text text = original;
-        text = Text.of(TextColors.DARK_AQUA, "[" + Core.getCityHandler().<String>getElement(
-                Core.getPlayerHandler().<Integer>getElement(_player, "player_cityId"), "city_tag") + "]", TextColors.RESET, text);
+        text = Text.of(TextColors.DARK_AQUA, "[" + _player.getCity().getTag() + "]", TextColors.RESET, text);
         return Optional.of(text);
     }
 

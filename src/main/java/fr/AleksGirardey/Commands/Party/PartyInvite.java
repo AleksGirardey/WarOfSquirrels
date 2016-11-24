@@ -2,6 +2,7 @@ package fr.AleksGirardey.Commands.Party;
 
 import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Invitations.PartyWarInvitation;
 import fr.AleksGirardey.Objects.War.PartyWar;
 import org.spongepowered.api.command.CommandResult;
@@ -11,16 +12,18 @@ import org.spongepowered.api.text.Text;
 
 import java.util.Collection;
 
-public class PartyInvite extends CityCommandAssistant {
+public class                    PartyInvite extends CityCommandAssistant {
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext context) {
-        Player newone = context.<Player>getOne("[citizen]").get();
+    protected boolean           SpecialCheck(DBPlayer player, CommandContext context) {
+        DBPlayer                newOne = Core.getPlayerHandler().get(context.<Player>getOne("[citizen]").get());
+
 
         if (!Core.getPartyHandler().isLeader(player)) {
             player.sendMessage(Text.of("You need to be leader to invite someone"));
             return false;
         }
-        if (Core.getPartyHandler().contains(newone)) {
+
+        if (Core.getPartyHandler().contains(newOne)) {
             player.sendMessage(Text.of("player already belongs to a party"));
             return false;
         }
@@ -29,7 +32,8 @@ public class PartyInvite extends CityCommandAssistant {
             Collection<Player> newones = context.<Player>getAll("<citizen>");
 
             for (Player p : newones) {
-                if (Core.getPartyHandler().contains(p)) {
+                DBPlayer    pl = Core.getPlayerHandler().get(p);
+                if (Core.getPartyHandler().contains(pl)) {
                     player.sendMessage(Text.of("player already belongs to a party"));
                     return false;
                 }
@@ -39,9 +43,9 @@ public class PartyInvite extends CityCommandAssistant {
     }
 
     @Override
-    protected CommandResult ExecCommand(Player player, CommandContext context) {
-        Player      newOne = context.<Player>getOne("[citizen]").get();
-        PartyWar    party = Core.getPartyHandler().getPartyFromLeader(player);
+    protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
+        DBPlayer                newOne = Core.getPlayerHandler().get(context.<Player>getOne("[citizen]").get());
+        PartyWar                party = Core.getPartyHandler().getPartyFromLeader(player);
 
         Core.getInvitationHandler().createInvitation(new PartyWarInvitation(newOne, player, party));
         Core.getBroadcastHandler().partyInvitation(player, newOne);
@@ -49,8 +53,9 @@ public class PartyInvite extends CityCommandAssistant {
             Collection<Player>      newOnes = context.<Player>getAll("<citizen>");
 
             for (Player p : newOnes) {
-                Core.getBroadcastHandler().partyInvitation(player, newOne);
-                Core.getInvitationHandler().createInvitation(new PartyWarInvitation(p, player, party));
+                DBPlayer    pl = Core.getPlayerHandler().get(p);
+                Core.getBroadcastHandler().partyInvitation(pl, newOne);
+                Core.getInvitationHandler().createInvitation(new PartyWarInvitation(pl, player, party));
             }
         }
         return CommandResult.success();

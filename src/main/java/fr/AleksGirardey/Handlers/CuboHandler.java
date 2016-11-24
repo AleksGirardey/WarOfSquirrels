@@ -5,6 +5,9 @@ import com.google.inject.Inject;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Cuboide.Cubo;
 import fr.AleksGirardey.Objects.Cuboide.CuboVector;
+import fr.AleksGirardey.Objects.DBObject.City;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.DBObject.Permission;
 import fr.AleksGirardey.Objects.Database.GlobalCubo;
 import fr.AleksGirardey.Objects.Database.GlobalPlayer;
 import fr.AleksGirardey.Objects.Utilitaires.Pair;
@@ -24,30 +27,25 @@ import java.util.Map;
 public class CuboHandler {
 
     private Logger                                      logger;
-    private Map<Player, Pair<Vector3i, Vector3i>>       points = new HashMap<>();
+    private Map<DBPlayer, Pair<Vector3i, Vector3i>>     points = new HashMap<>();
     private Map<Integer, Cubo>                          cubos = new HashMap<>();
 
     @Inject
     public              CuboHandler(Logger logger) {
-        this.generate();
         this.logger = logger;
+        this.populate();
     }
 
-    private void        generate() {
-        String          sql = "SELECT * FROM `Cubo`;";
-        Statement       _statement = null;
-        ResultSet       _rs = null;
+    private void        populate() {
+        String          sql = "SELECT * FROM `" + GlobalCubo.tableName + "`";
+        Cubo            cubo;
 
         try {
-            _statement = new Statement(sql);
-            _rs = _statement.Execute();
-            while (_rs.next()) {
-                cubos.put(_rs.getInt("cubo_id"), new Cubo(
-                        _rs.getInt("cubo_id"),
-                        _rs.getString("cubo_name"),
-                        Core.getCuboHandler().get(_rs.getInt("cubo_parent")),
-                        _rs.getString("cubo_owner"),
-                        new CuboVector(_rs)));
+            Statement   statement = new Statement(sql);
+            statement.Execute();
+            while (statement.getResult().next()) {
+                cubo = new Cubo(statement.getResult());
+                cubos.put(cubo.getId(), cubo);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,75 +54,41 @@ public class CuboHandler {
 
     private Logger      getLogger() { return logger; }
 
-    public void         add(Player player, String name) {
+    public void         add(DBPlayer player, String name) {
         if (!points.containsKey(player)) {
-            player.sendMessage(Text.of("You need to active the cubo mode first"));
+            player.getUser().getPlayer().get()
+                    .sendMessage(Text.of("You need to active the cubo mode first"));
             return;
         }
         Pair<Vector3i, Vector3i>    value = points.get(player);
         CuboVector                  vector = new CuboVector(value.getL(), value.getR());
-        String                      sql = "INSERT INTO `Cubo` (`cubo_nom`, `cubo_parent`," +
-                " `cubo_permissionInList`, `cubo_permissionOutside`," +
-                " `cubo_owner`, `cubo_priority`," +
-                " `cubo_AposX`, `cubo_AposY`, `cubo_AposZ`," +
-                " `cubo_BposX`, `cubo_BposY`, `cubo_BposZ`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        Statement                   _statement;
-        int                         priority = 0;
-        PermissionHandler           ph = Core.getPermissionHandler();
+        Cubo                        cubo, parent = getParent(vector);
 
-        try {
-            _statement = new Statement(sql);
-            _statement.getStatement().setString(1, name);
-            Cubo    parent = this.getParent(vector);
-            if (parent == null) {
-                _statement.getStatement().setObject(2, null);
-                priority = 0;
-            }
-            else {
-                _statement.getStatement().setInt(2, parent.getId());
-                priority = parent.getPriority() + 1;
-            }
-            _statement.getStatement().setInt(3, ph.add(true, false, true));
-            _statement.getStatement().setInt(4, ph.add(false, false, true));
-            _statement.getStatement().setString(5, player.getUniqueId().toString());
-            _statement.getStatement().setInt(6, priority);
-            _statement.getStatement().setInt(7, vector.getOne().getX());
-            _statement.getStatement().setInt(8, vector.getOne().getY());
-            _statement.getStatement().setInt(9, vector.getOne().getZ());
-            _statement.getStatement().setInt(10, vector.getEight().getX());
-            _statement.getStatement().setInt(11, vector.getEight().getY());
-            _statement.getStatement().setInt(12, vector.getEight().getZ());
-            ResultSet   rs = _statement.Execute();
-            cubos.put(rs.getInt(GlobalCubo.id), new Cubo(
-                    rs.getInt(GlobalCubo.id),
-                    name,
-                    parent,
-                    player.getUniqueId().toString(),
-                    vector));
-            _statement.Close();
-            rs.close();
-            logger.info("[Cubo] "
-                    + Core.getPlayerHandler().getElement(player, GlobalPlayer.displayName)
+        cubo = new Cubo(name, parent, player,
+                new Permission(true, true, true), new Permission(false, false, false),
+                parent == null ? 0 : parent.getPriority() + 1, vector);
+
+        cubos.put(cubo.getId(), cubo);
+
+        logger.info("[Cubo] "
+                    + player.getDisplayName()
                     + " has created a cubo at ["
                     + vector.getOne().getX() + ";" + vector.getOne().getY() + ";" + vector.getOne().getZ()
                     + "] to ["
                     + vector.getEight().getX() + ";" + vector.getEight().getY() + ";" + vector.getEight().getZ()
                     + "]");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
-    public Cubo         get(int id) {
-        return          cubos.get(id);
+    public Cubo                 get(int id) {
+        return cubos.get(id);
     }
 
-    public List<Cubo>         getFromCity(int cityId) {
-        List<Cubo> resultat = new ArrayList<Cubo>();
+    public List<Cubo>           getFromCity(City city) {
+        List<Cubo>              resultat = new ArrayList<Cubo>();
 
-        for (Map.Entry<Integer, Cubo>   entry : cubos.entrySet())
-            if (Core.getPlayerHandler().<Integer>getElement(entry.getValue().getOwner(), GlobalPlayer.cityId) == cityId)
-                resultat.add(entry.getValue());
+        for (Cubo c : cubos.values())
+            if (c.getOwner().getCity() == city)
+                resultat.add(c);
 
         return resultat;
     }
@@ -132,51 +96,49 @@ public class CuboHandler {
     public Cubo         get(Vector3i block) {
         Cubo            last = null;
 
-        for (Map.Entry<Integer, Cubo> entry : cubos.entrySet())
-            if (entry.getValue().contains(block))
-                if (last == null || last.getPriority() < entry.getValue().getPriority())
-                    last = entry.getValue();
-
+        for (Cubo c : cubos.values())
+            if (c.contains(block))
+                if (last == null || last.getPriority() < c.getPriority())
+                    last = c;
         return  last;
     }
 
     public Cubo         getParent(CuboVector vector) {
         Cubo            last = null;
 
-        for (Map.Entry<Integer, Cubo> entry : cubos.entrySet()) {
-            Cubo        value = entry.getValue();
-            if (value.contains(vector.getOne()) && value.contains(vector.getEight()))
-                if (last == null || last.getPriority() < value.getPriority())
-                    last = value;
-        }
+        for (Cubo c : cubos.values())
+            if (c.contains(vector.getOne()) && c.contains(vector.getEight()))
+                if (last == null || last.getPriority() < c.getPriority())
+                    last = c;
+
         return last;
     }
 
-    public void             activateCuboMode(Player player) {
+    public void             activateCuboMode(DBPlayer player) {
         points.computeIfAbsent(player, CuboHandler::newCubo);
     }
 
-    public Pair<Vector3i, Vector3i>                 getPoints(Player player) {
+    public Pair<Vector3i, Vector3i>                 getPoints(DBPlayer player) {
         return points.get(player);
     }
 
-    private static Pair<Vector3i, Vector3i>         newCubo(Player player) {
-        player.sendMessage(Text.of("-=== CuboVector mode [ON] ===-"));
+    private static Pair<Vector3i, Vector3i>         newCubo(DBPlayer player) {
+        player.getUser().getPlayer().get().sendMessage(Text.of("-=== CuboVector mode [ON] ===-"));
         return (new Pair<>(null, null));
     }
 
-    public void             deactivateCuboMode(Player player) {
+    public void             deactivateCuboMode(DBPlayer player) {
         if (points.get(player) != null) {
             points.remove(player);
             player.sendMessage(Text.of("-=== CuboVector mode [OFF] ===-"));
         }
     }
 
-    public boolean      playerExists(Player player) {
+    public boolean      playerExists(DBPlayer player) {
         return points.containsKey(player);
     }
 
-    public void         set(Player p, Vector3i block, boolean aorb) {
+    public void         set(DBPlayer p, Vector3i block, boolean aorb) {
         if (aorb)
             points.get(p).setL(block);
         else

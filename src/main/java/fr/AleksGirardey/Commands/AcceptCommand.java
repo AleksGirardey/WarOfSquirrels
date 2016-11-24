@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Commands;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -12,7 +13,7 @@ public class AcceptCommand implements CommandExecutor{
 
     public CommandResult execute(CommandSource commandSource, CommandContext commandContext) throws CommandException {
         if (commandSource instanceof Player) {
-            Player player = (Player) commandSource;
+            DBPlayer player = Core.getPlayerHandler().get((Player) commandSource);
             if (Core.getInvitationHandler().handleInvitation(player, true))
                 return CommandResult.success();
         }

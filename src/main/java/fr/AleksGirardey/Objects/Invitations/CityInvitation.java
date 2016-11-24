@@ -1,28 +1,28 @@
 package fr.AleksGirardey.Objects.Invitations;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.City;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
 public class CityInvitation extends Invitation {
 
-    public CityInvitation(Player player, Player sender, int cityId) {
+    public CityInvitation(DBPlayer player, DBPlayer sender, City city) {
         super(player, sender, Reason.City);
-        this._cityId = cityId;
-        Core.getBroadcastHandler().cityInvitationSend(player, sender, cityId);
+        this._city = city;
+        Core.getBroadcastHandler().cityInvitationSend(player, sender, city);
     }
 
     @Override
     public void accept() {
-        Core.getInfoCityMap().get(_cityId).getChannel().addMember(_player);
-        Core.getCityHandler().newCitizen(_player, _cityId);
+        Core.getInfoCityMap().get(_city).getChannel().addMember(_player.getUser().getPlayer().get());
+        Core.getCityHandler().newCitizen(_player, _city);
     }
 
     @Override
     public void refuse() {
-        _sender.sendMessage(
-                Text.of(Core.getPlayerHandler().<String>getElement(_player, "player_displayName")
-                + " refuse your invitation"));
+        _sender.sendMessage(Text.of(_player.getDisplayName() + " refuse your invitation"));
     }
 
     @Override

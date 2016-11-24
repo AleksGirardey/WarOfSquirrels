@@ -60,10 +60,10 @@ public class CityHandler {
         return null;
     }
 
-    public City             add(Player player, String displayName) {
+    public City             add(DBPlayer player, String displayName) {
         City                newOne = new City(
                 displayName,
-                Core.getPlayerHandler().get(player),
+                player,
                 Core.getPermissionHandler().add(true, true, true),
                 Core.getPermissionHandler().add(false, false, true),
                 Core.getPermissionHandler().add(false, false, false));
@@ -72,15 +72,15 @@ public class CityHandler {
         return newOne;
     }
 
-    public void             delete(int id){ cities.remove(id); }
+    public void                         delete(City city){ cities.remove(city.getId()); }
 
-    public Collection<DBPlayer>       getCitizens(int id) {
-        return cities.get(id).getCitizens();
+    public Collection<DBPlayer>         getCitizens(City city) {
+        return cities.get(city.getId()).getCitizens();
     }
 
-    public List<String>             getCitizensList(int id) {
-        Collection<DBPlayer>        citizens = cities.get(id).getCitizens();
-        List<String>                res = new ArrayList<>();
+    public List<String>                 getCitizensList(City city) {
+        Collection<DBPlayer>            citizens = cities.get(city.getId()).getCitizens();
+        List<String>                    res = new ArrayList<>();
 
         for (DBPlayer p : citizens)
             res.add(p.getDisplayName());
@@ -166,29 +166,20 @@ public class CityHandler {
                     || (d.getMain() == player && d.getSub() == owner))
                 Core.getDiplomacyHandler().delete(d.getId());
     }
-/*
-    public void         setMayor(String s, int playerCityId) {
-        String uuid = this.<String>getElement(playerCityId, "city_playerOwner");
-        String newMayor = Core.getPlayerHandler().getUuidFromName(s);
 
-        this.<String>setElement(playerCityId, "city_playerOwner", newMayor);
-        Core.getPlayerHandler().<Boolean>setElement(uuid, "player_assistant", true);
-        Core.getPlayerHandler().<Boolean>setElement(newMayor, "player_assistant", false);
-    } */
-
-    public boolean      isLimitReached(int cityId) {
-        return false;
+    public boolean      isLimitReached(City city) {
+        return Core.getInfoCityMap().get(city).getRank().getCitizensMax() >= city.getCitizens().size();
     }
-    /*
-    public void         newCitizen(Player player, int city) {
-        if (Core.getPlayerHandler().<Integer>getElement(player, "player_cityId") == null
-                && !isLimitReached(city)) {
-            Core.getPlayerHandler().setElement(player, "player_cityId", city);
-            Core.getBroadcastHandler().cityChannel(
-                    city,
-                    Core.getPlayerHandler().<String>getElement(player, "player_displayName") + " join the city");
-        }
-    } */
+
+    public void         newCitizen(DBPlayer player, City city) {
+        player.setCity(city);
+        city.addCitizen(player);
+    }
+
+    public void         removeCitizen(DBPlayer player) {
+        player.getCity().removeCitizen(player);
+        player.setCity(null);
+    }
 
     public List<String>     getCityNameList() {
         List<String>        list = new ArrayList<>();
@@ -197,6 +188,12 @@ public class CityHandler {
             list.add(city.getDisplayName());
 
         return list;
+    }
+
+    public List<DBPlayer>       getOnlineDBPlayers(City city) {
+        Collection<DBPlayer>    players = city.getCitizens();
+
+        return players.stream().filter(p -> p.getUser().isOnline()).collect(Collectors.toList());
     }
 
     public List<Player>         getOnlinePlayers(City city) {
@@ -225,24 +222,12 @@ public class CityHandler {
         return list;
     }
 
-    // Change later
-    public Map<Integer, InfoCity>   getCityMap() {
-        Map<Integer, InfoCity>      map = new HashMap<>();
-        String                      sql = "SELECT * FROM `City`;";
-        Statement                   _statement = null;
+    public Map<City, InfoCity>   getCityMap() {
+        Map<City, InfoCity>      map = new HashMap<>();
 
-        try {
-            _statement = new Statement(sql);
-            _statement.Execute();
-            while (_statement.getResult().next()) {
-                Core.getLogger().info("[InfoCity] new city info created for '" + _statement.getResult().getString("city_displayName") + "'");
-                map.put(_statement.getResult().getInt("city_id"),
-                        new InfoCity(
-                                _statement.getResult().getInt("city_id"),
-                                _statement.getResult().getInt("city_rank")));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        for (City c : cities.values()) {
+            logger.info("[InfoCity] new city info created for `" + c.getDisplayName());
+            map.put(c, new InfoCity(c));
         }
         return map;
     }

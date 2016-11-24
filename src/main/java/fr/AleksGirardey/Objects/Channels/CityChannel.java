@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Objects.Channels;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.City;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageReceiver;
 import org.spongepowered.api.text.channel.MutableMessageChannel;
@@ -11,18 +12,18 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class                        CityChannel implements MutableMessageChannel{
-    private int                     cityId;
+    private City                    city;
     private Set<MessageReceiver>    members;
 
-    public CityChannel(int cityId, Collection<MessageReceiver> members) {
-        this.cityId = cityId;
+    public CityChannel(City city, Collection<MessageReceiver> members) {
+        this.city = city;
         this.members = Collections.newSetFromMap(new WeakHashMap<>());
         this.members.addAll(members);
-        Core.getLogger().info("[Chat] City channel created (" + cityId + ")");
+        Core.getLogger().info("[Chat] City channel created (" + city.getDisplayName() + ")");
     }
 
-    public CityChannel(int cityId) {
-        this(cityId, Collections.emptySet());
+    public CityChannel(City city) {
+        this(city, Collections.emptySet());
     }
 
     @Override
@@ -49,4 +50,6 @@ public class                        CityChannel implements MutableMessageChannel
     public void clearMembers() {
         this.members.clear();
     }
+
+    public City getCity() { return city; }
 }

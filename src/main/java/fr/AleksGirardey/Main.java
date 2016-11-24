@@ -8,30 +8,21 @@ import fr.AleksGirardey.Commands.City.Cubo.CuboCommandAdd;
 import fr.AleksGirardey.Commands.City.Cubo.CuboCommandMode;
 import fr.AleksGirardey.Commands.City.Set.*;
 import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetAlly;
-import fr.AleksGirardey.Commands.City.Set.Permissions.PermCity;
-import fr.AleksGirardey.Commands.City.Set.SetAssistant;
 import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetEnemy;
 import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetNeutral;
-import fr.AleksGirardey.Commands.City.Set.Permissions.Build.PermBuild;
-import fr.AleksGirardey.Commands.City.Set.Permissions.Build.PermBuildAllies;
-import fr.AleksGirardey.Commands.City.Set.Permissions.Build.PermBuildOutside;
-import fr.AleksGirardey.Commands.City.Set.Permissions.Build.PermBuildResident;
-import fr.AleksGirardey.Commands.City.Set.Permissions.Container.PermContainer;
-import fr.AleksGirardey.Commands.City.Set.Permissions.Container.PermContainerAllies;
-import fr.AleksGirardey.Commands.City.Set.Permissions.Container.PermContainerOutside;
-import fr.AleksGirardey.Commands.City.Set.Permissions.Container.PermContainerResident;
-import fr.AleksGirardey.Commands.City.Set.Permissions.Switch.PermSwitch;
-import fr.AleksGirardey.Commands.City.Set.Permissions.Switch.PermSwitchAllies;
-import fr.AleksGirardey.Commands.City.Set.Permissions.Switch.PermSwitchOutside;
-import fr.AleksGirardey.Commands.City.Set.Permissions.Switch.PermSwitchResident;
+import fr.AleksGirardey.Commands.City.Set.Permissions.PermAllies;
+import fr.AleksGirardey.Commands.City.Set.Permissions.PermCity;
+import fr.AleksGirardey.Commands.City.Set.Permissions.PermOutside;
+import fr.AleksGirardey.Commands.City.Set.Permissions.PermResident;
 import fr.AleksGirardey.Commands.Party.*;
-import fr.AleksGirardey.Commands.War.*;
 import fr.AleksGirardey.Commands.RefuseCommand;
+import fr.AleksGirardey.Commands.War.*;
 import fr.AleksGirardey.Listeners.*;
-import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.CommandElements.*;
-import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -40,6 +31,7 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.command.CommandCallable;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -48,7 +40,6 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.io.File;
@@ -102,11 +93,8 @@ public class Main {
         CommandSpec         info, create, delete, claim, unclaim,
                             set, help, add, remove, list, leave, cubo;
         CommandSpec         setHelp, setSpawn, setAlly, setNeutral,
-                            setEnemy, setMayor, setAssistant, setPerm,
-                            setContainerAll, setBuildAll, setSwitchAll;
-        CommandSpec         setBuild, setBuildO, setBuildA, setBuildR;
-        CommandSpec         setContainer, setContainerO, setContainerA, setContainerR;
-        CommandSpec         setSwitch, setSwitchO, setSwitchA, setSwitchR, setCubo;
+                            setEnemy, setMayor, setAssistant, setPerm;
+        CommandSpec         setAllies, setResident, setOutside, setCubo;
         CommandSpec         party, partyDelete, partyCreate, partyInvite, partyRemove, partyLeave;
         
         info = CommandSpec.builder()
@@ -228,119 +216,38 @@ public class Main {
                         GenericArguments.onlyOne(GenericArguments.string(Text.of("[resident]"))))
                 .build();
 
-        setBuildO = CommandSpec.builder()
+        setOutside = CommandSpec.builder()
                 .description(Text.of("Set outside build permission"))
-                .executor(new PermBuildOutside())
+                .executor(new PermOutside())
                 .arguments(
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[value]"))))
+                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[build]"))),
+                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[container]"))),
+                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[switch]"))))
                 .build();
 
-        setBuildA = CommandSpec.builder()
+        setAllies = CommandSpec.builder()
                 .description(Text.of("Set allies build permission"))
-                .executor(new PermBuildAllies())
+                .executor(new PermAllies())
                 .arguments(
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[value]"))))
+                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[build]"))),
+                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[container]"))),
+                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[switch]"))))
                 .build();
 
-        setBuildR = CommandSpec.builder()
+        setResident = CommandSpec.builder()
                 .description(Text.of("Set resident build permission"))
-                .executor(new PermBuildResident())
+                .executor(new PermResident())
                 .arguments(
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[value]"))))
-                .build();
-
-        setBuild = CommandSpec.builder()
-                .description(Text.of("Set build permission"))
-                .child(setBuildO, "outside", "o")
-                .child(setBuildA, "allies", "a")
-                .child(setBuildR, "resident", "r")
-                .build();
-
-        setContainerO = CommandSpec.builder()
-                .description(Text.of("Set outside container permission"))
-                .executor(new PermContainerOutside())
-                .arguments(
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[value]"))))
-                .build();
-
-        setContainerA = CommandSpec.builder()
-                .description(Text.of("Set allies container permission"))
-                .executor(new PermContainerAllies())
-                .arguments(
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[value]"))))
-                .build();
-
-        setContainerR = CommandSpec.builder()
-                .description(Text.of("Set allies container permission"))
-                .executor(new PermContainerResident())
-                .arguments(
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[value]"))))
-                .build();
-
-        setContainer = CommandSpec.builder()
-                .description(Text.of("Set container permission"))
-                .child(setContainerO, "outside", "o")
-                .child(setContainerA, "allies", "a")
-                .child(setContainerR, "resident", "r")
-                .build();
-
-        setSwitchO = CommandSpec.builder()
-                .description(Text.of("Set outside switch permission"))
-                .executor(new PermSwitchOutside())
-                .arguments(
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[value]"))))
-                .build();
-
-        setSwitchA = CommandSpec.builder()
-                .description(Text.of("Set outside switch permission"))
-                .executor(new PermSwitchAllies())
-                .arguments(
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[value]"))))
-                .build();
-
-        setSwitchR = CommandSpec.builder()
-                .description(Text.of("Set outside switch permission"))
-                .executor(new PermSwitchResident())
-                .arguments(
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[value]"))))
-                .build();
-
-        setSwitch = CommandSpec.builder()
-                .description(Text.of("Set switch permission"))
-                .child(setSwitchO, "outside", "o")
-                .child(setSwitchA, "allies", "a")
-                .child(setSwitchR, "resident", "r")
-                .build();
-
-        setSwitchAll = CommandSpec.builder()
-                .description(Text.of("Set switch permission"))
-                .executor(new PermSwitch())
-                .arguments(
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[value]"))))
-                .build();
-
-        setContainerAll = CommandSpec.builder()
-                .description(Text.of("Set container permission"))
-                .executor(new PermContainer())
-                .arguments(
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[value]"))))
-                .build();
-
-        setBuildAll = CommandSpec.builder()
-                .description(Text.of("Set build permission"))
-                .executor(new PermBuild())
-                .arguments(
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[value]"))))
+                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[build]"))),
+                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[container]"))),
+                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[switch]"))))
                 .build();
 
         setPerm = CommandSpec.builder()
                 .description(Text.of("Set new permissions"))
-                .child(setBuild, "build", "b")
-                .child(setBuildAll, "buildAll", "bAll")
-                .child(setContainer, "container", "c")
-                .child(setContainerAll, "containerAll", "cAll")
-                .child(setSwitch, "switch", "s")
-                .child(setSwitchAll, "switchAll", "sAll")
+                .child(setResident, "resident", "r")
+                .child(setAllies, "allies", "a")
+                .child(setOutside, "outside", "o")
                 .executor(new PermCity())
                 .arguments(
                         GenericArguments.onlyOne(new ElementAlly(Text.of("[city]"))),
@@ -562,8 +469,8 @@ public class Main {
                 .description(Text.of("Nearest city homeblock"))
                 .executor((commandSource, commandContext) -> {
                     if (commandSource instanceof Player) {
-                        Player  player = (Player) commandSource;
-                        Text    message = Text.of("La civilization la plus proche est à " + Utils.NearestHomeblock(new Chunk(player.getLocation().getBlockX(), player.getLocation().getBlockZ()))
+                        DBPlayer    player = Core.getPlayerHandler().get((Player) commandSource);
+                        Text        message = Text.of("La civilization la plus proche est à " + Utils.NearestHomeblock(player.getPosX() / 16, player.getPosZ() / 16)
                                 + " chunks.");
                         player.sendMessage(Text.of(TextColors.DARK_GREEN, message, TextColors.RESET));
                     }

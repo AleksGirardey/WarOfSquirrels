@@ -2,6 +2,8 @@ package fr.AleksGirardey.Objects.DBObject;
 
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Database.Statement;
+import org.spongepowered.api.text.LiteralText;
+import org.spongepowered.api.text.Text;
 
 import java.sql.SQLException;
 
@@ -12,6 +14,8 @@ public abstract class DBObject {
     protected String        _primaryKeyValue;
     protected String        _tablename;
     protected String        _fields;
+
+    public DBObject() {}
 
     protected void      delete() {
         _sql = "DELETE FROM `" + _tablename + "` WHERE `" + _primaryKeyName + "` = " + _primaryKeyValue;
@@ -28,6 +32,8 @@ public abstract class DBObject {
         _sql = "INSERT INTO `" + _tablename + "` (" + _fields + ") VALUES (" + values + ");";
         return this.update();
     }
+
+    protected abstract void         writeLog();
 
     protected int       update() {
         Statement _statement;

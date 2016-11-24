@@ -1,73 +1,83 @@
 package fr.AleksGirardey.Commands.City.Set.Diplomacy;
 
+import com.sun.org.glassfish.gmbal.ManagedObject;
 import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Handlers.CityHandler;
 import fr.AleksGirardey.Handlers.PlayerHandler;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.City;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.DBObject.Permission;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 
 import java.util.Collection;
 
-public abstract class SetDiplomacy extends CityCommandAssistant{
+public abstract class           SetDiplomacy extends CityCommandAssistant{
 
-    protected abstract void NewDiplomacy(Player player, int cityId2);
+    protected abstract void     NewDiplomacy(DBPlayer player, City city, Permission perm);
 
-    protected void Annouce(int cityId1, int cityId2, String relation) {
-        Core.Send("[Diplomacy Alert] " + Core.getCityHandler().<String>getElement(cityId1, "city_displayName")
+    protected void              Annouce(City city1, City city2, String relation) {
+        Core.Send("[Diplomacy Alert] " + city1.getDisplayName()
                 + " now treat "
-                + Core.getCityHandler().<String>getElement(cityId2, "city_displayName")
+                + city2.getDisplayName()
                 + " as " + relation + ".");
     }
 
-    protected boolean CanDoIt(Player player) {
+    protected boolean           CanDoIt(DBPlayer player) {
         if (super.CanDoIt(player))
             return true;
         player.sendMessage(Text.of("You need to belong to a city or you are not enough influent to do diplomacy"));
         return false;
     }
 
-    protected boolean SpecialCheck(Player player, CommandContext context) {
-        /*String              cityName = context.<String>getOne("[city]").get();
-        Collection<String>  citiesNames = null;
-        CityHandler         cityHandler = Core.getCityHandler();
+    protected boolean           SpecialCheck(DBPlayer player, CommandContext context) {
+        String                  cityName = context.<String>getOne("[city]").get();
+        Collection<String>      citiesNames = null;
 
         if (context.hasAny("<city>"))
             citiesNames = context.<String>getAll("<city>");
 
-        if (cityHandler.getCityFromName(cityName) == 0) {
-            player.sendMessage(Text.of("City '" + cityName + "' doesn't exist !"));
+        if (Core.getCityHandler().get(cityName) == null) {
+            player.sendMessage(Text.builder("City `")
+                    .append(Text.builder(cityName)
+                            .style(TextStyles.ITALIC)
+                            .build())
+                    .append(Text.of("` doesn't exist !"))
+                    .build());
             return false;
         }
+
         if (citiesNames != null)
             for (String name : citiesNames)
-                if (cityHandler.getCityFromName(name) == 0) {
-                    player.sendMessage(Text.of("City '" + name + "' doesn't exist !"));
+                if (Core.getCityHandler().get(name) != null) {
+                    player.sendMessage(Text.builder("City `")
+                            .append(Text.builder(name)
+                                    .style(TextStyles.ITALIC)
+                                    .build())
+                            .append(Text.of("` doesn't exist !"))
+                            .build());
                     return false;
-                }*/
+                }
         return true;
     }
 
-    protected CommandResult ExecCommand(Player player, CommandContext context) {
+    protected CommandResult ExecCommand(DBPlayer player, CommandContext context) {
         String                  cityName = context.<String>getOne("[city]").get();
         Collection<String>      citiesNames = null;
-        PlayerHandler           playerHandler = Core.getPlayerHandler();
-        CityHandler             cityHandler = Core.getCityHandler();
-        int                     cityId;
 
         if (context.hasAny("<city>"))
             citiesNames = context.<String>getAll("<city>");
 
-        cityId = playerHandler.<Integer>getElement(player, "player_cityId");
-        NewDiplomacy(player,
-            cityHandler.getCityFromName(cityName));
+        NewDiplomacy(player, Core.getCityHandler().get(cityName), null);
         if (citiesNames != null)
             for (String name : citiesNames)
-                NewDiplomacy(
-                        player,
-                        cityHandler.getCityFromName(name));
+                NewDiplomacy(player, Core.getCityHandler().get(name), null);
         return CommandResult.success();
     }
 }

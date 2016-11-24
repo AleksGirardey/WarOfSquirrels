@@ -4,6 +4,8 @@ import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.Database.GlobalChunk;
 import fr.AleksGirardey.Objects.Database.Statement;
+import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
+import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import org.slf4j.Logger;
 
 import java.sql.SQLException;
@@ -83,25 +85,15 @@ public class ChunkHandler {
         chunkMap.remove(city);
     }
 
-    public boolean      canBePlaced() { return false; }
-/*
-    public boolean canBePlaced(int cityId, int x, int z, boolean b) {
-        if (b) {
-            Core.Send("ALLO");
-            Chunk chunk = new Chunk(0, 0);
-            chunk.setX(x);
-            chunk.setZ(z);
-            return Utils.NearestHomeblock(chunk) <= ConfigLoader.distanceOutpost;
-        }
-        Core.Send("Check One : " + (x + 1) + ";" + z + " => " + getCity(x + 1, z) + " vs " + cityId);
-        Core.Send("Check One : " + (x - 1) + ";" + z + " => " + getCity(x - 1, z) + " vs " + cityId);
-        Core.Send("Check One : " + x + ";" + (z + 1) + " => " + getCity(x , z + 1) + " vs " + cityId);
-        Core.Send("Check One : " + x + ";" + (z - 1) + " => " + getCity(x , z - 1) + " vs " + cityId);
-        return (getCity(x + 1, z) == cityId
-                || getCity(x - 1, z) == cityId
-                || getCity(x, z + 1) == cityId
-                || getCity(x, z - 1) == cityId);
-    } */
+    public boolean      canBePlaced(City city, int posX, int posZ, boolean outpost) {
+        if (outpost)
+            return Utils.NearestHomeblock(posX, posZ) <= ConfigLoader.distanceOutpost;
+
+        return (get(posX + 1, posZ).getCity() == city
+                || get(posX - 1, posZ).getCity() == city
+                || get(posX, posZ + 1).getCity() == city
+                || get(posX, posZ - 1).getCity() == city);
+    }
 
     public List<Chunk>  getHomeblockList() {
         List<Chunk>     list = new ArrayList<>();
@@ -120,4 +112,11 @@ public class ChunkHandler {
     public int getSize(City city) { return (chunkMap.get(city).size() - getOupostList(city).size()); }
 
     public int getOutpostSize(City city) { return getOupostList(city).size(); }
+
+    public Chunk getHomeblock(City city) {
+        for (Chunk c : chunkMap.get(city))
+            if (c.isHomeblock())
+                return c;
+        return null;
+    }
 }

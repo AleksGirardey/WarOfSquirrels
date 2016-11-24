@@ -3,6 +3,7 @@ package fr.AleksGirardey.Handlers;
 import com.google.inject.Inject;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.Diplomacy;
+import fr.AleksGirardey.Objects.DBObject.Permission;
 import fr.AleksGirardey.Objects.Database.GlobalDiplomacy;
 import fr.AleksGirardey.Objects.Database.Statement;
 import org.slf4j.Logger;
@@ -45,26 +46,45 @@ public class DiplomacyHandler {
         }
     }
 
+    public void                     add(City main, City sub, boolean relation, Permission perm) {
+        Diplomacy                   d = new Diplomacy(main, sub, relation, perm);
+
+        diplomacies.put(d.getId(), d);
+        if (!diplomacyMap.containsKey(main))
+            diplomacyMap.put(main, new ArrayList<>());
+        diplomacyMap.get(main).add(d);
+    }
+
     public Diplomacy                get(int id) { return diplomacies.get(id); }
 
-    public List<Diplomacy>          get(City city) { return diplomacyMap.get(city); }
+    public List<Diplomacy>          get(City city) {
+        List<Diplomacy>             list = new ArrayList<>(diplomacyMap.get(city));
+
+        diplomacies.values().stream().filter(d -> !list.contains(d) && (d.getSub() == city)).forEach(list::add);
+
+        return list;
+    }
 
     public void                     delete(int id) {
         diplomacies.remove(id);
         diplomacyMap.values().stream().filter(d -> d.contains(get(id))).forEach(d -> d.remove(get(id)));
     }
 
+    public void                     delete(City city) {
+        for (Diplomacy d : diplomacyMap.get(city))
+            diplomacies.remove(d.getId());
+        diplomacyMap.remove(city);
+    }
+
     public List<City>               getEnemies(City city) {
         List<City>                  list = new ArrayList<>();
 
-        for (Diplomacy d : diplomacies.values()) {
-            if (!d.getRelation()) {
-                if (d.getMain() == city)
-                    list.add(d.getSub());
-                else if (d.getSub() == city)
-                    list.add(d.getMain());
-            }
-        }
+        diplomacies.values().stream().filter(d -> !d.getRelation()).forEach(d -> {
+            if (d.getMain() == city)
+                list.add(d.getSub());
+            else if (d.getSub() == city)
+                list.add(d.getMain());
+        });
         return list;
     }
 
@@ -80,5 +100,31 @@ public class DiplomacyHandler {
             }
         }
         return list;
+    }
+
+    public String       getAlliesAsString(City city) {
+        String          message = "";
+        List<City>      list = getAllies(city);
+        int             i = 0, max = list.size();
+
+        for (City c : list) {
+            message += c.getDisplayName();
+            if (i != max - 1)
+                message += ", ";
+        }
+        return message;
+    }
+
+    public String       getEnemiesAsString(City city) {
+        String          message = "";
+        List<City>      list = getEnemies(city);
+        int             i = 0, max = list.size();
+
+        for (City c : list) {
+            message += c.getDisplayName();
+            if (i != max - 1)
+                message += ", ";
+        }
+        return message;
     }
 }

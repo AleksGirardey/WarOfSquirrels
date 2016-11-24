@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Objects.CommandElements;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.City;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;
@@ -18,13 +19,14 @@ public class ElementWar extends CommandElement {
 
     @Nullable
     @Override
-    protected Object parseValue(CommandSource commandSource, CommandArgs commandArgs) throws ArgumentParseException {
-        String      city = commandArgs.next();
-        int         cityId = Core.getCityHandler().getCityFromName(city);
+    protected Object        parseValue(CommandSource commandSource, CommandArgs commandArgs) throws ArgumentParseException {
+        String              cityName = commandArgs.next();
+        City                city = Core.getCityHandler().get(cityName);
 
-        if (cityId != 0 && Core.getWarHandler().Contains(cityId))
-            return Core.getWarHandler().getWar(cityId);
-        throw commandArgs.createError(Text.of(commandArgs.next() + " is not a valid city name or the city doesn't take an active part to a war."));
+        if (city != null && Core.getWarHandler().Contains(city))
+            return Core.getWarHandler().getWar(city);
+        throw commandArgs.createError(Text.of(commandArgs.next()
+                + " is not a valid city name or the city doesn't take an active part to a war."));
     }
 
     @Override

@@ -1,6 +1,9 @@
 package fr.AleksGirardey.Handlers;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
+import fr.AleksGirardey.Objects.DBObject.City;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.War.PartyWar;
 import fr.AleksGirardey.Objects.War.War;
 import org.spongepowered.api.entity.living.player.Player;
@@ -17,7 +20,7 @@ public class WarHandler {
         wars = new ArrayList<>();
     }
 
-    public boolean  createWar(int attacker, int defender, PartyWar party) {
+    public boolean  createWar(City attacker, City defender, PartyWar party) {
         if (Core.getCityHandler().areEnemies(attacker, defender)) {
             int     defenders = Core.getCityHandler().getOnlinePlayers(defender).size() + 1;
 
@@ -30,61 +33,61 @@ public class WarHandler {
                 return true;
             }
             else
-                party.leader.sendMessage(Text.of("Defenders are not enough"));
+                party.getLeader().sendMessage(Text.of("Defenders are not enough"));
         } else
-            party.Send("Your city is not enemy with " + Core.getCityHandler().<String>getElement(defender, "city_displayName"));
+            party.Send("Your city is not enemy with " + defender.getDisplayName());
         return false;
     }
 
-    public War      getWar(Player player) {
+    public War      getWar(DBPlayer player) {
         for (War war : wars)
             if (war.contains(player))
                 return war;
         return null;
     }
 
-    public War      getWar(int  cityId) {
+    public War      getWar(City  city) {
         for (War war : wars)
-            if (war.contains(cityId))
+            if (war.contains(city))
                 return war;
         return null;
     }
 
-    public boolean      Contains(Player player) {
+    public boolean      Contains(DBPlayer player) {
         for (War war : wars)
             if (war.contains(player))
                 return true;
         return  false;
     }
 
-    public boolean      Contains(int    cityId) {
+    public boolean      Contains(City city) {
         for (War war : wars)
-            if (war.contains(cityId))
+            if (war.contains(city))
                 return true;
         return false;
     }
 
-    public boolean      ContainsDefender(int cityId) {
+    public boolean      ContainsDefender(City city) {
         for (War war : wars)
-            if (war.getDefender() == cityId)
+            if (war.getDefender() == city)
                 return true;
         return false;
     }
 
-    public boolean      ableTo(Player player, int chunkId) {
-        int cityId = Core.getChunkHandler().getCity(chunkId);
+    public boolean      ableTo(DBPlayer player, Chunk chunk) {
+        City            city = chunk.getCity();
 
         return  getWar(player).getPhase().equals("War")
                 && Contains(player)
-                && getWar(player).getDefender() == cityId;
+                && getWar(player).getDefender() == city;
     }
 
     public List<String>     getCitiesList() {
         List<String>        list = new ArrayList<>();
 
         for (War war : wars) {
-            list.add(war.getAttackerName());
-            list.add(war.getDefenderName());
+            list.add(war.getAttacker().getDisplayName());
+            list.add(war.getDefender().getDisplayName());
         }
         return list;
     }
@@ -93,15 +96,15 @@ public class WarHandler {
         wars.remove(war);
     }
 
-    public void     displayList(Player player) {
+    public void     displayList(DBPlayer player) {
         player.sendMessage(Text.of("---=== War list [" + wars.size() + "] ===---"));
 
         for (War war : wars)
-            player.sendMessage(Text.of(war.getAttackerName() + " [" + war.getAttackerPoints() + "] vs. "
-                    + war.getDefenderName() + " [" + war.getDefenderPoints() + "]"));
+            player.sendMessage(Text.of(war.getAttacker().getDisplayName() + " [" + war.getAttackerPoints() + "] vs. "
+                    + war.getDefender().getDisplayName() + " [" + war.getDefenderPoints() + "]"));
     }
 
-    public void     AddPoints(Player killer, Player victim) {
+    public void     AddPoints(DBPlayer killer, DBPlayer victim) {
         War         war = getWar(killer);
 
         if (war.isDefender(killer) && war.isAttacker(victim))

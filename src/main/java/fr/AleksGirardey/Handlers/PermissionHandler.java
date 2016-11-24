@@ -1,7 +1,13 @@
 package fr.AleksGirardey.Handlers;
 
+import com.flowpowered.math.vector.Vector3i;
 import com.google.inject.Inject;
+import com.sun.org.apache.bcel.internal.generic.CHECKCAST;
+import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.Cuboide.Cubo;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.City;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.DBObject.Permission;
 import fr.AleksGirardey.Objects.Database.GlobalPermission;
 import fr.AleksGirardey.Objects.Database.Statement;
@@ -9,6 +15,7 @@ import org.slf4j.Logger;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PermissionHandler {
@@ -56,36 +63,63 @@ public class PermissionHandler {
 
     public Permission     get(int id) { return permissionMap.get(id); }
 
-/*
-    public boolean          ableTo(Player player, int chunkId) {
-        return false;
-    }
 
-    public boolean          ableTo(Player player, int chunkId, String perm) throws SQLException {
-        PlayerHandler       plh = Core.getPlayerHandler();
-        CityHandler         cityHandler = Core.getCityHandler();
-        String              option = GlobalCity.permOutside;
-        int                 cityPlayerId, permId, cityId;
+    public boolean          ableTo(DBPlayer player, Chunk chunk, String perm, Vector3i block) {
+        Permission          permission = chunk.getCity().getPermOutside();
+        // Situer le joueur par rapport au chunk (résident, allié, outside)
 
-        cityId = Core.getChunkHandler().getCity(chunkId);
-        // PLAYER cherche à PERM sur le chunk CHUNKID
-
-        // verification si Player possède une ville
-        cityPlayerId = plh.<Integer>getElement(player, GlobalPlayer.cityId);
-        if (cityPlayerId != 0) { // PLAYER possède une ville
-            if (cityPlayerId == cityId) { // Si PLAYER est un citoyen
-                if (cityHandler.<String>getElement(cityId, GlobalCity.playerOwner)
-                        .equals(player.getUniqueId().toString()))
-                    return true; // Owner => always OK
-                option = GlobalCity.permRes;
-            } else if (cityHandler.areAllies(cityId, cityPlayerId)) { // Villes alliés
-                permId = cityHandler.getDiplomacy(cityId, true).get(cityPlayerId).getL();
-                return getPerm(permId, "permission_" + perm);
+        if (player.getCity() != null) {
+            /*
+            ** Le joueur possède une ville, il faut maintenant savoir si il interagit avec
+            ** sa ville ou non.
+            */
+            if (player.getCity() == chunk.getCity()) {
+                /*
+                ** Le joueur appartient à la ville du chunk; on identifie alors si il est
+                ** owner / assistant
+                */
+                if (player.isAssistant() || player.getCity().getOwner() == player)
+                    return true;
+                else {
+                    /*
+                    ** Le joueur n'a aucun rang qui outre-passe les droits d'un eventuel
+                    ** cubo, on verifie donc si le block appartient à un cubo
+                    */
+                    Cubo cubo = Core.getCuboHandler().get(block);
+                    if (cubo != null) {
+                        /*
+                        ** On vérifie si le joueur est dans la liste ou l'owner
+                        */
+                        List<DBPlayer> inList = cubo.getInList();
+                        if (inList.contains(player) || cubo.getOwner() == player)
+                            permission = cubo.getPermissionIn();
+                        else
+                            permission = cubo.getPermissionOut();
+                    } else
+                        permission = player.getCity().getPermRes();
+                }
+            } else {
+                /*
+                ** Le joueur n'appartient pas à la ville il faut donc verifié si il est
+                ** allié ou enemi
+                */
+                if (Core.getDiplomacyHandler().getAllies(chunk.getCity()).contains(player.getCity())) {
+                    /* Ally */
+                    permission = chunk.getCity().getPermAllies();
+                } else {
+                    /* Enemy or Neutral */
+                    permission = chunk.getCity().getPermOutside();
+                }
             }
-        }
-        permId = cityHandler.<Integer>getElement(cityId, option);
-        return getPerm(permId, "permission_" + perm);
-    } */
+        } // else Outsider
+        permission = chunk.getCity().getPermOutside();
+
+        return (perm.equals("Build") ?
+                permission.getBuild() :
+                (perm.equals("Container") ?
+                        permission.getContainer() :
+                        permission.getSwitch()));
+    }
 
     public String           toString(City city) {
         String              res = "";

@@ -2,6 +2,7 @@ package fr.AleksGirardey.Listeners;
 
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.living.player.Player;
@@ -12,9 +13,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OnPlayerContainer {
+public class                OnPlayerContainer {
 
-    static List<BlockType> ContainersBlock;
+    static List<BlockType>  ContainersBlock;
 
     static {
         ContainersBlock = new ArrayList<BlockType>();
@@ -29,25 +30,21 @@ public class OnPlayerContainer {
     }
 
     @Listener
-    public void onPlayerContainer(InteractBlockEvent.Secondary event) {
-        Player  player = (Player) event.getCause().all().get(0);
-        int     x, z;
-        Chunk chunk;
+    public void         onPlayerContainer(InteractBlockEvent.Secondary event) {
+        DBPlayer        player = Core.getPlayerHandler().get((Player) event.getCause().all().get(0));
+        int             x, z;
+        Chunk           chunk;
 
         x = event.getTargetBlock().getLocation().get().getBlockX();
         z = event.getTargetBlock().getLocation().get().getBlockZ();
-        chunk = new Chunk(x, z);
+        chunk = Core.getChunkHandler().get(x / 16, z / 16);
 
-        try {
-            if (Core.getChunkHandler().exists(chunk.getX(), chunk.getZ()))
-                if(ContainersBlock.contains(event.getTargetBlock().getState().getType())
-                        && !Core.getPermissionHandler().ableTo(
-                            player,
-                            Core.getChunkHandler().getId(chunk.getX(), chunk.getZ()),
-                            "Container"))
-                    event.setCancelled(true);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        if (chunk != null)
+            if(ContainersBlock.contains(event.getTargetBlock().getState().getType())
+                    && !Core.getPermissionHandler().ableTo(
+                        player,
+                        chunk,
+                        "Container", event.getTargetBlock().getPosition()))
+                event.setCancelled(true);
     }
 }

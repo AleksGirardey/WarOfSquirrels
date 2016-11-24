@@ -29,6 +29,7 @@ public class Chunk extends DBObject {
     private int         respawnZ;
 
     public Chunk(DBPlayer player, boolean _homeblock, boolean _outpost) {
+        super();
         Player  p = player.getUser().getPlayer().get();
 
         posX = p.getLocation().getBlockX() / 16;
@@ -54,6 +55,7 @@ public class Chunk extends DBObject {
     }
 
     public      Chunk(ResultSet rs) throws SQLException {
+        super();
         this._primaryKeyValue = "" + rs.getInt(GlobalChunk.id);
         this.posX = rs.getInt(GlobalChunk.posX);
         this.posZ = rs.getInt(GlobalChunk.posZ);
@@ -63,6 +65,15 @@ public class Chunk extends DBObject {
         respawnX = (homeblock || outpost ? rs.getInt(GlobalChunk.respawnX) : 0);
         respawnY = (homeblock || outpost ? rs.getInt(GlobalChunk.respawnY) : 0);
         respawnZ = (homeblock || outpost ? rs.getInt(GlobalChunk.respawnZ) : 0);
+    }
+
+    protected void      writeLog() {
+        String          message = "";
+
+        if (homeblock || outpost)
+            message = " respawn at [" + respawnX + ";" + respawnY + ";" + respawnZ + "]";
+        Core.getLogger().info("[Creating] Chunk at '" + this.posX + ";" + this.posZ + "' for "
+                + this.getCity().getDisplayName() + "[" + (homeblock ? "YES" : "NO") + ";" + (outpost ? "YES" : "NO") + "]" + message);
     }
 
     public int      getId() { return Integer.parseInt(_primaryKeyValue); }

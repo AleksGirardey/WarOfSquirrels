@@ -1,5 +1,6 @@
 package fr.AleksGirardey.Objects.Messages;
 
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
@@ -12,10 +13,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
-public class WandererMessage implements MessageChannel {
-    private Player      _player;
+public class            WandererMessage implements MessageChannel {
+    private DBPlayer    _player;
 
-    public WandererMessage(Player player) {
+    public              WandererMessage(DBPlayer player) {
         super();
         _player = player;
     }

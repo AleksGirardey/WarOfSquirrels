@@ -3,6 +3,9 @@ package fr.AleksGirardey.Commands.City.Cubo;
 import com.flowpowered.math.vector.Vector3i;
 import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
+import fr.AleksGirardey.Objects.DBObject.City;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Database.GlobalPlayer;
 import fr.AleksGirardey.Objects.Utilitaires.Pair;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
@@ -13,23 +16,17 @@ import org.spongepowered.api.text.Text;
 
 public class CuboCommandAdd extends CityCommandAssistant {
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext context) {
+    protected boolean               SpecialCheck(DBPlayer player, CommandContext context) {
         if (Core.getCuboHandler().playerExists(player)) {
             Pair<Vector3i, Vector3i> pair = Core.getCuboHandler().getPoints(player);
 
             if (pair.getL() != null && pair.getR() != null) {
-                int cityId = Core.getPlayerHandler().getElement(player, GlobalPlayer.cityId);
-                int chunk;
+                City city = Core.getChunkHandler().get(pair.getL().getX() / 16, pair.getL().getZ() / 16).getCity();
 
-                chunk = Core.getChunkHandler().getCity(
-                        pair.getL().getX() / 16,
-                        pair.getL().getZ() / 16);
-                if (chunk == cityId) {
-                    chunk = Core.getChunkHandler().getCity(
-                            pair.getR().getX() / 16,
-                            pair.getR().getZ() / 16);
-                    if (chunk == cityId)
-                        if (Utils.checkCuboName(context.<String>getOne("[name]").get(), cityId))
+                if (city == player.getCity()) {
+                    city = Core.getChunkHandler().get(pair.getR().getX() / 16, pair.getR().getZ() / 16).getCity();
+                    if (city == player.getCity())
+                        if (Utils.checkCuboName(context.<String>getOne("[name]").get(), city))
                             return true;
                 }
             }
@@ -40,7 +37,7 @@ public class CuboCommandAdd extends CityCommandAssistant {
     }
 
     @Override
-    protected CommandResult ExecCommand(Player player, CommandContext context) {
+    protected CommandResult         ExecCommand(DBPlayer player, CommandContext context) {
         Core.getCuboHandler().add(player, context.<String>getOne("[name]").get());
         return null;
     }

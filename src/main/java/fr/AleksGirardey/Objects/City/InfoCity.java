@@ -1,5 +1,6 @@
 package fr.AleksGirardey.Objects.City;
 
+import fr.AleksGirardey.Objects.DBObject.City;
 import org.spongepowered.api.text.channel.MutableMessageChannel;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
@@ -29,37 +30,37 @@ public class InfoCity {
         // Colonie < Village (< Ville) < Comté < Duché < Royaume < Empire
         // Chef < Maire (< Bourgmestre) < Comte < Duc < Roi < Empereur
 
-        MapRanks.put(0, new Rank("Colonie", "Chef", "Assistant", 4, TextColors.BLUE));
-        MapRanks.put(1, new Rank("Village", "Maire", "Assistant", 9, TextColors.AQUA));
-        MapRanks.put(2, new Rank("Ville", "Bourgmestre", "Assistant", 15, TextColors.AQUA));
-        MapRanks.put(3, new Rank("Comté", "Comte", "Assistant", 22, TextColors.AQUA));
-        MapRanks.put(4, new Rank("Duché", "Duc", "Assistant", 30, TextColors.AQUA));
-        MapRanks.put(5, new Rank("Royaume", "Roi", "Assistant", 40, TextColors.AQUA));
-        MapRanks.put(6, new Rank("Empire", "Empereur", "Assistant", 50, TextColors.YELLOW));
+        MapRanks.put(0, new Rank("Colonie", "Chef", "Assistant", 4, 2, TextColors.BLUE));
+        MapRanks.put(1, new Rank("Village", "Maire", "Assistant", 9, 4, TextColors.AQUA));
+        MapRanks.put(2, new Rank("Ville", "Bourgmestre", "Assistant", 15, 8, TextColors.AQUA));
+        MapRanks.put(3, new Rank("Comté", "Comte", "Assistant", 22, 11, TextColors.AQUA));
+        MapRanks.put(4, new Rank("Duché", "Duc", "Assistant", 30, 15, TextColors.AQUA));
+        MapRanks.put(5, new Rank("Royaume", "Roi", "Assistant", 40, 20, TextColors.AQUA));
+        MapRanks.put(6, new Rank("Empire", "Empereur", "Assistant", 50, 25, TextColors.YELLOW));
     }
 
-    int                     cityId;
+    City                    city;
     MutableMessageChannel   channel;
     TextColor               color;
     Rank                    rank;
 
-    public InfoCity(int cityId, int rank) {
-        this.cityId = cityId;
-        this.rank = MapRanks.get(rank);
+    public InfoCity(City city) {
+        this.city = city;
+        this.rank = MapRanks.get(city.getRank());
         this.color = this.rank.color;
         this.channel = null;
     }
 
-    public void setChannel(MutableMessageChannel channel) {
+    public void     setChannel(MutableMessageChannel channel) {
         this.channel = channel;
     }
 
-    public void setRank(Rank rank) {
+    public void     setRank(Rank rank) {
         this.rank = rank;
     }
 
-    public int getCityId() {
-        return cityId;
+    public City     getCity() {
+        return city;
     }
 
     public MutableMessageChannel getChannel() {

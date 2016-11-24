@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Objects.Channels;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -49,8 +50,8 @@ public class GlobalChannel implements MutableMessageChannel{
     }
 
     @Override
-    public Optional<Text> transformMessage(@Nullable Object sender, MessageReceiver recipient, Text original, ChatType type) {
-        Player receiver = (Player) recipient;
+    public Optional<Text>       transformMessage(@Nullable Object sender, MessageReceiver recipient, Text original, ChatType type) {
+        DBPlayer                receiver = Core.getPlayerHandler().get((Player) recipient);
         return Optional.of(Text.of(Utils.getChatTag(receiver), original.toString().substring(original.toString().indexOf(" "))));
     }
 
@@ -67,7 +68,7 @@ public class GlobalChannel implements MutableMessageChannel{
     public void send(@Nullable Object sender, Text original, ChatType type) {
     }
 
-    public void send(Object sender, Text original) {
+    public void         send(Object sender, Text original) {
         if (sender == null)
             Core.Send("Sender is NULL");
         Text    text = transformMessage(sender, (MessageReceiver) sender, original, ChatTypes.CHAT).get();

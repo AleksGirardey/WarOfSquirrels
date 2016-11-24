@@ -1,6 +1,8 @@
 package fr.AleksGirardey.Objects.War;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.City;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import fr.AleksGirardey.Objects.War.WarTask;
 import org.spongepowered.api.block.BlockSnapshot;
@@ -23,60 +25,59 @@ public class War {
         Rollback
     }
 
-    String          _tag;
-    String          _attackerName;
-    String          _defenderName;
-    int             _cityAttacker;
-    int             _cityDefender;
-    List<Player>    _attackers;
-    List<Player>    _defenders;
-    Task            _timer;
-    WarState        _state;
-    int             _attackersLimit;
-    long            _timeStart;
-    int             _attackerPoints = 0;
-    int             _defenderPoints = 0;
+    private String          _tag;
+    private City            _cityAttacker;
+    private City            _cityDefender;
+    private List<DBPlayer>  _attackers;
+    private List<DBPlayer>  _defenders;
+    private Task            _timer;
+    private WarState        _state;
+    private int             _attackersLimit;
+    private long            _timeStart;
+    private int             _attackerPoints = 0;
+    private int             _defenderPoints = 0;
 
-    List<Transaction<BlockSnapshot>> _rollbackBlocks;
+    private List<Transaction<BlockSnapshot>>    _rollbackBlocks;
 
-    public War(int attacker, int defender, List<Player> attackersList) {
-        this._cityAttacker = attacker;
-        this._cityDefender = defender;
+    public          War(City attacker, City defender, List<DBPlayer> attackersList) {
+        _cityAttacker = attacker;
+        _cityDefender = defender;
         _attackers = new ArrayList<>(attackersList);
-        _defenders = new ArrayList<>(Core.getCityHandler().getOnlinePlayers(defender));
+        _defenders = new ArrayList<>(Core.getCityHandler().getOnlineDBPlayers(defender));
         _rollbackBlocks = new ArrayList<>();
         _attackersLimit = _defenders.size() + 1;
         _state = WarState.Preparation;
-        _tag = setTag(attacker, defender);
-        Core.Send("A war is about to start ! " + _attackerName + " attack " + _defenderName + " !");
+        _tag = setTag();
+        Core.Send("A war is about to start ! " + _cityAttacker.getDisplayName()
+                + " attack " + _cityDefender.getDisplayName() + " !");
         launchPreparation();
     }
 
-    private String setTag(int att, int def) {
-        _attackerName = Core.getCityHandler().<String>getElement(att, "city_displayName");
-        _defenderName = Core.getCityHandler().<String>getElement(def, "city_displayName");
-        return (_attackerName.substring(0, 3) + _defenderName.substring(0, 3));
+    private String  setTag() {
+        return (_cityAttacker.getDisplayName().substring(0, 3)
+                + _cityDefender.getDisplayName().substring(0, 3));
     }
 
-    public boolean      addAttacker(Player player) {
+    public boolean      addAttacker(DBPlayer player) {
         if (_attackers.size() == _attackersLimit) {
             player.sendMessage(Text.of("You can't join this war, wait for defenders to join"));
             return false;
         }
         _attackers.add(player);
-        Core.getBroadcastHandler().warAnnounce(this, Core.getPlayerHandler().<String>getElement(player, "player_displayName") +
+        Core.getBroadcastHandler().warAnnounce(this, player.getDisplayName() +
                 " join as Attacker ! [" + _attackers.size() + "/" + _attackersLimit + "]");
         return true;
     }
 
-    public boolean      addDefender(Player player) {
+    public boolean      addDefender(DBPlayer player) {
         _defenders.add(player);
         ++_attackersLimit;
-        Core.getBroadcastHandler().warAnnounce(this, Core.getPlayerHandler().<String>getElement(player, "player_displayName") +
+        Core.getBroadcastHandler().warAnnounce(this, player.getDisplayName() +
                 " join as Defender ! [" + _attackers.size() + "/" + _attackersLimit + "]");
         return true;
     }
 
+    // SAVE ON DB OR FILE !!!
     public void         addRollbackBlock(List<Transaction<BlockSnapshot>> transaction) {
         int size = _rollbackBlocks.size();
         for (Transaction<BlockSnapshot> t : transaction)
@@ -146,21 +147,23 @@ public class War {
 
     public boolean      checkWin() {
         if (_defenderPoints >= 1000)
-            Core.Send(_attackerName + " fail to win his attack against " + _defenderName + " (" + _attackerPoints + " to " + _defenderPoints + ")");
+            Core.Send(_cityAttacker.getDisplayName() + " fail to win his attack against "
+                    + _cityDefender.getDisplayName() + " (" + _attackerPoints + " to " + _defenderPoints + ")");
         else if (_attackerPoints >= 1000)
-            Core.Send(_attackerName + " win his attack against " + _defenderName + " (" + _attackerPoints + " to " + _defenderPoints + ")");
+            Core.Send(_cityAttacker.getDisplayName() + " win his attack against "
+                    + _cityDefender.getDisplayName() + " (" + _attackerPoints + " to " + _defenderPoints + ")");
         else
             return false;
         this._state = WarState.Rollback;
         return true;
     }
 
-    public boolean      contains(Player player) {
+    public boolean      contains(DBPlayer player) {
         return (_attackers.contains(player) || _defenders.contains(player));
     }
 
-    public boolean      contains(int cityId) {
-        return (_cityAttacker == cityId || _cityDefender == cityId);
+    public boolean      contains(City city) {
+        return (_cityAttacker == city || _cityDefender == city);
     }
 
     public String       timeLeft() {
@@ -206,43 +209,40 @@ public class War {
             return ("Rollback");
     }
 
-    public List<Player>     getProtagonists() {
-        List<Player>        list = new ArrayList<>(_defenders);
+    public List<DBPlayer>     getProtagonists() {
+        List<DBPlayer>        list = new ArrayList<>(_defenders);
 
-        for (Player p : _attackers)
-            list.add(p);
+        list.addAll(_attackers);
         return list;
     }
 
-    public boolean          removePlayer(Player player) {
-        int                 cityId = Core.getPlayerHandler().<Integer>getElement(player, "player_cityId");
+    public boolean          removePlayer(DBPlayer player) {
+        City                city = player.getCity();
 
         if (_attackers.contains(player))
             _attackers.remove(player);
-        else if (_defenders.contains(player) && cityId != _cityDefender) {
+        else if (_defenders.contains(player) && city != _cityDefender) {
             _defenders.remove(player);
             --_attackersLimit;
         }
         else
             return false;
-        Core.getBroadcastHandler().warAnnounce(this, Core.getPlayerHandler().<String>getElement(player, "player_displayName") +
+        Core.getBroadcastHandler().warAnnounce(this, player.getDisplayName() +
                 " left the war [" + _attackers.size() + "/" + _attackersLimit + "]");
         return true;
     }
 
-    public boolean          isAttacker(Player player) { return _attackers.contains(player); }
-    public boolean          isDefender(Player player) { return _defenders.contains(player); }
-    public String           getAttackerName() { return _attackerName; }
-    public String           getDefenderName() { return _defenderName; }
-    public int              getAttacker() { return _cityAttacker; }
-    public int              getDefender() { return _cityDefender; }
+    public boolean          isAttacker(DBPlayer player) { return _attackers.contains(player); }
+    public boolean          isDefender(DBPlayer player) { return _defenders.contains(player); }
+    public City             getAttacker() { return _cityAttacker; }
+    public City             getDefender() { return _cityDefender; }
     public int              getAttackerPoints() { return _attackerPoints; }
     public int              getDefenderPoints() { return _defenderPoints; }
 
-    public void     displayInfo(Player player) {
+    public void     displayInfo(DBPlayer player) {
         player.sendMessage(Text.of("===| " + this._tag + " |==="));
-        player.sendMessage(Text.of("Attackers [" + _attackerName + "] : " + Utils.getStringFromPlayerList(_attackers)));
-        player.sendMessage(Text.of("Defenders [" + _defenderName + "] : " + Utils.getStringFromPlayerList(_defenders)));
+        player.sendMessage(Text.of("Attackers [" + _cityAttacker.getDisplayName() + "] : " + Utils.getStringFromPlayerList(_attackers)));
+        player.sendMessage(Text.of("Defenders [" + _cityDefender.getDisplayName() + "] : " + Utils.getStringFromPlayerList(_defenders)));
         player.sendMessage(Text.of("=== " + _attackerPoints + " - " + _defenderPoints + " ==="));
         player.sendMessage(Text.of("Phase : " + this.getPhase() + " (time left : " + timeLeft() + ")"));
     }

@@ -1,50 +1,54 @@
 package fr.AleksGirardey.Listeners;
 
-import fr.AleksGirardey.Handlers.ChunkHandler;
-import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.text.Text;
 
 public class OnPlayerMove {
-
     @Listener
     public void onPlayerMove(MoveEntityEvent event) {
         if (!(event.getTargetEntity() instanceof Player))
             return;
-        ChunkHandler        ch = Core.getChunkHandler();
-        Player              player = (Player) event.getTargetEntity();
-        int                 id1, id2;
-        boolean             c1, c2;
-        Chunk               chunk1 = new Chunk(player), chunk2 = new Chunk(player);
+        Player              pl = (Player) event.getTargetEntity();
+        DBPlayer            player = Core.getPlayerHandler().get(pl);
+        int                 x = event.getFromTransform().getLocation().getBlockX(),
+                z = event.getFromTransform().getLocation().getBlockZ(),
+                lastX, lastZ;
 
-        chunk1.setX(event.getFromTransform().getLocation().getBlockX() / 16);
-        chunk1.setZ(event.getFromTransform().getLocation().getBlockZ() / 16);
-        chunk2.setX(event.getToTransform().getLocation().getBlockX() / 16);
-        chunk2.setZ(event.getToTransform().getLocation().getBlockZ() / 16);
+        if (x / 16 == player.getLastChunkX()
+                && z / 16 == player.getLastChunkZ())
+            return;
+        else {
+            lastX = player.getLastChunkX();
+            lastZ = player.getLastChunkZ();
+            player.setLastChunkX(x / 16);
+            player.setLastChunkZ(z / 16);
+        }
+        Chunk     lastC, C;
 
-        if (!chunk1.equals(chunk2)) {
-            c1 = ch.exists( chunk1.getX(), chunk1.getZ());
-            c2 = ch.exists( chunk2.getX(), chunk2.getZ());
+        lastC = Core.getChunkHandler().get(lastX, lastZ);
+        C = Core.getChunkHandler().get(player.getLastChunkX(), player.getLastChunkZ());
 
-            if (c1) {
-                if (c2) {
-                    id1 = ch.getCity(chunk1.getX(), chunk2.getZ());
-                    id2 = ch.getCity(chunk1.getX(), chunk2.getZ());
-                    if (id1 != id2)
-                        player.sendMessage(
-                                Text.of("~~" + Core.getInfoCityMap().get(id2).getRank().getName() + " " + Core.getCityHandler().<String>getElement(id2, "city_displayCityName")));
-                } else
-                    player.sendMessage(Text.of("~~ Wilderness ~~"));
-            } else {
-                if (c2) {
-                    id2 = ch.getCity(chunk2.getX(), chunk2.getZ());
-                    player.sendMessage(Text.of(
-                            "~~ " + Core.getInfoCityMap().get(id2).getRank().getName() + " " + Core.getCityHandler().<String>getElement(id2, "city_displayName") + " ~~"));
-                }
-            }
+        /* Il faut identifier si le changement de chunk indique un changement de propriété */
+
+        if (C != null) {
+            /* Le chunk sur lequel il arrive appartient a quelqu'un */
+            if (lastC == null || C.getCity() != lastC.getCity())
+                /* Le Chunk d'ou il vient appartient à quelqu'un d'autre ou il n'appartient à personne */
+                player.sendMessage(Text.of (
+                            "~~ " + Core.getInfoCityMap().get(C.getCity()).getRank().getName()
+                                    + " " + C.getCity().getDisplayName() + " ~~"));
+            else
+                player.sendMessage(Text.of("~~ Wilderness ~~"));
+        } else {
+            /* Il entre dans un chunk vierge */
+            if (lastC != null)
+                /* Il était dans un chunk appartenant à quelqu'un */
+                player.sendMessage(Text.of("~~ Wilderness ~~"));
         }
     }
 }

@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import fr.AleksGirardey.Handlers.*;
 import fr.AleksGirardey.Main;
 import fr.AleksGirardey.Objects.City.InfoCity;
+import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -34,7 +35,7 @@ public class Core {
     private static PartyHandler             partyHandler;
     private static CuboHandler              cuboHandler;
     private static DiplomacyHandler         diplomacyHandler;
-    private static Map<Integer, InfoCity>   infoCityMap;
+    private static Map<City, InfoCity>      infoCityMap;
 
     public static void          initCore(
             Logger logger,
@@ -53,7 +54,7 @@ public class Core {
         _config = new ConfigLoader(configManager);
         playerHandler = new PlayerHandler(logger);
         cityHandler = new CityHandler(logger);
-        chunkHandler = new ChunkHandler();
+        chunkHandler = new ChunkHandler(logger);
         permissionHandler = new PermissionHandler(logger);
         broadcastHandler = new BroadcastHandler();
         invitationHandler = new InvitationHandler();
@@ -114,7 +115,7 @@ public class Core {
 
     public static Logger getLogger() { return _logger; }
 
-    public static Map<Integer, InfoCity>    getInfoCityMap() { return infoCityMap; }
+    public static Map<City, InfoCity>    getInfoCityMap() { return infoCityMap; }
 
     public static ConfigLoader  getConfig() { return _config; }
 

@@ -1,35 +1,30 @@
 package fr.AleksGirardey.Commands.City.Set;
 
+import fr.AleksGirardey.Commands.City.CityCommandMayor;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
 
-public class SetAssistant extends SetMayor {
+public class SetAssistant extends CityCommandMayor {
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext context) {
+    protected boolean SpecialCheck(DBPlayer player, CommandContext context) {
         boolean         res = true;
-        String          uuid = null;
 
-        uuid = context.<String>getOne("[resident]").get();
-
-        if (Core.getCityHandler().<String>getElement(
-                Core.getPlayerHandler().<Integer>getElement(player, "player_cityId"),
-                "city_playerOwner").equals(uuid))
+        if (player.getCity().getOwner() == Core.getPlayerHandler().getFromName(context.<String>getOne("[resident]").get()))
             res = false;
-        return super.SpecialCheck(player, context) && res;
+
+        return res;
     }
 
     @Override
-    protected CommandResult ExecCommand(Player player, CommandContext context) {
-        String uuid = Core.getPlayerHandler().getUuidFromName(context.<String>getOne("[resident]").get());
-        Core.getPlayerHandler().setElement(
-                uuid,
-                "player_assistant",
-                true);
-        Core.getBroadcastHandler().cityChannel(Core.getPlayerHandler().<Integer>getElement(player, "player_cityId"),
-                context.<String>getOne("[resident]") + " is now assistant.");
+    protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
+        DBPlayer                newAssistant = Core.getPlayerHandler().getFromName(context.<String>getOne("[resident]").get());
+
+        newAssistant.setAssistant(true);
+        Core.getBroadcastHandler().cityChannel(player.getCity(), player.getDisplayName() + " is now assistant.");
         return CommandResult.success();
     }
 }

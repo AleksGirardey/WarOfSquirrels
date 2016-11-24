@@ -1,6 +1,8 @@
 package fr.AleksGirardey.Objects.CommandElements;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.City;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;
@@ -20,32 +22,31 @@ public class ElementEnemy extends CommandElement {
 
     @Nullable
     @Override
-    protected Object parseValue(CommandSource commandSource, CommandArgs commandArgs) throws ArgumentParseException {
+    protected Object            parseValue(CommandSource commandSource, CommandArgs commandArgs) throws ArgumentParseException {
         if (!(commandSource instanceof Player))
             throw commandArgs.createError(Text.of("Only a player can perform this command."));
-        Player player = (Player) commandSource;
+        DBPlayer    player = Core.getPlayerHandler().get((Player) commandSource);
+        City        city = player.getCity();
 
-        if (Core.getPlayerHandler().<Integer>getElement(player, "player_cityId") != null) {
-            List<Integer>   enemies = Core.getCityHandler().getEnemies(
-                    Core.getPlayerHandler().<Integer>getElement(player, "player_cityId"));
-            int             id = Core.getCityHandler().getCityFromName(commandArgs.next());
+        if (city != null) {
+            List<City>      enemies = Core.getDiplomacyHandler().getEnemies(city);
+            City            c = Core.getCityHandler().get(commandArgs.next());
 
-            if (id != 0 && enemies.contains(id))
-                return id;
+            if (c != null && enemies.contains(c))
+                return c.getId();
         }
         throw commandArgs.createError(Text.of(" is not a valid"));
     }
 
     @Override
-    public List<String> complete(CommandSource commandSource, CommandArgs commandArgs, CommandContext commandContext) {
+    public List<String>         complete(CommandSource commandSource, CommandArgs commandArgs, CommandContext commandContext) {
         if (!(commandSource instanceof Player))
             return Collections.emptyList();
-        Player player = (Player) commandSource;
+        DBPlayer    player = Core.getPlayerHandler().get((Player) commandSource);
+        City        city = player.getCity();
 
-        if (Core.getPlayerHandler().<Integer>getElement(player, "player_cityId") != null) {
-            return Core.getCityHandler().getEnemiesName(
-                    Core.getPlayerHandler().<Integer>getElement(player, "player_cityId"));
-        }
+        if (city != null)
+            return Core.getCityHandler().getEnemiesName(city);
         return Collections.emptyList();
     }
 }

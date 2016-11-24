@@ -4,6 +4,7 @@ import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Database.GlobalPlayer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.text.Text;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,11 +19,16 @@ public class DBPlayer extends DBObject {
             + "`, `" + GlobalPlayer.assistant + "`";
     private String          _newFields = "`" + GlobalPlayer.uuid + "`, " + _fields;
 
+    /* -- DB Fields -- */
     private User            user;
     private String          displayName;
     private int             score;
     private City            city;
     private Boolean         assistant;
+
+    /* -- Extra Fields -- */
+    private int             lastChunkX;
+    private int             lastChunkZ;
 
     public DBPlayer(Player player) {
         super();
@@ -54,6 +60,8 @@ public class DBPlayer extends DBObject {
         return this.update();
     }
 
+    public String   getId() { return this._primaryKeyValue; }
+
     public User     getUser() { return user; }
     public void     setUser(User user) { this.user = user; }
 
@@ -75,13 +83,31 @@ public class DBPlayer extends DBObject {
 
     public void setCity(City city) {
         this.city = city;
-        this.edit(GlobalPlayer.cityId, "" + city.getId());
+        if (city != null)
+            this.edit(GlobalPlayer.cityId, "" + city.getId());
+        else
+            this.edit(GlobalPlayer.cityId, "0");
     }
 
-    public Boolean isAssistant() { return assistant; }
+    public Boolean      isAssistant() { return assistant; }
 
-    public void setAssistant(Boolean assistant) {
+    public void         setAssistant(Boolean assistant) {
         this.assistant = assistant;
         this.edit(GlobalPlayer.assistant, assistant ? "TRUE" : "FALSE");
     }
+
+    public void sendMessage(Text message) {
+        if (this.user.isOnline())
+            user.getPlayer().get().sendMessage(message);
+    }
+
+    public int      getPosX() { return user.getPlayer().get().getLocation().getBlockX(); }
+    public int      getPosY() { return user.getPlayer().get().getLocation().getBlockY(); }
+    public int      getPosZ() { return user.getPlayer().get().getLocation().getBlockZ(); }
+
+    public int      getLastChunkX() { return lastChunkX; }
+    public int      getLastChunkZ() { return lastChunkZ; }
+
+    public void     setLastChunkX(int pos) { lastChunkX = pos; }
+    public void     setLastChunkZ(int pos) { lastChunkZ = pos; }
 }
