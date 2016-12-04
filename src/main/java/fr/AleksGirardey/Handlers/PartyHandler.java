@@ -11,9 +11,9 @@ import java.util.List;
 
 public class PartyHandler {
 
-    private List<PartyWar>      parties;
+    private List<PartyWar>      parties = new ArrayList<>();
 
-    public PartyHandler() { parties = new ArrayList<>(); }
+    public PartyHandler() {}
 
     public void     addParty(PartyWar party) { parties.add(party); }
 

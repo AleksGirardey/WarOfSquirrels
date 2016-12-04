@@ -23,10 +23,9 @@ public class DiplomacyHandler {
     @Inject
     public DiplomacyHandler(Logger logger) {
         this.logger = logger;
-        this.populate();
     }
 
-    private void        populate() {
+    public void        populate() {
         String          sql = "SELECT * FROM `" + GlobalDiplomacy.tableName + "`;";
         Diplomacy       diplomacy;
 

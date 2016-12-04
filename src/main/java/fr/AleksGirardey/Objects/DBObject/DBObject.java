@@ -15,38 +15,55 @@ public abstract class DBObject {
     protected String        _tablename;
     protected String        _fields;
 
-    public DBObject() {}
+    public DBObject(String primaryKeyName, String tablename, String fields) {
+        this._primaryKeyName = primaryKeyName;
+        this._tablename = tablename;
+        this._fields = fields;
+    }
 
-    protected void      delete() {
+    public void      delete() {
         _sql = "DELETE FROM `" + _tablename + "` WHERE `" + _primaryKeyName + "` = " + _primaryKeyValue;
         this.update();
     }
 
     protected void      edit(String field, String value) {
-        _sql = "UPDATE `" + _tablename + "` SET `" + _tablename + "`.`" + field + "` = `"
-                + value + "` WHERE `" + _primaryKeyName + "` = `" + _primaryKeyValue + "`;";
+        _sql = "UPDATE `" + _tablename + "` SET `" + _tablename + "`.`" + field + "` = "
+                + value + " WHERE `" + _primaryKeyName + "` = '" + _primaryKeyValue + "';";
         this.update();
     }
 
-    protected int      add(String values) {
+    protected String      add(String values) {
         _sql = "INSERT INTO `" + _tablename + "` (" + _fields + ") VALUES (" + values + ");";
-        return this.update();
+        this._primaryKeyValue = this.update();
+        Core.getLogger().info("[DB] Adding on '" + _tablename + "' : '" + _primaryKeyValue + "'");
+        return _primaryKeyValue;
     }
 
     protected abstract void         writeLog();
 
-    protected int       update() {
-        Statement _statement;
-        int             id = 0;
+    protected String    update() {
+        Statement       _statement;
+        String             id = "";
+
+        Core.getLogger().info("Updating : >> " + _sql + " <<");
 
         try {
             _statement = new Statement(_sql);
             _statement.Update();
-            id = _statement.getKeys().getInt(1);
+            if (_statement.getKeys().next())
+                id = _statement.getKeys().getString(1);
+            else
+                Core.getLogger().info("[ERROR] NO KEY GENERATED");
             _statement.Close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return id;
     }
+
+    public void set_primaryKeyName(String _primaryKeyName) { this._primaryKeyName = _primaryKeyName; }
+
+    public void set_primaryKeyValue(String _primaryKeyValue) { this._primaryKeyValue = _primaryKeyValue; }
+
+    public void set_tablename(String _tablename) { this._tablename = _tablename; }
 }

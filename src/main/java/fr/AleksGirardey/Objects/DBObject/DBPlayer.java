@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class DBPlayer extends DBObject {
-    private String          _primaryKeyName = GlobalPlayer.uuid;
     private String          _tableName = GlobalPlayer.tableName;
     private String          _fields = "`" + GlobalPlayer.displayName
             + "`, `" + GlobalPlayer.score
@@ -30,33 +29,58 @@ public class DBPlayer extends DBObject {
     private int             lastChunkX;
     private int             lastChunkZ;
 
+    private int             cityId;
+
     public DBPlayer(Player player) {
-        super();
+        super(GlobalPlayer.uuid, GlobalPlayer.tableName, "`" + GlobalPlayer.displayName
+                + "`, `" + GlobalPlayer.score
+                + "`, `" + GlobalPlayer.cityId
+                + "`, `" + GlobalPlayer.assistant + "`");
         this.user = Core.getPlayerHandler().getUser(player.getUniqueId()).get();
         this.displayName = player.getName();
         this.score = 0;
         this.city = null;
+        this.cityId = 0;
         this.assistant = false;
         this._primaryKeyValue = player.getUniqueId().toString();
-        this.add("`" + _primaryKeyValue + "`, `"
-                + displayName + "`, `"
-                + score + "`, `"
-                + "NULL`, `FALSE`");
+        this.add("'" + _primaryKeyValue + "', '"
+                + displayName + "', '"
+                + score + "', "
+                + "NULL, FALSE");
+        writeLog();
     }
 
     public DBPlayer(ResultSet rs) throws SQLException {
+        super(GlobalPlayer.uuid, GlobalPlayer.tableName, "`" + GlobalPlayer.displayName
+                + "`, `" + GlobalPlayer.score
+                + "`, `" + GlobalPlayer.cityId
+                + "`, `" + GlobalPlayer.assistant + "`");
         this._primaryKeyValue = rs.getString(GlobalPlayer.uuid);
         this.user = Core.getPlayerHandler().getUser(
                 UUID.fromString(rs.getString(GlobalPlayer.uuid))).get();
         this.displayName = rs.getString(GlobalPlayer.displayName);
         this.score = rs.getInt(GlobalPlayer.score);
-        this.city = Core.getCityHandler().get(rs.getInt(GlobalPlayer.cityId));
+        this.cityId = rs.getInt(GlobalPlayer.cityId);
         this.assistant = rs.getBoolean(GlobalPlayer.assistant);
+        writeLog();
+    }
+
+    public void         updateDependencies() {
+        if (cityId != 0) {
+            this.city = Core.getCityHandler().get(cityId);
+            Core.getLogger().info("[Updating] Player '" + this.displayName + "' is now in '" + this.city.getDisplayName() + "'");
+        }
+    }
+
+    public void     writeLog() {
+        Core.getLogger().info("[Creation] Player '" + displayName + "' has a score of " + score + ". He belongs to "
+                + (city != null ? "'" + city.getDisplayName() + "'" : "no one."));
     }
 
     @Override
-    protected int   add(String values) {
-        String      sql = "INSERT INTO `"+ _tableName + "` (" + _newFields + ") VALUES (" + values + ");";
+    protected String   add(String values) {
+        this._sql = "INSERT INTO `"+ _tableName +"` (" + _newFields + ") VALUES (" + values + ");";
+        Core.getLogger().info("SQL : << " + _sql + " >>");
         return this.update();
     }
 
@@ -69,7 +93,7 @@ public class DBPlayer extends DBObject {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-        this.edit(GlobalPlayer.displayName, displayName);
+        this.edit(GlobalPlayer.displayName, "'" + displayName + "'");
     }
 
     public int getScore() { return score; }
@@ -84,9 +108,9 @@ public class DBPlayer extends DBObject {
     public void setCity(City city) {
         this.city = city;
         if (city != null)
-            this.edit(GlobalPlayer.cityId, "" + city.getId());
+            this.edit(GlobalPlayer.cityId, "'" + city.getId() + "'");
         else
-            this.edit(GlobalPlayer.cityId, "0");
+            this.edit(GlobalPlayer.cityId, "'0'");
     }
 
     public Boolean      isAssistant() { return assistant; }

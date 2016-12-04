@@ -8,17 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Chunk extends DBObject {
-    private String          _primaryKeyName = GlobalChunk.id;
-    private String          _tableName = GlobalChunk.tableName;
-    private String          _fields = "`" + GlobalChunk.posX
-            + "`, `" + GlobalChunk.posZ
-            + "`, `" + GlobalChunk.cityId
-            + "`, `" + GlobalChunk.homeblock
-            + "`, `" + GlobalChunk.outpost
-            + "`, `" + GlobalChunk.respawnX
-            + "`, `" + GlobalChunk.respawnY
-            + "`, `" + GlobalChunk.respawnZ + "`";
-
     private int         posX;
     private int         posZ;
     private City        city;
@@ -29,7 +18,14 @@ public class Chunk extends DBObject {
     private int         respawnZ;
 
     public Chunk(DBPlayer player, boolean _homeblock, boolean _outpost) {
-        super();
+        super(GlobalChunk.id, GlobalChunk.tableName, "`" + GlobalChunk.posX
+                + "`, `" + GlobalChunk.posZ
+                + "`, `" + GlobalChunk.cityId
+                + "`, `" + GlobalChunk.homeblock
+                + "`, `" + GlobalChunk.outpost
+                + "`, `" + GlobalChunk.respawnX
+                + "`, `" + GlobalChunk.respawnY
+                + "`, `" + GlobalChunk.respawnZ + "`");
         Player  p = player.getUser().getPlayer().get();
 
         posX = p.getLocation().getBlockX() / 16;
@@ -42,20 +38,25 @@ public class Chunk extends DBObject {
             respawnY = p.getLocation().getBlockY();
             respawnZ = p.getLocation().getBlockZ();
         }
-
-        this._primaryKeyValue = "" + this.add("`"
-                + posX + "`, `"
-                + posZ + "`, `"
-                + city.getId() + "`, `"
-                + (homeblock ? "TRUE" : "FALSE") + "`, `"
-                + (outpost ? "TRUE" : "FALSE") + "`, `"
-                + (homeblock || outpost ? respawnX : "NULL") + "`, `"
-                + (homeblock || outpost? respawnY : "NULL") + "`, `"
-                + (homeblock || outpost? respawnZ : "NULL") + "`, `");
+        this.add("'" + posX + "', '"
+                + posZ + "', '"
+                + city.getId() + "',"
+                + (homeblock ? "TRUE" : "FALSE") + ","
+                + (outpost ? "TRUE" : "FALSE") + ","
+                + (homeblock || outpost ? "'" + respawnX + "'" : "NULL") + ","
+                + (homeblock || outpost? "'" + respawnY + "'" : "NULL") + ","
+                + (homeblock || outpost? "'" + respawnZ + "'" : "NULL"));
     }
 
     public      Chunk(ResultSet rs) throws SQLException {
-        super();
+        super(GlobalChunk.id, GlobalChunk.tableName, "`" + GlobalChunk.posX
+                + "`, `" + GlobalChunk.posZ
+                + "`, `" + GlobalChunk.cityId
+                + "`, `" + GlobalChunk.homeblock
+                + "`, `" + GlobalChunk.outpost
+                + "`, `" + GlobalChunk.respawnX
+                + "`, `" + GlobalChunk.respawnY
+                + "`, `" + GlobalChunk.respawnZ + "`");
         this._primaryKeyValue = "" + rs.getInt(GlobalChunk.id);
         this.posX = rs.getInt(GlobalChunk.posX);
         this.posZ = rs.getInt(GlobalChunk.posZ);
@@ -82,21 +83,21 @@ public class Chunk extends DBObject {
 
     public void     setPosX(int posX) {
         this.posX = posX;
-        this.edit(GlobalChunk.posX, "" + posX);
+        this.edit(GlobalChunk.posX, "'" + posX + "'");
     }
 
     public int      getPosZ() { return posZ; }
 
     public void     setPosZ(int posZ) {
         this.posZ = posZ;
-        this.edit(GlobalChunk.posZ, "" + posZ);
+        this.edit(GlobalChunk.posZ, "'" + posZ + "'");
     }
 
     public City     getCity() { return city; }
 
     public void setCity(City city) {
         this.city = city;
-        this.edit(GlobalChunk.cityId, "" + city.getId());
+        this.edit(GlobalChunk.cityId, "'" + city.getId() + "'");
     }
 
     public Boolean  isHomeblock() { return homeblock; }
@@ -117,21 +118,21 @@ public class Chunk extends DBObject {
 
     public void     setRespawnX(int respawnX) {
         this.respawnX = respawnX;
-        this.edit(GlobalChunk.respawnX, "" + respawnX);
+        this.edit(GlobalChunk.respawnX, "'" + respawnX + "'");
     }
 
     public int      getRespawnY() { return respawnY; }
 
     public void     setRespawnY(int respawnY) {
         this.respawnY = respawnY;
-        this.edit(GlobalChunk.respawnY, "" + respawnY);
+        this.edit(GlobalChunk.respawnY, "'" + respawnY + "'");
     }
 
     public int      getRespawnZ() { return respawnZ; }
 
     public void     setRespawnZ(int respawnZ) {
         this.respawnZ = respawnZ;
-        this.edit(GlobalChunk.respawnZ, "" + respawnZ);
+        this.edit(GlobalChunk.respawnZ, "'" + respawnZ + "'");
     }
 
     public boolean equals(Chunk chunk)

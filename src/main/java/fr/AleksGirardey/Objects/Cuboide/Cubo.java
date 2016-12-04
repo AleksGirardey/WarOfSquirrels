@@ -11,24 +11,10 @@ import fr.AleksGirardey.Objects.Database.Statement;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class            Cubo extends DBObject {
-    private String      _primaryKeyName = GlobalCubo.id;
-    private String      _tableName = GlobalCubo.tableName;
-    private String      _fields = "`" + GlobalCubo.nom
-            + "`, `" + GlobalCubo.parent
-            + "`, `" + GlobalCubo.owner
-            + "`, `" + GlobalCubo.pInlist
-            + "`, `" + GlobalCubo.pOutside
-            + "`, `" + GlobalCubo.priority
-            + "`, `" + GlobalCubo.AposX
-            + "`, `" + GlobalCubo.AposY
-            + "`, `" + GlobalCubo.AposZ
-            + "`, `" + GlobalCubo.BposX
-            + "`, `" + GlobalCubo.BposY
-            + "`, `" + GlobalCubo.BposZ + "`";
-
     private String      name;
     private Cubo        parent;
     private DBPlayer    owner;
@@ -37,10 +23,24 @@ public class            Cubo extends DBObject {
     private int         priority;
     private CuboVector  vector;
 
-    private List<DBPlayer>      inList;
+
+    private int         parentId;
+    private List<DBPlayer>      inList = new ArrayList<>();
 
     public              Cubo(String name, Cubo parent, DBPlayer owner,
                              Permission in, Permission out, int priority, CuboVector vector) {
+        super(GlobalCubo.id, GlobalCubo.tableName, "`" + GlobalCubo.nom
+                + "`, `" + GlobalCubo.parent
+                + "`, `" + GlobalCubo.owner
+                + "`, `" + GlobalCubo.pInlist
+                + "`, `" + GlobalCubo.pOutside
+                + "`, `" + GlobalCubo.priority
+                + "`, `" + GlobalCubo.AposX
+                + "`, `" + GlobalCubo.AposY
+                + "`, `" + GlobalCubo.AposZ
+                + "`, `" + GlobalCubo.BposX
+                + "`, `" + GlobalCubo.BposY
+                + "`, `" + GlobalCubo.BposZ + "`");
         this.name = name;
         this.parent = parent;
         this.owner = owner;
@@ -60,12 +60,25 @@ public class            Cubo extends DBObject {
                 + "`, `" + vector.getEight().getX()
                 + "`, `" + vector.getEight().getY()
                 + "`, `" + vector.getEight().getZ() + "`");
+        writeLog();
     }
 
     public              Cubo(ResultSet rs) throws SQLException {
+        super(GlobalCubo.id, GlobalCubo.tableName, "`" + GlobalCubo.nom
+                + "`, `" + GlobalCubo.parent
+                + "`, `" + GlobalCubo.owner
+                + "`, `" + GlobalCubo.pInlist
+                + "`, `" + GlobalCubo.pOutside
+                + "`, `" + GlobalCubo.priority
+                + "`, `" + GlobalCubo.AposX
+                + "`, `" + GlobalCubo.AposY
+                + "`, `" + GlobalCubo.AposZ
+                + "`, `" + GlobalCubo.BposX
+                + "`, `" + GlobalCubo.BposY
+                + "`, `" + GlobalCubo.BposZ + "`");
         this._primaryKeyValue = "" + rs.getInt(GlobalCubo.id);
         this.name = rs.getString(GlobalCubo.nom);
-        this.parent = Core.getCuboHandler().get(rs.getInt(GlobalCubo.parent));
+        this.parentId = rs.getInt(GlobalCubo.parent);
         this.owner = Core.getPlayerHandler().get(rs.getString(GlobalCubo.owner));
         this.permissionIn = Core.getPermissionHandler().get(rs.getInt(GlobalCubo.pInlist));
         this.permissionOut = Core.getPermissionHandler().get(rs.getInt(GlobalCubo.pOutside));
@@ -81,6 +94,7 @@ public class            Cubo extends DBObject {
                         rs.getInt(GlobalCubo.BposZ)));
 
         this.populate();
+        writeLog();
     }
 
     private void         populate() throws SQLException {
@@ -94,6 +108,15 @@ public class            Cubo extends DBObject {
                     statement.getResult().getString(GlobalCuboAssociation.playerUuid)
             ));
         statement.Close();
+    }
+
+    public void         writeLog() {
+        Core.getLogger().info("[Creation] Cubo set as '" + name + "' with parent '" + (parent != null ? parent.getName() : "NULL") + "' owned by '" + owner.getDisplayName() + "'.");
+    }
+
+    public void         updateDependencies() {
+        if (parentId != 0)
+            this.parent = Core.getCuboHandler().get(parentId);
     }
 
     public boolean      contains (Vector3i block) {

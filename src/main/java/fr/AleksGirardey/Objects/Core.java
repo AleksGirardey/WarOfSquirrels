@@ -52,17 +52,29 @@ public class Core {
         _main = main;
         _logger = logger;
         _config = new ConfigLoader(configManager);
+        logger.info("Setting up handlers..");
+        permissionHandler = new PermissionHandler(logger);
         playerHandler = new PlayerHandler(logger);
         cityHandler = new CityHandler(logger);
         chunkHandler = new ChunkHandler(logger);
-        permissionHandler = new PermissionHandler(logger);
         broadcastHandler = new BroadcastHandler();
         invitationHandler = new InvitationHandler();
         warHandler = new WarHandler();
         partyHandler = new PartyHandler();
         cuboHandler = new CuboHandler(logger);
         diplomacyHandler = new DiplomacyHandler(logger);
+
+        logger.info("Updating dependencies..");
+        permissionHandler.populate();
+        playerHandler.populate();
+        cityHandler.populate();
+        chunkHandler.populate();
+        cuboHandler.populate();
+        diplomacyHandler.populate();
+        playerHandler.updateDependencies();
+        cuboHandler.updateDependencies();
         infoCityMap = getCityHandler().getCityMap();
+        logger.info("Done.");
     }
 
     public static void close() {
@@ -93,9 +105,7 @@ public class Core {
         return chunkHandler;
     }
 
-    public static PermissionHandler getPermissionHandler() {
-        return permissionHandler;
-    }
+    public static PermissionHandler getPermissionHandler() { return permissionHandler; }
 
     public static BroadcastHandler  getBroadcastHandler() { return broadcastHandler; }
 

@@ -8,14 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Diplomacy extends DBObject {
-    private String      _primaryKeyName = GlobalDiplomacy.id;
-    private String      _tableName = GlobalDiplomacy.tableName;
-    private String      _fields = "`" + GlobalDiplomacy.main
-            + "`, `" + GlobalDiplomacy.sub
-            + "`, `" + GlobalDiplomacy.relation
-            + "`, `" + GlobalDiplomacy.permMain
-            + "`, `" + GlobalDiplomacy.permSub + "`";
-
     private City            main;
     private City            sub;
     private boolean         relation;
@@ -23,20 +15,29 @@ public class Diplomacy extends DBObject {
     private Permission      permissionSub;
 
     public          Diplomacy(City _main, City _sub, boolean _relation, Permission _perm) {
-        super();
+        super(GlobalDiplomacy.id, GlobalDiplomacy.tableName, "`" + GlobalDiplomacy.main
+                + "`, `" + GlobalDiplomacy.sub
+                + "`, `" + GlobalDiplomacy.relation
+                + "`, `" + GlobalDiplomacy.permMain
+                + "`, `" + GlobalDiplomacy.permSub + "`");
         main = _main;
         sub = _sub;
         relation = _relation;
         permissionMain = _perm;
-        this._primaryKeyValue = "" + this.add("`"
-                + _main.getId() + "`, `"
-                + _sub.getId() + "`, `"
-                + (_relation ? "TRUE" : "FALSE") + "`, `"
-                + (_perm == null ? "0"  : _perm.getId()) + "`");
+        this.add("'" + _main.getId() + "', '"
+                + _sub.getId() + "', "
+                + (_relation ? "TRUE" : "FALSE") + ", '"
+                + (_perm == null ? "0"  : _perm.getId()) + "'");
+        writeLog();
     }
 
     public          Diplomacy(ResultSet rs) throws SQLException {
-        super();
+        super(GlobalDiplomacy.id, GlobalDiplomacy.tableName, "`" + GlobalDiplomacy.main
+                + "`, `" + GlobalDiplomacy.sub
+                + "`, `" + GlobalDiplomacy.relation
+                + "`, `" + GlobalDiplomacy.permMain
+                + "`, `" + GlobalDiplomacy.permSub + "`");
+
         int         i;
 
         this._primaryKeyValue = "" + rs.getInt(GlobalDiplomacy.id);
@@ -47,16 +48,27 @@ public class Diplomacy extends DBObject {
         permissionMain = (i != 0 ? Core.getPermissionHandler().get(i) : null);
         i = rs.getInt(GlobalDiplomacy.permSub);
         permissionSub = (i != 0 ? Core.getPermissionHandler().get(i) : null);
+        writeLog();
+    }
+
+    public void     writeLog() {
+        String      mainPerm = "", subPerm = "";
+
+        if (permissionMain != null)
+            mainPerm = " Main city set perm as " + permissionMain.toString() + ".";
+        if (permissionSub != null)
+            subPerm = " Sub city set perm as " + permissionSub.toString() + ".";
+        Core.getLogger().info("[Creation] Diplomacy between '" + main.getDisplayName() + "' and '" + sub.getDisplayName() + "'." + mainPerm + subPerm);
     }
 
     public void             setMain(City main) {
         this.main = main;
-        this.edit(GlobalDiplomacy.main, "" + this.main.getId());
+        this.edit(GlobalDiplomacy.main, "'" + this.main.getId() + "'");
     }
 
     public void             setSub(City sub) {
         this.sub = sub;
-        this.edit(GlobalDiplomacy.sub, "" + this.sub.getId());
+        this.edit(GlobalDiplomacy.sub, "'" + this.sub.getId() + "'");
     }
 
     public void             setRelation(boolean relation) {
@@ -66,12 +78,12 @@ public class Diplomacy extends DBObject {
 
     public void             setPermissionMain(Permission permission) {
         this.permissionMain = permission;
-        this.edit(GlobalDiplomacy.permMain, "" + permission.getId());
+        this.edit(GlobalDiplomacy.permMain, "'" + permission.getId() + "'");
     }
 
     public void             setPermissionSub(Permission permission) {
         this.permissionSub = permission;
-        this.edit(GlobalDiplomacy.permSub, "" + permission.getId());
+        this.edit(GlobalDiplomacy.permSub, "'" + permission.getId() + "'");
     }
 
     public int              getId() {

@@ -26,10 +26,9 @@ public class PermissionHandler {
     @Inject
     public PermissionHandler(Logger logger) {
         this.logger = logger;
-        this.populate();
     }
 
-    private void        populate() {
+    public void        populate() {
         String          sql = "SELECT * FROM `" + GlobalPermission.tableName + "`;";
         Permission      permission;
 
@@ -53,21 +52,20 @@ public class PermissionHandler {
         return permission;
     }
 
-    public void     delete(Permission perm) {
+    public void             delete(Permission perm) {
         this.permissionMap.remove(perm.getId());
     }
 
-    public void     delete(int id) {
+    public void             delete(int id) {
         this.permissionMap.remove(id);
     }
 
-    public Permission     get(int id) { return permissionMap.get(id); }
-
+    public Permission       get(int id) { return permissionMap.get(id); }
 
     public boolean          ableTo(DBPlayer player, Chunk chunk, String perm, Vector3i block) {
-        Permission          permission = chunk.getCity().getPermOutside();
-        // Situer le joueur par rapport au chunk (résident, allié, outside)
+        Permission          permission;
 
+        // Situer le joueur par rapport au chunk (résident, allié, outside)
         if (player.getCity() != null) {
             /*
             ** Le joueur possède une ville, il faut maintenant savoir si il interagit avec

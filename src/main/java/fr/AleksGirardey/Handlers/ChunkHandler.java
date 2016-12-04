@@ -1,5 +1,6 @@
 package fr.AleksGirardey.Handlers;
 
+import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.Database.GlobalChunk;
@@ -10,24 +11,24 @@ import org.slf4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ChunkHandler {
 
-    private Map<Integer, Chunk>         chunks;
-    private Map<City, List<Chunk>>      chunkMap;
+    private Map<Integer, Chunk>         chunks = new HashMap<>();
+    private Map<City, List<Chunk>>      chunkMap = new HashMap<>();
 
     private Logger                      logger;
 
     public      ChunkHandler(Logger logger) {
         this.logger = logger;
-        this.populate();
     }
 
-    private void    populate() {
-        String      sql = "SELET * FROM `" + GlobalChunk.tableName + "`;";
+    public void    populate() {
+        String      sql = "SELECT * FROM `" + GlobalChunk.tableName + "`;";
         Chunk       chunk;
 
         try {
@@ -77,35 +78,32 @@ public class ChunkHandler {
     public void             delete(Chunk chunk) {
         this.chunks.remove(chunk.getId());
         this.chunkMap.get(chunk.getCity()).remove(chunk);
+        chunk.delete();
     }
 
     public void             deleteCity(City city) {
         for (Chunk c : chunkMap.get(city))
             chunks.remove(c.getId());
         chunkMap.remove(city);
+        city.delete();
     }
 
     public boolean      canBePlaced(City city, int posX, int posZ, boolean outpost) {
         if (outpost)
-            return Utils.NearestHomeblock(posX, posZ) <= ConfigLoader.distanceOutpost;
+            return Utils.NearestHomeblock(posX, posZ) >= ConfigLoader.distanceOutpost;
 
-        return (get(posX + 1, posZ).getCity() == city
-                || get(posX - 1, posZ).getCity() == city
-                || get(posX, posZ + 1).getCity() == city
-                || get(posX, posZ - 1).getCity() == city);
+        return (get(posX + 1, posZ) != null && get(posX + 1, posZ).getCity() == city) ||
+                (get(posX - 1, posZ) != null && get(posX - 1, posZ).getCity() == city) ||
+                (get(posX, posZ + 1) != null && get(posX, posZ + 1).getCity() == city) ||
+                (get(posX, posZ - 1) != null && get(posX, posZ - 1).getCity() == city);
     }
 
     public List<Chunk>  getHomeblockList() {
-        List<Chunk>     list = new ArrayList<>();
-
-        for (Chunk c : chunks.values())
-            if (c.isHomeblock())
-                list.add(c);
-        return list;
+        return chunks.values().stream().filter(Chunk::isHomeblock).collect(Collectors.toList());
     }
 
     public List<Chunk>  getOupostList(City city) {
-        return chunkMap.get(city).stream().filter(c -> c.isOutpost()).collect(Collectors.toList());
+        return chunkMap.get(city).stream().filter(Chunk::isOutpost).collect(Collectors.toList());
     }
 
 

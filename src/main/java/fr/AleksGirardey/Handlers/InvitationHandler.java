@@ -12,12 +12,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class InvitationHandler {
-    private List<Invitation>    invitationList;
+    private List<Invitation>    invitationList = new ArrayList<>();
 
-    public InvitationHandler() {
-
-        this.invitationList = new ArrayList<Invitation>();
-    }
+    public InvitationHandler() {}
 
     public void         createInvitation(Invitation invitation) {
         Scheduler scheduler = Core.getPlugin().getScheduler();

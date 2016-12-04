@@ -21,7 +21,7 @@ public class        OnPlayerCubo {
                     player,
                     event.getTargetBlock().getLocation().get().getBlockPosition(),
                     b);
+            event.setCancelled(true);
         }
-        event.setCancelled(true);
     }
 }

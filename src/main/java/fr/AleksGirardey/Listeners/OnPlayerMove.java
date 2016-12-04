@@ -35,20 +35,16 @@ public class OnPlayerMove {
 
         /* Il faut identifier si le changement de chunk indique un changement de propriété */
 
-        if (C != null) {
-            /* Le chunk sur lequel il arrive appartient a quelqu'un */
-            if (lastC == null || C.getCity() != lastC.getCity())
-                /* Le Chunk d'ou il vient appartient à quelqu'un d'autre ou il n'appartient à personne */
-                player.sendMessage(Text.of (
-                            "~~ " + Core.getInfoCityMap().get(C.getCity()).getRank().getName()
-                                    + " " + C.getCity().getDisplayName() + " ~~"));
-            else
+        if (lastC != null) {
+            if (C == null)
                 player.sendMessage(Text.of("~~ Wilderness ~~"));
+            else if (C.getCity() != lastC.getCity())
+                player.sendMessage(Text.of("~~ " + Core.getInfoCityMap().get(C.getCity()).getRank().getName()
+                        + " " + C.getCity().getDisplayName() + " ~~"));
         } else {
-            /* Il entre dans un chunk vierge */
-            if (lastC != null)
-                /* Il était dans un chunk appartenant à quelqu'un */
-                player.sendMessage(Text.of("~~ Wilderness ~~"));
+            if (C != null)
+                player.sendMessage(Text.of("~~ " + Core.getInfoCityMap().get(C.getCity()).getRank().getName()
+                        + " " + C.getCity().getDisplayName() + " ~~"));
         }
     }
 }

@@ -50,7 +50,8 @@ CREATE TABLE IF NOT EXISTS `Diplomacy` (
   PRIMARY KEY (`diplomacy_id`),
   FOREIGN KEY (`diplomacy_mainCityId`) REFERENCES `City`(`city_id`),
   FOREIGN KEY (`diplomacy_subCityId`) REFERENCES `City`(`city_id`),
-  FOREIGN KEY (`diplomacy_permissionId`) REFERENCES `Permission` (`permission_id`),
+  FOREIGN KEY (`diplomacy_permissionMain`) REFERENCES `Permission` (`permission_id`),
+  FOREIGN KEY (`diplomacy_permissionSub`) REFERENCES `Permission` (`permission_id`),
   UNIQUE KEY (`diplomacy_mainCityId`, `diplomacy_subCityId`));
 
 CREATE TABLE IF NOT EXISTS `Cubo` (

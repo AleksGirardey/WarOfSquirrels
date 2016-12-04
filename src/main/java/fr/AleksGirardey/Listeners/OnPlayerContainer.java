@@ -1,7 +1,7 @@
 package fr.AleksGirardey.Listeners;
 
-import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
@@ -9,13 +9,12 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class                OnPlayerContainer {
 
-    static List<BlockType>  ContainersBlock;
+    private static List<BlockType>  ContainersBlock;
 
     static {
         ContainersBlock = new ArrayList<BlockType>();
@@ -42,9 +41,9 @@ public class                OnPlayerContainer {
         if (chunk != null)
             if(ContainersBlock.contains(event.getTargetBlock().getState().getType())
                     && !Core.getPermissionHandler().ableTo(
-                        player,
-                        chunk,
-                        "Container", event.getTargetBlock().getPosition()))
+                    player,
+                    chunk,
+                    "Container", event.getTargetBlock().getPosition()))
                 event.setCancelled(true);
     }
 }

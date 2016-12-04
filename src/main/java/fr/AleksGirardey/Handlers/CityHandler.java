@@ -27,14 +27,13 @@ public class CityHandler {
     @Inject
     public CityHandler(Logger logger) {
         this.logger = logger;
-        this.populate();
     }
 
     private Logger getLogger() {
         return logger;
     }
 
-    private void        populate() {
+    public void        populate() {
         String          sql = "SELECT * FROM `" + GlobalCity.tableName + "`";
         City            city;
 
@@ -182,12 +181,7 @@ public class CityHandler {
     }
 
     public List<String>     getCityNameList() {
-        List<String>        list = new ArrayList<>();
-
-        for (City city : cities.values())
-            list.add(city.getDisplayName());
-
-        return list;
+        return cities.values().stream().map(City::getDisplayName).collect(Collectors.toList());
     }
 
     public List<DBPlayer>       getOnlineDBPlayers(City city) {
@@ -206,8 +200,7 @@ public class CityHandler {
         List<String>        list = new ArrayList<>();
         List<City>          cities = Core.getDiplomacyHandler().getEnemies(city);
 
-        for(City c : cities)
-            list.add(c.getDisplayName());
+        list.addAll(cities.stream().map(City::getDisplayName).collect(Collectors.toList()));
 
         return list;
     }
@@ -216,8 +209,7 @@ public class CityHandler {
         List<String>        list = new ArrayList<>();
         List<City>          cities = Core.getDiplomacyHandler().getAllies(city);
 
-        for(City c : cities)
-            list.add(c.getDisplayName());
+        list.addAll(cities.stream().map(City::getDisplayName).collect(Collectors.toList()));
 
         return list;
     }
@@ -226,7 +218,7 @@ public class CityHandler {
         Map<City, InfoCity>      map = new HashMap<>();
 
         for (City c : cities.values()) {
-            logger.info("[InfoCity] new city info created for `" + c.getDisplayName());
+            logger.info("[InfoCity] new city info created for `" + c.getDisplayName() + "`.");
             map.put(c, new InfoCity(c));
         }
         return map;

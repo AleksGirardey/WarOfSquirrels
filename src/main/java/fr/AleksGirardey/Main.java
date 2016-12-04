@@ -20,7 +20,6 @@ import fr.AleksGirardey.Commands.War.*;
 import fr.AleksGirardey.Listeners.*;
 import fr.AleksGirardey.Objects.CommandElements.*;
 import fr.AleksGirardey.Objects.Core;
-import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
@@ -28,13 +27,16 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandCallable;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.EventListener;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
@@ -77,12 +79,10 @@ public class Main {
         game.getEventManager().registerListeners(this, new OnPlayerLogin());
         game.getEventManager().registerListeners(this, new OnPlayerMove());
         game.getEventManager().registerListeners(this, new OnPlayerRespawn());
-        game.getEventManager().registerListeners(this, new OnPlayerBuild());
+        game.getEventManager().registerListeners(this, new DestroyListener());
         game.getEventManager().registerListeners(this, new OnPlayerContainer());
         game.getEventManager().registerListeners(this, new OnPlayerSwitch());
-        game.getEventManager().registerListeners(this, new OnPlayerDestroy());
         game.getEventManager().registerListeners(this, new OnPlayerDeath());
-        game.getEventManager().registerListeners(this, new OnPlayerConnection());
         game.getEventManager().registerListeners(this, new OnPlayerChat());
         game.getEventManager().registerListeners(this, new OnPlayerCubo());
     }
@@ -470,7 +470,7 @@ public class Main {
                 .executor((commandSource, commandContext) -> {
                     if (commandSource instanceof Player) {
                         DBPlayer    player = Core.getPlayerHandler().get((Player) commandSource);
-                        Text        message = Text.of("La civilization la plus proche est à " + Utils.NearestHomeblock(player.getPosX() / 16, player.getPosZ() / 16)
+                        Text        message = Text.of("La civilization la plus proche est à " + Utils.NearestHomeblock(player.getPosX() / 16, player.getPosZ()  )
                                 + " chunks.");
                         player.sendMessage(Text.of(TextColors.DARK_GREEN, message, TextColors.RESET));
                     }

@@ -78,10 +78,10 @@ public class War {
     }
 
     // SAVE ON DB OR FILE !!!
-    public void         addRollbackBlock(List<Transaction<BlockSnapshot>> transaction) {
+    public void         addRollbackBlock(Transaction<BlockSnapshot> transaction) {
         int size = _rollbackBlocks.size();
-        for (Transaction<BlockSnapshot> t : transaction)
-            _rollbackBlocks.add(t);
+
+        _rollbackBlocks.add(transaction);
         Core.Send("Size from '" + size + "' to '" + _rollbackBlocks.size() + "'");
     }
 

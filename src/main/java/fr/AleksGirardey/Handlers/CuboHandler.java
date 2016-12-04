@@ -33,10 +33,9 @@ public class CuboHandler {
     @Inject
     public              CuboHandler(Logger logger) {
         this.logger = logger;
-        this.populate();
     }
 
-    private void        populate() {
+    public void        populate() {
         String          sql = "SELECT * FROM `" + GlobalCubo.tableName + "`";
         Cubo            cubo;
 
@@ -144,4 +143,6 @@ public class CuboHandler {
         else
             points.get(p).setR(block);
     }
+
+    public void         updateDependencies() { cubos.values().forEach(Cubo::updateDependencies); }
 }

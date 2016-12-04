@@ -41,7 +41,6 @@ public class Statement {
     public void         Update() throws SQLException {
         _statement.executeUpdate();
         _keys = _statement.getGeneratedKeys();
-        _keys.next();
     }
 
     public ResultSet    Execute() throws SQLException {

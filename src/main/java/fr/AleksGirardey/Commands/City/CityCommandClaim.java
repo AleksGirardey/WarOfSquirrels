@@ -31,12 +31,12 @@ public class                CityCommandClaim extends CityCommandAssistant {
         Chunk   chunk;
         int     x, z;
 
-        x = player.getUser().getPlayer().get().getLocation().getBlockX();
-        z = player.getUser().getPlayer().get().getLocation().getBlockZ();
+        x = player.getUser().getPlayer().get().getLocation().getBlockX() / 16;
+        z = player.getUser().getPlayer().get().getLocation().getBlockZ() / 16;
 
         if (Core.getChunkHandler().canBePlaced(player.getCity(), x, z, false)) {
             chunk = new Chunk(player, false, false);
-            Core.getChunkHandler().add(new Chunk(player, false, false));
+            Core.getChunkHandler().add(chunk);
             Text message = Text.of("La parcelle [" + chunk.getPosX() + ";" + chunk.getPosZ() + "] est maintenant sous le contrôle de votre ville.");
             Core.getInfoCityMap().get(player.getCity()).getChannel().send(Text.of(TextColors.GREEN, message, TextColors.RESET));
             return CommandResult.success();

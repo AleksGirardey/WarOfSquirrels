@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Handlers;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.Cuboide.Cubo;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
@@ -14,11 +15,9 @@ import java.util.List;
 
 public class WarHandler {
 
-    private List<War> wars;
+    private List<War> wars = new ArrayList<>();
 
-    public WarHandler() {
-        wars = new ArrayList<>();
-    }
+    public WarHandler() {}
 
     public boolean  createWar(City attacker, City defender, PartyWar party) {
         if (Core.getCityHandler().areEnemies(attacker, defender)) {
@@ -72,6 +71,14 @@ public class WarHandler {
             if (war.getDefender() == city)
                 return true;
         return false;
+    }
+
+    public boolean      ableTo(DBPlayer player, Cubo cubo) {
+        City            city = cubo.getOwner().getCity();
+
+        return  getWar(player).getPhase().equals("War")
+                && Contains(player)
+                && getWar(player).getDefender() == city;
     }
 
     public boolean      ableTo(DBPlayer player, Chunk chunk) {

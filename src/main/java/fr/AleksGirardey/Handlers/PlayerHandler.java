@@ -12,24 +12,24 @@ import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.service.user.UserStorageService;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PlayerHandler {
-    private Logger logger;
+public class        PlayerHandler {
+    private Logger  logger;
 
-    private Map<String, DBPlayer>       players;
-    private Map<User, DBPlayer>         playersMap;
+    private Map<String, DBPlayer>       players = new HashMap<>();
+    private Map<User, DBPlayer>         playersMap = new HashMap<>();
 
 
 
     public PlayerHandler(Logger logger) {
         this.logger = logger;
-        this.populate();
     }
 
-    private void        populate() {
+    public void        populate() {
         String          sql = "SELECT * FROM `" + GlobalPlayer.tableName + "`;";
         DBPlayer        player;
 
@@ -47,7 +47,11 @@ public class PlayerHandler {
         }
     }
 
-    private Logger getLogger() { return logger; }
+    public void         updateDependencies() {
+        players.values().forEach(DBPlayer::updateDependencies);
+    }
+
+    private Logger      getLogger() { return logger; }
 
     public DBPlayer     get(Player player) {
         return this.get(player.getUniqueId().toString());
