@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Commands.Party;
 
 import fr.AleksGirardey.Commands.City.CityCommandAssistant;
+import fr.AleksGirardey.Commands.Commands;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Invitations.PartyWarInvitation;
@@ -12,10 +13,10 @@ import org.spongepowered.api.text.Text;
 
 import java.util.Collection;
 
-public class                    PartyInvite extends CityCommandAssistant {
+public class                    PartyInvite extends Commands {
     @Override
     protected boolean           SpecialCheck(DBPlayer player, CommandContext context) {
-        DBPlayer                newOne = Core.getPlayerHandler().get(context.<Player>getOne("[citizen]").get());
+        DBPlayer                newOne = Core.getPlayerHandler().get(context.<Player>getOne("[player]").get());
 
 
         if (!Core.getPartyHandler().isLeader(player)) {
@@ -28,7 +29,7 @@ public class                    PartyInvite extends CityCommandAssistant {
             return false;
         }
 
-        if (context.hasAny("<citizen>")) {
+        if (context.hasAny("<player>")) {
             Collection<Player> newones = context.<Player>getAll("<citizen>");
 
             for (Player p : newones) {
@@ -44,13 +45,13 @@ public class                    PartyInvite extends CityCommandAssistant {
 
     @Override
     protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
-        DBPlayer                newOne = Core.getPlayerHandler().get(context.<Player>getOne("[citizen]").get());
+        DBPlayer                newOne = Core.getPlayerHandler().get(context.<Player>getOne("[player]").get());
         PartyWar                party = Core.getPartyHandler().getPartyFromLeader(player);
 
         Core.getInvitationHandler().createInvitation(new PartyWarInvitation(newOne, player, party));
         Core.getBroadcastHandler().partyInvitation(player, newOne);
-        if (context.hasAny("<citizen>")) {
-            Collection<Player>      newOnes = context.<Player>getAll("<citizen>");
+        if (context.hasAny("<player>")) {
+            Collection<Player>      newOnes = context.<Player>getAll("<player>");
 
             for (Player p : newOnes) {
                 DBPlayer    pl = Core.getPlayerHandler().get(p);

@@ -2,21 +2,15 @@ package fr.AleksGirardey.Handlers;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.google.inject.Inject;
-import fr.AleksGirardey.Objects.Core;
-import fr.AleksGirardey.Objects.Cuboide.Cubo;
+import fr.AleksGirardey.Objects.DBObject.*;
 import fr.AleksGirardey.Objects.Cuboide.CuboVector;
-import fr.AleksGirardey.Objects.DBObject.City;
-import fr.AleksGirardey.Objects.DBObject.DBPlayer;
-import fr.AleksGirardey.Objects.DBObject.Permission;
 import fr.AleksGirardey.Objects.Database.GlobalCubo;
-import fr.AleksGirardey.Objects.Database.GlobalPlayer;
+import fr.AleksGirardey.Objects.Database.GlobalCuboAssociation;
 import fr.AleksGirardey.Objects.Utilitaires.Pair;
 import fr.AleksGirardey.Objects.Database.Statement;
 import org.slf4j.Logger;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +24,8 @@ public class CuboHandler {
     private Map<DBPlayer, Pair<Vector3i, Vector3i>>     points = new HashMap<>();
     private Map<Integer, Cubo>                          cubos = new HashMap<>();
 
+    private Map<Cubo, List<CuboAssociation>>            associations = new HashMap<>();
+
     @Inject
     public              CuboHandler(Logger logger) {
         this.logger = logger;
@@ -37,6 +33,8 @@ public class CuboHandler {
 
     public void        populate() {
         String          sql = "SELECT * FROM `" + GlobalCubo.tableName + "`";
+        String          sql2 = "SELECT * FROM `" + GlobalCuboAssociation.tableName + "`";
+        CuboAssociation association;
         Cubo            cubo;
 
         try {
@@ -46,6 +44,16 @@ public class CuboHandler {
                 cubo = new Cubo(statement.getResult());
                 cubos.put(cubo.getId(), cubo);
             }
+            statement.Close();
+            statement = new Statement(sql2);
+            statement.Execute();
+            while (statement.getResult().next()) {
+                association = new CuboAssociation(statement.getResult());
+                if (!associations.containsKey(association.getCubo()))
+                    associations.put(association.getCubo(), new ArrayList<>());
+                associations.get(association.getCubo()).add(association);
+            }
+            statement.Close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -142,6 +150,17 @@ public class CuboHandler {
             points.get(p).setL(block);
         else
             points.get(p).setR(block);
+    }
+
+    public void         deleteCity(City city) {
+        List<Integer>      remove = new ArrayList<>();
+        cubos.values().stream().filter(cubo -> cubo.getCity() == city).forEach(cubo -> {
+            remove.add(cubo.getId());
+            associations.get(cubo).forEach(DBObject::delete);
+            associations.remove(cubo);
+            cubo.delete();
+        });
+        remove.forEach(id -> cubos.remove(id));
     }
 
     public void         updateDependencies() { cubos.values().forEach(Cubo::updateDependencies); }

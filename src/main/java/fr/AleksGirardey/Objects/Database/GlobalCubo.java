@@ -2,6 +2,7 @@ package fr.AleksGirardey.Objects.Database;
 
 public class GlobalCubo {
     public static String        id = "cubo_id";
+    public static String        cityId = "cubo_cityId";
     public static String        nom = "cubo_nom";
     public static String        parent = "cubo_parent";
     public static String        owner = "cubo_owner";

@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS `Diplomacy` (
 
 CREATE TABLE IF NOT EXISTS `Cubo` (
     `cubo_id` INT AUTO_INCREMENT,
+    `cubo_cityId` INT NOT NULL,
     `cubo_nom` CHAR(36) NOT NULL,
     `cubo_parent` INT,
     `cubo_owner` CHAR(36) NOT NULL,
@@ -69,6 +70,7 @@ CREATE TABLE IF NOT EXISTS `Cubo` (
     `cubo_BposY` INT NOT NULL,
     `cubo_BposZ` INT NOT NULL,
     PRIMARY KEY (`cubo_id`),
+    FOREIGN KEY (`cubo_cityId`) REFERENCES `City` (`city_id`),
     FOREIGN KEY (`cubo_owner`) REFERENCES `Player` (`player_uuid`),
     FOREIGN KEY (`cubo_parent`) REFERENCES `Cubo` (`cubo_id`),
     FOREIGN KEY (`cubo_permissionInlist`) REFERENCES `Permission` (`permission_id`),

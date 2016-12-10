@@ -110,7 +110,7 @@ public class DBPlayer extends DBObject {
         if (city != null)
             this.edit(GlobalPlayer.cityId, "'" + city.getId() + "'");
         else
-            this.edit(GlobalPlayer.cityId, "'0'");
+            this.edit(GlobalPlayer.cityId, "NULL");
     }
 
     public Boolean      isAssistant() { return assistant; }

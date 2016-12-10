@@ -70,8 +70,12 @@ public class DiplomacyHandler {
     }
 
     public void                     delete(City city) {
-        for (Diplomacy d : diplomacyMap.get(city))
+        if (!diplomacyMap.containsKey(city))
+            return;
+        for (Diplomacy d : diplomacyMap.get(city)) {
             diplomacies.remove(d.getId());
+            d.delete();
+        }
         diplomacyMap.remove(city);
     }
 
@@ -90,14 +94,12 @@ public class DiplomacyHandler {
     public List<City>               getAllies(City city) {
         List<City>                  list = new ArrayList<>();
 
-        for (Diplomacy d : diplomacies.values()) {
-            if (d.getRelation()) {
-                if (d.getMain() == city)
-                    list.add(d.getSub());
-                else if (d.getSub() == city)
-                    list.add(d.getMain());
-            }
-        }
+        diplomacies.values().stream().filter(Diplomacy::getRelation).forEach(d -> {
+            if (d.getMain() == city)
+                list.add(d.getSub());
+            else if (d.getSub() == city)
+                list.add(d.getMain());
+        });
         return list;
     }
 

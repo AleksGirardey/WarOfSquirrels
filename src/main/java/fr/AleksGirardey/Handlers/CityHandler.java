@@ -71,7 +71,12 @@ public class CityHandler {
         return newOne;
     }
 
-    public void                         delete(City city){ cities.remove(city.getId()); }
+    public void                         delete(City city){
+        cities.remove(city.getId());
+        city.getOwner().setCity(null);
+        Core.getInfoCityMap().remove(city);
+        city.delete();
+    }
 
     public Collection<DBPlayer>         getCitizens(City city) {
         return cities.get(city.getId()).getCitizens();

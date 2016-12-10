@@ -16,6 +16,9 @@ public class ConfigLoader {
 
     public static int                                                       distanceCities;
     public static int                                                       distanceOutpost;
+    public static int                                                       shoutDistance;
+    public static int                                                       sayDistance;
+    public static boolean                                                   peaceTime;
     private static ConfigurationNode                                        rootNode;
     private static ConfigurationLoader<CommentedConfigurationNode>          manager;
 
@@ -39,9 +42,16 @@ public class ConfigLoader {
             rootNode = manager.load();
             distanceCities = rootNode.getNode("Distances", "cities").getInt(20);
             distanceOutpost = rootNode.getNode("Distances", "outpost").getInt(20);
+            shoutDistance = rootNode.getNode("Distances", "shout").getInt(50);
+            sayDistance = rootNode.getNode("Distances", "say").getInt(30);
+            peaceTime = rootNode.getNode("War", "peace").getBoolean(false);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void      setPeaceTime(Boolean peace) {
+        rootNode.getNode("War", "peace").setValue(peace);
     }
 
     public static void      close() {

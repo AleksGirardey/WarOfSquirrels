@@ -2,9 +2,8 @@ package fr.AleksGirardey.Handlers;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.google.inject.Inject;
-import com.sun.org.apache.bcel.internal.generic.CHECKCAST;
 import fr.AleksGirardey.Objects.Core;
-import fr.AleksGirardey.Objects.Cuboide.Cubo;
+import fr.AleksGirardey.Objects.DBObject.Cubo;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
@@ -54,6 +53,7 @@ public class PermissionHandler {
 
     public void             delete(Permission perm) {
         this.permissionMap.remove(perm.getId());
+        perm.delete();
     }
 
     public void             delete(int id) {

@@ -118,17 +118,26 @@ public class City extends DBObject {
 
     public void setPermRes(Permission permRes) {
         this.permRes = permRes;
-        this.edit(GlobalCity.permRes, "'" + permRes.getId() + "'");
+        if (permRes != null)
+            this.edit(GlobalCity.permRes, "'" + permRes.getId() + "'");
+        else
+            this.edit(GlobalCity.permRes, "NULL");
     }
 
     public void setPermAllies(Permission permAllies) {
         this.permAllies = permAllies;
-        this.edit(GlobalCity.permAllies, "'" + permAllies.getId() + "'");
+        if (permAllies != null)
+            this.edit(GlobalCity.permAllies, "'" + permAllies.getId() + "'");
+        else
+            this.edit(GlobalCity.permAllies, "NULL");
     }
 
     public void setPermOutside(Permission permOutside) {
         this.permOutside = permOutside;
-        this.edit(GlobalCity.permOutside, "'" + permOutside.getId() + "'");
+        if (permOutside != null)
+            this.edit(GlobalCity.permOutside, "'" + permOutside.getId() + "'");
+        else
+            this.edit(GlobalCity.permOutside, "NULL");
     }
 
     public int      getId() {

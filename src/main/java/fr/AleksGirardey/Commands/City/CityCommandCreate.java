@@ -77,6 +77,7 @@ public class            CityCommandCreate extends Commands {
 
         for (DBPlayer p : Core.getPartyHandler().getPartyFromLeader(player).toList()) {
             p.setCity(city);
+            city.addCitizen(p);
             Core.getInfoCityMap().get(city).getChannel().addMember(p.getUser().getPlayer().get());
         }
         Text message = Text.of("[BREAKING NEWS] " + cityName + " have been created by " + player.getDisplayName());

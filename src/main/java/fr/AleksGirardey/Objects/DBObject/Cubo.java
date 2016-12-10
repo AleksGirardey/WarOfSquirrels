@@ -1,10 +1,8 @@
-package fr.AleksGirardey.Objects.Cuboide;
+package fr.AleksGirardey.Objects.DBObject;
 
 import com.flowpowered.math.vector.Vector3i;
 import fr.AleksGirardey.Objects.Core;
-import fr.AleksGirardey.Objects.DBObject.DBObject;
-import fr.AleksGirardey.Objects.DBObject.DBPlayer;
-import fr.AleksGirardey.Objects.DBObject.Permission;
+import fr.AleksGirardey.Objects.Cuboide.CuboVector;
 import fr.AleksGirardey.Objects.Database.GlobalCubo;
 import fr.AleksGirardey.Objects.Database.GlobalCuboAssociation;
 import fr.AleksGirardey.Objects.Database.Statement;
@@ -16,6 +14,7 @@ import java.util.List;
 
 public class            Cubo extends DBObject {
     private String      name;
+    private City        city;
     private Cubo        parent;
     private DBPlayer    owner;
     private Permission  permissionIn;
@@ -23,24 +22,26 @@ public class            Cubo extends DBObject {
     private int         priority;
     private CuboVector  vector;
 
-
-    private int         parentId;
+    private int                 parentId;
     private List<DBPlayer>      inList = new ArrayList<>();
+
+    private static final String              fields = "`" + GlobalCubo.nom
+            + "`, `" + GlobalCubo.cityId
+            + "`, `" + GlobalCubo.parent
+            + "`, `" + GlobalCubo.owner
+            + "`, `" + GlobalCubo.pInlist
+            + "`, `" + GlobalCubo.pOutside
+            + "`, `" + GlobalCubo.priority
+            + "`, `" + GlobalCubo.AposX
+            + "`, `" + GlobalCubo.AposY
+            + "`, `" + GlobalCubo.AposZ
+            + "`, `" + GlobalCubo.BposX
+            + "`, `" + GlobalCubo.BposY
+            + "`, `" + GlobalCubo.BposZ + "`";
 
     public              Cubo(String name, Cubo parent, DBPlayer owner,
                              Permission in, Permission out, int priority, CuboVector vector) {
-        super(GlobalCubo.id, GlobalCubo.tableName, "`" + GlobalCubo.nom
-                + "`, `" + GlobalCubo.parent
-                + "`, `" + GlobalCubo.owner
-                + "`, `" + GlobalCubo.pInlist
-                + "`, `" + GlobalCubo.pOutside
-                + "`, `" + GlobalCubo.priority
-                + "`, `" + GlobalCubo.AposX
-                + "`, `" + GlobalCubo.AposY
-                + "`, `" + GlobalCubo.AposZ
-                + "`, `" + GlobalCubo.BposX
-                + "`, `" + GlobalCubo.BposY
-                + "`, `" + GlobalCubo.BposZ + "`");
+        super(GlobalCubo.id, GlobalCubo.tableName, fields);
         this.name = name;
         this.parent = parent;
         this.owner = owner;
@@ -64,19 +65,9 @@ public class            Cubo extends DBObject {
     }
 
     public              Cubo(ResultSet rs) throws SQLException {
-        super(GlobalCubo.id, GlobalCubo.tableName, "`" + GlobalCubo.nom
-                + "`, `" + GlobalCubo.parent
-                + "`, `" + GlobalCubo.owner
-                + "`, `" + GlobalCubo.pInlist
-                + "`, `" + GlobalCubo.pOutside
-                + "`, `" + GlobalCubo.priority
-                + "`, `" + GlobalCubo.AposX
-                + "`, `" + GlobalCubo.AposY
-                + "`, `" + GlobalCubo.AposZ
-                + "`, `" + GlobalCubo.BposX
-                + "`, `" + GlobalCubo.BposY
-                + "`, `" + GlobalCubo.BposZ + "`");
+        super(GlobalCubo.id, GlobalCubo.tableName, fields);
         this._primaryKeyValue = "" + rs.getInt(GlobalCubo.id);
+        this.city = Core.getCityHandler().get(rs.getInt(GlobalCubo.cityId));
         this.name = rs.getString(GlobalCubo.nom);
         this.parentId = rs.getInt(GlobalCubo.parent);
         this.owner = Core.getPlayerHandler().get(rs.getString(GlobalCubo.owner));
@@ -126,6 +117,8 @@ public class            Cubo extends DBObject {
     public int          getId() { return Integer.parseInt(_primaryKeyValue); }
 
     public String       getName() { return name; }
+
+    public City         getCity() { return city; }
 
     public void         setName(String name) {
         this.name = name;

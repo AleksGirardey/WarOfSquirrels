@@ -82,10 +82,11 @@ public class ChunkHandler {
     }
 
     public void             deleteCity(City city) {
-        for (Chunk c : chunkMap.get(city))
+        for (Chunk c : chunkMap.get(city)) {
             chunks.remove(c.getId());
+            c.delete();
+        }
         chunkMap.remove(city);
-        city.delete();
     }
 
     public boolean      canBePlaced(City city, int posX, int posZ, boolean outpost) {

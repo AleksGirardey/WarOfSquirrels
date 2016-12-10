@@ -12,10 +12,11 @@ Features :
 
 ToDo :
 
-- Hybrid handlers, load at launch & save after every actions
+- Verifier les deco (Seems OK -- Check leave pauline)
+- Verifier /war membres du grp dans la ville att ou ally
 
-- PeaceTime
-- Distance City-City / City-AP
+- PeaceTime (Value present -- need command et blocage war)
+- Distance City-City / City-AP (normalement OK -- NEED CHECK)
 - Capture & Target System
 - Save RollbackList en BDD (en cas de crash)
 - Reincarnation (X seconds while u are OS by everything)

@@ -3,16 +3,13 @@ package fr.AleksGirardey.Objects.Utilitaires;
 
 import com.flowpowered.math.vector.Vector2d;
 import com.flowpowered.math.vector.Vector3d;
-import com.flowpowered.math.vector.Vector3i;
-import fr.AleksGirardey.Handlers.PlayerHandler;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.Core;
-import fr.AleksGirardey.Objects.Cuboide.Cubo;
+import fr.AleksGirardey.Objects.DBObject.Cubo;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Database.Statement;
 import fr.AleksGirardey.Objects.City.InfoCity;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
@@ -93,7 +90,8 @@ public class Utils {
 
     public static Location<World>   getNearestSpawn(DBPlayer player) {
         List<Chunk>                 chunks = new ArrayList<>();
-        Location<World>             pLocation = player.getUser().getPlayer().get().getLocation(), save = null;
+        Location<World>             pLocation = player.getUser().getPlayer().get().getLocation(),
+                save = null;
         Vector3d                    chunk = null;
 
         chunks.addAll(Core.getChunkHandler().getOupostList(player.getCity()));
@@ -104,10 +102,8 @@ public class Utils {
                     c.getRespawnX(),
                     c.getRespawnY(),
                     c.getRespawnZ());
-            if (save == null ||
-                    pLocation.getPosition().distance(chunk) < pLocation.getPosition().distance(
-                            save.getPosition()))
-                save = player.getUser().getPlayer().get().getWorld().getLocation(chunk);
+            if (save == null || (pLocation.getPosition().distance(chunk) < pLocation.getPosition().distance(save.getPosition())))
+                save = player.getUser().getPlayer().get().getWorld().getLocation(vec);
         }
         return (save);
     }
@@ -122,6 +118,10 @@ public class Utils {
                 res += ", ";
         }
         return res;
+    }
+
+    public static Text          getTownChatTag(DBPlayer player) {
+        return (Text.of("[" + player.getDisplayName() + "]"));
     }
 
     public static Text          getChatTag(DBPlayer player) {
@@ -139,7 +139,7 @@ public class Utils {
 
             tag = Text.of(city.getColor(), "[" + player.getCity().getTag()
                     + "][" + displayName
-                    + "][", TextColors.RESET);
+                    + "]", TextColors.RESET);
         } else {
             tag = Text.of(TextColors.GRAY, "[Wanderer][" + player.getDisplayName() + "]", TextColors.RESET);
         }
