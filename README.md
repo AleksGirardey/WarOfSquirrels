@@ -14,7 +14,6 @@ ToDo :
 
 - Verifier les deco (Seems OK -- Check leave pauline)
 - Verifier /war membres du grp dans la ville att ou ally
-
 - PeaceTime (Value present -- need command et blocage war)
 - Distance City-City / City-AP (normalement OK -- NEED CHECK)
 - Capture & Target System
