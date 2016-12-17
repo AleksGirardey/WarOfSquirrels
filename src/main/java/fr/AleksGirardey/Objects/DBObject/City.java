@@ -14,6 +14,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class City extends DBObject {
+    private static String       _fields = "`" + GlobalCity.displayName
+            + "`, `" + GlobalCity.tag
+            + "`, `" + GlobalCity.rank
+            + "`, `" + GlobalCity.playerOwner
+            + "`, `" + GlobalCity.permRes
+            + "`, `" + GlobalCity.permAllies
+            + "`, `" + GlobalCity.permOutside + "`";
+
+    /* DB Fields */
+
     private String      displayName;
     private String      tag;
     private int         rank;
@@ -21,18 +31,15 @@ public class City extends DBObject {
     private Permission  permRes;
     private Permission  permAllies;
     private Permission  permOutside;
+    private int         balance;
 
+    /* Extra Fields */
     private Map<String, DBPlayer> citizens = new HashMap<>();
 
     public City(String _displayName, DBPlayer _owner,
                 Permission _res, Permission _allies, Permission _outside) {
-        super(GlobalCity.id, GlobalCity.tableName, "`" + GlobalCity.displayName
-                + "`, `" + GlobalCity.tag
-                + "`, `" + GlobalCity.rank
-                + "`, `" + GlobalCity.playerOwner
-                + "`, `" + GlobalCity.permRes
-                + "`, `" + GlobalCity.permAllies
-                + "`, `" + GlobalCity.permOutside + "`");
+        super(GlobalCity.id, GlobalCity.tableName, _fields);
+
         displayName = _displayName;
         tag = (displayName.length() <= 5 ? displayName : displayName.substring(0, 5));
         rank = 0;
@@ -40,23 +47,20 @@ public class City extends DBObject {
         permRes = _res;
         permAllies = _allies;
         permOutside = _outside;
+        balance = 0;
         this.add("'" + displayName + "', '"
                 + tag + "', '0', '"
                 + owner.getUser().getUniqueId().toString() + "', '"
                 + permRes.getId() + "', '"
                 + permAllies.getId() + "', '"
-                + permOutside.getId()+ "'");
+                + permOutside.getId()+ "', "
+                + balance);
         writeLog();
     }
 
     public City(ResultSet rs) throws SQLException {
-        super(GlobalCity.id, GlobalCity.tableName, "`" + GlobalCity.displayName
-                + "`, `" + GlobalCity.tag
-                + "`, `" + GlobalCity.rank
-                + "`, `" + GlobalCity.playerOwner
-                + "`, `" + GlobalCity.permRes
-                + "`, `" + GlobalCity.permAllies
-                + "`, `" + GlobalCity.permOutside + "`");
+        super(GlobalCity.id, GlobalCity.tableName, _fields);
+
         _primaryKeyValue = "" + rs.getInt(GlobalCity.id);
         displayName = rs.getString(GlobalCity.displayName);
         tag = rs.getString(GlobalCity.tag);
@@ -65,6 +69,7 @@ public class City extends DBObject {
         permRes = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permRes));
         permAllies = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permAllies));
         permOutside = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permOutside));
+        balance = rs.getInt(GlobalCity.account);
 
         //get Players name with this ID;
         this.populate();
@@ -91,9 +96,14 @@ public class City extends DBObject {
     }
 
     public void     writeLog() {
-        Core.getLogger().info("[Creating] City '" + displayName + "' aka '" + tag + "' is rank " + rank
-                + " and ruled by " + owner.getDisplayName() + " with permissions : "
-                + permRes.toString() + " " + permAllies.toString() + " " + permOutside.toString());
+        Core.getLogger().info("[City] (" + _fields + ") : #" + _primaryKeyValue
+                + "," + displayName
+                + "," + tag
+                + "," + rank
+                + "," + permRes
+                + "," + permAllies
+                + "," + permOutside
+                + "," + balance);
     }
 
     public void setDisplayName(String displayName) {
@@ -182,9 +192,7 @@ public class City extends DBObject {
         return citizens.containsValue(player);
     }
 
-    public void         addCitizen(DBPlayer player) {
-        this.citizens.put(player.getDisplayName(), player);
-    }
+    public void         addCitizen(DBPlayer player) { this.citizens.put(player.getDisplayName(), player); }
 
     public void         removeCitizen(DBPlayer player) {
         this.citizens.remove(player.getDisplayName());
@@ -215,4 +223,21 @@ public class City extends DBObject {
         }
         return message;
     }
+
+    /* Balance */
+
+    public void     setBalance(int balance) {
+        this.balance = balance;
+        this.edit(GlobalCity.account, "" + balance);
+    }
+
+    public void     insert(int money) {
+        this.setBalance(balance + money);
+    }
+
+    public void     withdraw(int money) {
+        this.setBalance((balance - money) < 0 ? 0 : balance - money);
+    }
+
+    public int getBalance() { return balance; }
 }

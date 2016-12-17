@@ -229,7 +229,4 @@ public class CityHandler {
         }
         return map;
     }
-
-    /* Account related */
-
 }

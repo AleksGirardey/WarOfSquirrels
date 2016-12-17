@@ -14,7 +14,9 @@ ToDo :
 
 - Prevent mob spawning in Chunks (Besoin de test)
 
-- Economy
+- Pancartes achat / vente;
+- Ajouter les transferts d'argent (mort etc.)
+- Définir quand le score est modifié et de combien
 - Capture & Target System
 - Save RollbackList en BDD (en cas de crash)
 

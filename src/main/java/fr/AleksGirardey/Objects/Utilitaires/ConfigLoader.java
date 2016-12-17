@@ -22,6 +22,7 @@ public class ConfigLoader {
     public static int                                                       reincarnationTime;
     private static ConfigurationNode                                        rootNode;
     private static ConfigurationLoader<CommentedConfigurationNode>          manager;
+    public static int                                                       startBalance;
 
     public ConfigLoader(ConfigurationLoader<CommentedConfigurationNode> configManager) {
         Path configPath = FileSystems.getDefault().getPath("WarOfSquirrels/config", "WOS.properties");
@@ -41,12 +42,19 @@ public class ConfigLoader {
             } else
                 manager = configManager;
             rootNode = manager.load();
+
+            /* Distances */
             distanceCities = rootNode.getNode("Distances", "cities").getInt(20);
             distanceOutpost = rootNode.getNode("Distances", "outpost").getInt(20);
             shoutDistance = rootNode.getNode("Distances", "shout").getInt(50);
             sayDistance = rootNode.getNode("Distances", "say").getInt(30);
+
+            /* War */
             peaceTime = rootNode.getNode("War", "peace").getBoolean(false);
+
+            /* Player */
             reincarnationTime = rootNode.getNode("Joueur", "reincarnation").getInt(30);
+            startBalance = rootNode.getNode("Joueur", "startBalance").getInt(100);
         } catch (IOException e) {
             e.printStackTrace();
         }

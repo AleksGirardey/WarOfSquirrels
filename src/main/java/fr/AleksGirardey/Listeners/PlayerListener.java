@@ -43,7 +43,9 @@ public class PlayerListener {
             if (Core.getWarHandler().Contains(killer) && Core.getWarHandler().Contains(victim))
                 Core.getWarHandler().AddPoints(killer, victim);
             /*
-              Add personnal points
+
+              Add personnal points && money transfer
+
             */
         }
     }

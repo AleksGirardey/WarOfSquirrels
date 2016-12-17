@@ -16,6 +16,7 @@ import fr.AleksGirardey.Commands.City.Set.Permissions.PermOutside;
 import fr.AleksGirardey.Commands.City.Set.Permissions.PermResident;
 import fr.AleksGirardey.Commands.Party.*;
 import fr.AleksGirardey.Commands.RefuseCommand;
+import fr.AleksGirardey.Commands.Utils.CommandPay;
 import fr.AleksGirardey.Commands.War.*;
 import fr.AleksGirardey.Listeners.*;
 import fr.AleksGirardey.Objects.CommandElements.*;
@@ -84,7 +85,7 @@ public class Main {
     private CommandSpec     commandCity() {
         CommandSpec         city_help, city_info, city_create, city_delete,
                 city_claim, city_unclaim, city_set, city_add, city_remove, city_leave,
-                city_list, city_cubo;
+                city_list, city_cubo, city_deposit, city_withdraw;
 
         city_help = CommandSpec.builder()
                 .description(Text.of("City commands help"))
@@ -160,6 +161,18 @@ public class Main {
                 .executor(new CuboCommandMode())
                 .build();
 
+        city_deposit = CommandSpec.builder()
+                .description(Text.of("Deposit money on city account"))
+                .executor(new CityCommandDeposit())
+                .arguments(GenericArguments.onlyOne(GenericArguments.integer(Text.of("[amount]"))))
+                .build();
+
+        city_withdraw = CommandSpec.builder()
+                .description(Text.of("Withdraw money from city account"))
+                .executor(new CityCommandWithdraw())
+                .arguments(GenericArguments.onlyOne(GenericArguments.integer(Text.of("[amount]"))))
+                .build();
+
         return (CommandSpec.builder()
                 .description(Text.of("Commands related to your city"))
                 .child(city_help, "help", "?")
@@ -174,6 +187,8 @@ public class Main {
                 .child(city_leave, "leave")
                 .child(city_list, "list", "l")
                 .child(city_cubo, "cubo", "c")
+                .child(city_deposit, "deposit", "d")
+                .child(city_withdraw, "withdraw", "w")
                 .executor(new CityCommandInfo())
                 .arguments(
                         GenericArguments.optional(
@@ -452,7 +467,7 @@ public class Main {
 
     @Listener
     public void             onServerInit(GameInitializationEvent event) {
-        CommandSpec         city, party, war, accept, refuse, chat, say, shout, town, near, list, setSpawn;
+        CommandSpec         city, party, war, accept, refuse, chat, say, shout, town, near, list, setSpawn, pay;
 
         city = commandCity();
 
@@ -527,6 +542,15 @@ public class Main {
         })
                 .build();
 
+        pay = CommandSpec.builder()
+                .description(Text.of("Give money to someone"))
+                .executor(new CommandPay())
+                .arguments(
+                        GenericArguments.onlyOne(GenericArguments.player(Text.of("[amount]"))),
+                        GenericArguments.onlyOne(GenericArguments.integer(Text.of("[amount]")))
+                )
+                .build();
+
         game.getCommandManager().register(this, city, "city", "c");
         game.getCommandManager().register(this, party, "party", "p");
         game.getCommandManager().register(this, war, "war", "w");
@@ -539,6 +563,7 @@ public class Main {
         game.getCommandManager().register(this, near, "near", "n");
         game.getCommandManager().register(this, list, "list");
         game.getCommandManager().register(this, setSpawn, "setSpawn");
+        game.getCommandManager().register(this, pay, "pay");
 
         logger.info("Welcome in the War Of Squirrels. Have fun !");
     }

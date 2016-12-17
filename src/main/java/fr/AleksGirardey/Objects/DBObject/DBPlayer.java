@@ -2,6 +2,7 @@ package fr.AleksGirardey.Objects.DBObject;
 
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Database.GlobalPlayer;
+import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.service.economy.account.Account;
@@ -13,10 +14,11 @@ import java.util.UUID;
 
 public class DBPlayer extends DBObject {
     private String          _tableName = GlobalPlayer.tableName;
-    private String          _fields = "`" + GlobalPlayer.displayName
+    private static String          _fields = "`" + GlobalPlayer.displayName
             + "`, `" + GlobalPlayer.score
             + "`, `" + GlobalPlayer.cityId
-            + "`, `" + GlobalPlayer.assistant + "`";
+            + "`, `" + GlobalPlayer.assistant
+            + "`, `" + GlobalPlayer.account + "`";
     private String          _newFields = "`" + GlobalPlayer.uuid + "`, " + _fields;
 
     /* -- DB Fields -- */
@@ -25,7 +27,7 @@ public class DBPlayer extends DBObject {
     private int             score;
     private City            city;
     private Boolean         assistant;
-    private DBAccount       account;
+    private int             balance;
 
     /* -- Extra Fields -- */
     private int             lastChunkX;
@@ -34,30 +36,25 @@ public class DBPlayer extends DBObject {
     private int             cityId;
 
     public DBPlayer(Player player) {
-        super(GlobalPlayer.uuid, GlobalPlayer.tableName, "`" + GlobalPlayer.displayName
-                + "`, `" + GlobalPlayer.score
-                + "`, `" + GlobalPlayer.cityId
-                + "`, `" + GlobalPlayer.assistant + "`");
+        super(GlobalPlayer.uuid, GlobalPlayer.tableName, _fields);
         this.user = Core.getPlayerHandler().getUser(player.getUniqueId()).get();
         this.displayName = player.getName();
         this.score = 0;
         this.city = null;
         this.cityId = 0;
+        this.balance = ConfigLoader.startBalance;
         this.assistant = false;
         this.reincarnation = false;
         this._primaryKeyValue = player.getUniqueId().toString();
         this.add("'" + _primaryKeyValue + "', '"
                 + displayName + "', '"
                 + score + "', "
-                + "NULL, FALSE");
+                + "NULL, FALSE, " + balance);
         writeLog();
     }
 
     public DBPlayer(ResultSet rs) throws SQLException {
-        super(GlobalPlayer.uuid, GlobalPlayer.tableName, "`" + GlobalPlayer.displayName
-                + "`, `" + GlobalPlayer.score
-                + "`, `" + GlobalPlayer.cityId
-                + "`, `" + GlobalPlayer.assistant + "`");
+        super(GlobalPlayer.uuid, GlobalPlayer.tableName, _fields);
         this._primaryKeyValue = rs.getString(GlobalPlayer.uuid);
         this.user = Core.getPlayerHandler().getUser(
                 UUID.fromString(rs.getString(GlobalPlayer.uuid))).get();
@@ -65,6 +62,7 @@ public class DBPlayer extends DBObject {
         this.score = rs.getInt(GlobalPlayer.score);
         this.cityId = rs.getInt(GlobalPlayer.cityId);
         this.assistant = rs.getBoolean(GlobalPlayer.assistant);
+        this.balance = rs.getInt(GlobalPlayer.account);
         this.reincarnation = false;
         writeLog();
     }
@@ -77,8 +75,11 @@ public class DBPlayer extends DBObject {
     }
 
     public void     writeLog() {
-        Core.getLogger().info("[Creation] Player '" + displayName + "' has a score of " + score + ". He belongs to "
-                + (city != null ? "'" + city.getDisplayName() + "'" : "no one."));
+        Core.getLogger().info("[Player] (" + _fields + ") : #" + _primaryKeyValue
+                + "," + displayName
+                + "," + score
+                + "," + (city != null ? "'" + city.getDisplayName() + "'" : "null")
+                + "," + balance);
     }
 
     @Override
@@ -142,4 +143,21 @@ public class DBPlayer extends DBObject {
     public void     setReincarnation(boolean reinca) {
         reincarnation = reinca;
     }
+
+    /* -- Balance related -- */
+
+    public void     insert(int money) {
+        setBalance(balance += money);
+    }
+
+    public void     withdraw(int money) {
+        setBalance((this.balance - money) < 0 ? 0 : this.balance - money);
+    }
+
+    public void     setBalance(int newBalance) {
+        this.balance = newBalance;
+        this.edit(GlobalPlayer.account, "" + this.balance);
+    }
+
+    public int getBalance() { return balance; }
 }
