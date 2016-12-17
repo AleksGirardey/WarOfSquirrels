@@ -19,6 +19,7 @@ public class ConfigLoader {
     public static int                                                       shoutDistance;
     public static int                                                       sayDistance;
     public static boolean                                                   peaceTime;
+    public static int                                                       reincarnationTime;
     private static ConfigurationNode                                        rootNode;
     private static ConfigurationLoader<CommentedConfigurationNode>          manager;
 
@@ -45,6 +46,7 @@ public class ConfigLoader {
             shoutDistance = rootNode.getNode("Distances", "shout").getInt(50);
             sayDistance = rootNode.getNode("Distances", "say").getInt(30);
             peaceTime = rootNode.getNode("War", "peace").getBoolean(false);
+            reincarnationTime = rootNode.getNode("Joueur", "reincarnation").getInt(30);
         } catch (IOException e) {
             e.printStackTrace();
         }

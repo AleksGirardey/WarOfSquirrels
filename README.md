@@ -12,14 +12,11 @@ Features :
 
 ToDo :
 
-- Verifier les deco (Seems OK -- Check leave pauline)
-- Verifier /war membres du grp dans la ville att ou ally
+- Prevent mob spawning in Chunks (Besoin de test)
 
-- PeaceTime (Value present -- need command et blocage war)
-- Distance City-City / City-AP (normalement OK -- NEED CHECK)
+- Economy
 - Capture & Target System
 - Save RollbackList en BDD (en cas de crash)
-- Reincarnation (X seconds while u are OS by everything)
 
 Tests :
 

@@ -3,7 +3,6 @@ package fr.AleksGirardey.Handlers;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Invitations.Invitation;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Scheduler;
 import org.spongepowered.api.scheduler.Task;
 
@@ -30,7 +29,7 @@ public class InvitationHandler {
         invitationList.add(invitation);
     }
 
-    public void         deleteTask(Invitation invitation) {
+    private void         deleteTask(Invitation invitation) {
         //invitation.refuse();
         this.invitationList.remove(invitation);
     }

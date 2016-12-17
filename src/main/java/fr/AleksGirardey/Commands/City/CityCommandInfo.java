@@ -40,7 +40,7 @@ public class CityCommandInfo extends CityCommand {
         else
             city = Core.getCityHandler().get(arg);
 
-        player.sendMessage(Text.of("---===| " + Core.getInfoCityMap().get(city).getRank().getName() + " " + city.getDisplayName() + "[" + (city.getCitizens().size() + 1) + "] |===---"));
+        player.sendMessage(Text.of("---===| " + Core.getInfoCityMap().get(city).getRank().getName() + " " + city.getDisplayName() + "[" + city.getCitizens().size() + "] |===---"));
         player.sendMessage(Text.of("Mayor: " + city.getOwner().getDisplayName()));
         player.sendMessage(Text.of("Assistant(s): " + city.getAssistantsAsString()));
         player.sendMessage(Text.of("Citizens: " + city.getCitizensAsString()));

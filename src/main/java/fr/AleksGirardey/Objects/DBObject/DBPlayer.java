@@ -4,6 +4,7 @@ import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Database.GlobalPlayer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.text.Text;
 
 import java.sql.ResultSet;
@@ -24,11 +25,12 @@ public class DBPlayer extends DBObject {
     private int             score;
     private City            city;
     private Boolean         assistant;
+    private DBAccount       account;
 
     /* -- Extra Fields -- */
     private int             lastChunkX;
     private int             lastChunkZ;
-
+    private boolean         reincarnation;
     private int             cityId;
 
     public DBPlayer(Player player) {
@@ -42,6 +44,7 @@ public class DBPlayer extends DBObject {
         this.city = null;
         this.cityId = 0;
         this.assistant = false;
+        this.reincarnation = false;
         this._primaryKeyValue = player.getUniqueId().toString();
         this.add("'" + _primaryKeyValue + "', '"
                 + displayName + "', '"
@@ -62,6 +65,7 @@ public class DBPlayer extends DBObject {
         this.score = rs.getInt(GlobalPlayer.score);
         this.cityId = rs.getInt(GlobalPlayer.cityId);
         this.assistant = rs.getBoolean(GlobalPlayer.assistant);
+        this.reincarnation = false;
         writeLog();
     }
 
@@ -131,7 +135,11 @@ public class DBPlayer extends DBObject {
 
     public int      getLastChunkX() { return lastChunkX; }
     public int      getLastChunkZ() { return lastChunkZ; }
+    public boolean  isInReincarnation() { return reincarnation; }
 
     public void     setLastChunkX(int pos) { lastChunkX = pos; }
     public void     setLastChunkZ(int pos) { lastChunkZ = pos; }
+    public void     setReincarnation(boolean reinca) {
+        reincarnation = reinca;
+    }
 }

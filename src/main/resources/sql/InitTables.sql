@@ -5,12 +5,15 @@ CREATE TABLE IF NOT EXISTS `Permission` (
   `permission_switch` BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (`permission_id`));
 
+-- CREATE TABLE IF NOT EXISTS `Account` (`account_id` INT AUTO_INCREMENT, `account_po` INT DEFAULT 0, `account_pa` INT DEFAULT 0, `account_pb` INT DEFAULT 0); --
+
 CREATE TABLE IF NOT EXISTS `Player` (
   `player_uuid` CHAR(36) NOT NULL,
   `player_displayName` char(45) NOT NULL,
   `player_score` INT DEFAULT 0,
   `player_cityId` INT DEFAULT NULL,
   `player_assistant` BOOLEAN DEFAULT FALSE,
+  `player_account` INT DEFAULT 0 NOT NULL,
   PRIMARY KEY (`player_uuid`));
 
 CREATE TABLE IF NOT EXISTS `City` (
@@ -18,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `City` (
   `city_displayName` CHAR(36) NOT NULL,
   `city_tag` char(5) NOT NULL,
   `city_rank` INT NOT NULL DEFAULT 0,
+  `city_account` INT DEFAULT 0 NOT NULL,
   `city_playerOwner` CHAR(36) NOT NULL,
   `city_permissionResident` INT,
   `city_permissionAllies` INT,

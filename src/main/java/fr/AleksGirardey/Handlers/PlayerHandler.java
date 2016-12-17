@@ -5,17 +5,18 @@ import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Database.GlobalPlayer;
 import fr.AleksGirardey.Objects.Database.Statement;
+import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.scheduler.Scheduler;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.user.UserStorageService;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class        PlayerHandler {
     private Logger  logger;
@@ -23,7 +24,7 @@ public class        PlayerHandler {
     private Map<String, DBPlayer>       players = new HashMap<>();
     private Map<User, DBPlayer>         playersMap = new HashMap<>();
 
-
+    private Map<DBPlayer, Task>         incarnationMap = new HashMap<>();
 
     public PlayerHandler(Logger logger) {
         this.logger = logger;
@@ -79,5 +80,29 @@ public class        PlayerHandler {
         this.playersMap.put(p.getUser(), p);
     }
 
-    public boolean exists(DBPlayer player) { return this.players.containsValue(player); }
+    public boolean      exists(DBPlayer player) { return this.players.containsValue(player); }
+
+    private Task         newReincarnation(DBPlayer player) {
+        Scheduler       scheduler = Core.getPlugin().getScheduler();
+        Task.Builder    builder = scheduler.createTaskBuilder();
+
+        return builder
+                .execute(() -> Core.getPlayerHandler().cancelReincarnation(player))
+                .delay(ConfigLoader.reincarnationTime, TimeUnit.SECONDS)
+                .submit(Core.getMain());
+    }
+
+    private void         cancelReincarnation(DBPlayer player) {
+        incarnationMap.remove(player);
+        player.setReincarnation(false);
+    }
+
+    public void         setReincarnation(DBPlayer player) {
+        if (incarnationMap.containsKey(player)) {
+            incarnationMap.get(player).cancel();
+            incarnationMap.remove(player);
+        }
+        player.setReincarnation(true);
+        incarnationMap.put(player, newReincarnation(player));
+    }
 }

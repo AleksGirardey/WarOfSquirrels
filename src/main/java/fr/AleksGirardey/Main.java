@@ -72,11 +72,11 @@ public class Main {
                 logger.error("Can't create plugin directory");
 
         Core.initCore(logger, game, this, configManager);
-        game.getEventManager().registerListeners(this, new OnPlayerLogin());
         game.getEventManager().registerListeners(this, new OnPlayerMove());
-        game.getEventManager().registerListeners(this, new OnPlayerRespawn());
+
         game.getEventManager().registerListeners(this, new BlockListener());
-        game.getEventManager().registerListeners(this, new OnPlayerDeath());
+        game.getEventManager().registerListeners(this, new PlayerListener());
+
         game.getEventManager().registerListeners(this, new OnPlayerChat());
         game.getEventManager().registerListeners(this, new OnPlayerCubo());
     }
@@ -352,7 +352,7 @@ public class Main {
 
     private CommandSpec     commandWar() {
         CommandSpec         warAttack, warWinAtt, warWinDef, warJoin,
-                warLeave, warList;
+                warLeave, warList, warPeace;
 
         warJoin = CommandSpec.builder()
                 .description(Text.of("Join a war"))
@@ -396,6 +396,13 @@ public class Main {
                         GenericArguments.onlyOne(new ElementWar(Text.of("[city]"))))
                 .build();
 
+        warPeace = CommandSpec.builder()
+                .description(Text.of("Bring (or take back) peace to this world"))
+                .permission("minecraft.command.op")
+                .executor(new WarPeace())
+                .arguments(GenericArguments.onlyOne(GenericArguments.bool(Text.of("[peace]"))))
+                .build();
+
         return (CommandSpec.builder()
                 .description(Text.of("Give info on a war"))
                 .executor(new WarInfo())
@@ -408,6 +415,7 @@ public class Main {
                 .child(warJoin, "join", "j")
                 .child(warLeave, "leave", "l")
                 .child(warList, "list")
+                .child(warPeace, "peace", "p")
                 .build());
     }
 
@@ -444,7 +452,7 @@ public class Main {
 
     @Listener
     public void             onServerInit(GameInitializationEvent event) {
-        CommandSpec         city, party, war, accept, refuse, chat, say, shout, town, near, list;
+        CommandSpec         city, party, war, accept, refuse, chat, say, shout, town, near, list, setSpawn;
 
         city = commandCity();
 
@@ -498,9 +506,25 @@ public class Main {
         list = CommandSpec.builder()
                 .description(Text.of("List"))
                 .executor((commandSource, commandContext) -> {
-                    Core.Send("Overload /list");
-                    return CommandResult.success();
-                })
+            Core.Send("Overload /list");
+            return CommandResult.success();
+        })
+                .build();
+
+        setSpawn = CommandSpec.builder()
+                .description(Text.of("Set World spawn"))
+                .permission("minecraft.command.op")
+                .executor((commandSource, commandContext) -> {
+            if (!(commandSource instanceof Player))
+                return CommandResult.empty();
+            Player  player = (Player) commandSource;
+            player.getWorld().getProperties().setSpawnPosition(player.getLocation().getBlockPosition());
+            player.sendMessage(Text.of("Spawn of '" + player.getWorld().getName() + "' is now at ["
+                    + player.getLocation().getBlockPosition().getX() + ";"
+                    + player.getLocation().getBlockPosition().getY() + ";"
+                    + player.getLocation().getBlockPosition().getZ() + "]"));
+            return CommandResult.success();
+        })
                 .build();
 
         game.getCommandManager().register(this, city, "city", "c");
@@ -514,6 +538,7 @@ public class Main {
         game.getCommandManager().register(this, town, "town", "t");
         game.getCommandManager().register(this, near, "near", "n");
         game.getCommandManager().register(this, list, "list");
+        game.getCommandManager().register(this, setSpawn, "setSpawn");
 
         logger.info("Welcome in the War Of Squirrels. Have fun !");
     }

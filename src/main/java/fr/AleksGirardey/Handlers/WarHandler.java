@@ -1,10 +1,12 @@
 package fr.AleksGirardey.Handlers;
 
+import fr.AleksGirardey.Objects.Channels.GlobalChannel;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.Cubo;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.War.PartyWar;
 import fr.AleksGirardey.Objects.War.War;
 import org.spongepowered.api.text.Text;
@@ -103,6 +105,11 @@ public class WarHandler {
     }
 
     public void     displayList(DBPlayer player) {
+        if (ConfigLoader.peaceTime) {
+            player.sendMessage(Text.of("---=== Peace is ON ===---"));
+            return;
+        }
+
         player.sendMessage(Text.of("---=== War list [" + wars.size() + "] ===---"));
 
         for (War war : wars)
