@@ -77,7 +77,7 @@ public class Main {
 
         game.getEventManager().registerListeners(this, new BlockListener());
         game.getEventManager().registerListeners(this, new PlayerListener());
-
+        game.getEventManager().registerListeners(this, new EntityListener());
         game.getEventManager().registerListeners(this, new OnPlayerChat());
         game.getEventManager().registerListeners(this, new OnPlayerCubo());
     }

@@ -90,6 +90,22 @@ CREATE TABLE IF NOT EXISTS `CuboAssociation` (
     FOREIGN KEY (`ca_playerUuid`) REFERENCES `Player` (`player_uuid`),
     UNIQUE KEY (`ca_cuboId`, `ca_playerUuid`));
 
+CREATE TABLE IF NOT EXISTS `Shop` (
+  `shop_id` INT AUTO_INCREMENT,
+  `shop_player` CHAR(36) NOT NULL,
+  `shop_signX` INT NOT NULL,
+  `shop_signY` INT NOT NULL,
+  `shop_signZ` INT NOT NULL,
+  `shop_chestX` INT NOT NULL,
+  `shop_chestY` INT NOT NULL,
+  `shop_chestZ` INT NOT NULL,
+  `shop_itemId` CHAR(36) NOT NULL,
+  `shop_boughtPrice` INT NOT NULL,
+  `shop_sellPrice` INT NOT NULL,
+  `shop_quantity` INT NOT NULL,
+  PRIMARY KEY (`shop_id`),
+  FOREIGN KEY (`shop_player`) REFERENCES `Player`(`player_uuid`));
+
 ALTER TABLE `Player`
 ADD FOREIGN KEY (`player_cityId`)
 REFERENCES `City`(`city_id`)

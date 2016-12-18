@@ -5,6 +5,7 @@ import fr.AleksGirardey.Handlers.*;
 import fr.AleksGirardey.Main;
 import fr.AleksGirardey.Objects.City.InfoCity;
 import fr.AleksGirardey.Objects.DBObject.City;
+import fr.AleksGirardey.Objects.DBObject.Shop;
 import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -35,6 +36,7 @@ public class Core {
     private static PartyHandler             partyHandler;
     private static CuboHandler              cuboHandler;
     private static DiplomacyHandler         diplomacyHandler;
+    private static ShopHandler              shopHandler;
     private static Map<City, InfoCity>      infoCityMap;
 
     public static void          initCore(
@@ -63,6 +65,7 @@ public class Core {
         partyHandler = new PartyHandler();
         cuboHandler = new CuboHandler(logger);
         diplomacyHandler = new DiplomacyHandler(logger);
+        shopHandler = new ShopHandler(logger);
 
         logger.info("Updating dependencies..");
         permissionHandler.populate();
@@ -85,51 +88,59 @@ public class Core {
         }
     }
 
-    public static Game getPlugin() { return plugin; }
+    /*
+    ** Server
+    */
 
-    public static Main getMain() { return _main; }
+    public static Game                  getPlugin() { return plugin; }
 
-    public static DatabaseHandler getDatabaseHandler() {
+    public static Main                  getMain() { return _main; }
+
+    public static Logger                getLogger() { return _logger; }
+
+    /*
+    ** Handlers
+    */
+
+    public static DatabaseHandler       getDatabaseHandler() {
         return database;
     }
 
-    public static PlayerHandler getPlayerHandler() {
-        return playerHandler;
-    }
+    public static PlayerHandler         getPlayerHandler() { return playerHandler; }
 
-    public static CityHandler getCityHandler() {
+    public static CityHandler           getCityHandler() {
         return cityHandler;
     }
 
-    public static ChunkHandler getChunkHandler() {
+    public static ChunkHandler          getChunkHandler() {
         return chunkHandler;
     }
 
-    public static PermissionHandler getPermissionHandler() { return permissionHandler; }
+    public static PermissionHandler     getPermissionHandler() { return permissionHandler; }
 
-    public static BroadcastHandler  getBroadcastHandler() { return broadcastHandler; }
+    public static BroadcastHandler      getBroadcastHandler() { return broadcastHandler; }
 
-    public static InvitationHandler getInvitationHandler() { return invitationHandler; }
+    public static InvitationHandler     getInvitationHandler() { return invitationHandler; }
 
-    public static WarHandler    getWarHandler() { return warHandler; }
+    public static WarHandler            getWarHandler() { return warHandler; }
 
-    public static PartyHandler  getPartyHandler() { return partyHandler; }
+    public static PartyHandler          getPartyHandler() { return partyHandler; }
 
-    public static void Send(String message) {
+    public static void                  Send(String message) {
         plugin.getServer().getBroadcastChannel().send(Text.of(message));
     }
 
-    public static void SendText(Text text) {
+    public static void                  SendText(Text text) {
         plugin.getServer().getBroadcastChannel().send(text);
     }
 
-    public static Logger getLogger() { return _logger; }
+    public static Map<City, InfoCity>   getInfoCityMap() { return infoCityMap; }
 
-    public static Map<City, InfoCity>    getInfoCityMap() { return infoCityMap; }
+    public static ConfigLoader          getConfig() { return _config; }
 
-    public static ConfigLoader  getConfig() { return _config; }
+    public static CuboHandler           getCuboHandler() { return cuboHandler; }
 
-    public static CuboHandler   getCuboHandler() { return cuboHandler; }
+    public static DiplomacyHandler      getDiplomacyHandler() { return diplomacyHandler; }
 
-    public static DiplomacyHandler  getDiplomacyHandler() { return diplomacyHandler; }
+    public static ShopHandler           getShopHandler() { return shopHandler; }
 }
