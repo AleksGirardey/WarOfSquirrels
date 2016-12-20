@@ -97,9 +97,9 @@ public class Shop extends DBObject {
         boughtPrice = rs.getInt(GlobalShop.boughtPrice);
         sellPrice = rs.getInt(GlobalShop.sellPrice);
         quantity = rs.getInt(GlobalShop.quantity);
-        world = Core.getPlugin().getServer().getWorld(UUID.fromString(rs.getString(GlobalShop.world))).get();
-        sign = (Sign) world.getLocation(signLocation).getTileEntity().get();
-        chest = (Chest) world.getLocation(chestLocation).getTileEntity().get();
+        world = Core.getPlugin().getServer().getWorld(UUID.fromString(rs.getString(GlobalShop.world))).orElse(null);
+        sign = (Sign) world.getLocation(signLocation).getTileEntity().orElse(null);
+        chest = (Chest) world.getLocation(chestLocation).getTileEntity().orElse(null);
         writeLog();
     }
 
