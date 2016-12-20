@@ -1,26 +1,35 @@
 package fr.AleksGirardey.Listeners;
 
+import com.flowpowered.math.vector.Vector3i;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.block.tileentity.Sign;
 import org.spongepowered.api.block.tileentity.carrier.Chest;
 import org.spongepowered.api.block.tileentity.carrier.TileEntityCarrier;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.mutable.block.DirectionalData;
 import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.block.tileentity.ChangeSignEvent;
 import org.spongepowered.api.event.entity.SpawnEntityEvent;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class EntityListener {
     private static List<EntityType>        types;
@@ -58,18 +67,38 @@ public class EntityListener {
         player = Core.getPlayerHandler().get(event.getCause().first(Player.class).orElse(null));
         if (player == null) return;
 
-        /* Chest doit être placé derrière le panneau, on vérifie les 4 blocs possible [x + 1][x - 1][z + 1][z - 1] */
-        if (world.getBlock(loc.getBlockX() + 1, loc.getBlockY(), loc.getBlockZ()).getType() == BlockTypes.CHEST)
-            chest = world.getLocation(loc.getBlockX() + 1, loc.getBlockY(), loc.getBlockZ());
-        else if (world.getBlock(loc.getBlockX() - 1, loc.getBlockY(), loc.getBlockZ()).getType() == BlockTypes.CHEST)
-            chest = world.getLocation(loc.getBlockX() - 1, loc.getBlockY(), loc.getBlockZ());
-        else if (world.getBlock(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ() + 1).getType() == BlockTypes.CHEST)
-            chest = world.getLocation(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ() + 1);
-        else if (world.getBlock(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ() - 1).getType() == BlockTypes.CHEST)
+        Optional<DirectionalData>       opt = loc.get(DirectionalData.class);
+
+        if (!opt.isPresent())
+            return;
+
+        DirectionalData     direction = opt.get();
+        if (direction.get(Keys.DIRECTION).get().equals(Direction.NORTH))
             chest = world.getLocation(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ() - 1);
+        else if (direction.get(Keys.DIRECTION).get().equals(Direction.SOUTH))
+            chest = world.getLocation(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ() + 1);
+        else if (direction.get(Keys.DIRECTION).get().equals(Direction.EAST))
+            chest = world.getLocation(loc.getBlockX() - 1, loc.getBlockY(), loc.getBlockZ());
+        else if (direction.get(Keys.DIRECTION).get().equals(Direction.WEST))
+            chest = world.getLocation(loc.getBlockX() + 1, loc.getBlockY(), loc.getBlockZ());
 
         if (chest != null)
             Core.getShopHandler().add(player, datas, sign, (Chest) chest.getTileEntity().orElse(null));
+    }
+
+    @Listener (order = Order.FIRST)
+    public void         onSignClick(InteractBlockEvent event, @First Player player) {
+        BlockState      block = event.getTargetBlock().getState();
+
+        if (block.getType() == BlockTypes.WALL_SIGN) {
+            Vector3i        loc = event.getTargetBlock().getLocation().get().getBlockPosition();
+            if (Core.getShopHandler().get(loc) != null) {
+                if (event instanceof InteractBlockEvent.Primary)
+                    Core.getShopHandler().get(loc).buy(player);
+                else if (event instanceof InteractBlockEvent.Secondary)
+                    Core.getShopHandler().get(loc).sell(player);
+            }
+        }
     }
 
     @Listener (order =  Order.FIRST)

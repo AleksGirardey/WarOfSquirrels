@@ -1,5 +1,6 @@
 package fr.AleksGirardey.Handlers;
 
+import com.flowpowered.math.vector.Vector3i;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.DBObject.Shop;
@@ -18,6 +19,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class ShopHandler {
     private Logger              logger;
@@ -80,9 +82,10 @@ public class ShopHandler {
                 .submit(Core.getMain());
     }
 
-    public void         get(int x, int y, int z) {
-        shops.values().forEach(shop -> {
-            if (shop)
-        });
+    public Shop         get(Vector3i loc) {
+        for (Shop shop : shops.values())
+            if (shop.getSignLocation().equals(loc))
+                return shop;
+        return null;
     }
 }

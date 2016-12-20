@@ -103,6 +103,7 @@ CREATE TABLE IF NOT EXISTS `Shop` (
   `shop_boughtPrice` INT NOT NULL,
   `shop_sellPrice` INT NOT NULL,
   `shop_quantity` INT NOT NULL,
+  `shop_world` CHAR(36) NOT NULL,
   PRIMARY KEY (`shop_id`),
   FOREIGN KEY (`shop_player`) REFERENCES `Player`(`player_uuid`));
 

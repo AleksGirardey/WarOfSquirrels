@@ -13,5 +13,6 @@ public class GlobalShop {
     public static String        boughtPrice = "shop_boughtPrice";
     public static String        sellPrice = "shop_sellPrice";
     public static String        quantity = "shop_quantity";
+    public static String        world = "shop_world";
     public static String        tableName = "Shop";
 }

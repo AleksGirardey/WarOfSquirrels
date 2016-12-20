@@ -74,6 +74,7 @@ public class Core {
         chunkHandler.populate();
         cuboHandler.populate();
         diplomacyHandler.populate();
+        shopHandler.populate();
         playerHandler.updateDependencies();
         cuboHandler.updateDependencies();
         infoCityMap = getCityHandler().getCityMap();
