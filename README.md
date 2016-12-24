@@ -14,7 +14,6 @@ ToDo :
 
 - Prevent mob spawning in Chunks (Besoin de test)
 
-- Shop : suppression + listeners
 - Ajouter les transferts d'argent (mort etc.)
 - Définir quand le score est modifié et de combien
 - Capture & Target System

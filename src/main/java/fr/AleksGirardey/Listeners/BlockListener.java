@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Listeners;
 
 import com.flowpowered.math.vector.Vector3i;
+import fr.AleksGirardey.Handlers.ShopHandler;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.Cubo;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
@@ -67,6 +68,13 @@ public class BlockListener {
             Core.Send("Fire break");
             event.setCancelled(true);
         }
+
+        event.getTransactions().stream().filter(transaction -> transaction.getOriginal().getState().getType() == BlockTypes.WALL_SIGN)
+                .forEach(transaction -> {
+                    if (Core.getShopHandler().get(transaction.getOriginal().getPosition()) != null
+                            && !Core.getWarHandler().isConcerned(transaction.getOriginal().getPosition()))
+                        Core.getShopHandler().delete(transaction.getOriginal().getPosition());
+                });
 
         if (player != null) {
             if (!checkChunkPerms(player, event)) {

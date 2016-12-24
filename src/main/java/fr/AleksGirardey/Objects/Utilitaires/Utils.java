@@ -10,6 +10,7 @@ import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Database.Statement;
 import fr.AleksGirardey.Objects.City.InfoCity;
+import org.spongepowered.api.item.inventory.*;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
@@ -19,6 +20,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Utils {
 
@@ -169,5 +171,17 @@ public class Utils {
                 return false;
         }
         return true;
+    }
+
+    public static boolean       canOffer(Inventory inventory, ItemStack itemStack) {
+        Inventory               i = Inventory.builder().of(InventoryArchetypes.PLAYER).build(Core.getPlugin());
+
+        for (Inventory slot : inventory.slots()) {
+            Optional<ItemStack>     item = slot.peek();
+
+            item.ifPresent(itemStack1 -> i.offer(itemStack1.copy()));
+        }
+
+        return i.offer(itemStack).getRejectedItems().size() <= 0;
     }
 }

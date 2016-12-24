@@ -16,6 +16,7 @@ import fr.AleksGirardey.Commands.City.Set.Permissions.PermOutside;
 import fr.AleksGirardey.Commands.City.Set.Permissions.PermResident;
 import fr.AleksGirardey.Commands.Party.*;
 import fr.AleksGirardey.Commands.RefuseCommand;
+import fr.AleksGirardey.Commands.Shop.ShopReassign;
 import fr.AleksGirardey.Commands.Utils.CommandPay;
 import fr.AleksGirardey.Commands.War.*;
 import fr.AleksGirardey.Listeners.*;
@@ -462,6 +463,24 @@ public class Main {
                 .description(Text.of("Lock or unlock chat channel"))
                 .child(lock, "lock", "l")
                 .child(unlock, "unlock", "u")
+                .build());
+    }
+
+    private CommandSpec     commandShop() {
+        CommandSpec         delete, reassign;
+
+        reassign = CommandSpec.builder()
+                .description(Text.of("Delete the targeted shop"))
+                .executor(new ShopReassign())
+                .arguments(GenericArguments.onlyOne(new ElementDBPlayer(Text.of("[player]"))))
+                .build();
+
+        delete = CommandSpec.builder()
+
+        return (CommandSpec.builder()
+                .description(Text.of("Shop admin commands"))
+                .permission("minecraft.command.op")
+                .child(reassign, "reassign", "r")
                 .build());
     }
 

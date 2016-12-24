@@ -16,7 +16,9 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -68,16 +70,9 @@ public class ShopHandler {
                 Integer.parseInt(datas.lines().get(3).toPlain()));
         this.shops.put(sign, shop);
 
-        final SignData      d = sign.get(SignData.class).get();
-
-        d.set(d.getValue(Keys.SIGN_LINES).get().set(0, Text.of("[" + player.getDisplayName() + "]")));
-        d.set(d.getValue(Keys.SIGN_LINES).get().set(1, Text.of(datas.lines().get(1).toPlain())));
-        d.set(d.getValue(Keys.SIGN_LINES).get().set(2, Text.of("B > " + shop.getBoughtPrice() + ":" + shop.getSellPrice() + " < S")));
-        d.set(d.getValue(Keys.SIGN_LINES).get().set(3, Text.of("Quantity : " + shop.getQuantity())));
-
         Core.getPlugin()
                 .getScheduler()
-                .createTaskBuilder().execute(() -> sign.offer(d))
+                .createTaskBuilder().execute(shop::actualize)
                 .delay(1, TimeUnit.SECONDS)
                 .submit(Core.getMain());
     }
@@ -87,5 +82,20 @@ public class ShopHandler {
             if (shop.getSignLocation().equals(loc))
                 return shop;
         return null;
+    }
+
+    public List<Shop>       get(DBPlayer player) {
+        List<Shop>          shops = new ArrayList<>();
+
+        this.shops.values().stream().filter(shop -> shop.getPlayer().equals(player)).forEach(shops::add);
+        return shops;
+    }
+
+    public void delete(Vector3i position) {
+        this.shops.values().stream().filter(shop -> shop.getSignLocation().equals(position))
+                .forEach(shop -> {
+                    this.shops.remove(shop.getSign());
+                    shop.delete();
+                });
     }
 }

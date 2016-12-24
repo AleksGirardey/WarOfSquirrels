@@ -82,7 +82,7 @@ public class        PlayerHandler {
 
     public boolean      exists(DBPlayer player) { return this.players.containsValue(player); }
 
-    private Task         newReincarnation(DBPlayer player) {
+    private Task        newReincarnation(DBPlayer player) {
         Scheduler       scheduler = Core.getPlugin().getScheduler();
         Task.Builder    builder = scheduler.createTaskBuilder();
 
@@ -104,5 +104,12 @@ public class        PlayerHandler {
         }
         player.setReincarnation(true);
         incarnationMap.put(player, newReincarnation(player));
+    }
+
+    public List<String> getStringList() {
+        List<String>    list = new ArrayList<>();
+
+        list.addAll(players.keySet());
+        return list;
     }
 }

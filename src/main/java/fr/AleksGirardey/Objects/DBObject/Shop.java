@@ -2,14 +2,14 @@ package fr.AleksGirardey.Objects.DBObject;
 
 import com.flowpowered.math.vector.Vector3i;
 import fr.AleksGirardey.Objects.Core;
-import fr.AleksGirardey.Objects.Database.GlobalCity;
 import fr.AleksGirardey.Objects.Database.GlobalShop;
-import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
+import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import org.spongepowered.api.block.tileentity.Sign;
 import org.spongepowered.api.block.tileentity.carrier.Chest;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -76,7 +76,7 @@ public class Shop extends DBObject {
                 + "', " + boughtPrice
                 + ", " + sellPrice
                 + ", " + quantity
-                + ", " + world.getUniqueId().toString());
+                + ", '" + world.getUniqueId().toString() + "'");
 
         this.sign = sign;
         this.chest = chest;
@@ -186,42 +186,75 @@ public class Shop extends DBObject {
         this.setChestLocation(chest.getLocation().getBlockPosition());
     }
 
-    public void     buy(Player player) {
-        DBPlayer    dbPlayer = Core.getPlayerHandler().get(player);
+    public void                 buy(Player player) {
+        DBPlayer                dbPlayer = Core.getPlayerHandler().get(player);
+        ItemStack               itemStack;
 
-//        if (dbPlayer.getBalance() >= this.getBoughtPrice()) {
-            Optional<Inventory>     doubleChest = this.chest.getDoubleChestInventory();
-            Inventory               c;
-            c = doubleChest.orElseGet(() -> this.chest.getInventory());
+        itemStack = ItemStack
+                .builder()
+                .itemType(this.item)
+                .quantity(this.quantity)
+                .build();
 
-            ItemStack               items;
+        if (dbPlayer.getBalance() < this.getBoughtPrice()) {
+            dbPlayer.sendMessage(Text.of(TextColors.RED, "You don't have enough money to buy this.", TextColors.RESET));
+            return;
+        } else if (!Utils.canOffer(player.getInventory(), itemStack.copy())) {
+            dbPlayer.sendMessage(Text.of(TextColors.RED, "You don't have enough space to buy this.", TextColors.RESET));
+            return;
+        }
 
-            items = ItemStack.builder().itemType(this.item).quantity(this.quantity).build();
+        Optional<Inventory>     doubleChest = this.chest.getDoubleChestInventory();
+        Inventory               inventory = doubleChest.orElse(this.chest.getInventory());
 
-            dbPlayer.sendMessage(Text.of("[DEBUG] Try to buy : " + items.getItem().getName()
-                    + "(" + items.getQuantity() + ")"));
+        Optional<ItemStack>     peek = inventory.query(this.item).peek(this.quantity);
 
-            if (c.contains(items)) {
-                if (player.getInventory().capacity() >= items.getQuantity()) {
-                    player.getInventory().offer(items);
-                    int a = 0;
-                    for (Inventory i : c.slots()) {
-                        Optional<ItemStack> itemStack = i.poll();
-
-                        if (itemStack.isPresent())
-                            dbPlayer.sendMessage(Text.of("[" + a + "] " + itemStack.get().getItem().getName()
-                                    + "(" + itemStack.get().getQuantity() + ")"));
-                        a++;
-                    }
-                }
+        if (peek.isPresent()) {
+            if (peek.get().getQuantity() != quantity) {
+                dbPlayer.sendMessage(Text.of(TextColors.RED, "Shop haven't enough supplies to sell you that.", TextColors.RESET));
+                return;
             }
-
-/*        } else
-            dbPlayer.sendMessage(Text.of(TextColors.RED, "You don't have enough money to buy this.", TextColors.RESET)); */
+            player.getInventory().offer(itemStack);
+            inventory.query(this.item).poll(this.quantity);
+            dbPlayer.sendMessage(Text.of(TextColors.GREEN, "You bought " + quantity + " of " + item.getName() + "."));
+            this.player.sendMessage(Text.of(TextColors.GREEN, dbPlayer.getDisplayName() + " bought at your shop " + quantity + " of " + item.getName() + "."));
+        } else
+            dbPlayer.sendMessage(Text.of(TextColors.RED, "Shop is Out Of Stock !", TextColors.RESET));
     }
 
-    public void     sell(Player player) {
+    public void             sell(Player player) {
+        DBPlayer            dbPlayer = Core.getPlayerHandler().get(player);
+        ItemStack           itemStack;
 
+        itemStack = ItemStack
+                .builder()
+                .itemType(this.item)
+                .quantity(this.quantity)
+                .build();
+
+        if (this.player.getBalance() < this.getSellPrice()) {
+            dbPlayer.sendMessage(Text.of(TextColors.RED, "Shop doesn't have enough money to bought you this.", TextColors.RESET));
+            return;
+        } else if (!Utils.canOffer(chest.getDoubleChestInventory().orElse(chest.getInventory()), itemStack.copy())) {
+            dbPlayer.sendMessage(Text.of(TextColors.RED, "Shop doesn't have enough space to bought you this", TextColors.RESET));
+            return;
+        }
+
+        Inventory inventory = player.getInventory();
+
+        Optional<ItemStack> peek = inventory.query(this.item).peek(this.quantity);
+
+        if (peek.isPresent()) {
+            if (peek.get().getQuantity() != quantity) {
+                dbPlayer.sendMessage(Text.of(TextColors.RED, "You don't have enough items to sell.", TextColors.RESET));
+                return;
+            }
+            chest.getDoubleChestInventory().orElse(this.chest.getInventory()).offer(itemStack);
+            inventory.query(this.item).poll(this.quantity);
+            dbPlayer.sendMessage(Text.of(TextColors.GREEN, "You sold " + quantity + " of " + item.getName() + "."));
+            this.player.sendMessage(Text.of(TextColors.GREEN, dbPlayer.getDisplayName() + " sold you " + quantity + item.getName() + "."));
+        } else
+            dbPlayer.sendMessage(Text.of(TextColors.RED, "You don't have enough to sell this.", TextColors.RESET));
     }
 
     @Override
@@ -231,5 +264,20 @@ public class Shop extends DBObject {
                 + signLocation.getX() + ";" + signLocation.getY() + ";" + signLocation.getZ()
                 + "],[" + chestLocation.getX() + ";" + chestLocation.getY() + ";" + chestLocation.getZ() + "],"
                 + item.getName() + "," + boughtPrice + "," + sellPrice + "," + quantity);
+    }
+
+    public void actualize() {
+        Optional<SignData>      optSignData = sign.get(SignData.class);
+
+        if (optSignData.isPresent()) {
+            final SignData d = optSignData.get();
+
+            d.set(d.getValue(Keys.SIGN_LINES).get().set(0, Text.of("[" + player.getDisplayName() + "]")));
+            d.set(d.getValue(Keys.SIGN_LINES).get().set(1, Text.of(item.getName())));
+            d.set(d.getValue(Keys.SIGN_LINES).get().set(2, Text.of("B > " + boughtPrice + ":" + sellPrice + " < S")));
+            d.set(d.getValue(Keys.SIGN_LINES).get().set(3, Text.of("Quantity : " + quantity)));
+
+            sign.offer(d);
+        }
     }
 }

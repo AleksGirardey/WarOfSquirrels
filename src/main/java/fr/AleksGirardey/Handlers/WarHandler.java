@@ -1,5 +1,6 @@
 package fr.AleksGirardey.Handlers;
 
+import com.flowpowered.math.vector.Vector3i;
 import fr.AleksGirardey.Objects.Channels.GlobalChannel;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.Cubo;
@@ -124,5 +125,11 @@ public class WarHandler {
             war.addDefenderPoints();
         else if (war.isAttacker(killer) && war.isDefender(victim))
             war.addAttackerPoints();
+    }
+
+    public boolean      isConcerned(Vector3i position) {
+        Chunk           c = Core.getChunkHandler().get(position.getX() / 16, position.getZ() / 16);
+
+        return c != null && getWar(c.getCity()).getDefender() == c.getCity();
     }
 }
