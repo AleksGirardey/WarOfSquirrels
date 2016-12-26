@@ -23,6 +23,8 @@ public class ConfigLoader {
     private static ConfigurationNode                                        rootNode;
     private static ConfigurationLoader<CommentedConfigurationNode>          manager;
     public static int                                                       startBalance;
+    public static long                                                      preparationPhase;
+    public static long                                                      rollbackPhase;
 
     public ConfigLoader(ConfigurationLoader<CommentedConfigurationNode> configManager) {
         Path configPath = FileSystems.getDefault().getPath("WarOfSquirrels/config", "WOS.properties");
@@ -51,6 +53,8 @@ public class ConfigLoader {
 
             /* War */
             peaceTime = rootNode.getNode("War", "peace").getBoolean(false);
+            preparationPhase = rootNode.getNode("War", "preparationSeconds").getLong(120);
+            rollbackPhase = rootNode.getNode("War", "rollbackSeconds").getLong(180);
 
             /* Player */
             reincarnationTime = rootNode.getNode("Joueur", "reincarnation").getInt(30);

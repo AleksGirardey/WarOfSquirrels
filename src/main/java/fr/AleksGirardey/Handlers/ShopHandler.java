@@ -53,7 +53,7 @@ public class ShopHandler {
         String          item;
 
         item = datas.lines().get(1).toPlain();
-        itemType = Core.getPlugin().getRegistry().getType(ItemType.class, item).orElse(null);
+        itemType = Core.getPlugin().getRegistry().getType(ItemType.class, item).orElse(null); // minecraft:stone ; mod:penis
         prices = datas.lines().get(2);
         tablePrice = prices.toPlain().split(":");
         if (itemType == null) {
@@ -91,11 +91,19 @@ public class ShopHandler {
         return shops;
     }
 
-    public void delete(Vector3i position) {
-        this.shops.values().stream().filter(shop -> shop.getSignLocation().equals(position))
-                .forEach(shop -> {
-                    this.shops.remove(shop.getSign());
-                    shop.delete();
-                });
+    public void     delete(Vector3i position) {
+        Shop        toDelete = null;
+
+        for (Shop shop : this.shops.values()) {
+            if (shop.getSignLocation().equals(position)) {
+                toDelete = shop;
+                break;
+            }
+        }
+
+        if (toDelete != null) {
+            this.shops.remove(toDelete.getSign());
+            toDelete.delete();
+        }
     }
 }

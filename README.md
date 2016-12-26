@@ -10,14 +10,18 @@ Features :
 - Party pour déclarer des guerres
 - guerres + rollback (a tester)
 
-ToDo :
+Besoin de tests :
 
 - Prevent mob spawning in Chunks (Besoin de test)
+- Save RollbackList en BDD (en cas de crash)
+
+ToDo :
 
 - Ajouter les transferts d'argent (mort etc.)
 - Définir quand le score est modifié et de combien
-- Capture & Target System
-- Save RollbackList en BDD (en cas de crash)
+
+- Capture System
+- Target System : Commande pour changer de target
 
 Tests :
 

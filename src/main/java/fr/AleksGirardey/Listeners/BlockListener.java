@@ -77,10 +77,10 @@ public class BlockListener {
                 });
 
         if (player != null) {
-            if (!checkChunkPerms(player, event)) {
+            if (!checkCuboPerms(player, event)) {
                 player.sendMessage(message);
                 event.setCancelled(true);
-            } else if (!checkCuboPerms(player, event)) {
+            } else if (!checkChunkPerms(player, event)) {
                 player.sendMessage(message);
                 event.setCancelled(true);
             }

@@ -3,21 +3,24 @@ package fr.AleksGirardey.Objects.War;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import fr.AleksGirardey.Objects.War.WarTask;
+import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.BlockChangeFlag;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class War {
-
     public enum WarState{
         Declaration,
         Preparation,
@@ -34,23 +37,45 @@ public class War {
     private WarState        _state;
     private int             _attackersLimit;
     private long            _timeStart;
+    private DBPlayer        _target;
     private int             _attackerPoints = 0;
     private int             _defenderPoints = 0;
 
+    private ConfigurationNode   _node;
+
     private List<Transaction<BlockSnapshot>>    _rollbackBlocks;
 
-    public          War(City attacker, City defender, List<DBPlayer> attackersList) {
+    public          War(City attacker, City defender, List<DBPlayer> attackersList, ConfigurationNode node) {
         _cityAttacker = attacker;
         _cityDefender = defender;
+        _target = null;
         _attackers = new ArrayList<>(attackersList);
         _defenders = new ArrayList<>(Core.getCityHandler().getOnlineDBPlayers(defender));
         _rollbackBlocks = new ArrayList<>();
         _attackersLimit = _defenders.size() + 1;
         _state = WarState.Preparation;
         _tag = setTag();
+        _node = node.getNode(_tag);
         Core.Send("A war is about to start ! " + _cityAttacker.getDisplayName()
                 + " attack " + _cityDefender.getDisplayName() + " !");
+        setTarget();
         launchPreparation();
+    }
+
+    public void         setTarget(DBPlayer player) { this._target = player; }
+
+    private void        setTarget() {
+        _defenders.forEach(defender -> {
+            if (defender.getCity().getOwner() == defender) {
+                _target = defender;
+                return;
+            } else if (defender.isAssistant() && _target == null) {
+                _target = defender;
+            }
+        });
+
+        if (_target == null)
+            _target = _defenders.get(0);
     }
 
     private String  setTag() {
@@ -77,15 +102,21 @@ public class War {
         return true;
     }
 
-    // SAVE ON DB OR FILE !!!
     public void         addRollbackBlock(Transaction<BlockSnapshot> transaction) {
         int size = _rollbackBlocks.size();
+        ConfigurationNode       rb = _node.getNode("Rollback" + size);
+        BlockSnapshot           block = transaction.getOriginal();
 
+        rb.getNode("world").setValue(block.getWorldUniqueId().toString());
+        rb.getNode("x").setValue(block.getPosition().getX());
+        rb.getNode("y").setValue(block.getPosition().getY());
+        rb.getNode("z").setValue(block.getPosition().getZ());
+        rb.getNode("type").setValue(block.getState().getType().toString());
         _rollbackBlocks.add(transaction);
         Core.Send("Size from '" + size + "' to '" + _rollbackBlocks.size() + "'");
     }
 
-    public void         addDefenderPoints(int points) {
+    void                addDefenderPoints(int points) {
         this._defenderPoints += points;
     }
 
@@ -106,7 +137,7 @@ public class War {
 
         _timeStart = System.currentTimeMillis();
         Core.getBroadcastHandler().warAnnounce(this, WarState.Preparation);
-        this._timer = builder.delay(2, TimeUnit.SECONDS)
+        this._timer = builder.delay(ConfigLoader.preparationPhase, TimeUnit.SECONDS)
                 .name(_tag + " preparation timer")
                 .execute(() -> {
                     this._state = WarState.War;
@@ -127,7 +158,7 @@ public class War {
                 .submit(Core.getMain());
     }
 
-    public void         lauchRollback() {
+    void         lauchRollback() {
         Task.Builder    builder = Core.getPlugin().getScheduler().createTaskBuilder();
 
         _timeStart = System.currentTimeMillis();
@@ -136,7 +167,7 @@ public class War {
             this.rollback();
             Core.getWarHandler().delete(this);
         })
-                .delay(1, TimeUnit.SECONDS)
+                .delay(ConfigLoader.rollbackPhase, TimeUnit.SECONDS)
                 .submit(Core.getMain());
     }
 
@@ -145,7 +176,7 @@ public class War {
             t.getOriginal().restore(true, BlockChangeFlag.ALL);
     }
 
-    public boolean      checkWin() {
+    boolean      checkWin() {
         if (_defenderPoints >= 1000)
             Core.Send(_cityAttacker.getDisplayName() + " fail to win his attack against "
                     + _cityDefender.getDisplayName() + " (" + _attackerPoints + " to " + _defenderPoints + ")");
@@ -166,7 +197,7 @@ public class War {
         return (_cityAttacker == city || _cityDefender == city);
     }
 
-    public String       timeLeft() {
+    private String       timeLeft() {
         long            time = System.currentTimeMillis();
         long            timeLeft, delta;
         double          elapsedSeconds;
@@ -232,12 +263,21 @@ public class War {
         return true;
     }
 
+    public boolean          isTarget(DBPlayer victim) { return _target.equals(victim); }
     public boolean          isAttacker(DBPlayer player) { return _attackers.contains(player); }
     public boolean          isDefender(DBPlayer player) { return _defenders.contains(player); }
     public City             getAttacker() { return _cityAttacker; }
     public City             getDefender() { return _cityDefender; }
     public int              getAttackerPoints() { return _attackerPoints; }
     public int              getDefenderPoints() { return _defenderPoints; }
+
+    public List<DBPlayer>   getDefenders() { return _defenders; }
+    public List<String>     getDefendersAsString() {
+        List<String>        list = new ArrayList<>();
+
+        _defenders.forEach(d -> list.add(d.getDisplayName()));
+        return list;
+    }
 
     public void     displayInfo(DBPlayer player) {
         player.sendMessage(Text.of("===| " + this._tag + " |==="));

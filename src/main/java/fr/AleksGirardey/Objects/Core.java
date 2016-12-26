@@ -61,7 +61,7 @@ public class Core {
         chunkHandler = new ChunkHandler(logger);
         broadcastHandler = new BroadcastHandler();
         invitationHandler = new InvitationHandler();
-        warHandler = new WarHandler();
+        warHandler = new WarHandler(configManager);
         partyHandler = new PartyHandler();
         cuboHandler = new CuboHandler(logger);
         diplomacyHandler = new DiplomacyHandler(logger);

@@ -16,6 +16,7 @@ import fr.AleksGirardey.Commands.City.Set.Permissions.PermOutside;
 import fr.AleksGirardey.Commands.City.Set.Permissions.PermResident;
 import fr.AleksGirardey.Commands.Party.*;
 import fr.AleksGirardey.Commands.RefuseCommand;
+import fr.AleksGirardey.Commands.Shop.ShopDelete;
 import fr.AleksGirardey.Commands.Shop.ShopReassign;
 import fr.AleksGirardey.Commands.Utils.CommandPay;
 import fr.AleksGirardey.Commands.War.*;
@@ -368,7 +369,7 @@ public class Main {
 
     private CommandSpec     commandWar() {
         CommandSpec         warAttack, warWinAtt, warWinDef, warJoin,
-                warLeave, warList, warPeace;
+                warLeave, warList, warPeace, warTarget;
 
         warJoin = CommandSpec.builder()
                 .description(Text.of("Join a war"))
@@ -419,6 +420,12 @@ public class Main {
                 .arguments(GenericArguments.onlyOne(GenericArguments.bool(Text.of("[peace]"))))
                 .build();
 
+        warTarget = CommandSpec.builder()
+                .description(Text.of("Set a player as the new target"))
+                .executor(new WarTarget())
+                .arguments(GenericArguments.onlyOne(new ElementDefender(Text.of("[player]"))))
+                .build();
+
         return (CommandSpec.builder()
                 .description(Text.of("Give info on a war"))
                 .executor(new WarInfo())
@@ -432,6 +439,7 @@ public class Main {
                 .child(warLeave, "leave", "l")
                 .child(warList, "list")
                 .child(warPeace, "peace", "p")
+                .child(warTarget, "target", "t")
                 .build());
     }
 
@@ -470,29 +478,35 @@ public class Main {
         CommandSpec         delete, reassign;
 
         reassign = CommandSpec.builder()
-                .description(Text.of("Delete the targeted shop"))
+                .description(Text.of("Reassign the targeted shop"))
                 .executor(new ShopReassign())
                 .arguments(GenericArguments.onlyOne(new ElementDBPlayer(Text.of("[player]"))))
                 .build();
 
         delete = CommandSpec.builder()
+                .description(Text.of("Delete the targeted shop"))
+                .executor(new ShopDelete())
+                .build();
 
         return (CommandSpec.builder()
                 .description(Text.of("Shop admin commands"))
                 .permission("minecraft.command.op")
                 .child(reassign, "reassign", "r")
+                .child(delete, "delete", "d")
                 .build());
     }
 
     @Listener
     public void             onServerInit(GameInitializationEvent event) {
-        CommandSpec         city, party, war, accept, refuse, chat, say, shout, town, near, list, setSpawn, pay;
+        CommandSpec         city, party, war, shop, accept, refuse, chat, say, shout, town, near, list, setSpawn, pay;
 
         city = commandCity();
 
         party = commandParty();
 
         war = commandWar();
+
+        shop = commandShop();
 
         accept = CommandSpec.builder()
                 .description(Text.of("Accept a pending invitation."))
@@ -583,6 +597,7 @@ public class Main {
         game.getCommandManager().register(this, list, "list");
         game.getCommandManager().register(this, setSpawn, "setSpawn");
         game.getCommandManager().register(this, pay, "pay");
+        game.getCommandManager().register(this, shop, "shop", "s");
 
         logger.info("Welcome in the War Of Squirrels. Have fun !");
     }
