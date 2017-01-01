@@ -21,10 +21,7 @@ ToDo :
     -- Module scoring --
 - Ajouter les transferts d'argent (mort etc.)
 - Définir quand le score est modifié et de combien
-
-    -- Module Correctif --
-
-- Supprimer la save des rollbacks à la fin de la guerre
+- Ajouter une commande admin pour give / set de l'argent (ou score)
 
     -- Module capture War --
 - Capture System

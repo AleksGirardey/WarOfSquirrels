@@ -15,6 +15,8 @@ public class        WarTask implements Consumer<Task> {
         beforeMinutes--;
         secondsLeft--;
 
+        war.updateCapture();
+
         if (beforeMinutes == 0) {
             war.addDefenderPoints(33);
             beforeMinutes = 59;

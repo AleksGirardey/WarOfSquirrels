@@ -73,7 +73,8 @@ public class WarHandler {
                 world = optWorld.get();
                 loc = world.getLocation(node.getNode("x").getInt(), node.getNode("y").getInt(), node.getNode("z").getInt());
 
-                loc.setBlockType(Core.getPlugin().getRegistry().getType(BlockType.class, node.getNode("type").getString()).get(), Cause.source(Core.getPlugin()).build());
+                loc.setBlockType(Core.getPlugin().getRegistry().getType(BlockType.class, node.getNode("type").getString()).get(),
+                        Cause.source(Core.getMain().getPluginContainer()).build());
             }
         });
     }
@@ -159,7 +160,8 @@ public class WarHandler {
         return list;
     }
 
-    public void     delete(War war) {
+    public void     delete(War war, ConfigurationNode node) {
+        rootNode.removeChild(node);
         wars.remove(war);
     }
 
