@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.spongepowered:spongeforge:1.10.2-2171-5.1.0-BETA-1971">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/spongepowered/spongeforge/1.10.2-2171-5.1.0-BETA-1971/spongeforge-1.10.2-2171-5.1.0-BETA-1971.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/spongepowered/spongeforge/1.10.2-2171-5.1.0-BETA-1971/spongeforge-1.10.2-2171-5.1.0-BETA-1971-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/spongepowered/spongeforge/1.10.2-2171-5.1.0-BETA-1971/spongeforge-1.10.2-2171-5.1.0-BETA-1971-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

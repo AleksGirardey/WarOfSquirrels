@@ -40,6 +40,7 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -53,6 +54,9 @@ public class Main {
 
     @Inject
     private Game    game;
+
+    @Inject
+    private PluginContainer pluginContainer;
 
     @Inject
     private Logger logger;
@@ -610,4 +614,6 @@ public class Main {
     }
 
     public Logger getLogger() { return logger; }
+
+    public PluginContainer  getPluginContainer() { return pluginContainer; }
 }
