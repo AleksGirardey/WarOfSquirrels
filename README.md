@@ -14,14 +14,17 @@ Besoin de tests :
 
 - Prevent mob spawning in Chunks (Besoin de test)
 - Save RollbackList en BDD (en cas de crash)
+- Command de changement de target
 
 ToDo :
 
+    -- Module scoring --
 - Ajouter les transferts d'argent (mort etc.)
 - Définir quand le score est modifié et de combien
+- Ajouter une commande admin pour give / set de l'argent (ou score)
 
+    -- Module capture War --
 - Capture System
-- Target System : Commande pour changer de target
 
 Tests :
 

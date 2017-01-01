@@ -7,6 +7,7 @@ import fr.AleksGirardey.Objects.DBObject.Cubo;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.DBObject.Permissions;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
@@ -16,6 +17,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.world.ExplosionEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -24,6 +26,7 @@ import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class BlockListener {
 
@@ -99,6 +102,21 @@ public class BlockListener {
             } else if (!checkCuboPerms(player, event)) {
                 player.sendMessage(message);
                 event.setCancelled(true);
+            }
+
+            Transaction<BlockSnapshot>  transaction = event.getTransactions().get(0);
+
+            if (transaction.getFinal().getState().getType() == BlockTypes.GLASS) {
+                Core.getPlugin()
+                        .getScheduler()
+                        .createTaskBuilder().execute(() -> {
+                    transaction.getFinal().getLocation().get()
+                            .setBlockType(
+                                    Core.getPlugin().getRegistry().getType(BlockType.class, "craftandconquer:blockDebug").orElse(BlockTypes.ANVIL),
+                                    Cause.source(Core.getMain().getPluginContainer()).build());
+                })
+                        .delay(1, TimeUnit.SECONDS)
+                        .submit(Core.getMain());
             }
         }
     }

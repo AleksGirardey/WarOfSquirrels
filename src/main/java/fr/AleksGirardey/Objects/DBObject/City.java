@@ -20,7 +20,8 @@ public class City extends DBObject {
             + "`, `" + GlobalCity.playerOwner
             + "`, `" + GlobalCity.permRes
             + "`, `" + GlobalCity.permAllies
-            + "`, `" + GlobalCity.permOutside + "`";
+            + "`, `" + GlobalCity.permOutside
+            + "`, `" + GlobalCity.account + "`";
 
     /* DB Fields */
 

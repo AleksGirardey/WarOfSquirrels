@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Objects.War;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
@@ -18,6 +19,7 @@ import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class War {
@@ -44,6 +46,8 @@ public class War {
     private ConfigurationNode   _node;
 
     private List<Transaction<BlockSnapshot>>    _rollbackBlocks;
+    private List<Chunk>                         _capturedChunk;
+    private Map<Chunk, Integer>                 _inCaptureChunk;
 
     public          War(City attacker, City defender, List<DBPlayer> attackersList, ConfigurationNode node) {
         _cityAttacker = attacker;
@@ -165,7 +169,7 @@ public class War {
         Core.getBroadcastHandler().warAnnounce(this, WarState.Rollback);
         this._timer = builder.execute(() -> {
             this.rollback();
-            Core.getWarHandler().delete(this);
+            Core.getWarHandler().delete(this, _node);
         })
                 .delay(ConfigLoader.rollbackPhase, TimeUnit.SECONDS)
                 .submit(Core.getMain());
@@ -285,5 +289,9 @@ public class War {
         player.sendMessage(Text.of("Defenders [" + _cityDefender.getDisplayName() + "] : " + Utils.getStringFromPlayerList(_defenders)));
         player.sendMessage(Text.of("=== " + _attackerPoints + " - " + _defenderPoints + " ==="));
         player.sendMessage(Text.of("Phase : " + this.getPhase() + " (time left : " + timeLeft() + ")"));
+    }
+
+    public void     updateCapture() {
+
     }
 }
