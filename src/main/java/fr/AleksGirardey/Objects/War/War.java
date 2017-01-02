@@ -211,11 +211,11 @@ public class War {
 
         delta = time - _timeStart;
         if (_state == WarState.Preparation)
-            timeLeft = (long) ((2.0 * 60.0) * 1000.0);
+            timeLeft = (long) ((ConfigLoader.preparationPhase) * 1000.0);
         else if (_state == WarState.War)
             timeLeft = (long) ((30.0 * 60.0) * 1000.0);
         else
-            timeLeft = (long) (60 * 1000.0);
+            timeLeft = (long) (ConfigLoader.rollbackPhase * 1000.0);
         timeLeft = timeLeft - delta;
         elapsedSeconds = timeLeft / 1000.0;
         minutes = (int) (elapsedSeconds / 60);

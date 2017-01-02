@@ -57,10 +57,11 @@ public class DiplomacyHandler {
     public Diplomacy                get(int id) { return diplomacies.get(id); }
 
     public List<Diplomacy>          get(City city) {
-        List<Diplomacy>             list = new ArrayList<>(diplomacyMap.get(city));
+        List<Diplomacy>             list = new ArrayList<>();
 
+        if (diplomacyMap.containsKey(city))
+            list.addAll(diplomacyMap.get(city));
         diplomacies.values().stream().filter(d -> !list.contains(d) && (d.getSub() == city)).forEach(list::add);
-
         return list;
     }
 
