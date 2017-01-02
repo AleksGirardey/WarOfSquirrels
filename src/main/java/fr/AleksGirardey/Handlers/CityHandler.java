@@ -11,6 +11,7 @@ import fr.AleksGirardey.Objects.Database.GlobalDiplomacy;
 import fr.AleksGirardey.Objects.Database.GlobalPlayer;
 import fr.AleksGirardey.Objects.Database.Statement;
 import fr.AleksGirardey.Objects.Utilitaires.Pair;
+import it.unimi.dsi.fastutil.booleans.BooleanLists;
 import org.slf4j.Logger;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.block.InteractBlockEvent;

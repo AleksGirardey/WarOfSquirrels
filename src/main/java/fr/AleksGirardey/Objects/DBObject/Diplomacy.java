@@ -8,6 +8,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Diplomacy extends DBObject {
+    private static String   fields = "`" + GlobalDiplomacy.main
+            + "`, `" + GlobalDiplomacy.sub
+            + "`, `" + GlobalDiplomacy.relation
+            + "`, `" + GlobalDiplomacy.permMain
+            + "`, `" + GlobalDiplomacy.permSub + "`";
+
     private City            main;
     private City            sub;
     private boolean         relation;
@@ -15,28 +21,21 @@ public class Diplomacy extends DBObject {
     private Permission      permissionSub;
 
     public          Diplomacy(City _main, City _sub, boolean _relation, Permission _perm) {
-        super(GlobalDiplomacy.id, GlobalDiplomacy.tableName, "`" + GlobalDiplomacy.main
-                + "`, `" + GlobalDiplomacy.sub
-                + "`, `" + GlobalDiplomacy.relation
-                + "`, `" + GlobalDiplomacy.permMain
-                + "`, `" + GlobalDiplomacy.permSub + "`");
+        super(GlobalDiplomacy.id, GlobalDiplomacy.tableName, fields);
         main = _main;
         sub = _sub;
         relation = _relation;
         permissionMain = _perm;
-        this.add("'" + _main.getId() + "', '"
-                + _sub.getId() + "', "
-                + (_relation ? "TRUE" : "FALSE") + ", '"
-                + (_perm == null ? "0"  : _perm.getId()) + "'");
+        this.add("" + _main.getId() + ", "
+                + _sub.getId() + ", "
+                + (_relation ? "TRUE" : "FALSE") + ", "
+                + (_perm == null ? "NULL"  : _perm.getId())
+                + ", NULL");
         writeLog();
     }
 
     public          Diplomacy(ResultSet rs) throws SQLException {
-        super(GlobalDiplomacy.id, GlobalDiplomacy.tableName, "`" + GlobalDiplomacy.main
-                + "`, `" + GlobalDiplomacy.sub
-                + "`, `" + GlobalDiplomacy.relation
-                + "`, `" + GlobalDiplomacy.permMain
-                + "`, `" + GlobalDiplomacy.permSub + "`");
+        super(GlobalDiplomacy.id, GlobalDiplomacy.tableName, fields);
 
         int         i;
 

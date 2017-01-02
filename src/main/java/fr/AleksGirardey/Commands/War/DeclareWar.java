@@ -22,9 +22,11 @@ public class                    DeclareWar extends CityCommandAssistant {
         }
 
         for (DBPlayer p : party.toList()) {
-            if (!Core.getCityHandler().areEnemies(p.getCity(), Core.getCityHandler().get(context.<Integer>getOne("[enemy]").get()))
-                    || !Core.getCityHandler().areAllies(p.getCity(), party.getLeader().getCity()))
+            if (p.getCity() != party.getLeader().getCity() && (!Core.getCityHandler().areEnemies(p.getCity(), Core.getCityHandler().get(context.<Integer>getOne("[enemy]").get()))
+                    || !Core.getCityHandler().areAllies(p.getCity(), party.getLeader().getCity()))) {
+                player.sendMessage(Text.of("Your party member '" + p.getDisplayName() + "' can't participate to this war."));
                 return false;
+            }
         }
 
         if (ConfigLoader.peaceTime)

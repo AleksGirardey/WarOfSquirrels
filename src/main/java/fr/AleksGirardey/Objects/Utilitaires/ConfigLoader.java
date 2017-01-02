@@ -52,20 +52,23 @@ public class ConfigLoader {
             sayDistance = rootNode.getNode("Distances", "say").getInt(30);
 
             /* War */
-            peaceTime = rootNode.getNode("War", "peace").getBoolean(false);
+            peaceTime = rootNode.getNode("War", "peace").getBoolean(true);
             preparationPhase = rootNode.getNode("War", "preparationSeconds").getLong(120);
-            rollbackPhase = rootNode.getNode("War", "rollbackSeconds").getLong(180);
+            rollbackPhase = rootNode.getNode("War", "rollbackSeconds").getLong(60);
 
             /* Player */
             reincarnationTime = rootNode.getNode("Joueur", "reincarnation").getInt(30);
             startBalance = rootNode.getNode("Joueur", "startBalance").getInt(100);
+            manager.save(rootNode);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void      setPeaceTime(Boolean peace) {
+    public static void      setPeaceTime(Boolean peace) throws IOException {
+        peaceTime = peace;
         rootNode.getNode("War", "peace").setValue(peace);
+        manager.save(rootNode);
     }
 
     public static void      close() {
