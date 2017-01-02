@@ -68,7 +68,6 @@ public class BlockListener {
         Text            message = Text.builder("You can't destroy this").color(TextColors.RED).build();
 
         if (event.getCause().root() instanceof BlockSnapshot && ((BlockSnapshot) event.getCause().root()).getState().getType() == BlockTypes.FIRE) {
-            Core.Send("Fire break");
             event.setCancelled(true);
         }
 

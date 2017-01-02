@@ -45,6 +45,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 
 @Plugin(id = "wos", name = "War Of Squirrels", version = "1.0", description = "BASTOOOOOOON")
@@ -502,7 +503,8 @@ public class Main {
 
     @Listener
     public void             onServerInit(GameInitializationEvent event) {
-        CommandSpec         city, party, war, shop, accept, refuse, chat, say, shout, town, near, list, setSpawn, pay;
+        CommandSpec         city, party, war, shop, accept, refuse,
+                chat, say, shout, town, near, list, setSpawn, pay;
 
         city = commandCity();
 

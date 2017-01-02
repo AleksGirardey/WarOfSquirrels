@@ -26,6 +26,8 @@ ToDo :
     -- Module capture War --
 - Capture System
 
+    -- Module utilitaires --
+- Fix la save dans le fichier de propriété (save node doesn't save)
 Tests :
 
 1. creer/supprimer ville
