@@ -102,21 +102,6 @@ public class BlockListener {
                 player.sendMessage(message);
                 event.setCancelled(true);
             }
-
-            Transaction<BlockSnapshot>  transaction = event.getTransactions().get(0);
-
-            if (transaction.getFinal().getState().getType() == BlockTypes.GLASS) {
-                Core.getPlugin()
-                        .getScheduler()
-                        .createTaskBuilder().execute(() -> {
-                    transaction.getFinal().getLocation().get()
-                            .setBlockType(
-                                    Core.getPlugin().getRegistry().getType(BlockType.class, "craftandconquer:blockDebug").orElse(BlockTypes.ANVIL),
-                                    Cause.source(Core.getMain().getPluginContainer()).build());
-                })
-                        .delay(1, TimeUnit.SECONDS)
-                        .submit(Core.getMain());
-            }
         }
     }
 
