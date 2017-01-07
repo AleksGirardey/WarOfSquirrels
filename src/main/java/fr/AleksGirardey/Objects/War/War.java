@@ -18,6 +18,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -43,11 +44,13 @@ public class War {
     private int             _attackerPoints = 0;
     private int             _defenderPoints = 0;
 
+    private int             _vitesseCapture;
+
     private ConfigurationNode   _node;
 
     private List<Transaction<BlockSnapshot>>    _rollbackBlocks;
-    private List<Chunk>                         _capturedChunk;
-    private Map<Chunk, Integer>                 _inCaptureChunk;
+    private List<Chunk>                         _capturedChunk = new ArrayList<>();
+    private Map<Chunk, Integer>                 _inCaptureChunk = new HashMap<>();
 
     public          War(City attacker, City defender, List<DBPlayer> attackersList, ConfigurationNode node) {
         _cityAttacker = attacker;
@@ -117,7 +120,10 @@ public class War {
         rb.getNode("z").setValue(block.getPosition().getZ());
         rb.getNode("type").setValue(block.getState().getType().toString());
         _rollbackBlocks.add(transaction);
-        Core.Send("Size from '" + size + "' to '" + _rollbackBlocks.size() + "'");
+        Core.getLogger().info("[Rollback][" + size + "->" + _rollbackBlocks.size() + "] "
+                + transaction.getOriginal().getState().getType().toString()
+                + " into "
+                + transaction.getFinal().getState().getType().toString());
     }
 
     void                addDefenderPoints(int points) {
@@ -157,6 +163,7 @@ public class War {
         Core.getBroadcastHandler().warAnnounce(this, WarState.War);
         task = new WarTask();
         task.setWar(this);
+        this.capture();
         this._timer = builder.execute(task)
                 .interval(1, TimeUnit.SECONDS)
                 .submit(Core.getMain());
@@ -291,7 +298,46 @@ public class War {
         player.sendMessage(Text.of("Phase : " + this.getPhase() + " (time left : " + timeLeft() + ")"));
     }
 
-    public void     updateCapture() {
+    private void        capture() {
+        int             chunkMax = Core.getInfoCityMap().get(_cityDefender).getRank().getChunkMax();
+        int             t = (chunkMax <= 15 ? 900/chunkMax : 60);
 
+        this._vitesseCapture = (100 * _attackers.size()) / t;
+    }
+
+    private int         capture(Chunk chunk) {
+        int             att = 0;
+
+        for (DBPlayer player : _attackers)
+            if (Core.getChunkHandler().get(player.getLastChunkX(), player.getLastChunkZ()).equals(chunk))
+                att++;
+
+        return Math.round((_vitesseCapture * att) - (0.45F * _vitesseCapture * _defenders.size()));
+    }
+
+    void         updateCapture() {
+        List<Chunk>     updated = new ArrayList<>();
+        int             v;
+
+        for (DBPlayer att : _attackers) {
+            Chunk   chunk = Core.getChunkHandler().get(att.getLastChunkX(), att.getLastChunkZ());
+
+            if (chunk != null && !updated.contains(chunk) && !_capturedChunk.contains(chunk)) {
+                updated.add(chunk);
+                if (_inCaptureChunk.containsKey(chunk)) {
+                    v = _inCaptureChunk.get(chunk);
+                    _inCaptureChunk.compute(chunk, (c, val) -> (100 - val) / capture(chunk));
+                }
+                else {
+                    v = 100;
+                    _inCaptureChunk.put(chunk, 100 / capture(chunk));
+                }
+                Core.getLogger().info("[Capture][" + chunk.getPosX() + ";" + chunk.getPosZ() + "] from '" + v + "' to '" + _inCaptureChunk.get(chunk) + "'");
+                if (_inCaptureChunk.get(chunk) <= 0) {
+                    _capturedChunk.add(chunk);
+                    _inCaptureChunk.remove(chunk);
+                }
+            }
+        }
     }
 }
