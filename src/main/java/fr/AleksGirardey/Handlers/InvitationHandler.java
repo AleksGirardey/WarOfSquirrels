@@ -5,6 +5,8 @@ import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Invitations.Invitation;
 import org.spongepowered.api.scheduler.Scheduler;
 import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +18,10 @@ public class InvitationHandler {
     public InvitationHandler() {}
 
     public void         createInvitation(Invitation invitation) {
-        Scheduler scheduler = Core.getPlugin().getScheduler();
+        Scheduler       scheduler = Core.getPlugin().getScheduler();
         Task.Builder    builder = scheduler.createTaskBuilder();
 
-        Task            task = builder.execute(() -> {
-            Core.getInvitationHandler().deleteTask(invitation);
-        })
+        Task            task = builder.execute(() -> Core.getInvitationHandler().deleteTask(invitation))
                 .delay(15, TimeUnit.SECONDS)
                 .submit(Core.getMain());
 
@@ -30,7 +30,8 @@ public class InvitationHandler {
     }
 
     private void         deleteTask(Invitation invitation) {
-        //invitation.refuse();
+        invitation.getSender().sendMessage(Text.of(TextColors.RED, "Invitation to '" + invitation.getPlayer().getDisplayName() + "' has expired.", TextColors.RESET));
+        invitation.getPlayer().sendMessage(Text.of(TextColors.RED, "Invitation from '" + invitation.getSender().getDisplayName() + "' has expired.", TextColors.RESET));
         this.invitationList.remove(invitation);
     }
 
@@ -52,8 +53,4 @@ public class InvitationHandler {
         }
         return false;
     }
-
-    //public void addInvitation(Invitation invitation) { invitationList.add(invitation); }
-
-    public void RefreshInvitations() { invitationList.remove(0); }
 }

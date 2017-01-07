@@ -10,6 +10,7 @@ import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Database.Statement;
 import fr.AleksGirardey.Objects.City.InfoCity;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.*;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -183,5 +184,13 @@ public class Utils {
         }
 
         return i.offer(itemStack).getRejectedItems().size() <= 0;
+    }
+
+    public static void  displayCommandList(Player commandSource) {
+        DBPlayer        pl = Core.getPlayerHandler().get(commandSource);
+
+        pl.sendMessage(Text.of("Overload du /list \n" +
+                "Petit test d'un \\n !\n" +
+                "Does it works ?"));
     }
 }

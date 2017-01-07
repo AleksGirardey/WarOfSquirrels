@@ -212,6 +212,21 @@ public class City extends DBObject {
         return message;
     }
 
+    public String   getCitizensInfo() {
+        int         i = 0, max;
+        String      message = "";
+        Collection<DBPlayer>    list = getCitizens();
+
+        list.removeIf(c -> c.isAssistant() || c.getCity().getOwner().equals(c));
+        max = list.size();
+        for (DBPlayer c : list) {
+            message += c.getDisplayName();
+            if (i != max - 1)
+                message += ", ";
+        }
+        return message;
+    }
+
     public String   getCitizensAsString() {
         String      message = "";
         Collection<DBPlayer> list = getCitizens();

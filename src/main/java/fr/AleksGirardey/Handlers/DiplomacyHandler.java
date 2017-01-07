@@ -65,9 +65,16 @@ public class DiplomacyHandler {
         return list;
     }
 
-    public void                     delete(int id) {
-        diplomacies.remove(id);
-        diplomacyMap.values().stream().filter(d -> d.contains(get(id))).forEach(d -> d.remove(get(id)));
+    public void                     delete(Diplomacy diplomacy) {
+        List<City>                  cities = new ArrayList<>();
+
+        diplomacyMap.forEach((key, value) -> {
+            if (value.contains(diplomacy))
+                cities.add(key);
+        });
+        cities.forEach(c -> diplomacyMap.get(c).remove(diplomacy));
+        diplomacies.remove(diplomacy.getId());
+        diplomacy.delete();
     }
 
     public void                     delete(City city) {
@@ -86,8 +93,6 @@ public class DiplomacyHandler {
         diplomacies.values().stream().filter(d -> !d.getRelation()).forEach(d -> {
             if (d.getMain() == city)
                 list.add(d.getSub());
-            else if (d.getSub() == city)
-                list.add(d.getMain());
         });
         return list;
     }

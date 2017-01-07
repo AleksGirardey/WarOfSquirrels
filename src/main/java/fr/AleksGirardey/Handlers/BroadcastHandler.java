@@ -8,6 +8,7 @@ import fr.AleksGirardey.Objects.War.PartyWar;
 import fr.AleksGirardey.Objects.War.War;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +23,7 @@ public class BroadcastHandler {
     }
 
     public void     cityInvitationSend(DBPlayer player, DBPlayer sender, City city) {
-        player.sendMessage(Text.of(sender.getDisplayName() + " invited you to join " + city.getDisplayName()));
+        player.sendMessage(Text.of(sender.getDisplayName() + " invited you to join " + city.getDisplayName() + ". Use /accept or /refuse to respond."));
         cityChannel(city, player.getDisplayName() + " has been invited to join the city.");
     }
 
@@ -41,6 +42,7 @@ public class BroadcastHandler {
         Collection<DBPlayer>    assistants = receiver.getAssistants();
         String                  message;
 
+        cityChannel(sender, receiver.getDisplayName() + " has been invited to be your ally.");
         message = "The city " + sender.getDisplayName() + " want to be your ally. Use /accept or /refuse";
         if (mayor.getUser().isOnline())
             mayor.getUser().getPlayer().get().sendMessage(Text.of(message));
@@ -70,12 +72,14 @@ public class BroadcastHandler {
 
     public void         partyChannel(PartyWar party, String message) {
         for (DBPlayer p : party.toList())
-            p.sendMessage(Text.of(message));
+            p.sendMessage(Text.of(TextColors.YELLOW, message, TextColors.RESET));
     }
 
     public void         partyInvitation(DBPlayer sender, DBPlayer receiver) {
-        receiver.sendMessage(Text.of(
-                sender.getDisplayName() + " invited you to join his party. Type /accept or /refuse to respond."
+        partyChannel(Core.getPartyHandler().getFromPlayer(sender), receiver.getDisplayName() + " has been invited to your party.");
+        receiver.sendMessage(Text.of(TextColors.YELLOW,
+                sender.getDisplayName() + " invited you to join his party. Type /accept or /refuse to respond.",
+                TextColors.RESET
         ));
     }
 }

@@ -35,6 +35,7 @@ public abstract class Invitation {
     public abstract void    refuse();
 
     public DBPlayer         getPlayer() { return _player; }
+    public DBPlayer         getSender() { return _sender; }
     public boolean          isExecuted() { return _executed; }
 
 
