@@ -1,7 +1,6 @@
 package fr.AleksGirardey.Handlers;
 
 import com.flowpowered.math.vector.Vector3i;
-import fr.AleksGirardey.Objects.Channels.GlobalChannel;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.Cubo;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
@@ -20,7 +19,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import javax.security.auth.login.Configuration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -182,12 +180,12 @@ public class WarHandler {
         War         war = getWar(killer);
 
         if (war.isDefender(killer) && war.isAttacker(victim))
-            war.addDefenderPoints();
+            war.addDefenderKillPoints();
         else if (war.isAttacker(killer) && war.isDefender(victim)) {
             if (war.isTarget(victim))
                 war.addAttackerPointsTarget();
             else
-                war.addAttackerPoints();
+                war.addAttackerKillPoints();
         }
     }
 

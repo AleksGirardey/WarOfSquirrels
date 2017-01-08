@@ -1,21 +1,21 @@
 package fr.AleksGirardey.Objects.War;
 
+import fr.AleksGirardey.Objects.City.Rank;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
-import fr.AleksGirardey.Objects.War.WarTask;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyle;
+import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.BlockChangeFlag;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,13 +44,13 @@ public class War {
     private int             _attackerPoints = 0;
     private int             _defenderPoints = 0;
 
-    private int             _vitesseCapture;
+    private float           _vitesseCapture;
 
     private ConfigurationNode   _node;
 
     private List<Transaction<BlockSnapshot>>    _rollbackBlocks;
     private List<Chunk>                         _capturedChunk = new ArrayList<>();
-    private Map<Chunk, Integer>                 _inCaptureChunk = new HashMap<>();
+    private Map<Chunk, Float>                 _inCaptureChunk = new HashMap<>();
 
     public          War(City attacker, City defender, List<DBPlayer> attackersList, ConfigurationNode node) {
         _cityAttacker = attacker;
@@ -130,11 +130,11 @@ public class War {
         this._defenderPoints += points;
     }
 
-    public void         addDefenderPoints() {
+    public void         addDefenderKillPoints() {
         this._defenderPoints += 166 / (5 * _attackers.size());
     }
 
-    public void         addAttackerPoints() {
+    public void         addAttackerKillPoints() {
         this._attackerPoints += 166 / (5 * _defenders.size());
     }
 
@@ -142,12 +142,22 @@ public class War {
         this._attackerPoints += 650;
     }
 
+    private int          addAttackerCapturePoints() {
+        Rank            rank = Core.getInfoCityMap().get(this._cityDefender).getRank();
+        int             max = rank.getChunkMax();
+        int             used = Core.getChunkHandler().get(this._cityDefender).size();
+        int             resultat = Math.round( max <= 15 ? 1000 / used : 67 * (max / used));
+
+        Core.getBroadcastHandler().warAnnounce(this, "Un chunk à été capturé pour un total de " + resultat + " points.");
+        return  resultat;
+    }
+
     private void        launchPreparation() {
         Task.Builder    builder = Core.getPlugin().getScheduler().createTaskBuilder();
 
         _timeStart = System.currentTimeMillis();
         Core.getBroadcastHandler().warAnnounce(this, WarState.Preparation);
-        this._timer = builder.delay(ConfigLoader.preparationPhase, TimeUnit.SECONDS)
+        this._timer = builder.delay(/*ConfigLoader.preparationPhase*/ 5, TimeUnit.SECONDS)
                 .name(_tag + " preparation timer")
                 .execute(() -> {
                     this._state = WarState.War;
@@ -292,32 +302,50 @@ public class War {
 
     public void     displayInfo(DBPlayer player) {
         player.sendMessage(Text.of("===| " + this._tag + " |==="));
-        player.sendMessage(Text.of("Attackers [" + _cityAttacker.getDisplayName() + "] : " + Utils.getStringFromPlayerList(_attackers)));
-        player.sendMessage(Text.of("Defenders [" + _cityDefender.getDisplayName() + "] : " + Utils.getStringFromPlayerList(_defenders)));
-        player.sendMessage(Text.of("=== " + _attackerPoints + " - " + _defenderPoints + " ==="));
+        player.sendMessage(Text.of(TextColors.RED, "Attackers [" + _cityAttacker.getDisplayName() + "] : " + Utils.getStringFromPlayerList(_attackers), TextColors.RESET));
+        player.sendMessage(Text.of(TextColors.BLUE, "Defenders [" + _cityDefender.getDisplayName() + "] : " + Utils.getStringFromPlayerList(_defenders), TextColors.RESET));
+        player.sendMessage(Text.of(TextColors.GOLD, "\nTarget : " + this._target.getDisplayName(), TextColors.RESET));
         player.sendMessage(Text.of("Phase : " + this.getPhase() + " (time left : " + timeLeft() + ")"));
+        player.sendMessage(Text.of(TextStyles.BOLD, "\n=== " + _attackerPoints + " - " + _defenderPoints + " ===", TextStyles.RESET));
     }
 
     private void        capture() {
         int             chunkMax = Core.getInfoCityMap().get(_cityDefender).getRank().getChunkMax();
-        int             t = (chunkMax <= 15 ? 900/chunkMax : 60);
+        float           t = (chunkMax <= 15.0f ? 900.0f/chunkMax : 60f);
 
-        this._vitesseCapture = (100 * _attackers.size()) / t;
+        this._vitesseCapture = (100.0f / (_attackers.size() * t));
     }
 
-    private int         capture(Chunk chunk) {
-        int             att = 0;
+    private float       capture(Chunk chunk) {
+        int             att = 0, def = 0, x, z;
+        float           ret;
+        Chunk           c;
+        List<DBPlayer>  list = new ArrayList<>();
 
-        for (DBPlayer player : _attackers)
-            if (Core.getChunkHandler().get(player.getLastChunkX(), player.getLastChunkZ()).equals(chunk))
-                att++;
+        list.addAll(_attackers);
+        list.addAll(_defenders);
 
-        return Math.round((_vitesseCapture * att) - (0.45F * _vitesseCapture * _defenders.size()));
+
+        for (DBPlayer player : list) {
+            x = player.getLastChunkX();
+            z = player.getLastChunkZ();
+
+            c = Core.getChunkHandler().get(x, z);
+            if (c != null && c == chunk) {
+                if (isAttacker(player))
+                    att++;
+                else if (isDefender(player))
+                    def++;
+            }
+        }
+
+        ret = ((_vitesseCapture * att) - (0.45F * _vitesseCapture * def));
+        return ret;
     }
 
     void         updateCapture() {
-        List<Chunk>     updated = new ArrayList<>();
-        int             v;
+        List<Chunk>         updated = new ArrayList<>();
+        float               v;
 
         for (DBPlayer att : _attackers) {
             Chunk   chunk = Core.getChunkHandler().get(att.getLastChunkX(), att.getLastChunkZ());
@@ -326,16 +354,17 @@ public class War {
                 updated.add(chunk);
                 if (_inCaptureChunk.containsKey(chunk)) {
                     v = _inCaptureChunk.get(chunk);
-                    _inCaptureChunk.compute(chunk, (c, val) -> (100 - val) / capture(chunk));
+                    _inCaptureChunk.compute(chunk, (c, val) -> val - capture(chunk));
                 }
                 else {
                     v = 100;
-                    _inCaptureChunk.put(chunk, 100 / capture(chunk));
+                    _inCaptureChunk.put(chunk, 100 - capture(chunk));
                 }
-                Core.getLogger().info("[Capture][" + chunk.getPosX() + ";" + chunk.getPosZ() + "] from '" + v + "' to '" + _inCaptureChunk.get(chunk) + "'");
+                Core.getBroadcastHandler().warAnnounce(this, "[Capture][" + (chunk.getPosX() * 16) + ";" + (chunk.getPosZ() * 16) + "] Temps restant avant capture " + Utils.toTime((int) (_inCaptureChunk.get(chunk) / (v - _inCaptureChunk.get(chunk)))) + " secondes.");
                 if (_inCaptureChunk.get(chunk) <= 0) {
                     _capturedChunk.add(chunk);
                     _inCaptureChunk.remove(chunk);
+                    addAttackerCapturePoints();
                 }
             }
         }

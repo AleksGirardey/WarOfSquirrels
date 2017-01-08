@@ -67,6 +67,7 @@ public class PermissionHandler {
 
         // Situer le joueur par rapport au chunk (résident, allié, outside)
         if (player.getCity() != null) {
+            Core.Send("City is " + player.getCity().getDisplayName());
             /*
             ** Le joueur possède une ville, il faut maintenant savoir si il interagit avec
             ** sa ville ou non.
@@ -109,8 +110,8 @@ public class PermissionHandler {
                     permission = chunk.getCity().getPermOutside();
                 }
             }
-        } // else Outsider
-        permission = chunk.getCity().getPermOutside();
+        } else  // else Outsider
+            permission = chunk.getCity().getPermOutside();
 
         return (perm.equals("Build") ?
                 permission.getBuild() :
