@@ -96,9 +96,11 @@ public class BlockListener {
 
         if (player != null) {
             if (!checkChunkPerms(player, event)) {
+                Core.getLogger().info("[DEBUG] CheckChunkPerms");
                 player.sendMessage(message);
                 event.setCancelled(true);
             } else if (!checkCuboPerms(player, event)) {
+                Core.getLogger().info("[DEBUG] CheckCuboPerms");
                 player.sendMessage(message);
                 event.setCancelled(true);
             }

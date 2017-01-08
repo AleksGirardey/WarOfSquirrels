@@ -168,8 +168,8 @@ public class CityHandler {
 
         for (Diplomacy d : list)
             if ((d.getMain() == owner && d.getSub() == player)
-                    || (d.getMain() == player && d.getSub() == owner))
-                Core.getDiplomacyHandler().delete(d.getId());
+                    || (d.getMain() == player && d.getSub() == owner && d.getRelation()))
+                Core.getDiplomacyHandler().delete(d);
     }
 
     public boolean      isLimitReached(City city) {

@@ -8,6 +8,8 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 public class PartyInfo implements CommandExecutor {
     @Override
@@ -15,8 +17,10 @@ public class PartyInfo implements CommandExecutor {
         if (!(commandSource instanceof Player))
             return CommandResult.empty();
         DBPlayer player = Core.getPlayerHandler().get((Player) commandSource);
-        if (!Core.getPartyHandler().contains(player))
+        if (!Core.getPartyHandler().contains(player)) {
+            player.sendMessage(Text.of(TextColors.RED, "You don't belong to a party", TextColors.RESET));
             return CommandResult.empty();
+        }
         Core.getPartyHandler().displayInfo(player);
         return CommandResult.success();
     }

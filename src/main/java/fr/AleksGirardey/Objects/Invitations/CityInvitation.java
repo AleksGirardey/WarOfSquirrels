@@ -5,6 +5,7 @@ import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 public class CityInvitation extends Invitation {
 
@@ -22,7 +23,7 @@ public class CityInvitation extends Invitation {
 
     @Override
     public void refuse() {
-        _sender.sendMessage(Text.of(_player.getDisplayName() + " refuse your invitation"));
+        _sender.sendMessage(Text.of(TextColors.RED, _player.getDisplayName() + " refuse your invitation", TextColors.RESET));
     }
 
     @Override

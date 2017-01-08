@@ -549,7 +549,7 @@ public class Main {
                 .executor((commandSource, commandContext) -> {
                     if (commandSource instanceof Player) {
                         DBPlayer    player = Core.getPlayerHandler().get((Player) commandSource);
-                        Text        message = Text.of("La civilization la plus proche est à " + Utils.NearestHomeblock(player.getPosX() / 16, player.getPosZ()  )
+                        Text        message = Text.of("La civilization la plus proche est à " + Utils.NearestHomeblock(player.getPosX() / 16, player.getPosZ() / 16)
                                 + " chunks.");
                         player.sendMessage(Text.of(TextColors.DARK_GREEN, message, TextColors.RESET));
                     }
@@ -560,7 +560,7 @@ public class Main {
         list = CommandSpec.builder()
                 .description(Text.of("List"))
                 .executor((commandSource, commandContext) -> {
-            Core.Send("Overload /list");
+            Utils.displayCommandList((Player) commandSource);
             return CommandResult.success();
         })
                 .build();

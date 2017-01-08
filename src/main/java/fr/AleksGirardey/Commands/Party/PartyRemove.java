@@ -18,7 +18,7 @@ public class            PartyRemove extends CityCommandAssistant{
     protected CommandResult ExecCommand(DBPlayer player, CommandContext context) {
         PartyWar        party = Core.getPartyHandler().getPartyFromLeader(player);
 
-        party.remove(Core.getPlayerHandler().get(context.<Player>getOne("[player]").get()));
+        party.remove(context.<DBPlayer>getOne("[player]").get());
         return CommandResult.success();
     }
 }
