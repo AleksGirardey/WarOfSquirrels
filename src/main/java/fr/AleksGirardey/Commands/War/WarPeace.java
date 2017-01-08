@@ -16,23 +16,20 @@ import java.io.IOException;
 public class WarPeace implements CommandExecutor {
     @Override
     public CommandResult    execute(CommandSource src, CommandContext args) throws CommandException {
-        String              message;
+        Text                message;
 
-        Core.Send("[DEBUG] Peace time changed for '" + args.<Boolean>getOne("[peace]").get());
         try {
             ConfigLoader.setPeaceTime(args.<Boolean>getOne("[peace]").get());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Core.Send("[DEBUG] Peace is now : " + (ConfigLoader.peaceTime ? "TRUE" : "FALSE"));
-
         if (ConfigLoader.peaceTime)
-            message = "Ho no.. Seems like peace have been declared";
+            message = Text.of(TextColors.GREEN, "Ho no.. Seems like peace have been declared", TextColors.RESET);
         else
-            message = "MOUHAHAHAH, TIME TO FIGHT !";
+            message = Text.of(TextColors.DARK_GREEN, "MOUHAHAHAH, TIME TO FIGHT !", TextColors.RESET);
 
-        Core.Send(message);
+        Core.SendText(message);
         return CommandResult.success();
     }
 }

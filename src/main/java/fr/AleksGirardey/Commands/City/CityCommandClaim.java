@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Commands.City;
 
 import fr.AleksGirardey.Handlers.ChunkHandler;
+import fr.AleksGirardey.Objects.City.Rank;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
@@ -20,7 +21,16 @@ public class                CityCommandClaim extends CityCommandAssistant {
         z = player.getUser().getPlayer().get().getLocation().getBlockZ() / 16;
 
         if (!chh.exists(x, z)) {
-            return (chh.canBePlaced(player.getCity(), x, z, false) || chh.canBePlaced(player.getCity(), x, z, true));
+            if (chh.canBePlaced(player.getCity(), x, z, false)) {
+                Rank    r = Core.getInfoCityMap().get(player.getCity()).getRank();
+
+                if (r.getChunkMax() == chh.getSize(player.getCity())) {
+                    player.sendMessage(Text.of(TextColors.RED, "Vous avez atteint la limite de chunks et ne pouvez agrandir plus votre ville.", TextColors.RESET));
+                    return false;
+                }
+                return true;
+            } else if (chh.canBePlaced(player.getCity(), x, z, true))
+                return true;
         }
         player.sendMessage(Text.of(TextColors.RED, "You can't claim here.", TextColors.RESET));
         return false;
