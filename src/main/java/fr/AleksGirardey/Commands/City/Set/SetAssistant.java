@@ -24,7 +24,7 @@ public class SetAssistant extends CityCommandMayor {
         DBPlayer                newAssistant = Core.getPlayerHandler().getFromName(context.<String>getOne("[resident]").get());
 
         newAssistant.setAssistant(true);
-        Core.getBroadcastHandler().cityChannel(player.getCity(), player.getDisplayName() + " is now assistant.");
+        Core.getBroadcastHandler().cityChannel(player.getCity(), newAssistant.getDisplayName() + " is now assistant.");
         return CommandResult.success();
     }
 }

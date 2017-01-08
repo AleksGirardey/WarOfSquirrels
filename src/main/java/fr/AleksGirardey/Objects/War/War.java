@@ -290,8 +290,4 @@ public class War {
         player.sendMessage(Text.of("=== " + _attackerPoints + " - " + _defenderPoints + " ==="));
         player.sendMessage(Text.of("Phase : " + this.getPhase() + " (time left : " + timeLeft() + ")"));
     }
-
-    public void     updateCapture() {
-
-    }
 }

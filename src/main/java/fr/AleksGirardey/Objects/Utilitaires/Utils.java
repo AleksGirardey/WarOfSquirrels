@@ -188,9 +188,28 @@ public class Utils {
 
     public static void  displayCommandList(Player commandSource) {
         DBPlayer        pl = Core.getPlayerHandler().get(commandSource);
+        Map<City, InfoCity>     map = Core.getCityHandler().getCityMap();
+        Text            message = Text.of(TextColors.BLUE);
+        int                     j = 0, sizeMap = map.keySet().size();
 
-        pl.sendMessage(Text.of("Overload du /list \n" +
-                "Petit test d'un \\n !\n" +
-                "Does it works ?"));
+        for (City city : map.keySet()) {
+            int                 i = 0, size;
+            List<DBPlayer>      onlines = Core.getCityHandler().getOnlineDBPlayers(city);
+
+            size = onlines.size();
+            message.concat(Text.of("[" + city.getDisplayName() + "] "));
+            for (DBPlayer player : onlines) {
+                if (city.getOwner() == player)
+                    message.concat(Text.of(map.get(city).getRank().getPrefixMayor() + " "));
+                message.concat(Text.of(player.getDisplayName()));
+                if (i <= size - 1)
+                    message.concat(Text.of(", "));
+                i++;
+            }
+            if (j <= sizeMap - 1)
+                message.concat(Text.of("\n"));
+        }
+
+        pl.sendMessage(message);
     }
 }
