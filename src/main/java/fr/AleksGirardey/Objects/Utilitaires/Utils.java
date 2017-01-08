@@ -11,6 +11,7 @@ import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Database.Statement;
 import fr.AleksGirardey.Objects.City.InfoCity;
 import org.spongepowered.api.entity.living.player.Player;
+import fr.AleksGirardey.Objects.War.War;
 import org.spongepowered.api.item.inventory.*;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -184,6 +185,20 @@ public class Utils {
         }
 
         return i.offer(itemStack).getRejectedItems().size() <= 0;
+    }
+
+    public static String toTime(int value) {
+        int                 minutes, seconds;
+        String              res = "";
+
+
+        minutes = value / 60;
+        seconds = value % 60;
+        if (minutes > 0)
+            res = minutes + " min ";
+        res += seconds + " s";
+
+        return res;
     }
 
     public static void  displayCommandList(Player commandSource) {
