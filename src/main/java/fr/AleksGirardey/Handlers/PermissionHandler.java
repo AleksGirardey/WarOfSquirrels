@@ -80,6 +80,8 @@ public class PermissionHandler {
                 if (player.isAssistant() || player.getCity().getOwner() == player)
                     return true;
                 else {
+                    permission = (player.isResident() ? player.getCity().getPermRes() : player.getCity().getPermRec());
+
                     /*
                     ** Le joueur n'a aucun rang qui outre-passe les droits d'un eventuel
                     ** cubo, on verifie donc si le block appartient à un cubo
@@ -94,8 +96,7 @@ public class PermissionHandler {
                             permission = cubo.getPermissionIn();
                         else
                             permission = cubo.getPermissionOut();
-                    } else
-                        permission = player.getCity().getPermRes();
+                    }
                 }
             } else {
                 /*

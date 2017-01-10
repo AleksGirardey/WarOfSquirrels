@@ -43,7 +43,8 @@ public class CityCommandInfo extends CityCommand {
         player.sendMessage(Text.of("---===| " + Core.getInfoCityMap().get(city).getRank().getName() + " " + city.getDisplayName() + "[" + city.getCitizens().size() + "] |===---"));
         player.sendMessage(Text.of("Mayor: " + city.getOwner().getDisplayName()));
         player.sendMessage(Text.of("Assistant(s): " + city.getAssistantsAsString()));
-        player.sendMessage(Text.of("Citizens: " + city.getCitizensInfo()));
+        player.sendMessage(Text.of("Resident: " + city.getResidentsInfo()));
+        player.sendMessage(Text.of("Recruits: " + city.getRecruitsInfo()));
         player.sendMessage(Text.of("Tag: " + city.getTag()));
         player.sendMessage(Text.of("Chunks [" + Core.getChunkHandler().getSize(city) + "/" + Core.getInfoCityMap().get(city).getRank().getChunkMax() + "]"));
         player.sendMessage(Text.of("Outpost [" + Core.getChunkHandler().getOutpostSize(city) + "]"));

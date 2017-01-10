@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `Player` (
   `player_score` INT DEFAULT 0,
   `player_cityId` INT DEFAULT NULL,
   `player_assistant` BOOLEAN DEFAULT FALSE,
+  `player_citizen` BOOLEAN DEFAULT FALSE,
   `player_account` INT DEFAULT 0 NOT NULL,
   PRIMARY KEY (`player_uuid`));
 
@@ -23,10 +24,12 @@ CREATE TABLE IF NOT EXISTS `City` (
   `city_rank` INT NOT NULL DEFAULT 0,
   `city_account` INT DEFAULT 0 NOT NULL,
   `city_playerOwner` CHAR(36) NOT NULL,
+  `city_permissionRecruit` INT,
   `city_permissionResident` INT,
   `city_permissionAllies` INT,
   `city_permissionOutside` INT,
   PRIMARY KEY (`city_id`),
+  FOREIGN KEY (`city_permissionRecruit`) REFERENCES `Permission`(`permission_id`),
   FOREIGN KEY (`city_permissionResident`) REFERENCES `Permission`(`permission_id`),
   FOREIGN KEY (`city_permissionAllies`) REFERENCES `Permission`(`permission_id`),
   FOREIGN KEY (`city_permissionOutside`) REFERENCES `Permission`(`permission_id`));

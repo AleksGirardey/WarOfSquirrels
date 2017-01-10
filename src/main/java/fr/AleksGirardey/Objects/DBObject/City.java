@@ -18,6 +18,7 @@ public class City extends DBObject {
             + "`, `" + GlobalCity.tag
             + "`, `" + GlobalCity.rank
             + "`, `" + GlobalCity.playerOwner
+            + "`, `" + GlobalCity.permRec
             + "`, `" + GlobalCity.permRes
             + "`, `" + GlobalCity.permAllies
             + "`, `" + GlobalCity.permOutside
@@ -29,15 +30,16 @@ public class City extends DBObject {
     private String      tag;
     private int         rank;
     private DBPlayer    owner;
+    private Permission  permRec;
     private Permission  permRes;
     private Permission  permAllies;
     private Permission  permOutside;
     private int         balance;
 
     /* Extra Fields */
-    private Map<String, DBPlayer> citizens = new HashMap<>();
+    private Map<String, DBPlayer>   citizens = new HashMap<>();
 
-    public City(String _displayName, DBPlayer _owner,
+    public City(String _displayName, DBPlayer _owner, Permission _rec,
                 Permission _res, Permission _allies, Permission _outside) {
         super(GlobalCity.id, GlobalCity.tableName, _fields);
 
@@ -45,6 +47,7 @@ public class City extends DBObject {
         tag = (displayName.length() <= 5 ? displayName : displayName.substring(0, 5));
         rank = 0;
         owner = _owner;
+        permRec = _rec;
         permRes = _res;
         permAllies = _allies;
         permOutside = _outside;
@@ -52,6 +55,7 @@ public class City extends DBObject {
         this.add("'" + displayName + "', '"
                 + tag + "', '0', '"
                 + owner.getUser().getUniqueId().toString() + "', '"
+                + permRec.getId() + "', '"
                 + permRes.getId() + "', '"
                 + permAllies.getId() + "', '"
                 + permOutside.getId()+ "', "
@@ -67,6 +71,7 @@ public class City extends DBObject {
         tag = rs.getString(GlobalCity.tag);
         rank = rs.getInt(GlobalCity.rank);
         owner = Core.getPlayerHandler().get(rs.getString(GlobalCity.playerOwner));
+        permRec = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permRec));
         permRes = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permRes));
         permAllies = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permAllies));
         permOutside = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permOutside));
@@ -101,6 +106,7 @@ public class City extends DBObject {
                 + "," + displayName
                 + "," + tag
                 + "," + rank
+                + "," + permRec
                 + "," + permRes
                 + "," + permAllies
                 + "," + permOutside
@@ -127,6 +133,11 @@ public class City extends DBObject {
         this.edit(GlobalCity.playerOwner, "'" + owner.getUser().getUniqueId().toString() + "'");
     }
 
+    public void setPermRec(Permission permRec) {
+        this.permRec = permRec;
+        this.edit(GlobalCity.permRec, permRec != null ? ("'" + permRec.getId() + "'") : "NULL");
+    }
+
     public void setPermRes(Permission permRes) {
         this.permRes = permRes;
         if (permRes != null)
@@ -151,38 +162,34 @@ public class City extends DBObject {
             this.edit(GlobalCity.permOutside, "NULL");
     }
 
-    public int      getId() {
+    public int          getId() {
         return      Integer.parseInt(_primaryKeyValue);
     }
-
-    public String getDisplayName() {
+    public String       getDisplayName() {
         return displayName;
     }
-
-    public String getTag() {
+    public String       getTag() {
         return tag;
     }
-
-    public int getRank() {
+    public int          getRank() {
         return rank;
     }
-
-    public DBPlayer getOwner() {
+    public DBPlayer     getOwner() {
         return owner;
     }
-
-    public Permission getPermRes() {
+    public Permission   getPermRec() { return permRec; }
+    public Permission   getPermRes() {
         return permRes;
     }
-
-    public Permission getPermAllies() {
+    public Permission   getPermAllies() {
         return permAllies;
     }
-
     public Permission   getPermOutside() {
         return permOutside;
     }
 
+    public Collection<DBPlayer> getRecruits() { return citizens.values().stream().filter(DBPlayer::isResident).collect(Collectors.toCollection(ArrayList::new)); }
+    public Collection<DBPlayer> getResidents() { return citizens.values().stream().filter(r -> (!r.isAssistant() && !r.getCity().getOwner().equals(r) && r.isResident())).collect(Collectors.toCollection(ArrayList::new));}
     public Collection<DBPlayer> getCitizens() { return citizens.values(); }
 
     public Collection<DBPlayer> getAssistants() {
@@ -194,13 +201,12 @@ public class City extends DBObject {
     }
 
     public void         addCitizen(DBPlayer player) { this.citizens.put(player.getDisplayName(), player); }
-
     public void         removeCitizen(DBPlayer player) {
         this.citizens.remove(player.getDisplayName());
     }
 
-    public String   getAssistantsAsString() {
-        String      message = "";
+    public String       getAssistantsAsString() {
+        String          message = "";
         Collection<DBPlayer> list = getAssistants();
         int         i = 0, max = list.size();
 
@@ -212,12 +218,26 @@ public class City extends DBObject {
         return message;
     }
 
-    public String   getCitizensInfo() {
+    public String       getRecruitsInfo() {
+        Collection<DBPlayer>    list = getRecruits();
+        String      message = "";
+        int         i = 0, max;
+
+        max = list.size();
+        for (DBPlayer p : list) {
+            message += p.getDisplayName();
+            if (i != max - 1)
+                message += ", ";
+        }
+        return message;
+    }
+
+    public String   getResidentsInfo() {
         int         i = 0, max;
         String      message = "";
         Collection<DBPlayer>    list = getCitizens();
 
-        list.removeIf(c -> c.isAssistant() || c.getCity().getOwner().equals(c));
+        list.removeIf(c -> c.isAssistant() || c.getCity().getOwner().equals(c) || !c.isResident());
         max = list.size();
         for (DBPlayer c : list) {
             message += c.getDisplayName();
@@ -242,7 +262,7 @@ public class City extends DBObject {
 
     /* Balance */
 
-    public void     setBalance(int balance) {
+    private void     setBalance(int balance) {
         this.balance = balance;
         this.edit(GlobalCity.account, "" + balance);
     }
@@ -255,5 +275,5 @@ public class City extends DBObject {
         this.setBalance((balance - money) < 0 ? 0 : balance - money);
     }
 
-    public int getBalance() { return balance; }
+    public int      getBalance() { return balance; }
 }
