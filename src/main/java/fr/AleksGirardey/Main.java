@@ -45,7 +45,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 
 @Plugin(id = "wos", name = "War Of Squirrels", version = "1.0", description = "BASTOOOOOOON")

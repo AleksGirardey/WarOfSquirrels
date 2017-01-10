@@ -1,7 +1,8 @@
-package fr.AleksGirardey.Commands.City.Set;
+package fr.AleksGirardey.Commands.City;
 
 import fr.AleksGirardey.Commands.City.CityCommand;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
@@ -15,9 +16,12 @@ public class                CityCommandLeave extends CityCommand {
 
     @Override
     protected CommandResult ExecCommand(DBPlayer player, CommandContext context) {
+        City                city = player.getCity();
+
         if (player.isAssistant())
             player.setAssistant(false);
         player.setCity(null);
+        Core.getBroadcastHandler().cityChannel(city, player.getDisplayName() + " à quitté la ville.");
         return CommandResult.success();
     }
 }

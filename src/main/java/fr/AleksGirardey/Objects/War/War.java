@@ -350,7 +350,7 @@ public class War {
         for (DBPlayer att : _attackers) {
             Chunk   chunk = Core.getChunkHandler().get(att.getLastChunkX(), att.getLastChunkZ());
 
-            if (chunk != null && !updated.contains(chunk) && !_capturedChunk.contains(chunk)) {
+            if (chunk != null && !updated.contains(chunk) && !_capturedChunk.contains(chunk) && !chunk.isHomeblock() && !chunk.isOutpost()) {
                 updated.add(chunk);
                 if (_inCaptureChunk.containsKey(chunk)) {
                     v = _inCaptureChunk.get(chunk);

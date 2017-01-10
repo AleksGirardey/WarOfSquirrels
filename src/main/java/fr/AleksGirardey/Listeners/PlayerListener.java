@@ -5,6 +5,7 @@ import fr.AleksGirardey.Objects.City.InfoCity;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
+import fr.AleksGirardey.Objects.War.PartyWar;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
@@ -95,6 +96,19 @@ public class PlayerListener {
 
     @Listener(order = Order.FIRST)
     public void onPlayerLogout(ClientConnectionEvent.Disconnect event) {
+        DBPlayer        player = Core.getPlayerHandler().get(event.getTargetEntity());
+        PartyWar        partyWar;
+
+        if (Core.getPartyHandler().contains(player)) {
+            partyWar = Core.getPartyHandler().getFromPlayer(player);
+            if (partyWar.getLeader() == player)
+                Core.getPartyHandler().removeParty(player);
+            else
+                partyWar.remove(player);
+        }
+
+        // INSERT ZOMBIE PIGMAN STUFF
+
         event.setChannel(MessageChannel.TO_ALL);
     }
 }
