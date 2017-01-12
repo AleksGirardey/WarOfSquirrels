@@ -7,10 +7,10 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class setResident extends CityCommandAssistant {
+public class                    setResident extends CityCommandAssistant {
     @Override
-    protected CommandResult ExecCommand(DBPlayer player, CommandContext context) {
-        DBPlayer            resident = context.<DBPlayer>getOne("[citizen]").orElse(null);
+    protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
+        DBPlayer                resident = context.<DBPlayer>getOne("[citizen]").orElse(null);
 
         resident.setResident(true);
         resident.setAssistant(false);

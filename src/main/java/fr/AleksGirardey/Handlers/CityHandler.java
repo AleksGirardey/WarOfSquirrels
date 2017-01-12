@@ -64,6 +64,7 @@ public class CityHandler {
         City                newOne = new City(
                 displayName,
                 player,
+                Core.getPermissionHandler().add(false, false, true),
                 Core.getPermissionHandler().add(true, true, true),
                 Core.getPermissionHandler().add(false, false, true),
                 Core.getPermissionHandler().add(false, false, false));

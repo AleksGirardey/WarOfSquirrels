@@ -10,10 +10,7 @@ import fr.AleksGirardey.Commands.City.Set.*;
 import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetAlly;
 import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetEnemy;
 import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetNeutral;
-import fr.AleksGirardey.Commands.City.Set.Permissions.PermAllies;
-import fr.AleksGirardey.Commands.City.Set.Permissions.PermCity;
-import fr.AleksGirardey.Commands.City.Set.Permissions.PermOutside;
-import fr.AleksGirardey.Commands.City.Set.Permissions.PermResident;
+import fr.AleksGirardey.Commands.City.Set.Permissions.*;
 import fr.AleksGirardey.Commands.Party.*;
 import fr.AleksGirardey.Commands.RefuseCommand;
 import fr.AleksGirardey.Commands.Shop.ShopDelete;
@@ -205,7 +202,8 @@ public class Main {
     private CommandSpec     commandCitySet() {
         CommandSpec         setHelp, setSpawn, setAlly, setEnemy,
                 setNeutral, setMayor, setAssistant, setOutside,
-                setAllies, setResident, setPerm, setCubo;
+                setAllies, setPermResident, setPermRecruit, setPerm, setCubo,
+                setResident, setRecruit;
 
         setHelp = CommandSpec.builder()
                 .description(Text.of("Display /city set help"))
@@ -223,9 +221,10 @@ public class Main {
                 .arguments(
                         GenericArguments.onlyOne(new ElementCity(Text.of("[city]"))),
                         GenericArguments.optional(
-                                GenericArguments.repeated(
-                                        new ElementCity(Text.of("<city>")),
-                                        10)))
+                                GenericArguments.seq(
+                                        GenericArguments.bool(Text.of("<build>")),
+                                        GenericArguments.bool(Text.of("<container>")),
+                                        GenericArguments.bool(Text.of("<switch>")))))
                 .build();
 
         setEnemy = CommandSpec.builder()
@@ -254,18 +253,18 @@ public class Main {
                 .description(Text.of("Set this citizen as mayor"))
                 .executor(new SetMayor())
                 .arguments(
-                        GenericArguments.onlyOne(new ElementCitizen(Text.of("[resident]"))))
+                        GenericArguments.onlyOne(new ElementCitizen(Text.of("[citizen]"))))
                 .build();
 
         setAssistant = CommandSpec.builder()
                 .description(Text.of("Set this citizen as assistant"))
                 .executor(new SetAssistant())
                 .arguments(
-                        GenericArguments.onlyOne(GenericArguments.string(Text.of("[resident]"))))
+                        GenericArguments.onlyOne(new ElementCitizen(Text.of("[citizen]"))))
                 .build();
 
         setOutside = CommandSpec.builder()
-                .description(Text.of("Set outside build permission"))
+                .description(Text.of("Set outside permission"))
                 .executor(new PermOutside())
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.bool(Text.of("[build]"))),
@@ -274,7 +273,7 @@ public class Main {
                 .build();
 
         setAllies = CommandSpec.builder()
-                .description(Text.of("Set allies build permission"))
+                .description(Text.of("Set allies permission"))
                 .executor(new PermAllies())
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.bool(Text.of("[build]"))),
@@ -282,9 +281,18 @@ public class Main {
                         GenericArguments.onlyOne(GenericArguments.bool(Text.of("[switch]"))))
                 .build();
 
-        setResident = CommandSpec.builder()
-                .description(Text.of("Set resident build permission"))
+        setPermResident = CommandSpec.builder()
+                .description(Text.of("Set resident permission"))
                 .executor(new PermResident())
+                .arguments(
+                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[build]"))),
+                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[container]"))),
+                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[switch]"))))
+                .build();
+
+        setPermRecruit = CommandSpec.builder()
+                .description(Text.of("Set recruit permission"))
+                .executor(new PermRecruit())
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.bool(Text.of("[build]"))),
                         GenericArguments.onlyOne(GenericArguments.bool(Text.of("[container]"))),
@@ -293,9 +301,10 @@ public class Main {
 
         setPerm = CommandSpec.builder()
                 .description(Text.of("Set new permissions"))
-                .child(setResident, "resident", "r")
+                .child(setPermResident, "resident", "r")
                 .child(setAllies, "allies", "a")
                 .child(setOutside, "outside", "o")
+                .child(setPermRecruit, "recruit", "rec")
                 .executor(new PermCity())
                 .arguments(
                         GenericArguments.onlyOne(new ElementAlly(Text.of("[city]"))),
@@ -312,7 +321,21 @@ public class Main {
                         GenericArguments.onlyOne(GenericArguments.string(Text.of("[name]"))))
                 .build();
 
-         return (CommandSpec.builder()
+        setResident = CommandSpec.builder()
+                .description(Text.of("Set a citizen resident"))
+                .executor(new setResident())
+                .arguments(
+                        GenericArguments.onlyOne(new ElementCitizen(Text.of("[citizen]"))))
+                .build();
+
+        setRecruit = CommandSpec.builder()
+                .description(Text.of("Set a citizen recruit"))
+                .executor(new setRecruit())
+                .arguments(
+                        GenericArguments.onlyOne(new ElementCitizen(Text.of("[citizen]"))))
+                .build();
+
+        return (CommandSpec.builder()
                 .description(Text.of("Commands related to new attribution in your city"))
                 .child(setHelp, "help", "?")
                 .child(setSpawn, "spawn")
@@ -323,6 +346,8 @@ public class Main {
                 .child(setAssistant, "assistant")
                 .child(setPerm, "perm", "p")
                 .child(setCubo, "cubo", "c")
+                .child(setResident, "resident", "r")
+                .child(setRecruit, "recruit", "rec")
                 .build());
     }
 

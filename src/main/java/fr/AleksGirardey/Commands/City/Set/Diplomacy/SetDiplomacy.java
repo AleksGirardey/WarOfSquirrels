@@ -1,5 +1,6 @@
 package fr.AleksGirardey.Commands.City.Set.Diplomacy;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.City;
@@ -17,7 +18,7 @@ public abstract class           SetDiplomacy extends CityCommandAssistant{
 
     protected abstract void     NewDiplomacy(DBPlayer player, City city, Permission perm);
 
-    protected void              Annouce(City city1, City city2, String relation) {
+    void              Annouce(City city1, City city2, String relation) {
         Core.Send("[Diplomacy Alert] " + city1.getDisplayName()
                 + " now treat "
                 + city2.getDisplayName()
@@ -33,10 +34,6 @@ public abstract class           SetDiplomacy extends CityCommandAssistant{
 
     protected boolean           SpecialCheck(DBPlayer player, CommandContext context) {
         String                  cityName = context.<String>getOne("[city]").get();
-        Collection<String>      citiesNames = null;
-
-        if (context.hasAny("<city>"))
-            citiesNames = context.<String>getAll("<city>");
 
         if (Core.getCityHandler().get(cityName) == null) {
             player.sendMessage(Text.builder("City `")
@@ -48,31 +45,22 @@ public abstract class           SetDiplomacy extends CityCommandAssistant{
             return false;
         }
 
-        if (citiesNames != null)
-            for (String name : citiesNames)
-                if (Core.getCityHandler().get(name) != null) {
-                    player.sendMessage(Text.builder("City `")
-                            .append(Text.builder(name)
-                                    .style(TextStyles.ITALIC)
-                                    .build())
-                            .append(Text.of("` doesn't exist !"))
-                            .build());
-                    return false;
-                }
         return true;
     }
 
     protected CommandResult ExecCommand(DBPlayer player, CommandContext context) {
         String                  cityName = context.<String>getOne("[city]").get();
-        Collection<String>      citiesNames = null;
+        boolean                 build, container, _switch;
+        Permission              perm = null;
 
-        if (context.hasAny("<city>"))
-            citiesNames = context.<String>getAll("<city>");
+        if (context.hasAny("<build>")) {
+            build = context.<Boolean>getOne("<build>").get();
+            container = context.<Boolean>getOne("<container>").get();
+            _switch = context.<Boolean>getOne("<switch>").get();
+            perm = Core.getPermissionHandler().add(build, container, _switch);
+        }
 
-        NewDiplomacy(player, Core.getCityHandler().get(cityName), null);
-        if (citiesNames != null)
-            for (String name : citiesNames)
-                NewDiplomacy(player, Core.getCityHandler().get(name), null);
+        NewDiplomacy(player, Core.getCityHandler().get(cityName), perm);
         return CommandResult.success();
     }
 }

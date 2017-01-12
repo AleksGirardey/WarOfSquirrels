@@ -13,13 +13,13 @@ public class SetMayor extends CityCommandMayor {
 
     @Override
     protected boolean           SpecialCheck(DBPlayer player, CommandContext context) {
-        return Core.getPlayerHandler().get(context.<String>getOne("[resident]").get()).getCity() == player.getCity();
+        return context.<DBPlayer>getOne("[citizen]").get().getCity() == player.getCity();
     }
 
     @Override
     protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
         City                    city = player.getCity();
-        DBPlayer                newMayor = Core.getPlayerHandler().get(context.<String>getOne("[resident]").get());
+        DBPlayer                newMayor = context.<DBPlayer>getOne("[citizen]").get();
 
         city.setOwner(newMayor);
         return CommandResult.success();
