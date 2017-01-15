@@ -2,7 +2,7 @@ package fr.AleksGirardey.Objects.City;
 
 import org.spongepowered.api.text.format.TextColor;
 
-public class Rank {
+public class    CityRank {
     String      name;
     String      prefixMayor;
     String      prefixAssistant;
@@ -10,7 +10,7 @@ public class Rank {
     int         citizensMax;
     TextColor   color;
 
-    public Rank(
+    public CityRank(
             String name,
             String prefixMayor,
             String prefixAssistant,

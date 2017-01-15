@@ -66,7 +66,7 @@ public class            CityCommandCreate extends Commands {
         String                      cityName = context.<String>getOne("City name").get();
         CityHandler                 cih = Core.getCityHandler();
         ChunkHandler                chh = Core.getChunkHandler();
-        City                        city = cih.add(player, cityName);
+        City                        city = cih.add(player, cityName, null);
         Chunk                       chunk;
 
         player.setCity(city);

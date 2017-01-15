@@ -9,6 +9,8 @@ public class GlobalCity {
     public static String        permRes = "city_permissionResident";
     public static String        permAllies = "city_permissionAllies";
     public static String        permOutside = "city_permissionOutside";
+    public static String        permFaction = "city_permissionFaction";
     public static String        account = "city_account";
+    public static String        faction = "city_faction";
     public static String        tableName = "City";
 }

@@ -3,6 +3,7 @@ package fr.AleksGirardey.Handlers;
 import com.google.inject.Inject;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.Diplomacy;
+import fr.AleksGirardey.Objects.DBObject.Faction;
 import fr.AleksGirardey.Objects.DBObject.Permission;
 import fr.AleksGirardey.Objects.Database.GlobalDiplomacy;
 import fr.AleksGirardey.Objects.Database.Statement;
@@ -13,12 +14,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DiplomacyHandler {
     private Logger logger;
 
     private Map<Integer, Diplomacy>             diplomacies = new HashMap<>();
-    private Map<City, List<Diplomacy>>          diplomacyMap = new HashMap<>();
+    private Map<Faction, List<Diplomacy>>          diplomacyMap = new HashMap<>();
 
     @Inject
     public DiplomacyHandler(Logger logger) {
@@ -35,9 +37,9 @@ public class DiplomacyHandler {
             while (statement.getResult().next()) {
                 diplomacy = new Diplomacy(statement.getResult());
                 this.diplomacies.put(diplomacy.getId(), diplomacy);
-                if (!diplomacyMap.containsKey(diplomacy.getMain()))
-                    this.diplomacyMap.put(diplomacy.getMain(), new ArrayList<>());
-                this.diplomacyMap.get(diplomacy.getMain()).add(diplomacy);
+                if (!diplomacyMap.containsKey(diplomacy.getFaction()))
+                    this.diplomacyMap.put(diplomacy.getFaction(), new ArrayList<>());
+                this.diplomacyMap.get(diplomacy.getFaction()).add(diplomacy);
             }
             statement.Close();
         } catch (SQLException e) {
@@ -45,7 +47,7 @@ public class DiplomacyHandler {
         }
     }
 
-    public void                     add(City main, City sub, boolean relation, Permission perm) {
+    public void                     add(Faction main, Faction sub, boolean relation, Permission perm) {
         Diplomacy                   d = new Diplomacy(main, sub, relation, perm);
 
         diplomacies.put(d.getId(), d);
@@ -56,79 +58,69 @@ public class DiplomacyHandler {
 
     public Diplomacy                get(int id) { return diplomacies.get(id); }
 
-    public List<Diplomacy>          get(City city) {
-        List<Diplomacy>             list = new ArrayList<>();
-
-        if (diplomacyMap.containsKey(city))
-            list.addAll(diplomacyMap.get(city));
-        diplomacies.values().stream().filter(d -> !list.contains(d) && (d.getSub() == city)).forEach(list::add);
-        return list;
+    public List<Diplomacy>          get(Faction faction) {
+        return diplomacyMap.get(faction);
     }
 
     public void                     delete(Diplomacy diplomacy) {
-        List<City>                  cities = new ArrayList<>();
+        Diplomacy                   target;
 
-        diplomacyMap.forEach((key, value) -> {
-            if (value.contains(diplomacy))
-                cities.add(key);
-        });
-        cities.forEach(c -> diplomacyMap.get(c).remove(diplomacy));
         diplomacies.remove(diplomacy.getId());
+        diplomacyMap.get(diplomacy.getFaction()).remove(diplomacy);
+
+        if (diplomacy.getRelation()) {
+            List<Diplomacy>     list = diplomacyMap.get(diplomacy.getTarget());
+            Diplomacy           diplo = list.stream()
+                    .filter(d -> d.getTarget().equals(diplomacy.getFaction())).findFirst().orElse(null);
+
+            if (diplo != null) {
+                diplomacies.remove(diplo.getId());
+                diplomacyMap.get(diplo.getFaction());
+                diplo.delete();
+            }
+        }
         diplomacy.delete();
     }
 
-    public void                     delete(City city) {
-        if (!diplomacyMap.containsKey(city))
+    public void                     delete(Faction faction) {
+        if (!diplomacyMap.containsKey(faction))
             return;
-        for (Diplomacy d : diplomacyMap.get(city)) {
-            diplomacies.remove(d.getId());
-            d.delete();
-        }
-        diplomacyMap.remove(city);
+
+        List<Diplomacy>     list = diplomacyMap.get(faction);
+
+        for (Diplomacy d : list)
+            delete(d);
+        diplomacyMap.remove(faction);
     }
 
-    public List<City>               getEnemies(City city) {
-        List<City>                  list = new ArrayList<>();
-
-        diplomacies.values().stream().filter(d -> !d.getRelation()).forEach(d -> {
-            if (d.getMain() == city)
-                list.add(d.getSub());
-        });
-        return list;
+    public List<Faction>               getEnemies(Faction faction) {
+        return diplomacyMap.get(faction).stream().filter(d -> !d.getRelation()).map(Diplomacy::getTarget).collect(Collectors.toList());
     }
 
-    public List<City>               getAllies(City city) {
-        List<City>                  list = new ArrayList<>();
-
-        diplomacies.values().stream().filter(Diplomacy::getRelation).forEach(d -> {
-            if (d.getMain() == city)
-                list.add(d.getSub());
-            else if (d.getSub() == city)
-                list.add(d.getMain());
-        });
-        return list;
+    public List<Faction>               getAllies(Faction faction) {
+        return diplomacyMap.get(faction).stream().filter(Diplomacy::getRelation).map(Diplomacy::getTarget).collect(Collectors.toList());
     }
 
-    public String       getAlliesAsString(City city) {
+    public String       getAlliesAsString(Faction faction) {
         String          message = "";
-        List<City>      list = getAllies(city);
+        List<Faction>      list = getAllies(faction);
         int             i = 0, max = list.size();
 
-        for (City c : list) {
-            message += c.getDisplayName();
+        for (Faction f : list) {
+            message += f.getDisplayName();
             if (i != max - 1)
                 message += ", ";
         }
         return message;
     }
 
-    public String       getEnemiesAsString(City city) {
+    public String       getEnemiesAsString(Faction faction) {
         String          message = "";
-        List<City>      list = getEnemies(city);
+        List<Faction>   list = getEnemies(faction);
         int             i = 0, max = list.size();
 
-        for (City c : list) {
-            message += c.getDisplayName();
+        for (Faction f : list) {
+            message += f.getDisplayName();
             if (i != max - 1)
                 message += ", ";
         }

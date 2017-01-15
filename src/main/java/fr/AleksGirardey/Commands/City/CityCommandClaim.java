@@ -1,13 +1,12 @@
 package fr.AleksGirardey.Commands.City;
 
 import fr.AleksGirardey.Handlers.ChunkHandler;
-import fr.AleksGirardey.Objects.City.Rank;
+import fr.AleksGirardey.Objects.City.CityRank;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -22,7 +21,7 @@ public class                CityCommandClaim extends CityCommandAssistant {
 
         if (!chh.exists(x, z)) {
             if (chh.canBePlaced(player.getCity(), x, z, false)) {
-                Rank    r = Core.getInfoCityMap().get(player.getCity()).getRank();
+                CityRank r = Core.getInfoCityMap().get(player.getCity()).getCityRank();
 
                 if (r.getChunkMax() == chh.getSize(player.getCity())) {
                     player.sendMessage(Text.of(TextColors.RED, "Vous avez atteint la limite de chunks et ne pouvez agrandir plus votre ville.", TextColors.RESET));

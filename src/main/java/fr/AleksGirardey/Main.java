@@ -7,13 +7,18 @@ import fr.AleksGirardey.Commands.City.*;
 import fr.AleksGirardey.Commands.City.Cubo.CuboCommandAdd;
 import fr.AleksGirardey.Commands.City.Cubo.CuboCommandMode;
 import fr.AleksGirardey.Commands.City.Set.*;
-import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetAlly;
-import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetEnemy;
-import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetNeutral;
+import fr.AleksGirardey.Commands.Faction.FactionCreate;
+import fr.AleksGirardey.Commands.Faction.FactionDelete;
+import fr.AleksGirardey.Commands.Faction.FactionHelp;
+import fr.AleksGirardey.Commands.Faction.FactionInfo;
+import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetAlly;
+import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetEnemy;
+import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetNeutral;
 import fr.AleksGirardey.Commands.City.Set.Permissions.PermAllies;
 import fr.AleksGirardey.Commands.City.Set.Permissions.PermCity;
 import fr.AleksGirardey.Commands.City.Set.Permissions.PermOutside;
 import fr.AleksGirardey.Commands.City.Set.Permissions.PermResident;
+import fr.AleksGirardey.Commands.Faction.Set.FactionSetHelp;
 import fr.AleksGirardey.Commands.Party.*;
 import fr.AleksGirardey.Commands.RefuseCommand;
 import fr.AleksGirardey.Commands.Shop.ShopDelete;
@@ -183,7 +188,7 @@ public class Main {
                 .description(Text.of("Commands related to your city"))
                 .child(city_help, "help", "?")
                 .child(city_info, "info", "i")
-                .child(city_create, "create", "new")
+                //.child(city_create, "create", "new")
                 .child(city_delete, "delete")
                 .child(city_claim, "claim")
                 .child(city_unclaim, "unclaim")
@@ -203,9 +208,8 @@ public class Main {
     }
 
     private CommandSpec     commandCitySet() {
-        CommandSpec         setHelp, setSpawn, setAlly, setEnemy,
-                setNeutral, setMayor, setAssistant, setOutside,
-                setAllies, setResident, setPerm, setCubo;
+        CommandSpec         setHelp, setSpawn, setMayor, setAssistant,
+                setOutside, setAllies, setResident, setPerm, setCubo;
 
         setHelp = CommandSpec.builder()
                 .description(Text.of("Display /city set help"))
@@ -215,39 +219,6 @@ public class Main {
         setSpawn = CommandSpec.builder()
                 .description(Text.of("Set a new spawn for the city"))
                 .executor(new SetSpawn())
-                .build();
-
-        setAlly = CommandSpec.builder()
-                .description(Text.of("Set a city as ally"))
-                .executor(new SetAlly())
-                .arguments(
-                        GenericArguments.onlyOne(new ElementCity(Text.of("[city]"))),
-                        GenericArguments.optional(
-                                GenericArguments.repeated(
-                                        new ElementCity(Text.of("<city>")),
-                                        10)))
-                .build();
-
-        setEnemy = CommandSpec.builder()
-                .description(Text.of("Set a city as enemy"))
-                .executor(new SetEnemy())
-                .arguments(
-                        GenericArguments.onlyOne(new ElementCity(Text.of("[city]"))),
-                        GenericArguments.repeated(
-                                GenericArguments.optional(
-                                        new ElementCity(Text.of("<city>")))
-                                ,10))
-                .build();
-
-        setNeutral = CommandSpec.builder()
-                .description(Text.of("Set a city as neutral"))
-                .executor(new SetNeutral())
-                .arguments(
-                        GenericArguments.onlyOne(new ElementCity(Text.of("[city]"))),
-                        GenericArguments.optional(
-                                GenericArguments.repeated(
-                                        new ElementCity(Text.of("<city>")),
-                                        10)))
                 .build();
 
         setMayor = CommandSpec.builder()
@@ -316,13 +287,102 @@ public class Main {
                 .description(Text.of("Commands related to new attribution in your city"))
                 .child(setHelp, "help", "?")
                 .child(setSpawn, "spawn")
-                .child(setAlly, "ally")
-                .child(setEnemy, "enemy")
-                .child(setNeutral, "neutral")
                 .child(setMayor, "mayor")
                 .child(setAssistant, "assistant")
                 .child(setPerm, "perm", "p")
                 .child(setCubo, "cubo", "c")
+                .build());
+    }
+
+    private CommandSpec     commandFaction() {
+        CommandSpec         faction_help, faction_info, faction_create, faction_delete, faction_set;
+
+        faction_help = CommandSpec.builder()
+                .description(Text.of("Display help commands"))
+                .executor(new FactionHelp())
+                .build();
+
+        faction_info = CommandSpec.builder()
+                .description(Text.of("Display faction information"))
+                .executor(new FactionInfo())
+                .arguments(GenericArguments.optional(
+                        GenericArguments.onlyOne(new ElementFaction(Text.of("[faction]")))))
+                .build();
+
+        faction_create = CommandSpec.builder()
+                .description(Text.of("Create a new faction"))
+                .executor(new FactionCreate())
+                .arguments(
+                        GenericArguments.onlyOne(GenericArguments.string(Text.of("[faction_name]"))),
+                        GenericArguments.onlyOne(GenericArguments.string(Text.of("[capital_name]"))))
+                .build();
+
+        faction_delete = CommandSpec.builder()
+                .description(Text.of("Delete the faction"))
+                .executor(new FactionDelete())
+                .build();
+
+        faction_set = commandFactionSet();
+
+        return (CommandSpec.builder()
+                .description(Text.of("Commands related to your city"))
+                .child(faction_help, "help", "?")
+                .child(faction_info, "info", "i")
+                .child(faction_create, "create", "c")
+                .child(faction_delete)
+                .child(faction_set, "set", "s")
+                .executor(new FactionInfo())
+                .arguments(
+                        GenericArguments.optional(
+                                GenericArguments.onlyOne(new ElementFaction(Text.of("[faction]")))))
+                .build());
+    }
+
+    private CommandSpec    commandFactionSet() {
+        CommandSpec         setAlly, setNeutral, setEnemy;
+
+        setAlly = CommandSpec.builder()
+                .description(Text.of("Set a city as ally"))
+                .executor(new SetAlly())
+                .arguments(
+                        GenericArguments.onlyOne(new ElementFaction(Text.of("[faction]"))),
+                        GenericArguments.optional(
+                                GenericArguments.seq(
+                                        GenericArguments.bool(Text.of("<build>")),
+                                        GenericArguments.bool(Text.of("<container>")),
+                                        GenericArguments.bool(Text.of("<switch>")))))
+                .build();
+
+        setEnemy = CommandSpec.builder()
+                .description(Text.of("Set a city as enemy"))
+                .executor(new SetEnemy())
+                .arguments(
+                        GenericArguments.onlyOne(new ElementFaction(Text.of("[faction]"))),
+                        GenericArguments.optional(
+                                GenericArguments.seq(
+                                        GenericArguments.bool(Text.of("<build>")),
+                                        GenericArguments.bool(Text.of("<container>")),
+                                        GenericArguments.bool(Text.of("<switch>")))))
+                .build();
+
+        setNeutral = CommandSpec.builder()
+                .description(Text.of("Set a city as neutral"))
+                .executor(new SetNeutral())
+                .arguments(
+                        GenericArguments.onlyOne(new ElementFaction(Text.of("[faction]"))),
+                        GenericArguments.optional(
+                                GenericArguments.seq(
+                                        GenericArguments.bool(Text.of("<build>")),
+                                        GenericArguments.bool(Text.of("<container>")),
+                                        GenericArguments.bool(Text.of("<switch>")))))
+                .build();
+
+        return (CommandSpec.builder()
+                .description(Text.of("Commands related to new attribution in your city"))
+                .child(setAlly, "ally", "a")
+                .child(setNeutral, "neutral", "n")
+                .child(setEnemy, "enemy", "e")
+                .executor(new FactionSetHelp())
                 .build());
     }
 
@@ -502,10 +562,12 @@ public class Main {
 
     @Listener
     public void             onServerInit(GameInitializationEvent event) {
-        CommandSpec         city, party, war, shop, accept, refuse,
+        CommandSpec         city, faction, party, war, shop, accept, refuse,
                 chat, say, shout, town, near, list, setSpawn, pay;
 
         city = commandCity();
+
+        faction = commandFaction();
 
         party = commandParty();
 

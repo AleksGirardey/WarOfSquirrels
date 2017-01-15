@@ -2,18 +2,19 @@ package fr.AleksGirardey.Objects.Invitations;
 
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.DBObject.Faction;
 import org.spongepowered.api.scheduler.Task;
 
 public abstract class Invitation {
     public enum Reason    {
-        City,
+        Faction,
         Alliance,
         PartyWar,
     }
 
     protected DBPlayer          _player;
     protected DBPlayer          _sender;
-    protected City              _city;
+    protected Faction           _faction;
     protected Task              _task;
     protected boolean           _executed = false;
     protected Reason            _reason;
@@ -24,9 +25,9 @@ public abstract class Invitation {
         this._reason = reason;
     }
 
-    public Invitation(DBPlayer sender, Reason reason, City city) {
+    public Invitation(DBPlayer sender, Reason reason, Faction faction) {
         this._sender = sender;
-        this._city = city;
+        this._faction = faction;
         this._reason = reason;
     }
 
@@ -36,8 +37,6 @@ public abstract class Invitation {
 
     public DBPlayer         getPlayer() { return _player; }
     public DBPlayer         getSender() { return _sender; }
-    public boolean          isExecuted() { return _executed; }
-
 
     public boolean          concern(DBPlayer player) { return _player == player; }
 

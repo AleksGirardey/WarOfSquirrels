@@ -11,10 +11,10 @@ import fr.AleksGirardey.Commands.City.Cubo.CuboCommandMode;
 import fr.AleksGirardey.Commands.City.*;
 >>>>>>> 667e63346b81486f24d90c6f7f6af8fb74c2dce4
 import fr.AleksGirardey.Commands.City.Set.*;
-import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetAlly;
+import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetAlly;
 import fr.AleksGirardey.Commands.City.Set.SetAssistant;
-import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetEnemy;
-import fr.AleksGirardey.Commands.City.Set.Diplomacy.SetNeutral;
+import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetEnemy;
+import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetNeutral;
 import fr.AleksGirardey.Commands.City.Set.Permissions.Build.PermBuild;
 import fr.AleksGirardey.Commands.City.Set.Permissions.Build.PermBuildAllies;
 import fr.AleksGirardey.Commands.City.Set.Permissions.Build.PermBuildOutside;

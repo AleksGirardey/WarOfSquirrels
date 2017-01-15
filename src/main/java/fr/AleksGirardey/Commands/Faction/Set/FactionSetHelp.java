@@ -1,18 +1,13 @@
-package fr.AleksGirardey.Commands.City;
+package fr.AleksGirardey.Commands.Faction.Set;
 
+import fr.AleksGirardey.Commands.Commands;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class CityCommandHelp extends CityCommand {
-    @Override
-    protected boolean CanDoIt(DBPlayer player) {
-        return true;
-    }
-
+public class FactionSetHelp extends Commands {
     @Override
     protected boolean SpecialCheck(DBPlayer player, CommandContext context) {
         return true;
@@ -21,12 +16,11 @@ public class CityCommandHelp extends CityCommand {
     @Override
     protected CommandResult ExecCommand(DBPlayer player, CommandContext context) {
         player.sendMessage(Text.of(TextColors.GREEN,
-                "--==| City help |==--\n" +
-                "/city create [name]\n" +
-                "/city info <name>\n" +
-                "/city claim\n" +
-                "/city unclaim\n" +
-                "/city set ..."));
+                "--==| Faction set help |==--\n" +
+                        "/faction set ally [faction] <build> <container> <switch>\n" +
+                        "/faction set enemy [faction] <build> <container> <switch>\n" +
+                        "/faction set neutral [faction]\n"));
+
         return CommandResult.success();
     }
 }
