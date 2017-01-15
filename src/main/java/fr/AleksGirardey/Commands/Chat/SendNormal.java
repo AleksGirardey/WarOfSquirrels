@@ -25,7 +25,7 @@ public class SendNormal implements CommandExecutor {
 
         for (Player pl : online) {
             DBPlayer p = Core.getPlayerHandler().get(pl);
-            if (pl.getLocation().getPosition().distance(player.getUser().getPlayer().get().getLocation().getPosition()) <= ConfigLoader.sayDistance)
+            if (pl.getLocation().getPosition().distance(player.getUser().getPlayer().get().getLocation().getPosition()) <= Core.getConfig().getSayDistance())
                 p.sendMessage(message);
         }
         return CommandResult.success();

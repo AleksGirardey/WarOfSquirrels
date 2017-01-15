@@ -43,15 +43,15 @@ public class DBPlayer extends DBObject {
         this.score = 0;
         this.city = null;
         this.cityId = 0;
-        this.balance = ConfigLoader.startBalance;
+        this.balance = Core.getConfig().getStartBalance();
         this.assistant = false;
         this.resident = false;
         this.reincarnation = false;
         this._primaryKeyValue = player.getUniqueId().toString();
         this.add("'" + _primaryKeyValue + "', '"
-                + displayName + "', '"
-                + score + "', "
-                + "NULL, FALSE, " + balance);
+                + displayName + "', "
+                + score + ", "
+                + "NULL, FALSE, FALSE, " + balance);
         writeLog();
     }
 
@@ -73,7 +73,8 @@ public class DBPlayer extends DBObject {
     public void         updateDependencies() {
         if (cityId != 0) {
             this.city = Core.getCityHandler().get(cityId);
-            Core.getLogger().info("[Updating] Player '" + this.displayName + "' is now in '" + this.city.getDisplayName() + "'");
+            Core.getLogger().info("[Updating] Player '" + this.displayName + "' is now in '" + this.city.getDisplayName() + "'\n" +
+                    "Citizens size : " + city.getCitizens().size());
         }
     }
 

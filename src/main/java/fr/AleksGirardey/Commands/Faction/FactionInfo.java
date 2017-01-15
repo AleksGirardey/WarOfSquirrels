@@ -21,7 +21,7 @@ public class FactionInfo extends Commands {
             message = Text.of(context.<String>getOne("<faction>") + " doesn't exist.");
         } else if (player.getCity() != null)
             return true;
-        message = Text.of("You need to belongd to a faction");
+        message = Text.of("You need to belong to a faction.");
         player.sendMessage(Text.of(TextColors.RED, message, TextColors.RESET));
         return false;
     }
@@ -34,7 +34,7 @@ public class FactionInfo extends Commands {
             faction = Core.getFactionHandler().get(context.<String>getOne("<faction>").get());
 
         player.sendMessage(Text.of(Core.getInfoFactionMap().get(faction).getColor(),
-                "--==| " + Core.getInfoFactionMap().get(faction).getRank().getName() + faction.getDisplayName() + " [ " + faction.getSize() + "] |==--\n"
+                "--==| " + Core.getInfoFactionMap().get(faction).getRank().getName() + " " + faction.getDisplayName() + " [ " + faction.getSize() + "] |==--\n"
                         + "[" + Core.getInfoFactionMap().get(faction).getRank().getPrefixMayor() + "] " + faction.getCapital().getOwner().getDisplayName() + "\n"
                         + "[Capitale] " + faction.getCapital().getDisplayName() + "\n"
                         + "[Vassaux] " + faction.getCitiesAsString()  + "\n"

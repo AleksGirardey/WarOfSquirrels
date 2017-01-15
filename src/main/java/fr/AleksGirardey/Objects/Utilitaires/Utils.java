@@ -171,16 +171,31 @@ public class Utils {
         return tag;
     }
 
+    public static boolean       CanPlaceOutpost(int posX, int posZ) {
+        int                     value = NearestHomeblock(posX, posZ);
+
+        return (value == -1 || value >= Core.getConfig().getDistanceOutpost());
+    }
+
+    public static boolean   CanPlaceCity(int posX, int posZ) {
+        int                 value = NearestHomeblock(posX, posZ);
+
+        return (value == -1 || value >= Core.getConfig().getDistanceCities());
+    }
+
     public static int       NearestHomeblock(int posX, int posZ) {
-        Double              closerDistance = 30.0;
-        Vector2d            def = new Vector2d(posX, posZ);
+        Double              closerDistance = Double.MAX_VALUE; // = Double.parseDouble("" + ConfigLoader.distanceCities);
+        Vector2d            playerChunk = new Vector2d(posX, posZ);
+        List<Chunk>         homeblockList;
 
-        for (Chunk c : Core.getChunkHandler().getHomeblockList()) {
+        homeblockList = Core.getChunkHandler().getHomeblockList();
+        if (homeblockList.size() == 0)
+            return (-1);
+        for (Chunk c : homeblockList) {
             Vector2d        vec = new Vector2d(c.getPosX(), c.getPosZ());
-            Double          dist = vec.distance(def);
+            Double          dist = vec.distance(playerChunk);
 
-            if (closerDistance == 0 || closerDistance > dist)
-                closerDistance = dist;
+            closerDistance = Double.min(dist, closerDistance);
         }
         return closerDistance.intValue();
     }

@@ -7,10 +7,7 @@ import fr.AleksGirardey.Objects.Database.Statement;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Faction extends DBObject {
     private static String      fields = "`" + GlobalFaction.displayName
@@ -30,8 +27,7 @@ public class Faction extends DBObject {
 
         this.displayName = _displayName;
         this.capital = _capital;
-        this.add("'" + displayName + "', "
-                + _capital.getId());
+        this.add("'" + displayName + "', NULL");
         writeLog();
     }
 
@@ -43,13 +39,12 @@ public class Faction extends DBObject {
         this.capital = null;
         this.capitalId = rs.getInt(GlobalFaction.capital);
 
-        this.populate();
         writeLog();
     }
 
     private void    populate() {
         String      sql = "SELECT * FROM `" + GlobalCity.tableName + "` " +
-                "WHERE `" + GlobalFaction.id + "` = " + this._primaryKeyValue;
+                "WHERE `" + GlobalCity.faction + "` = " + this._primaryKeyValue;
 
         try {
             Statement statement = new Statement(sql);
@@ -67,13 +62,15 @@ public class Faction extends DBObject {
 
     public void     updateDependencies() {
         this.capital = Core.getCityHandler().get(this.capitalId);
+        this.populate();
+        Core.getLogger().info("[Updating] Faction `" + displayName + "` now got as capital `" + capital.getDisplayName() + "`");
     }
 
     @Override
     protected void writeLog() {
         Core.getLogger().info("[Faction] (" + fields + ") : #" + _primaryKeyValue
                 + "," + displayName
-                + "," + capital.getDisplayName());
+                + ", NULL");
     }
 
     public int                  getId() { return Integer.parseInt(_primaryKeyValue); }
@@ -111,9 +108,12 @@ public class Faction extends DBObject {
         int                     i = 0, size = cities.size();
 
         for (City c : cities.values()) {
-            message += c.getDisplayName();
-            if (i < size - 1)
-                message += ", ";
+            if (c != capital) {
+                message += c.getDisplayName();
+                if (i < size - 1)
+                    message += ", ";
+            }
+            i++;
         }
         return message;
     }

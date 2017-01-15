@@ -10,11 +10,15 @@ import fr.AleksGirardey.Objects.DBObject.Shop;
 import fr.AleksGirardey.Objects.Faction.InfoFaction;
 import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.text.Text;
 
+import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -47,18 +51,31 @@ public class Core {
     public static void          initCore(
             Logger logger,
             Game game,
-            Main main,
-            ConfigurationLoader<CommentedConfigurationNode> configManager) {
+            Main main) {
         logger.info("Core initialization...");
+
+        Path configPath = FileSystems.getDefault().getPath("WarOfSquirrels/", "WOS.properties"),
+                warPath = FileSystems.getDefault().getPath("WarOfSquirrels/", "WOS.rollbacks");
+        ConfigurationLoader<CommentedConfigurationNode>          managerConfigLoad, managerWarHandler;
+
         try {
+            if (!configPath.toFile().exists()) {
+                File conf = configPath.toFile();
+                if (!conf.createNewFile())
+                    Core.getLogger().error("Can't create WOS.properties");
+            }
             database = new DatabaseHandler(logger);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        managerConfigLoad = HoconConfigurationLoader.builder().setPath(configPath).build();
+        managerWarHandler = HoconConfigurationLoader.builder().setPath(warPath).build();
+
         plugin = game;
         _main = main;
         _logger = logger;
-        _config = new ConfigLoader(configManager);
+        _config = new ConfigLoader(managerConfigLoad);
         logger.info("Setting up handlers..");
         permissionHandler = new PermissionHandler(logger);
         playerHandler = new PlayerHandler(logger);
@@ -66,7 +83,7 @@ public class Core {
         chunkHandler = new ChunkHandler(logger);
         broadcastHandler = new BroadcastHandler();
         invitationHandler = new InvitationHandler();
-        warHandler = new WarHandler(configManager);
+        warHandler = new WarHandler(managerWarHandler);
         partyHandler = new PartyHandler();
         cuboHandler = new CuboHandler(logger);
         diplomacyHandler = new DiplomacyHandler(logger);
@@ -87,6 +104,10 @@ public class Core {
         cuboHandler.updateDependencies();
         infoCityMap = getCityHandler().getCityMap();
         infoFactionMap = getFactionHandler().getFactionMap();
+
+        for (City city : cityHandler.getCityMap().keySet())
+            logger.info("[DEBUG] Size : " + city.getCitizens().size());
+
         logger.info("Done.");
     }
 

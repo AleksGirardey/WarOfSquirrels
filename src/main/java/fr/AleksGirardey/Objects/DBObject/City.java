@@ -20,11 +20,12 @@ public class City extends DBObject {
             + "`, `" + GlobalCity.tag
             + "`, `" + GlobalCity.rank
             + "`, `" + GlobalCity.playerOwner
+            + "`, `" + GlobalCity.faction
             + "`, `" + GlobalCity.permRec
             + "`, `" + GlobalCity.permRes
             + "`, `" + GlobalCity.permAllies
             + "`, `" + GlobalCity.permOutside
-            + "`, `" + GlobalCity.faction
+            + "`, `" + GlobalCity.permFaction
             + "`, `" + GlobalCity.account + "`";
 
     /* DB Fields */
@@ -42,12 +43,13 @@ public class City extends DBObject {
     private int         balance;
 
     /* Extra Fields */
-    private Map<String, DBPlayer>   citizens = new HashMap<>();
+    private Map<String, DBPlayer>   citizens;
 
-    public City(String _displayName, DBPlayer _owner, Permission _rec,
+    public City(String _displayName, DBPlayer _owner, Faction _faction, Permission _rec,
                 Permission _res, Permission _allies, Permission _outside, Permission _pFaction) {
         super(GlobalCity.id, GlobalCity.tableName, _fields);
 
+        this.citizens = new HashMap<>();
         displayName = _displayName;
         tag = (displayName.length() <= 5 ? displayName : displayName.substring(0, 5));
         rank = 0;
@@ -60,7 +62,8 @@ public class City extends DBObject {
         permFaction = _pFaction;
         balance = 0;
         this.add("'" + displayName + "', '"
-                + tag + "', '0', '"
+                + tag + "'," +
+                "'0', '"
                 + owner.getUser().getUniqueId().toString() + "', '"
                 + faction.getId() + "', '"
                 + permRec.getId() + "', '"
@@ -75,16 +78,18 @@ public class City extends DBObject {
     public City(ResultSet rs) throws SQLException {
         super(GlobalCity.id, GlobalCity.tableName, _fields);
 
+        this.citizens = new HashMap<>();
         _primaryKeyValue = "" + rs.getInt(GlobalCity.id);
         displayName = rs.getString(GlobalCity.displayName);
         tag = rs.getString(GlobalCity.tag);
         rank = rs.getInt(GlobalCity.rank);
-        faction = Core.getFactionHandler().get(rs.getInt(GlobalFaction.id));
         owner = Core.getPlayerHandler().get(rs.getString(GlobalCity.playerOwner));
+        faction = Core.getFactionHandler().get(rs.getInt(GlobalCity.faction));
         permRec = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permRec));
         permRes = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permRes));
         permAllies = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permAllies));
         permOutside = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permOutside));
+        permFaction = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permFaction));
         balance = rs.getInt(GlobalCity.account);
 
         //get Players name with this ID;
@@ -116,7 +121,8 @@ public class City extends DBObject {
                 + "," + displayName
                 + "," + tag
                 + "," + rank
-                + "," + faction
+                + "," + owner.getDisplayName()
+                + "," + faction.getDisplayName()
                 + "," + permRec
                 + "," + permRes
                 + "," + permAllies
@@ -185,7 +191,7 @@ public class City extends DBObject {
     }
 
     public int          getId() {
-        return      Integer.parseInt(_primaryKeyValue);
+        return Integer.parseInt(_primaryKeyValue);
     }
 
     public String       getDisplayName() {
@@ -220,8 +226,8 @@ public class City extends DBObject {
 
     public Permission   getPermFaction() { return permFaction; }
 
-    public Collection<DBPlayer> getRecruits() { return citizens.values().stream().filter(DBPlayer::isResident).collect(Collectors.toCollection(ArrayList::new)); }
-    public Collection<DBPlayer> getResidents() { return citizens.values().stream().filter(r -> (!r.isAssistant() && !r.getCity().getOwner().equals(r) && r.isResident())).collect(Collectors.toCollection(ArrayList::new));}
+    public Collection<DBPlayer> getRecruits() { return citizens.values().stream().filter(c -> (!c.isAssistant() && !c.getCity().getOwner().equals(c) && !c.isResident())).collect(Collectors.toList()); }
+    public Collection<DBPlayer> getResidents() { return citizens.values().stream().filter(r -> (!r.isAssistant() && !r.getCity().getOwner().equals(r) && r.isResident())).collect(Collectors.toList());}
     public Collection<DBPlayer> getCitizens() { return citizens.values(); }
 
     public Collection<DBPlayer> getAssistants() {
@@ -265,12 +271,10 @@ public class City extends DBObject {
     }
 
     public String   getResidentsInfo() {
-        int         i = 0, max;
+        Collection<DBPlayer>    list = getResidents();
+        int         i = 0, max = list.size();
         String      message = "";
-        Collection<DBPlayer>    list = getCitizens();
 
-        list.removeIf(c -> c.isAssistant() || c.getCity().getOwner().equals(c) || !c.isResident());
-        max = list.size();
         for (DBPlayer c : list) {
             message += c.getDisplayName();
             if (i != max - 1)

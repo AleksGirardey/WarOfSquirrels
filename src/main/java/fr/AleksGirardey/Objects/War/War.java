@@ -16,6 +16,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.BlockChangeFlag;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -118,6 +119,13 @@ public class War {
         rb.getNode("y").setValue(block.getPosition().getY());
         rb.getNode("z").setValue(block.getPosition().getZ());
         rb.getNode("type").setValue(block.getState().getType().toString());
+
+        try {
+            Core.getWarHandler().getManager().save(_node);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         _rollbackBlocks.add(transaction);
         Core.getLogger().info("[Rollback][" + size + "->" + _rollbackBlocks.size() + "] "
                 + transaction.getOriginal().getState().getType().toString()
@@ -187,7 +195,7 @@ public class War {
             this.rollback();
             Core.getWarHandler().delete(this, _node);
         })
-                .delay(ConfigLoader.rollbackPhase, TimeUnit.SECONDS)
+                .delay(Core.getConfig().getRollbackPhase(), TimeUnit.SECONDS)
                 .submit(Core.getMain());
     }
 
@@ -227,11 +235,11 @@ public class War {
 
         delta = time - _timeStart;
         if (_state == WarState.Preparation)
-            timeLeft = (long) ((ConfigLoader.preparationPhase) * 1000.0);
+            timeLeft = (long) ((Core.getConfig().getPreparationPhase()) * 1000.0);
         else if (_state == WarState.War)
             timeLeft = (long) ((30.0 * 60.0) * 1000.0);
         else
-            timeLeft = (long) (ConfigLoader.rollbackPhase * 1000.0);
+            timeLeft = (long) (Core.getConfig().getRollbackPhase() * 1000.0);
         timeLeft = timeLeft - delta;
         elapsedSeconds = timeLeft / 1000.0;
         minutes = (int) (elapsedSeconds / 60);

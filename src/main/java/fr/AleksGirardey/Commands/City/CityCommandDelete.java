@@ -36,7 +36,6 @@ public class                    CityCommandDelete extends CityCommandMayor {
         ph.delete(perm);
         Core.getChunkHandler().deleteCity(city);
         Core.getCuboHandler().deleteCity(city);
-        Core.getDiplomacyHandler().delete(city);
         for (DBPlayer p : city.getCitizens()) {
             if (p.isAssistant())
                 p.setAssistant(false);

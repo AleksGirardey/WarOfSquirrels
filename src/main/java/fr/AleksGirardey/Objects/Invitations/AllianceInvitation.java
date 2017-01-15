@@ -7,6 +7,8 @@ import fr.AleksGirardey.Objects.DBObject.Faction;
 import fr.AleksGirardey.Objects.DBObject.Permission;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColor;
+import org.spongepowered.api.text.format.TextColors;
 
 public class            AllianceInvitation extends Invitation {
     private Faction     _senderFaction;
@@ -31,7 +33,8 @@ public class            AllianceInvitation extends Invitation {
 
     @Override
     public void         refuse() {
-        _sender.sendMessage(Text.of(_player.getDisplayName() + " refuse your invitation"));
+        _sender.sendMessage(Text.of(TextColors.RED, _player.getDisplayName() + " refuse your invitation", TextColors.RESET));
+        _player.sendMessage(Text.of(TextColors.RED, "The invitation from " + _sender.getDisplayName() + " have been refused.", TextColors.RESET));
     }
 
     @Override

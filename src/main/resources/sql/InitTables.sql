@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `Permission` (
-  `permission_id` INT AUTO_INCREMENT,
+  `permission_id` INT(11) AUTO_INCREMENT,
   `permission_build` BOOLEAN DEFAULT FALSE,
   `permission_container` BOOLEAN DEFAULT FALSE,
   `permission_switch` BOOLEAN DEFAULT FALSE,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `Player` (
   `player_score` INT DEFAULT 0,
   `player_cityId` INT DEFAULT NULL,
   `player_assistant` BOOLEAN DEFAULT FALSE,
-  `player_citizen` BOOLEAN DEFAULT FALSE,
+  `player_resident` BOOLEAN DEFAULT FALSE,
   `player_account` INT DEFAULT 0 NOT NULL,
   PRIMARY KEY (`player_uuid`));
 
@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS `City` (
   `city_permissionOutside` INT,
   `city_permissionFaction` INT,
   PRIMARY KEY (`city_id`),
-  FOREIGN KEY (`city_faction`) REFERENCES `Faction`(`faction_id`),
   FOREIGN KEY (`city_permissionRecruit`) REFERENCES `Permission`(`permission_id`),
   FOREIGN KEY (`city_permissionResident`) REFERENCES `Permission`(`permission_id`),
   FOREIGN KEY (`city_permissionAllies`) REFERENCES `Permission`(`permission_id`),
@@ -58,8 +57,6 @@ CREATE TABLE IF NOT EXISTS `Diplomacy` (
   `diplomacy_relation` BOOLEAN,
   `diplomacy_permission` INT,
   PRIMARY KEY (`diplomacy_id`),
-  FOREIGN KEY (`diplomacy_faction`) REFERENCES `Faction`(`faction_id`),
-  FOREIGN KEY (`diplomacy_target`) REFERENCES `Faction`(`faction_id`),
   FOREIGN KEY (`diplomacy_permission`) REFERENCES `Permission` (`permission_id`),
   UNIQUE KEY (`diplomacy_faction`, `diplomacy_target`));
 
@@ -130,3 +127,9 @@ ALTER TABLE `City` ADD
 
 ALTER TABLE `City` ADD
   FOREIGN KEY (`city_faction`) REFERENCES `Faction`(`faction_id`);
+
+ALTER TABLE `Diplomacy` ADD
+  FOREIGN KEY (`diplomacy_faction`) REFERENCES `Faction`(`faction_id`);
+
+ALTER TABLE `Diplomacy` ADD
+  FOREIGN KEY (`diplomacy_target`) REFERENCES `Faction`(`faction_id`);

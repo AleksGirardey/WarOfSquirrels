@@ -55,7 +55,6 @@ public class                        FactionHandler {
     public Faction      add(City city, String displayName) {
         Faction         faction = new Faction(displayName, city);
 
-        city.setFaction(faction);
         factions.put(faction.getId(), faction);
         return faction;
     }

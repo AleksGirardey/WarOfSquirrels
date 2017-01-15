@@ -10,17 +10,14 @@ import fr.AleksGirardey.Objects.Database.Statement;
 import org.slf4j.Logger;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DiplomacyHandler {
     private Logger logger;
 
-    private Map<Integer, Diplomacy>             diplomacies = new HashMap<>();
-    private Map<Faction, List<Diplomacy>>          diplomacyMap = new HashMap<>();
+    private Map<Integer, Diplomacy>                 diplomacies = new HashMap<>();
+    private Map<Faction, List<Diplomacy>>           diplomacyMap = new HashMap<>();
 
     @Inject
     public DiplomacyHandler(Logger logger) {
@@ -94,11 +91,15 @@ public class DiplomacyHandler {
     }
 
     public List<Faction>               getEnemies(Faction faction) {
-        return diplomacyMap.get(faction).stream().filter(d -> !d.getRelation()).map(Diplomacy::getTarget).collect(Collectors.toList());
+        if (diplomacyMap.containsKey(faction))
+            return diplomacyMap.get(faction).stream().filter(d -> !d.getRelation()).map(Diplomacy::getTarget).collect(Collectors.toList());
+        return Collections.emptyList();
     }
 
     public List<Faction>               getAllies(Faction faction) {
-        return diplomacyMap.get(faction).stream().filter(Diplomacy::getRelation).map(Diplomacy::getTarget).collect(Collectors.toList());
+        if (diplomacyMap.containsKey(faction))
+            return diplomacyMap.get(faction).stream().filter(Diplomacy::getRelation).map(Diplomacy::getTarget).collect(Collectors.toList());
+        return Collections.emptyList();
     }
 
     public String       getAlliesAsString(Faction faction) {

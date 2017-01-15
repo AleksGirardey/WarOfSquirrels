@@ -15,7 +15,6 @@ import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetAlly;
 import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetEnemy;
 import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetNeutral;
 import fr.AleksGirardey.Commands.City.Set.Permissions.PermAllies;
-import fr.AleksGirardey.Commands.City.Set.Permissions.PermCity;
 import fr.AleksGirardey.Commands.City.Set.Permissions.PermOutside;
 import fr.AleksGirardey.Commands.City.Set.Permissions.PermResident;
 import fr.AleksGirardey.Commands.Faction.Set.FactionSetHelp;
@@ -49,6 +48,7 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.common.text.serializer.xml.U;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -68,7 +68,7 @@ public class Main {
     private Logger logger;
 
     @Inject
-    @DefaultConfig(sharedRoot = true)
+    @DefaultConfig(sharedRoot = false)
     private ConfigurationLoader<CommentedConfigurationNode> configManager;
 
     @Inject
@@ -84,7 +84,7 @@ public class Main {
             if (!f.mkdirs())
                 logger.error("Can't create plugin directory");
 
-        Core.initCore(logger, game, this, configManager);
+        Core.initCore(logger, game, this);
         game.getEventManager().registerListeners(this, new OnPlayerMove());
 
         game.getEventManager().registerListeners(this, new BlockListener());
@@ -209,7 +209,7 @@ public class Main {
     }
 
     private CommandSpec     commandCitySet() {
-        CommandSpec         setHelp, setSpawn, setMayor, setAssistant,
+        CommandSpec         setHelp, setSpawn, setMayor, setAssistant, setResident, setRecruit,
                 setOutside, setAllies, setPermResident, setPermRecruit, setPerm, setCubo;
 
         setHelp = CommandSpec.builder()
@@ -278,13 +278,6 @@ public class Main {
                 .child(setAllies, "allies", "a")
                 .child(setOutside, "outside", "o")
                 .child(setPermRecruit, "recruit", "rec")
-                .executor(new PermCity())
-                .arguments(
-                        GenericArguments.onlyOne(new ElementAlly(Text.of("[city]"))),
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[build]"))),
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[container]"))),
-                        GenericArguments.onlyOne(GenericArguments.bool(Text.of("[switch]")))
-                )
                 .build();
 
         setCubo = CommandSpec.builder()
@@ -361,7 +354,7 @@ public class Main {
                 .executor(new FactionInfo())
                 .arguments(
                         GenericArguments.optional(
-                                GenericArguments.onlyOne(new ElementFaction(Text.of("[faction]")))))
+                                GenericArguments.onlyOne(new ElementFaction(Text.of("<faction>")))))
                 .build());
     }
 
@@ -637,8 +630,13 @@ public class Main {
                 .executor((commandSource, commandContext) -> {
                     if (commandSource instanceof Player) {
                         DBPlayer    player = Core.getPlayerHandler().get((Player) commandSource);
-                        Text        message = Text.of("La civilization la plus proche est à " + Utils.NearestHomeblock(player.getPosX() / 16, player.getPosZ() / 16)
-                                + " chunks.");
+                        int         value = Utils.NearestHomeblock(player.getLastChunkX(), player.getLastChunkZ());
+                        Text        message;
+
+                        if (value != -1)
+                            message = Text.of("La civilization la plus proche est à " + value + " chunks.");
+                        else
+                            message = Text.of("Aucune ville n'a encore été créé dans ce monde.");
                         player.sendMessage(Text.of(TextColors.DARK_GREEN, message, TextColors.RESET));
                     }
                     return CommandResult.success();
@@ -673,12 +671,13 @@ public class Main {
                 .description(Text.of("Give money to someone"))
                 .executor(new CommandPay())
                 .arguments(
-                        GenericArguments.onlyOne(GenericArguments.player(Text.of("[amount]"))),
+                        GenericArguments.onlyOne(GenericArguments.player(Text.of("[player]"))),
                         GenericArguments.onlyOne(GenericArguments.integer(Text.of("[amount]")))
                 )
                 .build();
 
         game.getCommandManager().register(this, city, "city", "c");
+        game.getCommandManager().register(this, faction, "faction", "f");
         game.getCommandManager().register(this, party, "party", "p");
         game.getCommandManager().register(this, war, "war", "w");
         game.getCommandManager().register(this, accept, "accept", "a");
@@ -699,7 +698,7 @@ public class Main {
     @Listener
     public void onServerStop(GameStoppedServerEvent event) {
         logger.info("Closing WOS...");
-        ConfigLoader.close();
+        Core.getConfig().close();
         Core.close();
     }
 

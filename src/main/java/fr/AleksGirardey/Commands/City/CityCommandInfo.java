@@ -6,6 +6,7 @@ import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
 public class CityCommandInfo extends CityCommand {
@@ -29,6 +30,7 @@ public class CityCommandInfo extends CityCommand {
     protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
         City                    city;
         String                  arg;
+        Text                    text;
 
         arg = context.<String>getOne("[city]").orElse("");
         if (arg.equals(""))
@@ -36,18 +38,20 @@ public class CityCommandInfo extends CityCommand {
         else
             city = Core.getCityHandler().get(arg);
 
-        player.sendMessage(Text.of("---===| " + Core.getInfoCityMap().get(city).getCityRank().getName() + " " + city.getDisplayName() + "[" + city.getCitizens().size() + "] |===---"));
-        player.sendMessage(Text.of("Mayor: " + city.getOwner().getDisplayName()));
-        player.sendMessage(Text.of("Assistant(s): " + city.getAssistantsAsString()));
-        player.sendMessage(Text.of("Resident: " + city.getResidentsInfo()));
-        player.sendMessage(Text.of("Recruits: " + city.getRecruitsInfo()));
-        player.sendMessage(Text.of("Tag: " + city.getTag()));
-        player.sendMessage(Text.of("Chunks [" + Core.getChunkHandler().getSize(city) + "/" + Core.getInfoCityMap().get(city).getCityRank().getChunkMax() + "]"));
-        player.sendMessage(Text.of("Outpost [" + Core.getChunkHandler().getOutpostSize(city) + "]"));
-        player.sendMessage(Text.of("Allies: " + Core.getDiplomacyHandler().getAlliesAsString(city)));
-        player.sendMessage(Text.of("Enemies: " + Core.getDiplomacyHandler().getEnemiesAsString(city)));
-        player.sendMessage(Text.of("Permissions: " + Core.getPermissionHandler().toString(city)));
+        Core.getLogger().info("[DEBUG] City '" + city.getDisplayName() + "' et size = " + city.getCitizens().size());
 
+        text = Text.of("---===| " + Core.getInfoCityMap().get(city).getCityRank().getName() + " " + city.getDisplayName() + " [" + city.getCitizens().size() + "] |===---\n"
+                + "Faction: " + city.getFaction().getDisplayName() + "\n"
+                + "Mayor: " + city.getOwner().getDisplayName() + "\n"
+                + "Assistant(s): " + city.getAssistantsAsString() + "\n"
+                + "Resident: " + city.getResidentsInfo() + "\n"
+                + "Recruits: " + city.getRecruitsInfo() + "\n"
+                + "Tag: " + city.getTag() + "\n"
+                + "Chunks [" + Core.getChunkHandler().getSize(city) + "/" + Core.getInfoCityMap().get(city).getCityRank().getChunkMax() + "]\n"
+                + "Outpost [" + Core.getChunkHandler().getOutpostSize(city) + "]\n"
+                + "Permissions: " + Core.getPermissionHandler().toString(city));
+
+        player.sendMessage(Text.of(Core.getInfoCityMap().get(city).getColor(), text, TextColors.RESET));
         return CommandResult.success();
     }
 }

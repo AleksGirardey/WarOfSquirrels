@@ -60,6 +60,7 @@ public class CityHandler {
                 displayName,
                 player,
                 faction,
+                Core.getPermissionHandler().add(false, false, true),
                 Core.getPermissionHandler().add(true, true, true),
                 Core.getPermissionHandler().add(false, false, true),
                 Core.getPermissionHandler().add(false, false, false),

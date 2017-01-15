@@ -46,7 +46,7 @@ public class            CityCommandCreate extends Commands {
         z = player.getUser().getPlayer().get().getLocation().getBlockZ() / 16;
 
         if (player.getCity() == null) {
-            if (!Core.getChunkHandler().exists(x, z) && Utils.NearestHomeblock(x, z) >= ConfigLoader.distanceCities) {
+            if (!Core.getChunkHandler().exists(x, z) && Utils.CanPlaceCity(x, z)) {
                 if (Utils.checkCityName(name)) {
                     if (name.length() >= 3)
                         return true;

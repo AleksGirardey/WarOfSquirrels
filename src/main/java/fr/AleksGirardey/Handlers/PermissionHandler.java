@@ -67,7 +67,6 @@ public class PermissionHandler {
 
         // Situer le joueur par rapport au chunk (résident, allié, outside)
         if (player.getCity() != null) {
-            Core.Send("City is " + player.getCity().getDisplayName());
             /*
             ** Le joueur possède une ville, il faut maintenant savoir si il interagit avec
             ** sa ville ou non.
@@ -103,7 +102,7 @@ public class PermissionHandler {
                 ** Le joueur n'appartient pas à la ville il faut donc verifié si il est
                 ** allié ou enemi
                 */
-                if (Core.getDiplomacyHandler().getAllies(chunk.getCity()).contains(player.getCity())) {
+                if (Core.getDiplomacyHandler().getAllies(chunk.getCity().getFaction()).contains(player.getCity().getFaction())) {
                     /* Ally */
                     permission = chunk.getCity().getPermAllies();
                 } else {
@@ -124,13 +123,12 @@ public class PermissionHandler {
     public String           toString(City city) {
         String              res = "";
 
-        res += "R [";
+        res += "R ";
         res += (city.getPermRes().toString());
-        res += "] | A [";
+        res += " | A ";
         res += (city.getPermAllies().toString());
-        res += "] | O [";
+        res += " | O ";
         res += (city.getPermOutside().toString());
-        res += "]";
 
         return res;
     }

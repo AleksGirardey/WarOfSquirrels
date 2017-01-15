@@ -4,6 +4,8 @@ import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.War.PartyWar;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 public class        PartyWarInvitation extends Invitation{
     private PartyWar        _party;
@@ -22,6 +24,7 @@ public class        PartyWarInvitation extends Invitation{
     @Override
     public void refuse() {
         _party.Send(_player.getDisplayName() + " refuse to join the party");
+        _player.sendMessage(Text.of(TextColors.RED, "The invitation from " + _sender.getDisplayName() + " have been refused.", TextColors.RESET));
     }
 
     @Override

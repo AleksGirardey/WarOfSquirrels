@@ -1,81 +1,137 @@
 package fr.AleksGirardey.Objects.Utilitaires;
 
-import fr.AleksGirardey.Objects.Core;
+import com.google.common.reflect.TypeToken;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 
 public class ConfigLoader {
 
-    public static int                                                       distanceCities;
-    public static int                                                       distanceOutpost;
-    public static int                                                       shoutDistance;
-    public static int                                                       sayDistance;
-    public static boolean                                                   peaceTime;
-    public static int                                                       reincarnationTime;
-    private static ConfigurationNode                                        rootNode;
-    private static ConfigurationLoader<CommentedConfigurationNode>          manager;
-    public static int                                                       startBalance;
-    public static long                                                      preparationPhase;
-    public static long                                                      rollbackPhase;
+    private ConfigurationNode                                           rootNode;
+    private ConfigurationLoader<CommentedConfigurationNode>             manager;
+    
+    private ConfigurationNode   distanceCities;
+    private ConfigurationNode   distanceOutpost;
+    private ConfigurationNode   shoutDistance;
+    private ConfigurationNode   sayDistance;
+    private ConfigurationNode   peaceTime;
+    private ConfigurationNode   reincarnationTime;
+    private ConfigurationNode   startBalance;
+    private ConfigurationNode   preparationPhase;
+    private ConfigurationNode   rollbackPhase;
 
     public ConfigLoader(ConfigurationLoader<CommentedConfigurationNode> configManager) {
-        Path configPath = FileSystems.getDefault().getPath("WarOfSquirrels/config", "WOS.properties");
 
+        manager = configManager;
         try {
-            if (!configPath.toFile().exists()) {
-                File conf = configPath.toFile();
-                if (!conf.createNewFile())
-                    Core.getLogger().error("Can't create WOS.properties");
-                ConfigurationLoader<CommentedConfigurationNode> defaultManager = HoconConfigurationLoader
-                        .builder()
-                        .setURL(getClass().getClassLoader().getResource("config/WOS.properties"))
-                        .build();
-                rootNode = defaultManager.load();
-                manager = HoconConfigurationLoader.builder().setPath(configPath).build();
-                manager.save(rootNode);
-            } else
-                manager = configManager;
             rootNode = manager.load();
 
-            /* Distances */
-            distanceCities = rootNode.getNode("Distances", "cities").getInt(20);
-            distanceOutpost = rootNode.getNode("Distances", "outpost").getInt(20);
-            shoutDistance = rootNode.getNode("Distances", "shout").getInt(50);
-            sayDistance = rootNode.getNode("Distances", "say").getInt(30);
-
-            /* War */
-            peaceTime = rootNode.getNode("War", "peace").getBoolean(true);
-            preparationPhase = rootNode.getNode("War", "preparationSeconds").getLong(120);
-            rollbackPhase = rootNode.getNode("War", "rollbackSeconds").getLong(60);
-
-            /* Player */
-            reincarnationTime = rootNode.getNode("Joueur", "reincarnation").getInt(30);
-            startBalance = rootNode.getNode("Joueur", "startBalance").getInt(100);
-            manager.save(rootNode);
-        } catch (IOException e) {
+            if (!rootNode.hasListChildren()) {
+                this.setDefaultConfig();
+                rootNode = manager.load();
+            }
+        } catch (IOException | ObjectMappingException e) {
             e.printStackTrace();
         }
+
+        /* Distances */
+        distanceCities = rootNode.getNode("Distances", "cities");
+        distanceOutpost = rootNode.getNode("Distances", "outpost");
+        shoutDistance = rootNode.getNode("Distances", "shout");
+        sayDistance = rootNode.getNode("Distances", "say");
+
+        /* War */
+        peaceTime = rootNode.getNode("War", "peace");
+        preparationPhase = rootNode.getNode("War", "preparationSeconds");
+        rollbackPhase = rootNode.getNode("War", "rollbackSeconds");
+
+        /* Player */
+        reincarnationTime = rootNode.getNode("Joueur", "reincarnation");
+        startBalance = rootNode.getNode("Joueur", "startBalance");
     }
 
-    public static void      setPeaceTime(Boolean peace) throws IOException {
-        peaceTime = peace;
-        rootNode.getNode("War", "peace").setValue(peace);
+    private void setDefaultConfig() throws ObjectMappingException, IOException {
+        /* Distances */
+        rootNode.getNode("Distances", "cities").setValue(20);
+        rootNode.getNode("Distances", "outpost").setValue(20);
+        rootNode.getNode("Distances", "shout").setValue(50);
+        rootNode.getNode("Distances", "say").setValue(30);
+
+        /* War */
+        rootNode.getNode("War", "peace").setValue(true);
+        rootNode.getNode("War", "preparationSeconds").setValue(TypeToken.of(Long.class), 120L);
+        rootNode.getNode("War", "rollbackSeconds").setValue(TypeToken.of(Long.class), 60L);
+
+        /* Player */
+        rootNode.getNode("Joueur", "reincarnation").setValue(30);
+        rootNode.getNode("Joueur", "startBalance").getValue(100);
+
         manager.save(rootNode);
     }
 
-    public static void      close() {
+    public void      close() {
         try {
             manager.save(rootNode);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    private void    set(ConfigurationNode node, Object value) {
+        try {
+            node.setValue(value);
+            manager.save(rootNode);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getDistanceCities() { return distanceCities.getInt(); }
+
+    public void setDistanceCities(int distanceCities) {
+        this.set(this.distanceCities, distanceCities);
+    }
+
+    public int getDistanceOutpost() { return distanceOutpost.getInt(); }
+
+    public void setDistanceOutpost(int distanceOutpost) {
+        this.set(this.distanceOutpost, distanceOutpost);
+    }
+
+    public int getShoutDistance() { return shoutDistance.getInt(); }
+
+    public void setShoutDistance(int shoutDistance) {
+        this.set(this.shoutDistance, shoutDistance);
+    }
+
+    public int getSayDistance() { return sayDistance.getInt(); }
+
+    public void setSayDistance(int sayDistance) {
+        this.set(this.sayDistance, sayDistance);
+    }
+
+    public boolean isPeaceTime() { return peaceTime.getBoolean(); }
+
+    public void      setPeaceTime(Boolean peace) {
+        this.set(this.peaceTime, peace);
+    }
+
+    public int getReincarnationTime() { return reincarnationTime.getInt(); }
+
+    public void setReincarnationTime(int reincarnationTime) { this.set(this.reincarnationTime, reincarnationTime); }
+
+    public int getStartBalance() { return startBalance.getInt(); }
+
+    public void setStartBalance(int startBalance) { this.set(this.startBalance, startBalance); }
+
+    public long getPreparationPhase() { return preparationPhase.getLong(); }
+
+    public void setPreparationPhase(long preparationPhase) { this.set(this.preparationPhase, preparationPhase); }
+
+    public long getRollbackPhase() { return rollbackPhase.getLong(); }
+
+    public void setRollbackPhase(long rollbackPhase) { this.set(this.rollbackPhase, rollbackPhase); }
 }

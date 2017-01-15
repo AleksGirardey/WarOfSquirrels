@@ -50,7 +50,7 @@ public class FactionCreate extends Commands {
         z = player.getLastChunkZ();
 
         if (player.getCity() == null) {
-            if (Utils.NearestHomeblock(x, z) >= ConfigLoader.distanceCities) {
+            if (Utils.CanPlaceCity(x, z)) {
                 if (Utils.checkFactionName(factionName) && Utils.checkCityName(cityName)) {
                     if (cityName.length() >= 3 && factionName.length() >= 3)
                         return true;

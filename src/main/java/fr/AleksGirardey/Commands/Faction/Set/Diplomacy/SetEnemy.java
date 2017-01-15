@@ -1,14 +1,17 @@
 package fr.AleksGirardey.Commands.Faction.Set.Diplomacy;
 
 import fr.AleksGirardey.Objects.Core;
-import fr.AleksGirardey.Objects.DBObject.City;
-import fr.AleksGirardey.Objects.DBObject.DBPlayer;
-import fr.AleksGirardey.Objects.DBObject.Diplomacy;
-import fr.AleksGirardey.Objects.DBObject.Permission;
+import fr.AleksGirardey.Objects.DBObject.*;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 
 public class SetEnemy extends SetDiplomacy {
+    @Override
+    protected void NewDiplomacy(DBPlayer player, Faction faction, Permission perm) {
+        Annouce(player.getCity().getFaction(), faction, "enemy");
+        Core.getDiplomacyHandler().add(player.getCity().getFaction(), faction, false, perm);
+    }
+
     @Override
     protected boolean CanDoIt(DBPlayer player) {
         return super.CanDoIt(player);
@@ -16,26 +19,18 @@ public class SetEnemy extends SetDiplomacy {
 
     @Override
     protected boolean SpecialCheck(DBPlayer player, CommandContext context) {
-        String          cityName = context.<String>getOne("[city]").orElse("");
+        Faction         faction = context.<Faction>getOne("[faction]").orElse(null);
 
-        if (cityName.equals("")) {
-            City city = Core.getCityHandler().get(cityName);
-
-            for (Diplomacy d : Core.getDiplomacyHandler().get(player.getCity())) {
-                if (d.getMain() == player.getCity() && d.getSub() == city)
+        if (faction != null)
+            for (Diplomacy d : Core.getDiplomacyHandler().get(player.getCity().getFaction()))
+                if (d.getTarget() == faction)
                     return false;
-            }
-        }
+
         return super.SpecialCheck(player, context);
     }
 
     @Override
     protected CommandResult ExecCommand(DBPlayer player, CommandContext context) {
         return super.ExecCommand(player, context);
-    }
-
-    protected void          NewDiplomacy(DBPlayer player, City city2, Permission perm) {
-        Annouce(player.getCity(), city2, "enemy");
-        Core.getDiplomacyHandler().add(player.getCity(), city2, false, perm);
     }
 }

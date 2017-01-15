@@ -8,6 +8,7 @@ import org.spongepowered.api.scheduler.Task;
 public abstract class Invitation {
     public enum Reason    {
         Faction,
+        City,
         Alliance,
         PartyWar,
     }
