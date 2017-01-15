@@ -4,33 +4,33 @@ import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Database.GlobalDiplomacy;
 import fr.AleksGirardey.Objects.Database.GlobalPermission;
 
+import javax.xml.ws.FaultAction;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Diplomacy extends DBObject {
-    private static String   fields = "`" + GlobalDiplomacy.main
-            + "`, `" + GlobalDiplomacy.sub
+    private static String   fields = "`" + GlobalDiplomacy.faction
+            + "`, `" + GlobalDiplomacy.target
             + "`, `" + GlobalDiplomacy.relation
-            + "`, `" + GlobalDiplomacy.permMain
-            + "`, `" + GlobalDiplomacy.permSub + "`";
+            + "`, `" + GlobalDiplomacy.permission + "`";
 
-    private City            main;
-    private City            sub;
+    private Faction         faction;
+    private Faction         target;
     private boolean         relation;
-    private Permission      permissionMain;
-    private Permission      permissionSub;
+    private Permission      permission;
 
-    public          Diplomacy(City _main, City _sub, boolean _relation, Permission _perm) {
+    public          Diplomacy(Faction _faction, Faction _target, boolean _relation,
+                              Permission _permission) {
         super(GlobalDiplomacy.id, GlobalDiplomacy.tableName, fields);
-        main = _main;
-        sub = _sub;
+        
+        faction = _faction;
+        target = _target;
         relation = _relation;
-        permissionMain = _perm;
-        this.add("" + _main.getId() + ", "
-                + _sub.getId() + ", "
+        permission = _permission;
+        this.add("" + _faction.getId() + ", "
+                + _target.getId() + ", "
                 + (_relation ? "TRUE" : "FALSE") + ", "
-                + (_perm == null ? "NULL"  : _perm.getId())
-                + ", NULL");
+                + (_permission == null ? "NULL"  : _permission.getId()));
         writeLog();
     }
 
@@ -40,68 +40,49 @@ public class Diplomacy extends DBObject {
         int         i;
 
         this._primaryKeyValue = "" + rs.getInt(GlobalDiplomacy.id);
-        main = Core.getCityHandler().get(rs.getInt(GlobalDiplomacy.main));
-        sub = Core.getCityHandler().get(rs.getInt(GlobalDiplomacy.sub));
+        faction = Core.getFactionHandler().get(rs.getInt(GlobalDiplomacy.faction));
+        target = Core.getFactionHandler().get(rs.getInt(GlobalDiplomacy.target));
         relation = rs.getBoolean(GlobalDiplomacy.relation);
-        i = rs.getInt(GlobalDiplomacy.permMain);
-        permissionMain = (i != 0 ? Core.getPermissionHandler().get(i) : null);
-        i = rs.getInt(GlobalDiplomacy.permSub);
-        permissionSub = (i != 0 ? Core.getPermissionHandler().get(i) : null);
+        i = rs.getInt(GlobalDiplomacy.permission);
+        permission = (i != 0 ? Core.getPermissionHandler().get(i) : null);
         writeLog();
     }
 
-    public void     writeLog() {
-        String      mainPerm = "", subPerm = "";
-
-        if (permissionMain != null)
-            mainPerm = " Main city set perm as " + permissionMain.toString() + ".";
-        if (permissionSub != null)
-            subPerm = " Sub city set perm as " + permissionSub.toString() + ".";
-        Core.getLogger().info("[Creation] Diplomacy between '" + main.getDisplayName() + "' and '" + sub.getDisplayName() + "'." + mainPerm + subPerm);
+    public void     writeLog() {        
+        Core.getLogger().info("[Creation] Diplomacy between '" + faction.getDisplayName() + "' and '" + target.getDisplayName() + "'");
     }
 
-    public void             setMain(City main) {
-        this.main = main;
-        this.edit(GlobalDiplomacy.main, "'" + this.main.getId() + "'");
+    public void             setFaction(Faction faction) {
+        this.faction = faction;
+        this.edit(GlobalDiplomacy.faction, "'" + faction.getId() + "'");
     }
 
-    public void             setSub(City sub) {
-        this.sub = sub;
-        this.edit(GlobalDiplomacy.sub, "'" + this.sub.getId() + "'");
+    public void             setTarget(Faction target) {
+        this.target = target;
+        this.edit(GlobalDiplomacy.target, "'" + target.getId() + "'");
     }
-
+    
     public void             setRelation(boolean relation) {
         this.relation = relation;
         this.edit(GlobalDiplomacy.relation, this.relation ? "TRUE" : "FALSE");
     }
 
-    public void             setPermissionMain(Permission permission) {
-        this.permissionMain = permission;
-        this.edit(GlobalDiplomacy.permMain, "'" + permission.getId() + "'");
-    }
-
-    public void             setPermissionSub(Permission permission) {
-        this.permissionSub = permission;
-        this.edit(GlobalDiplomacy.permSub, "'" + permission.getId() + "'");
+    public void             setPermission(Permission permission) {
+        this.permission = permission;
+        this.edit(GlobalDiplomacy.permission, permission == null ? "NULL" : ("'" + permission.getId() + "'"));
     }
 
     public int              getId() {
         return Integer.parseInt(this._primaryKeyValue);
     }
 
-    public City             getMain() {
-        return main;
-    }
+    public Faction          getFaction() { return faction; }
 
-    public City             getSub() {
-        return sub;
-    }
+    public Faction          getTarget() { return target; }
 
     public boolean          getRelation() {
         return relation;
     }
 
-    public Permission       getPermissionMain() { return permissionMain; }
-
-    public Permission       getPermissionSub() { return permissionSub; }
+    public Permission       getPermissionMain() { return permission; }
 }

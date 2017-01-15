@@ -1,9 +1,7 @@
 package fr.AleksGirardey.Commands.City;
 
-import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.entity.living.player.Player;
 
 public abstract class CityCommandMayor extends CityCommand {
     @Override

@@ -5,16 +5,11 @@ import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.City.InfoCity;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
-import fr.AleksGirardey.Objects.DBObject.Diplomacy;
+import fr.AleksGirardey.Objects.DBObject.Faction;
 import fr.AleksGirardey.Objects.Database.GlobalCity;
-import fr.AleksGirardey.Objects.Database.GlobalDiplomacy;
-import fr.AleksGirardey.Objects.Database.GlobalPlayer;
 import fr.AleksGirardey.Objects.Database.Statement;
-import fr.AleksGirardey.Objects.Utilitaires.Pair;
-import it.unimi.dsi.fastutil.booleans.BooleanLists;
 import org.slf4j.Logger;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.block.InteractBlockEvent;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -60,14 +55,15 @@ public class CityHandler {
         return null;
     }
 
-    public City             add(DBPlayer player, String displayName) {
+    public City             add(DBPlayer player, String displayName, Faction faction) {
         City                newOne = new City(
                 displayName,
                 player,
-                Core.getPermissionHandler().add(false, false, true),
+                faction,
                 Core.getPermissionHandler().add(true, true, true),
                 Core.getPermissionHandler().add(false, false, true),
-                Core.getPermissionHandler().add(false, false, false));
+                Core.getPermissionHandler().add(false, false, false),
+                Core.getPermissionHandler().add(false, false, true));
 
         cities.put(newOne.getId(), newOne);
         return newOne;
@@ -105,76 +101,8 @@ public class CityHandler {
         return res;
     }
 
-    public List<Diplomacy>          getDiplomacy(City city, boolean relation) {
-        List<Diplomacy>             res = new ArrayList<>(),
-                diplo = Core.getDiplomacyHandler().get(city);
-
-        for (Diplomacy diplomacy : diplo)
-            if (diplomacy.getRelation() == relation)
-                res.add(diplomacy);
-        return res;
-    }
-
-    public boolean              areAllies(City owner, City player) {
-        List<Diplomacy>         A = this.getDiplomacy(owner, true),
-                B = this.getDiplomacy(player, true);
-
-        for (Diplomacy diplo : A)
-            if (diplo.getSub() == player)
-                return true;
-
-        for (Diplomacy diplo : B)
-            if (diplo.getSub() == owner)
-                return true;
-        return false;
-    }
-
-    public boolean              areEnemies(City owner, City player) {
-        List<Diplomacy>         A = this.getDiplomacy(owner, false),
-                B = this.getDiplomacy(player, false);
-
-        for (Diplomacy diplo : A)
-            if (diplo.getSub() == player)
-                return true;
-
-        for (Diplomacy diplo : B)
-            if (diplo.getSub() == owner)
-                return true;
-        return false;
-    }
-
-    public boolean  exists(City owner, City player) {
-        List<Diplomacy>         list = new ArrayList<>();
-
-        list.addAll(Core.getDiplomacyHandler().get(owner));
-        list.addAll(Core.getDiplomacyHandler().get(player));
-
-        for (Diplomacy d : list)
-            if ((d.getMain() == owner && d.getSub() == player)
-                    || (d.getMain() == player && d.getSub() == owner))
-                return (true);
-        return false;
-    }
-
-    /*
-    ** TRUE => Allies
-    ** FALSE => Enemies
-    */
-
-    public void         setNeutral(City owner, City player) {
-        List<Diplomacy>         list = new ArrayList<>();
-
-        list.addAll(Core.getDiplomacyHandler().get(owner));
-        list.addAll(Core.getDiplomacyHandler().get(player));
-
-        for (Diplomacy d : list)
-            if ((d.getMain() == owner && d.getSub() == player)
-                    || (d.getMain() == player && d.getSub() == owner && d.getRelation()))
-                Core.getDiplomacyHandler().delete(d);
-    }
-
     public boolean      isLimitReached(City city) {
-        return Core.getInfoCityMap().get(city).getRank().getCitizensMax() >= city.getCitizens().size();
+        return Core.getInfoCityMap().get(city).getCityRank().getCitizensMax() >= city.getCitizens().size();
     }
 
     public void         newCitizen(DBPlayer player, City city) {
@@ -202,24 +130,6 @@ public class CityHandler {
         Collection<DBPlayer>    players = city.getCitizens();
 
         return players.stream().filter(p -> p.getUser().isOnline()).map(p -> p.getUser().getPlayer().get()).collect(Collectors.toList());
-    }
-
-    public List<String>     getEnemiesName(City city) {
-        List<String>        list = new ArrayList<>();
-        List<City>          cities = Core.getDiplomacyHandler().getEnemies(city);
-
-        list.addAll(cities.stream().map(City::getDisplayName).collect(Collectors.toList()));
-
-        return list;
-    }
-
-    public List<String>     getAlliesName(City city) {
-        List<String>        list = new ArrayList<>();
-        List<City>          cities = Core.getDiplomacyHandler().getAllies(city);
-
-        list.addAll(cities.stream().map(City::getDisplayName).collect(Collectors.toList()));
-
-        return list;
     }
 
     public Map<City, InfoCity>   getCityMap() {

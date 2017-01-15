@@ -39,11 +39,11 @@ public class OnPlayerMove {
             if (C == null)
                 player.sendMessage(Text.of("~~ Wilderness ~~"));
             else if (C.getCity() != lastC.getCity())
-                player.sendMessage(Text.of("~~ " + Core.getInfoCityMap().get(C.getCity()).getRank().getName()
+                player.sendMessage(Text.of("~~ " + Core.getInfoCityMap().get(C.getCity()).getCityRank().getName()
                         + " " + C.getCity().getDisplayName() + " ~~"));
         } else {
             if (C != null)
-                player.sendMessage(Text.of("~~ " + Core.getInfoCityMap().get(C.getCity()).getRank().getName()
+                player.sendMessage(Text.of("~~ " + Core.getInfoCityMap().get(C.getCity()).getCityRank().getName()
                         + " " + C.getCity().getDisplayName() + " ~~"));
         }
     }

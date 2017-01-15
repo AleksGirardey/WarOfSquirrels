@@ -2,9 +2,11 @@ package fr.AleksGirardey.Objects.DBObject;
 
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.Database.GlobalCity;
+import fr.AleksGirardey.Objects.Database.GlobalFaction;
 import fr.AleksGirardey.Objects.Database.GlobalPlayer;
 import fr.AleksGirardey.Objects.Database.Statement;
 
+import javax.xml.ws.FaultAction;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class City extends DBObject {
             + "`, `" + GlobalCity.permRes
             + "`, `" + GlobalCity.permAllies
             + "`, `" + GlobalCity.permOutside
+            + "`, `" + GlobalCity.faction
             + "`, `" + GlobalCity.account + "`";
 
     /* DB Fields */
@@ -30,35 +33,41 @@ public class City extends DBObject {
     private String      tag;
     private int         rank;
     private DBPlayer    owner;
+    private Faction     faction;
     private Permission  permRec;
     private Permission  permRes;
     private Permission  permAllies;
     private Permission  permOutside;
+    private Permission  permFaction;
     private int         balance;
 
     /* Extra Fields */
     private Map<String, DBPlayer>   citizens = new HashMap<>();
 
     public City(String _displayName, DBPlayer _owner, Permission _rec,
-                Permission _res, Permission _allies, Permission _outside) {
+                Permission _res, Permission _allies, Permission _outside, Permission _pFaction) {
         super(GlobalCity.id, GlobalCity.tableName, _fields);
 
         displayName = _displayName;
         tag = (displayName.length() <= 5 ? displayName : displayName.substring(0, 5));
         rank = 0;
         owner = _owner;
+        faction = _faction;
         permRec = _rec;
         permRes = _res;
         permAllies = _allies;
         permOutside = _outside;
+        permFaction = _pFaction;
         balance = 0;
         this.add("'" + displayName + "', '"
                 + tag + "', '0', '"
                 + owner.getUser().getUniqueId().toString() + "', '"
+                + faction.getId() + "', '"
                 + permRec.getId() + "', '"
                 + permRes.getId() + "', '"
                 + permAllies.getId() + "', '"
-                + permOutside.getId()+ "', "
+                + permOutside.getId()+ "', '"
+                + permFaction.getId() + "', "
                 + balance);
         writeLog();
     }
@@ -70,6 +79,7 @@ public class City extends DBObject {
         displayName = rs.getString(GlobalCity.displayName);
         tag = rs.getString(GlobalCity.tag);
         rank = rs.getInt(GlobalCity.rank);
+        faction = Core.getFactionHandler().get(rs.getInt(GlobalFaction.id));
         owner = Core.getPlayerHandler().get(rs.getString(GlobalCity.playerOwner));
         permRec = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permRec));
         permRes = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permRes));
@@ -106,10 +116,12 @@ public class City extends DBObject {
                 + "," + displayName
                 + "," + tag
                 + "," + rank
+                + "," + faction
                 + "," + permRec
                 + "," + permRes
                 + "," + permAllies
                 + "," + permOutside
+                + "," + permFaction
                 + "," + balance);
     }
 
@@ -131,6 +143,11 @@ public class City extends DBObject {
     public void setOwner(DBPlayer owner) {
         this.owner = owner;
         this.edit(GlobalCity.playerOwner, "'" + owner.getUser().getUniqueId().toString() + "'");
+    }
+
+    public void setFaction(Faction faction) {
+        this.faction = faction;
+        this.edit(GlobalCity.faction, "'" + faction.getId() + "'");
     }
 
     public void setPermRec(Permission permRec) {
@@ -162,31 +179,46 @@ public class City extends DBObject {
             this.edit(GlobalCity.permOutside, "NULL");
     }
 
+    public void setPermFaction(Permission permFaction) {
+        this.permFaction = permFaction;
+        this.edit(GlobalCity.permFaction, permFaction == null ? "NULL" : ("'" + permFaction.getId() + "'"));
+    }
+
     public int          getId() {
         return      Integer.parseInt(_primaryKeyValue);
     }
+
     public String       getDisplayName() {
         return displayName;
     }
+
     public String       getTag() {
         return tag;
     }
+
     public int          getRank() {
         return rank;
     }
+
     public DBPlayer     getOwner() {
         return owner;
     }
+
+    public Faction      getFaction() { return faction; }
+
     public Permission   getPermRec() { return permRec; }
     public Permission   getPermRes() {
         return permRes;
     }
+
     public Permission   getPermAllies() {
         return permAllies;
     }
     public Permission   getPermOutside() {
         return permOutside;
     }
+
+    public Permission   getPermFaction() { return permFaction; }
 
     public Collection<DBPlayer> getRecruits() { return citizens.values().stream().filter(DBPlayer::isResident).collect(Collectors.toCollection(ArrayList::new)); }
     public Collection<DBPlayer> getResidents() { return citizens.values().stream().filter(r -> (!r.isAssistant() && !r.getCity().getOwner().equals(r) && r.isResident())).collect(Collectors.toCollection(ArrayList::new));}

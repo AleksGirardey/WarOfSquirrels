@@ -24,15 +24,19 @@ CREATE TABLE IF NOT EXISTS `City` (
   `city_rank` INT NOT NULL DEFAULT 0,
   `city_account` INT DEFAULT 0 NOT NULL,
   `city_playerOwner` CHAR(36) NOT NULL,
+  `city_faction` INT,
   `city_permissionRecruit` INT,
   `city_permissionResident` INT,
   `city_permissionAllies` INT,
   `city_permissionOutside` INT,
+  `city_permissionFaction` INT,
   PRIMARY KEY (`city_id`),
+  FOREIGN KEY (`city_faction`) REFERENCES `Faction`(`faction_id`),
   FOREIGN KEY (`city_permissionRecruit`) REFERENCES `Permission`(`permission_id`),
   FOREIGN KEY (`city_permissionResident`) REFERENCES `Permission`(`permission_id`),
   FOREIGN KEY (`city_permissionAllies`) REFERENCES `Permission`(`permission_id`),
-  FOREIGN KEY (`city_permissionOutside`) REFERENCES `Permission`(`permission_id`));
+  FOREIGN KEY (`city_permissionOutside`) REFERENCES `Permission`(`permission_id`),
+  FOREIGN KEY (`city_permissionFaction`) REFERENCES `Permission`(`permission_id`));
 
 CREATE TABLE IF NOT EXISTS `Chunk` (
   `chunk_id` INT AUTO_INCREMENT,
@@ -49,17 +53,15 @@ CREATE TABLE IF NOT EXISTS `Chunk` (
 
 CREATE TABLE IF NOT EXISTS `Diplomacy` (
   `diplomacy_id` INT AUTO_INCREMENT,
-  `diplomacy_mainCityId` INT,
-  `diplomacy_subCityId` INT,
+  `diplomacy_faction` INT,
+  `diplomacy_target` INT,
   `diplomacy_relation` BOOLEAN,
-  `diplomacy_permissionMain` INT,
-  `diplomacy_permissionSub` INT,
+  `diplomacy_permission` INT,
   PRIMARY KEY (`diplomacy_id`),
-  FOREIGN KEY (`diplomacy_mainCityId`) REFERENCES `City`(`city_id`),
-  FOREIGN KEY (`diplomacy_subCityId`) REFERENCES `City`(`city_id`),
-  FOREIGN KEY (`diplomacy_permissionMain`) REFERENCES `Permission` (`permission_id`),
-  FOREIGN KEY (`diplomacy_permissionSub`) REFERENCES `Permission` (`permission_id`),
-  UNIQUE KEY (`diplomacy_mainCityId`, `diplomacy_subCityId`));
+  FOREIGN KEY (`diplomacy_faction`) REFERENCES `Faction`(`faction_id`),
+  FOREIGN KEY (`diplomacy_target`) REFERENCES `Faction`(`faction_id`),
+  FOREIGN KEY (`diplomacy_permission`) REFERENCES `Permission` (`permission_id`),
+  UNIQUE KEY (`diplomacy_faction`, `diplomacy_target`));
 
 CREATE TABLE IF NOT EXISTS `Cubo` (
     `cubo_id` INT AUTO_INCREMENT,
@@ -110,12 +112,21 @@ CREATE TABLE IF NOT EXISTS `Shop` (
   PRIMARY KEY (`shop_id`),
   FOREIGN KEY (`shop_player`) REFERENCES `Player`(`player_uuid`));
 
+CREATE TABLE IF NOT EXISTS `Faction` (
+  `faction_id` INT AUTO_INCREMENT,
+  `faction_displayName` CHAR(36) NOT NULL,
+  `faction_capital` INT,
+  PRIMARY KEY (`faction_id`),
+  FOREIGN KEY (`faction_capital`) REFERENCES `City`(`city_id`)
+);
+
 ALTER TABLE `Player`
 ADD FOREIGN KEY (`player_cityId`)
 REFERENCES `City`(`city_id`)
   ON DELETE SET NULL;
 
-ALTER TABLE `City`
-ADD #CONSTRAINT `fk_playerOwner`
-FOREIGN KEY (`city_playerOwner`)
-REFERENCES `Player`(`player_uuid`);
+ALTER TABLE `City` ADD
+  FOREIGN KEY (`city_playerOwner`) REFERENCES `Player`(`player_uuid`);
+
+ALTER TABLE `City` ADD
+  FOREIGN KEY (`city_faction`) REFERENCES `Faction`(`faction_id`);

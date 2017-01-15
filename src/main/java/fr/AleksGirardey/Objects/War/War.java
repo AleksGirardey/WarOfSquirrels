@@ -1,6 +1,6 @@
 package fr.AleksGirardey.Objects.War;
 
-import fr.AleksGirardey.Objects.City.Rank;
+import fr.AleksGirardey.Objects.City.CityRank;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.City;
@@ -13,7 +13,6 @@ import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.BlockChangeFlag;
 
@@ -143,8 +142,8 @@ public class War {
     }
 
     private int          addAttackerCapturePoints() {
-        Rank            rank = Core.getInfoCityMap().get(this._cityDefender).getRank();
-        int             max = rank.getChunkMax();
+        CityRank cityRank = Core.getInfoCityMap().get(this._cityDefender).getCityRank();
+        int             max = cityRank.getChunkMax();
         int             used = Core.getChunkHandler().get(this._cityDefender).size();
         int             resultat = Math.round( max <= 15 ? 1000 / used : 67 * (max / used));
 
@@ -310,7 +309,7 @@ public class War {
     }
 
     private void        capture() {
-        int             chunkMax = Core.getInfoCityMap().get(_cityDefender).getRank().getChunkMax();
+        int             chunkMax = Core.getInfoCityMap().get(_cityDefender).getCityRank().getChunkMax();
         float           t = (chunkMax <= 15.0f ? 900.0f/chunkMax : 60f);
 
         this._vitesseCapture = (100.0f / (_attackers.size() * t));

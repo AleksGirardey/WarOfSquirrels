@@ -5,7 +5,9 @@ import fr.AleksGirardey.Handlers.*;
 import fr.AleksGirardey.Main;
 import fr.AleksGirardey.Objects.City.InfoCity;
 import fr.AleksGirardey.Objects.DBObject.City;
+import fr.AleksGirardey.Objects.DBObject.Faction;
 import fr.AleksGirardey.Objects.DBObject.Shop;
+import fr.AleksGirardey.Objects.Faction.InfoFaction;
 import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -37,7 +39,10 @@ public class Core {
     private static CuboHandler              cuboHandler;
     private static DiplomacyHandler         diplomacyHandler;
     private static ShopHandler              shopHandler;
-    private static Map<City, InfoCity>      infoCityMap;
+    private static FactionHandler           factionHandler;
+
+    private static Map<City, InfoCity>          infoCityMap;
+    private static Map<Faction, InfoFaction>    infoFactionMap;
 
     public static void          initCore(
             Logger logger,
@@ -66,18 +71,22 @@ public class Core {
         cuboHandler = new CuboHandler(logger);
         diplomacyHandler = new DiplomacyHandler(logger);
         shopHandler = new ShopHandler(logger);
+        factionHandler = new FactionHandler(logger);
 
         logger.info("Updating dependencies..");
         permissionHandler.populate();
         playerHandler.populate();
+        factionHandler.populate();
         cityHandler.populate();
         chunkHandler.populate();
         cuboHandler.populate();
         diplomacyHandler.populate();
         shopHandler.populate();
+        factionHandler.updateDependencies();
         playerHandler.updateDependencies();
         cuboHandler.updateDependencies();
         infoCityMap = getCityHandler().getCityMap();
+        infoFactionMap = getFactionHandler().getFactionMap();
         logger.info("Done.");
     }
 
@@ -135,8 +144,6 @@ public class Core {
         plugin.getServer().getBroadcastChannel().send(text);
     }
 
-    public static Map<City, InfoCity>   getInfoCityMap() { return infoCityMap; }
-
     public static ConfigLoader          getConfig() { return _config; }
 
     public static CuboHandler           getCuboHandler() { return cuboHandler; }
@@ -144,4 +151,10 @@ public class Core {
     public static DiplomacyHandler      getDiplomacyHandler() { return diplomacyHandler; }
 
     public static ShopHandler           getShopHandler() { return shopHandler; }
+
+    public static FactionHandler        getFactionHandler() { return factionHandler; }
+
+    public static Map<City, InfoCity>           getInfoCityMap() { return infoCityMap; }
+
+    public static Map<Faction, InfoFaction>     getInfoFactionMap() { return infoFactionMap; }
 }
