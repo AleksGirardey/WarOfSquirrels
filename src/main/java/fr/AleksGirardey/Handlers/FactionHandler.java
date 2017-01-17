@@ -12,10 +12,7 @@ import fr.AleksGirardey.Objects.Faction.InfoFaction;
 import org.slf4j.Logger;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -59,9 +56,11 @@ public class                        FactionHandler {
         return faction;
     }
 
-    public void         delete(Faction faction) {
+    public void             delete(Faction faction) {
+        Collection<City>    cities = faction.getCities().values();
         factions.remove(faction.getId());
-        faction.getCities().values().forEach(c -> c.setFaction(null));
+        faction.setCapital(null);
+        cities.forEach(c -> Core.getCityHandler().delete(c));
         faction.delete();
     }
 

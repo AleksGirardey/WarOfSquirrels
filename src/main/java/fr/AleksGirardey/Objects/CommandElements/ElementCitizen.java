@@ -29,7 +29,7 @@ public class ElementCitizen extends CommandElement {
             if (player.getCity() != null && Core.getCityHandler()
                     .getCitizensList(player.getCity())
                     .contains(name))
-                return player;
+                return Core.getPlayerHandler().getFromName(name);
         }
         throw commandArgs.createError(Text.of(name + " is not a valid citizen"));
     }

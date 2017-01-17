@@ -6,6 +6,7 @@ import fr.AleksGirardey.Objects.City.InfoCity;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.DBObject.Faction;
+import fr.AleksGirardey.Objects.DBObject.Permission;
 import fr.AleksGirardey.Objects.Database.GlobalCity;
 import fr.AleksGirardey.Objects.Database.Statement;
 import org.slf4j.Logger;
@@ -71,6 +72,32 @@ public class CityHandler {
     }
 
     public void                         delete(City city){
+        PermissionHandler               ph = Core.getPermissionHandler();
+        Permission                      perm;
+
+        perm = city.getPermRes();
+        city.setPermRes(null);
+        ph.delete(perm);
+        perm = city.getPermAllies();
+        city.setPermAllies(null);
+        ph.delete(perm);
+        perm = city.getPermOutside();
+        city.setPermOutside(null);
+        ph.delete(perm);
+        perm = city.getPermRec();
+        city.setPermRec(null);
+        ph.delete(perm);
+        perm = city.getPermFaction();
+        city.setPermFaction(null);
+        ph.delete(perm);
+        city.setFaction(null);
+        Core.getChunkHandler().deleteCity(city);
+        Core.getCuboHandler().deleteCity(city);
+        for (DBPlayer p : city.getCitizens()) {
+            if (p.isAssistant())
+                p.setAssistant(false);
+            p.setCity(null);
+        }
         cities.remove(city.getId());
         city.getOwner().setCity(null);
         Core.getInfoCityMap().remove(city);

@@ -153,7 +153,7 @@ public class City extends DBObject {
 
     public void setFaction(Faction faction) {
         this.faction = faction;
-        this.edit(GlobalCity.faction, "'" + faction.getId() + "'");
+        this.edit(GlobalCity.faction, (faction == null ? "NULL" : "'" + faction.getId() + "'"));
     }
 
     public void setPermRec(Permission permRec) {

@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Commands.City.Set;
 
 import fr.AleksGirardey.Commands.City.CityCommandAssistant;
+import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
@@ -21,10 +22,19 @@ public class                    setResident extends CityCommandAssistant {
     protected boolean SpecialCheck(DBPlayer player, CommandContext context) {
         DBPlayer            newCitizen = context.<DBPlayer>getOne("[citizen]").orElse(null);
 
-        if (newCitizen != null && newCitizen.getCity() == player.getCity() && player.getCity().getOwner() != newCitizen)
+        if (newCitizen == null) {
+            Core.getLogger().info("[DEBUG] NOT NULL");
+            return false;
+        } else if (newCitizen.getCity() != player.getCity()) {
+            Core.getLogger().info("[DEBUG] Not in the city");
+            return false;
+        } else if (player.getCity().getOwner() == newCitizen) {
+            Core.getLogger().info("[DEBUG] Mayor : " + player.getCity().getOwner().getDisplayName() + " !!!");
+            return false;
+        } else
             return true;
 
-        player.sendMessage(Text.of(TextColors.RED, newCitizen + " is not a valid citizen.", TextColors.RESET));
-        return false;
+//        player.sendMessage(Text.of(TextColors.RED, newCitizen + " is not a valid citizen.", TextColors.RESET));
+//        return false;
     }
 }

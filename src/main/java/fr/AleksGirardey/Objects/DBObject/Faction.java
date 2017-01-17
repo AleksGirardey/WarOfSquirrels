@@ -86,7 +86,7 @@ public class Faction extends DBObject {
 
     public void                 setCapital(City capital) {
         this.capital = capital;
-        this.edit(GlobalFaction.capital, "" + capital.getId());
+        this.edit(GlobalFaction.capital, (capital == null ? "NULL" : "" + capital.getId()));
     }
 
     public Map<String, City>    getCities() { return cities; }

@@ -349,7 +349,7 @@ public class Main {
                 .child(faction_help, "help", "?")
                 .child(faction_info, "info", "i")
                 .child(faction_create, "create", "c")
-                .child(faction_delete)
+                .child(faction_delete, "delete", "d")
                 .child(faction_set, "set", "s")
                 .executor(new FactionInfo())
                 .arguments(

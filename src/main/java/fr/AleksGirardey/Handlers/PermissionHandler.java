@@ -123,12 +123,9 @@ public class PermissionHandler {
     public String           toString(City city) {
         String              res = "";
 
-        res += "R ";
-        res += (city.getPermRes().toString());
-        res += " | A ";
-        res += (city.getPermAllies().toString());
-        res += " | O ";
-        res += (city.getPermOutside().toString());
+        res += "R " + (city.getPermRes().toString());
+        res += " | A " + (city.getPermAllies().toString());
+        res += " | O " + (city.getPermOutside().toString());
 
         return res;
     }
