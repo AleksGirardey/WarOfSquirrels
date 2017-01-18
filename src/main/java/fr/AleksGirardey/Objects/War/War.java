@@ -1,6 +1,6 @@
 package fr.AleksGirardey.Objects.War;
 
-import fr.AleksGirardey.Objects.City.Rank;
+import fr.AleksGirardey.Objects.City.CityRank;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.City;
@@ -13,10 +13,10 @@ import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.BlockChangeFlag;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,6 +119,13 @@ public class War {
         rb.getNode("y").setValue(block.getPosition().getY());
         rb.getNode("z").setValue(block.getPosition().getZ());
         rb.getNode("type").setValue(block.getState().getType().toString());
+
+        try {
+            Core.getWarHandler().getManager().save(_node);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         _rollbackBlocks.add(transaction);
         Core.getLogger().info("[Rollback][" + size + "->" + _rollbackBlocks.size() + "] "
                 + transaction.getOriginal().getState().getType().toString()
@@ -143,8 +150,8 @@ public class War {
     }
 
     private int          addAttackerCapturePoints() {
-        Rank            rank = Core.getInfoCityMap().get(this._cityDefender).getRank();
-        int             max = rank.getChunkMax();
+        CityRank cityRank = Core.getInfoCityMap().get(this._cityDefender).getCityRank();
+        int             max = cityRank.getChunkMax();
         int             used = Core.getChunkHandler().get(this._cityDefender).size();
         int             resultat = Math.round( max <= 15 ? 1000 / used : 67 * (max / used));
 
@@ -188,7 +195,7 @@ public class War {
             this.rollback();
             Core.getWarHandler().delete(this, _node);
         })
-                .delay(ConfigLoader.rollbackPhase, TimeUnit.SECONDS)
+                .delay(Core.getConfig().getRollbackPhase(), TimeUnit.SECONDS)
                 .submit(Core.getMain());
     }
 
@@ -228,11 +235,11 @@ public class War {
 
         delta = time - _timeStart;
         if (_state == WarState.Preparation)
-            timeLeft = (long) ((ConfigLoader.preparationPhase) * 1000.0);
+            timeLeft = (long) ((Core.getConfig().getPreparationPhase()) * 1000.0);
         else if (_state == WarState.War)
             timeLeft = (long) ((30.0 * 60.0) * 1000.0);
         else
-            timeLeft = (long) (ConfigLoader.rollbackPhase * 1000.0);
+            timeLeft = (long) (Core.getConfig().getRollbackPhase() * 1000.0);
         timeLeft = timeLeft - delta;
         elapsedSeconds = timeLeft / 1000.0;
         minutes = (int) (elapsedSeconds / 60);
@@ -310,7 +317,7 @@ public class War {
     }
 
     private void        capture() {
-        int             chunkMax = Core.getInfoCityMap().get(_cityDefender).getRank().getChunkMax();
+        int             chunkMax = Core.getInfoCityMap().get(_cityDefender).getCityRank().getChunkMax();
         float           t = (chunkMax <= 15.0f ? 900.0f/chunkMax : 60f);
 
         this._vitesseCapture = (100.0f / (_attackers.size() * t));

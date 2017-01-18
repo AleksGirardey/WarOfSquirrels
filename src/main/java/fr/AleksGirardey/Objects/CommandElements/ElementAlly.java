@@ -3,6 +3,7 @@ package fr.AleksGirardey.Objects.CommandElements;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.DBObject.Faction;
 import fr.AleksGirardey.Objects.Database.GlobalPlayer;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
@@ -26,17 +27,18 @@ public class ElementAlly extends CommandElement{
     protected Object parseValue(CommandSource commandSource, CommandArgs commandArgs) throws ArgumentParseException {
         if (!(commandSource instanceof Player))
             throw commandArgs.createError(Text.of("Only a player can perform this command."));
+
         DBPlayer    player = Core.getPlayerHandler().get((Player) commandSource);
-        City        city = player.getCity();
 
-        if (city != null) {
-            List<City>      allies = Core.getDiplomacyHandler().getAllies(city);
-            City            c = Core.getCityHandler().get(commandArgs.next());
+        if (player.getCity() != null) {
+            Faction         faction = player.getCity().getFaction();
+            List<Faction>   allies = Core.getDiplomacyHandler().getAllies(faction);
+            Faction         f = Core.getFactionHandler().get(commandArgs.next());
 
-            if (c != null && allies.contains(c))
-                return c.getId();
+            if (f != null && allies.contains(f))
+                return f;
         }
-        throw commandArgs.createError(Text.of(" is not a valid city"));
+        throw commandArgs.createError(Text.of(" is not a valid faction"));
     }
 
     @Override
@@ -44,10 +46,12 @@ public class ElementAlly extends CommandElement{
         if (!(commandSource instanceof Player))
             return Collections.emptyList();
         DBPlayer    player = Core.getPlayerHandler().get((Player) commandSource);
-        City        city = player.getCity();
 
-        if (city != null)
-            return Core.getCityHandler().getAlliesName(city);
+        if (player.getCity() != null) {
+            Faction     faction = player.getCity().getFaction();
+
+            return Core.getFactionHandler().getAlliesName(faction);
+        }
         return Collections.emptyList();
     }
 }

@@ -8,6 +8,7 @@
     </JAVADOC>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/org/spongepowered/spongeapi/5.1.0-SNAPSHOT/spongeapi-5.1.0-20161223.142910-9-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/spongepowered/spongeapi/5.1.0-SNAPSHOT/spongeapi-5.1.0-20161223.142910-9.jar!/" />
     </SOURCES>
   </library>
 </component>

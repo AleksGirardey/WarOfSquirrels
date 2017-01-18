@@ -5,6 +5,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 public class CityCommandHelp extends CityCommand {
     @Override
@@ -19,12 +20,13 @@ public class CityCommandHelp extends CityCommand {
 
     @Override
     protected CommandResult ExecCommand(DBPlayer player, CommandContext context) {
-        player.sendMessage(Text.of("--==| City help |==--"));
-        player.sendMessage(Text.of("/city create <name>"));
-        player.sendMessage(Text.of("/city info [name]"));
-        player.sendMessage(Text.of("/city claim"));
-        player.sendMessage(Text.of("/city unclaim"));
-        player.sendMessage(Text.of("/city set ..."));
+        player.sendMessage(Text.of(TextColors.GREEN,
+                "--==| City help |==--\n" +
+                "/city create [name]\n" +
+                "/city info <name>\n" +
+                "/city claim\n" +
+                "/city unclaim\n" +
+                "/city set ..."));
         return CommandResult.success();
     }
 }

@@ -3,6 +3,7 @@ package fr.AleksGirardey.Objects.CommandElements;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.DBObject.Faction;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;
@@ -26,14 +27,14 @@ public class ElementEnemy extends CommandElement {
         if (!(commandSource instanceof Player))
             throw commandArgs.createError(Text.of("Only a player can perform this command."));
         DBPlayer    player = Core.getPlayerHandler().get((Player) commandSource);
-        City        city = player.getCity();
 
-        if (city != null) {
-            List<City>      enemies = Core.getDiplomacyHandler().getEnemies(city);
-            City            c = Core.getCityHandler().get(commandArgs.next());
+        if (player.getCity() != null) {
+            Faction         faction = player.getCity().getFaction();
+            List<Faction>   enemies = Core.getDiplomacyHandler().getEnemies(faction);
+            Faction         f = Core.getFactionHandler().get(commandArgs.next());
 
-            if (c != null && enemies.contains(c))
-                return c.getId();
+            if (f != null && enemies.contains(f))
+                return f;
         }
         throw commandArgs.createError(Text.of(" is not a valid"));
     }
@@ -43,10 +44,9 @@ public class ElementEnemy extends CommandElement {
         if (!(commandSource instanceof Player))
             return Collections.emptyList();
         DBPlayer    player = Core.getPlayerHandler().get((Player) commandSource);
-        City        city = player.getCity();
 
-        if (city != null)
-            return Core.getCityHandler().getEnemiesName(city);
+        if (player.getCity() != null)
+            return Core.getFactionHandler().getEnemiesName(player.getCity().getFaction());
         return Collections.emptyList();
     }
 }

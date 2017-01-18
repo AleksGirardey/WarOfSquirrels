@@ -67,7 +67,6 @@ public class PermissionHandler {
 
         // Situer le joueur par rapport au chunk (résident, allié, outside)
         if (player.getCity() != null) {
-            Core.Send("City is " + player.getCity().getDisplayName());
             /*
             ** Le joueur possède une ville, il faut maintenant savoir si il interagit avec
             ** sa ville ou non.
@@ -80,6 +79,8 @@ public class PermissionHandler {
                 if (player.isAssistant() || player.getCity().getOwner() == player)
                     return true;
                 else {
+                    permission = (player.isResident() ? player.getCity().getPermRes() : player.getCity().getPermRec());
+
                     /*
                     ** Le joueur n'a aucun rang qui outre-passe les droits d'un eventuel
                     ** cubo, on verifie donc si le block appartient à un cubo
@@ -94,15 +95,14 @@ public class PermissionHandler {
                             permission = cubo.getPermissionIn();
                         else
                             permission = cubo.getPermissionOut();
-                    } else
-                        permission = player.getCity().getPermRes();
+                    }
                 }
             } else {
                 /*
                 ** Le joueur n'appartient pas à la ville il faut donc verifié si il est
                 ** allié ou enemi
                 */
-                if (Core.getDiplomacyHandler().getAllies(chunk.getCity()).contains(player.getCity())) {
+                if (Core.getDiplomacyHandler().getAllies(chunk.getCity().getFaction()).contains(player.getCity().getFaction())) {
                     /* Ally */
                     permission = chunk.getCity().getPermAllies();
                 } else {
@@ -123,13 +123,9 @@ public class PermissionHandler {
     public String           toString(City city) {
         String              res = "";
 
-        res += "R [";
-        res += (city.getPermRes().toString());
-        res += "] | A [";
-        res += (city.getPermAllies().toString());
-        res += "] | O [";
-        res += (city.getPermOutside().toString());
-        res += "]";
+        res += "R " + (city.getPermRes().toString());
+        res += " | A " + (city.getPermAllies().toString());
+        res += " | O " + (city.getPermOutside().toString());
 
         return res;
     }

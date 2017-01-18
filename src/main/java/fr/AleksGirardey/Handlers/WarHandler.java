@@ -32,30 +32,17 @@ public class WarHandler {
 
     private List<War> wars = new ArrayList<>();
 
-    private static ConfigurationNode                                rootNode;
-    private static ConfigurationLoader<CommentedConfigurationNode>  manager;
+    private ConfigurationNode                                rootNode;
+    private ConfigurationLoader<CommentedConfigurationNode>  manager;
 
     public      WarHandler(ConfigurationLoader<CommentedConfigurationNode>  configManager) {
-        Path    configPath = FileSystems.getDefault().getPath("WarOfSquirrels/config", "WOS.rollbacks");
-
+        manager = configManager;
         try {
-            if (!configPath.toFile().exists()) {
-                File    conf = configPath.toFile();
-                if (!conf.createNewFile())
-                    Core.getLogger().error("Can't create WOS.rollbacks");
-                ConfigurationLoader<CommentedConfigurationNode>     defaultManager = HoconConfigurationLoader
-                        .builder()
-                        .setURL(getClass().getClassLoader().getResource("config/WOS.rollbacks"))
-                        .build();
-
-                rootNode = defaultManager.load();
-                manager = HoconConfigurationLoader.builder().setPath(configPath).build();
-                manager.save(rootNode);
-            } else
-                manager = configManager;
             rootNode = manager.load();
-
-            rootNode.getChildrenList().forEach(this::rollback);
+            if (rootNode.hasListChildren())
+                rootNode.getChildrenList().forEach(this::rollback);
+            rootNode = manager.createEmptyNode();
+            manager.save(rootNode);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,7 +65,7 @@ public class WarHandler {
     }
 
     public boolean  createWar(City attacker, City defender, PartyWar party) {
-        if (Core.getCityHandler().areEnemies(attacker, defender)) {
+        if (Core.getFactionHandler().areEnemies(attacker.getFaction(), defender.getFaction())) {
             int     defenders = Core.getCityHandler().getOnlinePlayers(defender).size();
 
             if (Contains(attacker) || Contains(defender)) {
@@ -164,7 +151,7 @@ public class WarHandler {
     }
 
     public void     displayList(DBPlayer player) {
-        if (ConfigLoader.peaceTime) {
+        if (Core.getConfig().isPeaceTime()) {
             player.sendMessage(Text.of("---=== Peace is ON ===---"));
             return;
         }
@@ -194,4 +181,6 @@ public class WarHandler {
 
         return c != null && getWar(c.getCity()).getDefender() == c.getCity();
     }
+
+    public ConfigurationLoader<CommentedConfigurationNode>      getManager() { return manager; }
 }

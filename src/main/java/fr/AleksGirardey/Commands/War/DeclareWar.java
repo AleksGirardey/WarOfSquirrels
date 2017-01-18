@@ -4,6 +4,7 @@ import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.DBObject.Faction;
 import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.War.PartyWar;
 import org.spongepowered.api.command.CommandResult;
@@ -22,16 +23,17 @@ public class                    DeclareWar extends CityCommandAssistant {
         }
 
         for (DBPlayer p : party.toList()) {
-            if (p.getCity() != party.getLeader().getCity() && (!Core.getCityHandler().areEnemies(p.getCity(), Core.getCityHandler().get(context.<Integer>getOne("[enemy]").get()))
-                    || !Core.getCityHandler().areAllies(p.getCity(), party.getLeader().getCity()))) {
+            if (p.getCity() != party.getLeader().getCity()
+                    && (!Core.getFactionHandler().areEnemies(p.getCity().getFaction(), context.<Faction>getOne("[enemy]").get()))
+                    || !Core.getFactionHandler().areAllies(p.getCity().getFaction(), party.getLeader().getCity().getFaction())) {
                 player.sendMessage(Text.of("Your party member '" + p.getDisplayName() + "' can't participate to this war."));
                 return false;
             }
         }
 
-        if (ConfigLoader.peaceTime)
+        if (Core.getConfig().isPeaceTime())
             player.sendMessage(Text.of(TextColors.DARK_RED, "You cannot declare war in time of peace !!", TextColors.RESET));
-        return (!ConfigLoader.peaceTime);
+        return (!Core.getConfig().isPeaceTime());
     }
 
     @Override

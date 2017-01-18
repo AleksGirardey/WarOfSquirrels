@@ -11,7 +11,7 @@ import org.spongepowered.api.entity.living.player.Player;
 
 public abstract class                   CityCommand implements CommandExecutor {
 
-    protected boolean                   CanDoIt(DBPlayer player) { return player != null; }
+    protected boolean                   CanDoIt(DBPlayer player) { return player != null && player.getCity() != null; }
 
     protected abstract boolean          SpecialCheck(DBPlayer player, CommandContext context);
 

@@ -15,8 +15,10 @@ public class                    WarJoin extends CityCommand {
         War                     war = context.<War>getOne("[ally]").get();
         City                    city = player.getCity();
 
-        return Core.getCityHandler().areAllies(war.getAttacker(), city)
-                || Core.getCityHandler().areAllies(war.getDefender(), city)
+        return Core.getFactionHandler().areAllies(war.getAttacker().getFaction(), city.getFaction())
+                || Core.getFactionHandler().areAllies(war.getDefender().getFaction(), city.getFaction())
+                || war.getAttacker().getFaction() == city.getFaction()
+                || war.getDefender().getFaction() == city.getFaction()
                 || war.getAttacker() == city
                 || war.getDefender() == city;
     }
@@ -26,11 +28,11 @@ public class                    WarJoin extends CityCommand {
         City                    city = player.getCity();
         War                     war = context.<War>getOne("[ally]").get();
 
-        if (Core.getCityHandler().areAllies(war.getAttacker(), city)
-                || city == war.getAttacker())
+        if (Core.getFactionHandler().areAllies(war.getAttacker().getFaction(), city.getFaction())
+                || city == war.getAttacker() || city.getFaction() == war.getAttacker().getFaction())
             war.addAttacker(player);
-        else if (Core.getCityHandler().areAllies(war.getDefender(), city)
-                || city == war.getDefender())
+        else if (Core.getFactionHandler().areAllies(war.getDefender().getFaction(), city.getFaction())
+                || city == war.getDefender() || city.getFaction() == war.getDefender().getFaction())
             war.addDefender(player);
         return CommandResult.success();
     }
