@@ -6,19 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d126d54-205e-4f4c-b906-cae4b3ab58f8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandDelete.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/CityCommandDelete.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/setResident.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Commands/City/Set/setResident.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/CityHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/CityHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/FactionHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/FactionHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/PermissionHandler.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Handlers/PermissionHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Main.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/CommandElements/ElementCitizen.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/CommandElements/ElementCitizen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/DBObject/City.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/DBObject/City.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/DBObject/DBObject.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/DBObject/DBObject.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/DBObject/Faction.java" afterPath="$PROJECT_DIR$/src/main/java/fr/AleksGirardey/Objects/DBObject/Faction.java" />
-    </list>
+    <list default="true" id="3d126d54-205e-4f4c-b906-cae4b3ab58f8" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -1303,16 +1291,16 @@
       <workItem from="1484077234417" duration="313000" />
       <workItem from="1484079601721" duration="10340000" />
       <workItem from="1484473951774" duration="37841000" />
-      <workItem from="1484593203970" duration="9784000" />
+      <workItem from="1484593203970" duration="10568000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="84228000" />
+    <option name="totallyTimeSpent" value="85012000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1855" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
