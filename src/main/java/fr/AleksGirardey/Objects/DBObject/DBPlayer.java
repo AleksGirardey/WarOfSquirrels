@@ -5,7 +5,6 @@ import fr.AleksGirardey.Objects.Database.GlobalPlayer;
 import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
-import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.text.Text;
 
 import java.sql.ResultSet;
@@ -18,6 +17,7 @@ public class DBPlayer extends DBObject {
             + "`, `" + GlobalPlayer.score
             + "`, `" + GlobalPlayer.cityId
             + "`, `" + GlobalPlayer.assistant
+            + "`, `" + GlobalPlayer.resident
             + "`, `" + GlobalPlayer.account + "`";
     private String          _newFields = "`" + GlobalPlayer.uuid + "`, " + _fields;
 
@@ -27,6 +27,7 @@ public class DBPlayer extends DBObject {
     private int             score;
     private City            city;
     private Boolean         assistant;
+    private Boolean         resident;
     private int             balance;
 
     /* -- Extra Fields -- */
@@ -42,14 +43,15 @@ public class DBPlayer extends DBObject {
         this.score = 0;
         this.city = null;
         this.cityId = 0;
-        this.balance = ConfigLoader.startBalance;
+        this.balance = Core.getConfig().getStartBalance();
         this.assistant = false;
+        this.resident = false;
         this.reincarnation = false;
         this._primaryKeyValue = player.getUniqueId().toString();
         this.add("'" + _primaryKeyValue + "', '"
-                + displayName + "', '"
-                + score + "', "
-                + "NULL, FALSE, " + balance);
+                + displayName + "', "
+                + score + ", "
+                + "NULL, FALSE, FALSE, " + balance);
         writeLog();
     }
 
@@ -62,6 +64,7 @@ public class DBPlayer extends DBObject {
         this.score = rs.getInt(GlobalPlayer.score);
         this.cityId = rs.getInt(GlobalPlayer.cityId);
         this.assistant = rs.getBoolean(GlobalPlayer.assistant);
+        this.resident = rs.getBoolean(GlobalPlayer.resident);
         this.balance = rs.getInt(GlobalPlayer.account);
         this.reincarnation = false;
         writeLog();
@@ -70,7 +73,8 @@ public class DBPlayer extends DBObject {
     public void         updateDependencies() {
         if (cityId != 0) {
             this.city = Core.getCityHandler().get(cityId);
-            Core.getLogger().info("[Updating] Player '" + this.displayName + "' is now in '" + this.city.getDisplayName() + "'");
+            Core.getLogger().info("[Updating] Player '" + this.displayName + "' is now in '" + this.city.getDisplayName() + "'\n" +
+                    "Citizens size : " + city.getCitizens().size());
         }
     }
 
@@ -119,10 +123,16 @@ public class DBPlayer extends DBObject {
     }
 
     public Boolean      isAssistant() { return assistant; }
+    public Boolean      isResident() { return resident; }
 
     public void         setAssistant(Boolean assistant) {
         this.assistant = assistant;
         this.edit(GlobalPlayer.assistant, assistant ? "TRUE" : "FALSE");
+    }
+
+    public void setResident(Boolean resident) {
+        this.resident = resident;
+        this.edit(GlobalPlayer.resident, resident ? "TRUE" : "FALSE");
     }
 
     public void sendMessage(Text message) {
@@ -154,7 +164,7 @@ public class DBPlayer extends DBObject {
         setBalance((this.balance - money) < 0 ? 0 : this.balance - money);
     }
 
-    public void     setBalance(int newBalance) {
+    private void     setBalance(int newBalance) {
         this.balance = newBalance;
         this.edit(GlobalPlayer.account, "" + this.balance);
     }

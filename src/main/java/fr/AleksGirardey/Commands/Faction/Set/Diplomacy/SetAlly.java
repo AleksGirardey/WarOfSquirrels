@@ -1,13 +1,12 @@
-package fr.AleksGirardey.Commands.City.Set.Diplomacy;
+package fr.AleksGirardey.Commands.Faction.Set.Diplomacy;
 
 import fr.AleksGirardey.Objects.Core;
-import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.DBObject.Faction;
 import fr.AleksGirardey.Objects.DBObject.Permission;
 import fr.AleksGirardey.Objects.Invitations.AllianceInvitation;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.entity.living.player.Player;
 
 
 public class SetAlly extends SetDiplomacy {
@@ -28,7 +27,7 @@ public class SetAlly extends SetDiplomacy {
     }
 
     @Override
-    protected void NewDiplomacy(DBPlayer player, City city, Permission perm) {
-        Core.getInvitationHandler().createInvitation(new AllianceInvitation(player, city));
+    protected void NewDiplomacy(DBPlayer player, Faction faction, Permission perm) {
+        Core.getInvitationHandler().createInvitation(new AllianceInvitation(player, faction, perm));
     }
 }

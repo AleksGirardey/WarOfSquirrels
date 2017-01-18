@@ -8,10 +8,10 @@ import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.Cubo;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.Database.GlobalFaction;
 import fr.AleksGirardey.Objects.Database.Statement;
 import fr.AleksGirardey.Objects.City.InfoCity;
 import org.spongepowered.api.entity.living.player.Player;
-import fr.AleksGirardey.Objects.War.War;
 import org.spongepowered.api.item.inventory.*;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -79,7 +79,7 @@ public class Utils {
         Statement               statement= null;
         String                  sql = "SELECT `city_displayName` FROM `City` WHERE `city_displayName` = ?;";
 
-        if (!name.matches("[A-Za-z0-9]+") || name.length() > 34)
+        if (!name.matches("[A-Za-z]+") || name.length() > 34)
             return (false);
         try {
             statement = new Statement(sql);
@@ -90,6 +90,24 @@ public class Utils {
             e.printStackTrace();
         }
         return (true);
+    }
+
+    public static boolean checkFactionName(String factionName) {
+        Statement           statement;
+        String              sql = "SELECT `" + GlobalFaction.displayName + "` FROM `" + GlobalFaction.tableName
+                + "` WHERE `" + GlobalFaction.displayName + "` = '" + factionName + "';";
+
+        if (!factionName.matches("[A-Za-z]+") || factionName.length() > 34)
+            return false;
+        try {
+            statement = new Statement(sql);
+            statement.Execute();
+            if (statement.getResult().first())
+                return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     public static Location<World>   getNearestSpawn(DBPlayer player) {
@@ -137,9 +155,9 @@ public class Utils {
             String      displayName = player.getDisplayName();
 
             if (player.getCity().getOwner() == player)
-                displayName = city.getRank().getPrefixMayor() + " " + displayName;
+                displayName = city.getCityRank().getPrefixMayor() + " " + displayName;
             else if (player.isAssistant())
-                displayName = city.getRank().getPrefixAssistant() + " " + displayName;
+                displayName = city.getCityRank().getPrefixAssistant() + " " + displayName;
 
             tag = Text.of(city.getColor(), "[" + player.getCity().getTag()
                     + "][" + displayName
@@ -153,16 +171,31 @@ public class Utils {
         return tag;
     }
 
+    public static boolean       CanPlaceOutpost(int posX, int posZ) {
+        int                     value = NearestHomeblock(posX, posZ);
+
+        return (value == -1 || value >= Core.getConfig().getDistanceOutpost());
+    }
+
+    public static boolean   CanPlaceCity(int posX, int posZ) {
+        int                 value = NearestHomeblock(posX, posZ);
+
+        return (value == -1 || value >= Core.getConfig().getDistanceCities());
+    }
+
     public static int       NearestHomeblock(int posX, int posZ) {
-        Double              closerDistance = 30.0;
-        Vector2d            def = new Vector2d(posX, posZ);
+        Double              closerDistance = Double.MAX_VALUE; // = Double.parseDouble("" + ConfigLoader.distanceCities);
+        Vector2d            playerChunk = new Vector2d(posX, posZ);
+        List<Chunk>         homeblockList;
 
-        for (Chunk c : Core.getChunkHandler().getHomeblockList()) {
+        homeblockList = Core.getChunkHandler().getHomeblockList();
+        if (homeblockList.size() == 0)
+            return (-1);
+        for (Chunk c : homeblockList) {
             Vector2d        vec = new Vector2d(c.getPosX(), c.getPosZ());
-            Double          dist = vec.distance(def);
+            Double          dist = vec.distance(playerChunk);
 
-            if (closerDistance == 0 || closerDistance > dist)
-                closerDistance = dist;
+            closerDistance = Double.min(dist, closerDistance);
         }
         return closerDistance.intValue();
     }
@@ -215,7 +248,7 @@ public class Utils {
             message.concat(Text.of("[" + city.getDisplayName() + "] "));
             for (DBPlayer player : onlines) {
                 if (city.getOwner() == player)
-                    message.concat(Text.of(map.get(city).getRank().getPrefixMayor() + " "));
+                    message.concat(Text.of(map.get(city).getCityRank().getPrefixMayor() + " "));
                 message.concat(Text.of(player.getDisplayName()));
                 if (i <= size - 1)
                     message.concat(Text.of(", "));

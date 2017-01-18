@@ -4,6 +4,7 @@ import fr.AleksGirardey.Objects.Channels.GlobalChannel;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.DBObject.Faction;
 import fr.AleksGirardey.Objects.War.PartyWar;
 import fr.AleksGirardey.Objects.War.War;
 import org.spongepowered.api.entity.living.player.Player;
@@ -37,12 +38,18 @@ public class BroadcastHandler {
                 player.getUser().getPlayer().get().sendMessage(Text.of(message));
     }
 
-    public void                 allianceInvitationSend(City sender, City receiver) {
-        DBPlayer                mayor = receiver.getOwner();
-        Collection<DBPlayer>    assistants = receiver.getAssistants();
+    public void                 factionChannel(Faction faction, String message) {
+        Collection<City>        cities = faction.getCities().values();
+
+        cities.forEach(c -> cityChannel(c, message));
+    }
+
+    public void                 allianceInvitationSend(Faction sender, Faction receiver) {
+        DBPlayer                mayor = receiver.getCapital().getOwner();
+        Collection<DBPlayer>    assistants = receiver.getCapital().getAssistants();
         String                  message;
 
-        cityChannel(sender, receiver.getDisplayName() + " has been invited to be your ally.");
+        factionChannel(sender, receiver.getDisplayName() + " has been invited to be your ally.");
         message = "The city " + sender.getDisplayName() + " want to be your ally. Use /accept or /refuse";
         if (mayor.getUser().isOnline())
             mayor.getUser().getPlayer().get().sendMessage(Text.of(message));

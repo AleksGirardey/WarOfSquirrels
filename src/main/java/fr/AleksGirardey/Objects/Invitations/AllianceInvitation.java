@@ -3,36 +3,43 @@ package fr.AleksGirardey.Objects.Invitations;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.DBObject.Faction;
+import fr.AleksGirardey.Objects.DBObject.Permission;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColor;
+import org.spongepowered.api.text.format.TextColors;
 
-public class        AllianceInvitation extends Invitation {
-    private City    _senderCity;
+public class            AllianceInvitation extends Invitation {
+    private Faction     _senderFaction;
+    private Permission  _permission;
 
-    public AllianceInvitation(DBPlayer sender, City city) {
-        super(sender, Reason.City, city);
-        _senderCity = sender.getCity();
-        Core.getBroadcastHandler().allianceInvitationSend(_senderCity, city);
+    public AllianceInvitation(DBPlayer sender, Faction faction, Permission perm) {
+        super(sender, Reason.Faction, faction);
+        _senderFaction = sender.getCity().getFaction();
+        _permission = perm;
+        Core.getBroadcastHandler().allianceInvitationSend(_senderFaction, faction);
     }
 
     @Override
     public void         accept() {
-
-        Core.getDiplomacyHandler().add(_senderCity, _city, true, null);
-        Core.Send(_senderCity.getDisplayName()
+        Core.getDiplomacyHandler().add(_senderFaction, _faction, true, _permission);
+        Core.getDiplomacyHandler().add(_faction, _senderFaction, true, null);
+        Core.Send(_senderFaction.getDisplayName()
                 + " and "
-                + _city.getDisplayName()
+                + _faction.getDisplayName()
                 + " are now allies.");
     }
 
     @Override
     public void         refuse() {
-        _sender.sendMessage(Text.of(_player.getDisplayName() + " refuse your invitation"));
+        _sender.sendMessage(Text.of(TextColors.RED, _player.getDisplayName() + " refuse your invitation", TextColors.RESET));
+        _player.sendMessage(Text.of(TextColors.RED, "The invitation from " + _sender.getDisplayName() + " have been refused.", TextColors.RESET));
     }
 
     @Override
     public boolean      concern(DBPlayer player) {
-        return (player.getCity() == _city
+        return (player.getCity().getFaction() == _faction
                 && (player.getCity().getOwner() == player
                     || player.isAssistant()));
     }
@@ -44,7 +51,7 @@ public class        AllianceInvitation extends Invitation {
         if (!Invitation.class.isAssignableFrom(obj.getClass()))
             return false;
         final Invitation inv = (Invitation) obj;
-        return (this._city == inv._city &&
+        return (this._faction == inv._faction &&
                 this._sender.equals(inv._sender) &&
                 this._reason.equals(inv._reason));
     }

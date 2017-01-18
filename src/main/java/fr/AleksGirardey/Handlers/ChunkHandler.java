@@ -91,7 +91,7 @@ public class ChunkHandler {
 
     public boolean      canBePlaced(City city, int posX, int posZ, boolean outpost) {
         if (outpost)
-            return Utils.NearestHomeblock(posX, posZ) >= ConfigLoader.distanceOutpost;
+            return Utils.CanPlaceOutpost(posX, posZ);
 
         return (get(posX + 1, posZ) != null && get(posX + 1, posZ).getCity() == city) ||
                 (get(posX - 1, posZ) != null && get(posX - 1, posZ).getCity() == city) ||

@@ -21,7 +21,7 @@ public abstract class DBObject {
         this._fields = fields;
     }
 
-    public void      delete() {
+    public void         delete() {
         _sql = "DELETE FROM `" + _tablename + "` WHERE `" + _primaryKeyName + "` = " + _primaryKeyValue;
         this.update();
     }

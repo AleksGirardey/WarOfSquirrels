@@ -1,4 +1,4 @@
-package fr.AleksGirardey.Commands.City.Set.Diplomacy;
+package fr.AleksGirardey.Commands.Faction.Set.Diplomacy;
 
 import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Handlers.CityHandler;

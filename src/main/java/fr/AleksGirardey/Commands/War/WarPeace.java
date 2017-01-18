@@ -18,13 +18,9 @@ public class WarPeace implements CommandExecutor {
     public CommandResult    execute(CommandSource src, CommandContext args) throws CommandException {
         Text                message;
 
-        try {
-            ConfigLoader.setPeaceTime(args.<Boolean>getOne("[peace]").get());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Core.getConfig().setPeaceTime(args.<Boolean>getOne("[peace]").get());
 
-        if (ConfigLoader.peaceTime)
+        if (Core.getConfig().isPeaceTime())
             message = Text.of(TextColors.GREEN, "Ho no.. Seems like peace have been declared", TextColors.RESET);
         else
             message = Text.of(TextColors.DARK_GREEN, "MOUHAHAHAH, TIME TO FIGHT !", TextColors.RESET);

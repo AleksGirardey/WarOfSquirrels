@@ -25,19 +25,19 @@ import java.util.List;
 public class                    PermCity extends CityCommandAssistant {
     @Override
     protected boolean           SpecialCheck(DBPlayer player, CommandContext context) {
-        String                  cityName = context.<String>getOne("[city]").orElse("");
+/*        String                  cityName = context.<String>getOne("[city]").orElse("");
         List<City>              list = new ArrayList<>(Core.getDiplomacyHandler().getAllies(player.getCity()));
 
         list.addAll(Core.getDiplomacyHandler().getEnemies(player.getCity()));
         if (list.contains(Core.getCityHandler().get(cityName)))
             return true;
-        player.sendMessage(Text.of("There is no diplomacy between your city and `" + cityName + "`"));
+        player.sendMessage(Text.of("There is no diplomacy between your city and `" + cityName + "`"));*/
         return false;
     }
 
     @Override
     protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
-        String                  cityName = context.<String>getOne("[city]").orElse("");
+/*        String                  cityName = context.<String>getOne("[city]").orElse("");
         City                    city = Core.getCityHandler().get(cityName);
         List<Diplomacy>         list = Core.getDiplomacyHandler().get(player.getCity());
         Permission              perm;
@@ -52,7 +52,7 @@ public class                    PermCity extends CityCommandAssistant {
                 d.setPermissionMain(perm);
             else if (d.getMain() == city && d.getSub() == player.getCity())
                 d.setPermissionSub(perm);
-        }
+        } */
         return CommandResult.success();
     }
 }

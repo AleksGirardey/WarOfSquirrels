@@ -88,7 +88,7 @@ public class        PlayerHandler {
 
         return builder
                 .execute(() -> Core.getPlayerHandler().cancelReincarnation(player))
-                .delay(ConfigLoader.reincarnationTime, TimeUnit.SECONDS)
+                .delay(Core.getConfig().getReincarnationTime(), TimeUnit.SECONDS)
                 .submit(Core.getMain());
     }
 

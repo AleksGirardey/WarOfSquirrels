@@ -8,6 +8,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class CityInvitation extends Invitation {
+    private City _city;
 
     public CityInvitation(DBPlayer player, DBPlayer sender, City city) {
         super(player, sender, Reason.City);
@@ -24,6 +25,7 @@ public class CityInvitation extends Invitation {
     @Override
     public void refuse() {
         _sender.sendMessage(Text.of(TextColors.RED, _player.getDisplayName() + " refuse your invitation", TextColors.RESET));
+        _player.sendMessage(Text.of(TextColors.RED, "The invitation from " + _sender.getDisplayName() + " have been refused.", TextColors.RESET));
     }
 
     @Override
