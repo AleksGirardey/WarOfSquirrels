@@ -95,6 +95,7 @@ public class FactionCreate extends Commands {
             Core.getInfoCityMap().get(city).getChannel().addMember(p.getUser().getPlayer().get());
             Core.getInfoFactionMap().get(faction).getChannel().addMember(p.getUser().getPlayer().get());
         }
+        faction.addCity(city);
 
         Text        message = Text.of(player.getDisplayName() + " est maintenant le leader de la faction ", TextStyles.BOLD, faction.getDisplayName(), TextStyles.RESET, " dont la capitale est ",
                 TextStyles.BOLD, city.getDisplayName(), TextStyles.RESET, ".");

@@ -17,7 +17,7 @@ public class FactionHelp extends FactionCommand {
                         "/faction info <faction>\n" +
                         "/faction create [name] [cityName]\n" +
                         "/faction delete\n" +
-                        "/faction set ..."));
+                        "/faction set ...", TextColors.RESET));
         return CommandResult.success();
     }
 }

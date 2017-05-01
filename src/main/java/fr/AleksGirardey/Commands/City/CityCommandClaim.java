@@ -7,20 +7,23 @@ import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.World;
 
 public class                CityCommandClaim extends CityCommandAssistant {
     @Override
     protected boolean       SpecialCheck(DBPlayer player, CommandContext context) {
         ChunkHandler        chh = Core.getChunkHandler();
+        World               world = player.getUser().getPlayer().get().getWorld();
         int                 x, z;
 
         x = player.getUser().getPlayer().get().getLocation().getBlockX() / 16;
         z = player.getUser().getPlayer().get().getLocation().getBlockZ() / 16;
 
-        if (!chh.exists(x, z)) {
-            if (chh.canBePlaced(player.getCity(), x, z, false)) {
+        if (!chh.exists(x, z, world)) {
+            if (chh.canBePlaced(player.getCity(), x, z, false, world)) {
                 CityRank r = Core.getInfoCityMap().get(player.getCity()).getCityRank();
 
                 if (r.getChunkMax() == chh.getSize(player.getCity())) {
@@ -28,7 +31,7 @@ public class                CityCommandClaim extends CityCommandAssistant {
                     return false;
                 }
                 return true;
-            } else if (chh.canBePlaced(player.getCity(), x, z, true))
+            } else if (chh.canBePlaced(player.getCity(), x, z, true, world))
                 return true;
         }
         player.sendMessage(Text.of(TextColors.RED, "You can't claim here.", TextColors.RESET));
@@ -37,13 +40,15 @@ public class                CityCommandClaim extends CityCommandAssistant {
 
     @Override
     protected CommandResult ExecCommand(DBPlayer player, CommandContext context) {
+        Player  p = player.getUser().getPlayer().get();
+        World   world = p.getWorld();
         Chunk   chunk;
         int     x, z;
 
-        x = player.getUser().getPlayer().get().getLocation().getBlockX() / 16;
-        z = player.getUser().getPlayer().get().getLocation().getBlockZ() / 16;
+        x = p.getLocation().getBlockX() / 16;
+        z = p.getLocation().getBlockZ() / 16;
 
-        if (Core.getChunkHandler().canBePlaced(player.getCity(), x, z, false)) {
+        if (Core.getChunkHandler().canBePlaced(player.getCity(), x, z, false, world)) {
             chunk = new Chunk(player, false, false);
             Core.getChunkHandler().add(chunk);
             Text message = Text.of("La parcelle [" + chunk.getPosX() + ";" + chunk.getPosZ() + "] est maintenant sous le contrôle de votre ville.");

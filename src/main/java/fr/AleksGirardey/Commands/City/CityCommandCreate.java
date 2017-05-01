@@ -38,15 +38,17 @@ public class            CityCommandCreate extends Commands {
 
     @Override
     protected boolean       SpecialCheck(DBPlayer player, CommandContext context) {
+        Player              p = player.getUser().getPlayer().get();
+        World               world = p.getWorld();
         String              name = context.<String>getOne("City name").get();
         Text                message;
         int                 x, z;
 
-        x = player.getUser().getPlayer().get().getLocation().getBlockX() / 16;
-        z = player.getUser().getPlayer().get().getLocation().getBlockZ() / 16;
+        x = p.getLocation().getBlockX() / 16;
+        z = p.getLocation().getBlockZ() / 16;
 
         if (player.getCity() == null) {
-            if (!Core.getChunkHandler().exists(x, z) && Utils.CanPlaceCity(x, z)) {
+            if (!Core.getChunkHandler().exists(x, z, world) && Utils.CanPlaceCity(x, z)) {
                 if (Utils.checkCityName(name)) {
                     if (name.length() >= 3)
                         return true;

@@ -9,12 +9,14 @@ import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.BlockChangeFlag;
+import org.spongepowered.api.world.World;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -114,6 +116,8 @@ public class War {
         ConfigurationNode       rb = _node.getNode("Rollback" + size);
         BlockSnapshot           block = transaction.getOriginal();
 
+        Utils.replaceContainer(block);
+
         rb.getNode("world").setValue(block.getWorldUniqueId().toString());
         rb.getNode("x").setValue(block.getPosition().getX());
         rb.getNode("y").setValue(block.getPosition().getY());
@@ -164,7 +168,7 @@ public class War {
 
         _timeStart = System.currentTimeMillis();
         Core.getBroadcastHandler().warAnnounce(this, WarState.Preparation);
-        this._timer = builder.delay(/*ConfigLoader.preparationPhase*/ 5, TimeUnit.SECONDS)
+        this._timer = builder.delay(Core.getConfig().getPreparationPhase(), TimeUnit.SECONDS)
                 .name(_tag + " preparation timer")
                 .execute(() -> {
                     this._state = WarState.War;
@@ -324,6 +328,7 @@ public class War {
     }
 
     private float       capture(Chunk chunk) {
+        World           world;
         int             att = 0, def = 0, x, z;
         float           ret;
         Chunk           c;
@@ -334,15 +339,18 @@ public class War {
 
 
         for (DBPlayer player : list) {
-            x = player.getLastChunkX();
-            z = player.getLastChunkZ();
+            if (player.getUser().isOnline()) {
+                world = player.getUser().getPlayer().get().getWorld();
+                x = player.getLastChunkX();
+                z = player.getLastChunkZ();
 
-            c = Core.getChunkHandler().get(x, z);
-            if (c != null && c == chunk) {
-                if (isAttacker(player))
-                    att++;
-                else if (isDefender(player))
-                    def++;
+                c = Core.getChunkHandler().get(x, z, world);
+                if (c != null && c == chunk) {
+                    if (isAttacker(player))
+                        att++;
+                    else if (isDefender(player))
+                        def++;
+                }
             }
         }
 
@@ -352,26 +360,29 @@ public class War {
 
     void         updateCapture() {
         List<Chunk>         updated = new ArrayList<>();
+        World               world;
         float               v;
 
         for (DBPlayer att : _attackers) {
-            Chunk   chunk = Core.getChunkHandler().get(att.getLastChunkX(), att.getLastChunkZ());
+            if (att.getUser().isOnline()) {
+                world = att.getUser().getPlayer().get().getWorld();
+                Chunk chunk = Core.getChunkHandler().get(att.getLastChunkX(), att.getLastChunkZ(), world);
 
-            if (chunk != null && !updated.contains(chunk) && !_capturedChunk.contains(chunk) && !chunk.isHomeblock() && !chunk.isOutpost()) {
-                updated.add(chunk);
-                if (_inCaptureChunk.containsKey(chunk)) {
-                    v = _inCaptureChunk.get(chunk);
-                    _inCaptureChunk.compute(chunk, (c, val) -> val - capture(chunk));
-                }
-                else {
-                    v = 100;
-                    _inCaptureChunk.put(chunk, 100 - capture(chunk));
-                }
-                Core.getBroadcastHandler().warAnnounce(this, "[Capture][" + (chunk.getPosX() * 16) + ";" + (chunk.getPosZ() * 16) + "] Temps restant avant capture " + Utils.toTime((int) (_inCaptureChunk.get(chunk) / (v - _inCaptureChunk.get(chunk)))) + " secondes.");
-                if (_inCaptureChunk.get(chunk) <= 0) {
-                    _capturedChunk.add(chunk);
-                    _inCaptureChunk.remove(chunk);
-                    addAttackerCapturePoints();
+                if (chunk != null && !updated.contains(chunk) && !_capturedChunk.contains(chunk) && !chunk.isHomeblock() && !chunk.isOutpost()) {
+                    updated.add(chunk);
+                    if (_inCaptureChunk.containsKey(chunk)) {
+                        v = _inCaptureChunk.get(chunk);
+                        _inCaptureChunk.compute(chunk, (c, val) -> val - capture(chunk));
+                    } else {
+                        v = 100;
+                        _inCaptureChunk.put(chunk, 100 - capture(chunk));
+                    }
+                    Core.getBroadcastHandler().warAnnounce(this, "[Capture][" + (chunk.getPosX() * 16) + ";" + (chunk.getPosZ() * 16) + "] Temps restant avant capture " + Utils.toTime((int) (_inCaptureChunk.get(chunk) / (v - _inCaptureChunk.get(chunk)))) + " secondes.");
+                    if (_inCaptureChunk.get(chunk) <= 0) {
+                        _capturedChunk.add(chunk);
+                        _inCaptureChunk.remove(chunk);
+                        addAttackerCapturePoints();
+                    }
                 }
             }
         }

@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS `Chunk` (
   `chunk_respawnX` INT,
   `chunk_respawnY` INT,
   `chunk_respawnZ` INT,
+  `chunk_world` CHAR(36) NOT NULL,
   PRIMARY KEY (`chunk_id`),
   FOREIGN KEY (`chunk_cityId`) REFERENCES `City`(`city_id`));
 

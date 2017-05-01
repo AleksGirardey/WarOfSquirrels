@@ -31,14 +31,12 @@ public class            CityCommandRemove extends CityCommandAssistant {
 
     @Override
     protected CommandResult ExecCommand(DBPlayer player, CommandContext context) {
-        String      citizen = context.<String>getOne("[citizen]").get();
-        DBPlayer    kicked =  Core.getPlayerHandler().getFromName(citizen);
+        DBPlayer    citizen = context.<DBPlayer>getOne("[citizen]").orElse(null);
 
-        this.kick(kicked, player);
+        this.kick(citizen, player);
         if (context.hasAny("<citizen>")) {
-            Collection<String>      oldCitizens = context.<String>getAll("<citizen>");
-            for (String p : oldCitizens) {
-                kicked = Core.getPlayerHandler().getFromName(p);
+            Collection<DBPlayer>      oldCitizens = context.<DBPlayer>getAll("<citizen>");
+            for (DBPlayer kicked : oldCitizens) {
                 if (kicked != player.getCity().getOwner())
                     kick(kicked, player);
             }

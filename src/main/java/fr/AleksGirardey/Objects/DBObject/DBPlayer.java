@@ -70,6 +70,24 @@ public class DBPlayer extends DBObject {
         writeLog();
     }
 
+    public DBPlayer(String name) {
+        super(GlobalPlayer.uuid, GlobalPlayer.tableName, _fields);
+        this.user = null;
+        this.displayName = name;
+        this.score = 0;
+        this.city = null;
+        this.cityId = 0;
+        this.balance = Core.getConfig().getStartBalance();
+        this.assistant = false;
+        this.resident = false;
+        this.reincarnation = false;
+        this._primaryKeyValue = UUID.randomUUID().toString();
+        this.add("'" + _primaryKeyValue + "', '"
+                + displayName + "', "
+                + score + ", "
+                + "NULL, FALSE, FALSE, " + balance);
+    }
+
     public void         updateDependencies() {
         if (cityId != 0) {
             this.city = Core.getCityHandler().get(cityId);
@@ -170,4 +188,7 @@ public class DBPlayer extends DBObject {
     }
 
     public int getBalance() { return balance; }
+
+    @Override
+    public String       toString() { return this.displayName; }
 }

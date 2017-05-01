@@ -2,10 +2,7 @@ package fr.AleksGirardey.Handlers;
 
 import com.google.inject.Inject;
 import fr.AleksGirardey.Objects.Core;
-import fr.AleksGirardey.Objects.DBObject.City;
-import fr.AleksGirardey.Objects.DBObject.DBPlayer;
-import fr.AleksGirardey.Objects.DBObject.Diplomacy;
-import fr.AleksGirardey.Objects.DBObject.Faction;
+import fr.AleksGirardey.Objects.DBObject.*;
 import fr.AleksGirardey.Objects.Database.GlobalFaction;
 import fr.AleksGirardey.Objects.Database.Statement;
 import fr.AleksGirardey.Objects.Faction.InfoFaction;
@@ -56,12 +53,14 @@ public class                        FactionHandler {
         return faction;
     }
 
-    public void             delete(Faction faction) {
+    public boolean             delete(Faction faction) {
         Collection<City>    cities = faction.getCities().values();
+        logger.info("[Faction][Delete] Found " + cities.size() + " cities related to faction '" + faction.getDisplayName() + "'");
         factions.remove(faction.getId());
         faction.setCapital(null);
         cities.forEach(c -> Core.getCityHandler().delete(c));
         faction.delete();
+        return true;
     }
 
     public List<Diplomacy>      getDiplomacy(Faction faction, boolean relation) {
@@ -127,6 +126,14 @@ public class                        FactionHandler {
         factions.values().forEach(f -> logger.info("[InfoFaction] new faction info created for `" + f.getDisplayName() + "`."));
 
         return map;
+    }
+
+    public Map<String,Attackable> getAttackables(Faction faction) {
+        Map<String, Attackable>     attackables = new HashMap<>();
+
+        attackables.putAll(Core.getCityHandler().getAttackables(faction));
+
+        return attackables;
     }
 }
 

@@ -21,6 +21,7 @@ public class                CityCommandLeave extends CityCommand {
         if (player.isAssistant())
             player.setAssistant(false);
         player.setCity(null);
+        city.removeCitizen(player);
         Core.getBroadcastHandler().cityChannel(city, player.getDisplayName() + " à quitté la ville.");
         return CommandResult.success();
     }

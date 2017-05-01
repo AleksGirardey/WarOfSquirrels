@@ -12,7 +12,7 @@ import org.spongepowered.api.text.format.TextColors;
 public class            CityCommandUnclaim extends CityCommandAssistant {
     @Override
     protected boolean   SpecialCheck(DBPlayer player, CommandContext context) {
-        Chunk           chunk = Core.getChunkHandler().get(player.getPosX() / 16, player.getPosZ() / 16);
+        Chunk           chunk = Core.getChunkHandler().get(player.getPosX() / 16, player.getPosZ() / 16, player.getUser().getPlayer().get().getWorld());
 
         return chunk != null
                 && (chunk.getCity() == player.getCity())
@@ -21,7 +21,7 @@ public class            CityCommandUnclaim extends CityCommandAssistant {
 
     @Override
     protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
-        Chunk                   chunk = Core.getChunkHandler().get(player.getPosX() / 16, player.getPosZ() / 16);
+        Chunk                   chunk = Core.getChunkHandler().get(player.getPosX() / 16, player.getPosZ() / 16, player.getUser().getPlayer().get().getWorld());
 
         Core.getChunkHandler().delete(chunk);
         Text message = Text.of("La parcelle " + chunk.toString() + " a été libérée de tout contrôle.");

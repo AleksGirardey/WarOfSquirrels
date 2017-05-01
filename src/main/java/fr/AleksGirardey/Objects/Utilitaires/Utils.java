@@ -3,14 +3,16 @@ package fr.AleksGirardey.Objects.Utilitaires;
 
 import com.flowpowered.math.vector.Vector2d;
 import com.flowpowered.math.vector.Vector3d;
-import fr.AleksGirardey.Objects.DBObject.Chunk;
+import fr.AleksGirardey.Objects.DBObject.*;
 import fr.AleksGirardey.Objects.Core;
-import fr.AleksGirardey.Objects.DBObject.Cubo;
-import fr.AleksGirardey.Objects.DBObject.City;
-import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Database.GlobalFaction;
 import fr.AleksGirardey.Objects.Database.Statement;
 import fr.AleksGirardey.Objects.City.InfoCity;
+import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.block.tileentity.TileEntity;
+import org.spongepowered.api.block.tileentity.carrier.TileEntityCarrier;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.*;
 import org.spongepowered.api.text.Text;
@@ -26,14 +28,29 @@ import java.util.Optional;
 
 public class Utils {
 
+    private static List<BlockType>  containers;
+
+    static {
+        containers = new ArrayList<>();
+        containers.add(BlockTypes.CHEST);
+        containers.add(BlockTypes.TRAPPED_CHEST);
+        containers.add(BlockTypes.BREWING_STAND);
+        containers.add(BlockTypes.DISPENSER);
+        containers.add(BlockTypes.DROPPER);
+        containers.add(BlockTypes.FURNACE);
+        containers.add(BlockTypes.HOPPER);
+    }
+
     @Deprecated
     public static int       getPlayerPos(DBPlayer player, String pos) {
-        if (pos.equals("X"))
-            return player.getUser().getPlayer().get().getLocation().getBlockX();
-        else if (pos.equals("Y"))
-            return player.getUser().getPlayer().get().getLocation().getBlockY();
-        else
-            return player.getUser().getPlayer().get().getLocation().getBlockZ();
+        switch (pos) {
+            case "X":
+                return player.getUser().getPlayer().get().getLocation().getBlockX();
+            case "Y":
+                return player.getUser().getPlayer().get().getLocation().getBlockY();
+            default:
+                return player.getUser().getPlayer().get().getLocation().getBlockZ();
+        }
     }
 
     public static String    getListFromTableString(Map<Integer, Pair<Integer, String>> list) {
@@ -92,9 +109,9 @@ public class Utils {
         return (true);
     }
 
-    public static boolean checkFactionName(String factionName) {
-        Statement           statement;
-        String              sql = "SELECT `" + GlobalFaction.displayName + "` FROM `" + GlobalFaction.tableName
+    public static boolean       checkFactionName(String factionName) {
+        Statement               statement;
+        String                  sql = "SELECT `" + GlobalFaction.displayName + "` FROM `" + GlobalFaction.tableName
                 + "` WHERE `" + GlobalFaction.displayName + "` = '" + factionName + "';";
 
         if (!factionName.matches("[A-Za-z]+") || factionName.length() > 34)
@@ -120,12 +137,14 @@ public class Utils {
         chunks.add(Core.getChunkHandler().getHomeblock(player.getCity()));
 
         for (Chunk c : chunks) {
-            Vector3d    vec = new Vector3d(
-                    c.getRespawnX(),
-                    c.getRespawnY(),
-                    c.getRespawnZ());
-            if (save == null || (pLocation.getPosition().distance(chunk) < pLocation.getPosition().distance(save.getPosition())))
-                save = player.getUser().getPlayer().get().getWorld().getLocation(vec);
+            if (c.getWorld() == player.getUser().getPlayer().get().getWorld()) {
+                Vector3d vec = new Vector3d(
+                        c.getRespawnX(),
+                        c.getRespawnY(),
+                        c.getRespawnZ());
+                if (save == null || (pLocation.getPosition().distance(chunk) < pLocation.getPosition().distance(save.getPosition())))
+                    save = player.getUser().getPlayer().get().getWorld().getLocation(vec);
+            }
         }
         return (save);
     }
@@ -259,5 +278,23 @@ public class Utils {
         }
 
         pl.sendMessage(message);
+    }
+
+    public static void replaceContainer(BlockSnapshot block) {
+        TileEntity              ti;
+
+        ti = block.getLocation().get().getTileEntity().orElse(null);
+        if (ti instanceof TileEntityCarrier) {
+            TileEntityCarrier   carrier = (TileEntityCarrier) ti;
+            carrier.getInventory().clear();
+        }
+    }
+
+    /*
+    ** Défini si l'élément City est dans une position
+    ** qui est attaquable par la faction donnée.
+    */
+    public static boolean Attackable(City city, Faction faction) {
+        return true;
     }
 }

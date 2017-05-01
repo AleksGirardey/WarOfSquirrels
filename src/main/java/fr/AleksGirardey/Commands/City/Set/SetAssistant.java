@@ -11,7 +11,7 @@ public class SetAssistant extends CityCommandMayor {
 
     @Override
     protected boolean SpecialCheck(DBPlayer player, CommandContext context) {
-        return player.getCity().getOwner() == context.<DBPlayer>getOne("[citizen]").get();
+        return player.getCity().getOwner() != context.<DBPlayer>getOne("[citizen]").get();
     }
 
     @Override

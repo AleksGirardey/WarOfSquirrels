@@ -13,7 +13,7 @@ public abstract class DBObject {
     protected String        _primaryKeyName;
     protected String        _primaryKeyValue;
     protected String        _tablename;
-    protected String        _fields;
+    private String        _fields;
 
     public DBObject(String primaryKeyName, String tablename, String fields) {
         this._primaryKeyName = primaryKeyName;

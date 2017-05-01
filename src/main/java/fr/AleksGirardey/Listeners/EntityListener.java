@@ -106,8 +106,10 @@ public class EntityListener {
     public void         onEntitySpawn(SpawnEntityEvent event) {
         event.getEntities().forEach(entity -> {
             if (types.contains(entity.getType()) &&
-                    Core.getCuboHandler().get(entity.getLocation().getBlockPosition()) != null)
+                    Core.getChunkHandler().get(entity.getLocation().getBlockX() / 16, entity.getLocation().getBlockZ() / 16, entity.getWorld()) != null) {
+                Core.getLogger().info("[EntitySpawning] Canceled spawn of : '" + entity.getType().toString() + "'");
                 event.setCancelled(true);
+            }
         });
     }
 }

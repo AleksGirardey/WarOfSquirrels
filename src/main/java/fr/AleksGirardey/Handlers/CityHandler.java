@@ -3,12 +3,10 @@ package fr.AleksGirardey.Handlers;
 import com.google.inject.Inject;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.City.InfoCity;
-import fr.AleksGirardey.Objects.DBObject.City;
-import fr.AleksGirardey.Objects.DBObject.DBPlayer;
-import fr.AleksGirardey.Objects.DBObject.Faction;
-import fr.AleksGirardey.Objects.DBObject.Permission;
+import fr.AleksGirardey.Objects.DBObject.*;
 import fr.AleksGirardey.Objects.Database.GlobalCity;
 import fr.AleksGirardey.Objects.Database.Statement;
+import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import org.slf4j.Logger;
 import org.spongepowered.api.entity.living.player.Player;
 
@@ -168,5 +166,17 @@ public class CityHandler {
             map.put(c, new InfoCity(c));
         }
         return map;
+    }
+
+    public Map<String, Attackable> getAttackables(Faction faction) {
+        Map<String, Attackable>       cities = new HashMap<>();
+        List<Faction>           factions = Core.getDiplomacyHandler().getEnemies(faction);
+
+        for (Faction f : factions) {
+            for (City c : f.getCities().values())
+                if (Utils.Attackable(c, faction))
+                    cities.put(c.getDisplayName(), c);
+        }
+        return cities;
     }
 }

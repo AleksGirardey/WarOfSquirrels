@@ -29,16 +29,12 @@ public class CityCommandInfo extends CityCommand {
     @Override
     protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
         City                    city;
-        String                  arg;
         Text                    text;
 
-        arg = context.<String>getOne("[city]").orElse("");
-        if (arg.equals(""))
-            city = player.getCity();
-        else
-            city = Core.getCityHandler().get(arg);
+        city = context.<City>getOne("[city]").orElse(null);
 
-        Core.getLogger().info("[DEBUG] City '" + city.getDisplayName() + "' et size = " + city.getCitizens().size());
+        if (city == null)
+            return CommandResult.empty();
 
         text = Text.of("---===| " + Core.getInfoCityMap().get(city).getCityRank().getName() + " " + city.getDisplayName() + " [" + city.getCitizens().size() + "] |===---\n"
                 + "Faction: " + city.getFaction().getDisplayName() + "\n"

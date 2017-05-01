@@ -15,15 +15,12 @@ public class FactionInfo extends Commands {
         Text                message;
 
 
-        if (context.hasAny("<faction>")) {
-            if (Core.getFactionHandler().get(context.<String>getOne("<faction>").get()) != null)
-                return true;
-            message = Text.of(context.<String>getOne("<faction>") + " doesn't exist.");
-        } else if (player.getCity() != null)
-            return true;
-        message = Text.of("You need to belong to a faction.");
-        player.sendMessage(Text.of(TextColors.RED, message, TextColors.RESET));
-        return false;
+        if (!context.hasAny("<faction>") && player.getCity() == null) {
+            message = Text.of("Vous devez appartenir a une faction pour effectuer cette commande sans argument. /faction info <faction>");
+            player.sendMessage(Text.of(TextColors.RED, message, TextColors.RESET));
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -31,7 +28,10 @@ public class FactionInfo extends Commands {
         Faction             faction = player.getCity().getFaction();
 
         if (context.hasAny("<faction>"))
-            faction = Core.getFactionHandler().get(context.<String>getOne("<faction>").get());
+            faction = context.<Faction>getOne("<faction>").orElse(null);
+
+        if (faction == null)
+            return CommandResult.empty();
 
         player.sendMessage(Text.of(Core.getInfoFactionMap().get(faction).getColor(),
                 "--==| " + Core.getInfoFactionMap().get(faction).getRank().getName() + " " + faction.getDisplayName() + " [ " + faction.getSize() + "] |==--\n"

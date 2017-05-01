@@ -13,6 +13,7 @@ import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
@@ -74,7 +75,7 @@ public class BlockListener {
         event.getTransactions().stream().filter(transaction -> transaction.getOriginal().getState().getType() == BlockTypes.WALL_SIGN)
                 .forEach(transaction -> {
                     if (Core.getShopHandler().get(transaction.getOriginal().getPosition()) != null
-                            && !Core.getWarHandler().isConcerned(transaction.getOriginal().getPosition()))
+                            && !Core.getWarHandler().isConcerned(transaction.getOriginal().getPosition(), Core.getPlugin().getServer().getWorld(transaction.getOriginal().getWorldUniqueId()).get()))
                         Core.getShopHandler().delete(transaction.getOriginal().getPosition());
                 });
 
@@ -96,11 +97,9 @@ public class BlockListener {
 
         if (player != null) {
             if (!checkChunkPerms(player, event)) {
-                Core.getLogger().info("[DEBUG] CheckChunkPerms");
                 player.sendMessage(message);
                 event.setCancelled(true);
             } else if (!checkCuboPerms(player, event)) {
-                Core.getLogger().info("[DEBUG] CheckCuboPerms");
                 player.sendMessage(message);
                 event.setCancelled(true);
             }
@@ -111,27 +110,37 @@ public class BlockListener {
     public void             onBlockInteract(InteractBlockEvent.Secondary event) {
         DBPlayer            player = Core.getPlayerHandler().get((Player) event.getCause().getNamedCauses().get("Source"));
         Location<World>     location = event.getTargetBlock().getLocation().orElse(null);
+        World               world = player.getUser().getPlayer().get().getWorld();
         int                 x, z;
 
         if (location != null) {
             x = location.getBlockX();
             z = location.getBlockZ();
-            if (Core.getChunkHandler().exists(x / 16, z / 16)) {
+            if (Core.getChunkHandler().exists(x / 16, z / 16, world)) {
                 if (SwitchableBlocks.contains(event.getTargetBlock().getState().getType()) &&
-                        !Core.getPermissionHandler().ableTo(player, Core.getChunkHandler().get(x / 16, z / 16), "Switch", event.getTargetBlock().getPosition()))
+                        !Core.getPermissionHandler().ableTo(player, Core.getChunkHandler().get(x / 16, z / 16, world), "Switch", event.getTargetBlock().getPosition()))
                     event.setCancelled(true);
                 else if (ContainersBlock.contains(event.getTargetBlock().getState().getType()) &&
-                        !Core.getPermissionHandler().ableTo(player, Core.getChunkHandler().get(x / 16, z / 16), "Container", event.getTargetBlock().getPosition()))
+                        !Core.getPermissionHandler().ableTo(player, Core.getChunkHandler().get(x / 16, z / 16, world), "Container", event.getTargetBlock().getPosition()))
                     event.setCancelled(true);
             }
         }
     }
 
     @Listener(order = Order.FIRST)
-    public void             onBlockExplosion(ExplosionEvent.Post event) {
-        for (Transaction<BlockSnapshot> transaction : event.getTransactions())
-            transaction.setValid(false);
+    public void             onBlockExplosion(ExplosionEvent event) {
+        ((Cancellable) event).setCancelled(true);
     }
+
+/*    @Listener(order = Order.FIRST)
+    public void             onBlockExplosion(ExplosionEvent.Post event) {
+        event.setCancelled(true);
+        /*
+        for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
+            transaction.setValid(false);
+        }
+    }
+    */
 
     @Listener(order = Order.FIRST)
     public void             onBlockBurn(ChangeBlockEvent event) {
@@ -198,7 +207,7 @@ public class BlockListener {
             x = transaction.getOriginal().getLocation().get().getBlockX();
             z = transaction.getOriginal().getLocation().get().getBlockZ();
 
-            chunk = Core.getChunkHandler().get(x / 16, z / 16);
+            chunk = Core.getChunkHandler().get(x / 16, z / 16, player.getWorld());
 
             /*
             ** Pour chaque transaction, verification si le block est dans un chunk claim

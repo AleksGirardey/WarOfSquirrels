@@ -21,6 +21,7 @@ public class setRecruit extends CityCommandAssistant {
     protected boolean SpecialCheck(DBPlayer player, CommandContext context) {
         DBPlayer            newCitizen = context.<DBPlayer>getOne("[citizen]").orElse(null);
 
+
         if (newCitizen != null && newCitizen.getCity() == player.getCity() && player.getCity().getOwner() != newCitizen)
             return true;
 
