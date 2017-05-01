@@ -27,16 +27,17 @@ public class ElementEnemy extends CommandElement {
         if (!(commandSource instanceof Player))
             throw commandArgs.createError(Text.of("Only a player can perform this command."));
         DBPlayer    player = Core.getPlayerHandler().get((Player) commandSource);
+        String      name = commandArgs.next();
 
         if (player.getCity() != null) {
             Faction         faction = player.getCity().getFaction();
             List<Faction>   enemies = Core.getDiplomacyHandler().getEnemies(faction);
-            Faction         f = Core.getFactionHandler().get(commandArgs.next());
+            Faction         f = Core.getFactionHandler().get(name);
 
             if (f != null && enemies.contains(f))
                 return f;
         }
-        throw commandArgs.createError(Text.of(" is not a valid"));
+        throw commandArgs.createError(Text.of(name + " n'est pas une faction valide."));
     }
 
     @Override

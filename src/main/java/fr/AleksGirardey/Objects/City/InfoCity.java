@@ -55,8 +55,9 @@ public class InfoCity {
         this.channel = channel;
     }
 
-    public void setCityRank(CityRank cityRank) {
-        this.cityRank = cityRank;
+    public void     setCityRank() {
+        this.cityRank = MapRanks.get(city.getRank());
+        this.color = cityRank.getColor();
     }
 
     public City     getCity() {

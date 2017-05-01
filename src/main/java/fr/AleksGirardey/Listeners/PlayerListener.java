@@ -17,6 +17,7 @@ import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.living.humanoid.player.RespawnPlayerEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.channel.MessageChannel;
+import org.spongepowered.api.text.channel.MutableMessageChannel;
 import org.spongepowered.api.world.World;
 
 import java.sql.SQLException;
@@ -67,7 +68,7 @@ public class PlayerListener {
         Transform<World> transform;
 
         if (player.getCity() != null) {
-            transform = new Transform<World>(Utils.getNearestSpawn(player));
+            transform = new Transform<>(Utils.getNearestSpawn(player));
             event.setToTransform(transform);
         }
     }
@@ -87,8 +88,10 @@ public class PlayerListener {
             InfoCity ic = Core.getInfoCityMap().get(player.getCity());
             if (ic.getChannel() == null)
                 ic.setChannel(new CityChannel(player.getCity()));
-            ic.getChannel().addMember(player.getUser().getPlayer().get());
-            Core.getLogger().info("Player '" + player.getDisplayName() + "' added to city channel (" + player.getCity().getDisplayName() + ")");
+            if (!ic.getChannel().getMembers().contains(player.getUser().getPlayer().get())) {
+                ic.getChannel().addMember(player.getUser().getPlayer().get());
+                Core.getLogger().info("Player '" + player.getDisplayName() + "' added to city channel (" + player.getCity().getDisplayName() + ")");
+            }
         }
         Core.getBroadcastHandler().getGlobalChannel().addMember(player.getUser().getPlayer().get());
         player.getUser().getPlayer().get().setMessageChannel(Core.getBroadcastHandler().getGlobalChannel());
@@ -96,6 +99,7 @@ public class PlayerListener {
 
     @Listener(order = Order.FIRST)
     public void onPlayerLogout(ClientConnectionEvent.Disconnect event) {
+        MutableMessageChannel   channel;
         DBPlayer        player = Core.getPlayerHandler().get(event.getTargetEntity());
         PartyWar        partyWar;
 
@@ -106,6 +110,10 @@ public class PlayerListener {
             else
                 partyWar.remove(player);
         }
+        channel = Core.getInfoCityMap().get(player.getCity()).getChannel();
+        Core.getLogger().info("[Logout] Channel '" + channel.toString() + "' contains '" + channel.getMembers().toString() + "'");
+        if (Core.getBroadcastHandler().getGlobalChannel().getMembers().contains(event.getTargetEntity()))
+            Core.getBroadcastHandler().getGlobalChannel().removeMember(event.getTargetEntity());
 
         // INSERT ZOMBIE PIGMAN STUFF
 

@@ -47,6 +47,7 @@ public class    DatabaseHandler {
         getLogger().info("Catching up database properties...");
         config = new HikariConfig("WarOfSquirrels/Database.properties");
         getLogger().info("Creating dataSource...");
+        config.addDataSourceProperty("autoReconnect", true);
         dataSource = new HikariDataSource(config);
         getLogger().info("Everything went good.");
         this.init();

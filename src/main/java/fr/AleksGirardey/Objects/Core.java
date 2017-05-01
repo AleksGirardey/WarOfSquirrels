@@ -5,6 +5,7 @@ import fr.AleksGirardey.Handlers.*;
 import fr.AleksGirardey.Main;
 import fr.AleksGirardey.Objects.City.InfoCity;
 import fr.AleksGirardey.Objects.DBObject.City;
+import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.DBObject.Faction;
 import fr.AleksGirardey.Objects.DBObject.Shop;
 import fr.AleksGirardey.Objects.Faction.InfoFaction;
@@ -14,19 +15,23 @@ import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.channel.MutableMessageChannel;
+import org.spongepowered.api.world.World;
 
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.sql.SQLException;
-import java.util.Map;
+import java.util.*;
 
 public class Core {
 
     @Inject
     private static Game                     plugin;
     private static Main                     _main;
+    private static World                    _world;
 
     private static ConfigLoader             _config;
     private static Logger                   _logger;
@@ -63,6 +68,10 @@ public class Core {
                 File conf = configPath.toFile();
                 if (!conf.createNewFile())
                     Core.getLogger().error("Can't create WOS.properties");
+            } else if (!warPath.toFile().exists()) {
+                File conf = warPath.toFile();
+                if (!conf.createNewFile())
+                    Core.getLogger().error("Can't create WOS.rollbacks");
             }
             database = new DatabaseHandler(logger);
         } catch (Exception e) {
@@ -75,6 +84,7 @@ public class Core {
         plugin = game;
         _main = main;
         _logger = logger;
+        _world = game.getServer().getWorld(game.getServer().getDefaultWorldName()).orElse(null);
         _config = new ConfigLoader(managerConfigLoad);
         logger.info("Setting up handlers..");
         permissionHandler = new PermissionHandler(logger);
@@ -104,9 +114,6 @@ public class Core {
         cuboHandler.updateDependencies();
         infoCityMap = getCityHandler().getCityMap();
         infoFactionMap = getFactionHandler().getFactionMap();
-
-        for (City city : cityHandler.getCityMap().keySet())
-            logger.info("[DEBUG] Size : " + city.getCitizens().size());
 
         logger.info("Done.");
     }
@@ -178,4 +185,19 @@ public class Core {
     public static Map<City, InfoCity>           getInfoCityMap() { return infoCityMap; }
 
     public static Map<Faction, InfoFaction>     getInfoFactionMap() { return infoFactionMap; }
+
+    public static World                         getWorld() { return _world; }
+
+
+    /*
+    ** Clean DB
+    */
+
+    public static void                  clear() {
+        Set<Faction>                    factions = Core.getFactionHandler().getFactionMap().keySet();
+        Collection<DBPlayer>            players = Core.getPlayerHandler().getMap().values();
+
+        factions.forEach(f -> Core.getFactionHandler().delete(f));
+        players.forEach(p -> Core.getPlayerHandler().delete(p));
+    }
 }

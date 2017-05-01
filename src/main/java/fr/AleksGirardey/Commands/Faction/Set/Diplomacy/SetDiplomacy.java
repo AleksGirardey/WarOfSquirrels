@@ -32,9 +32,9 @@ public abstract class           SetDiplomacy extends CityCommandAssistant{
         Permission              perm = null;
 
         if (context.hasAny("<build>"))
-            perm = new Permission(context.<Boolean>getOne("<build>").get(),
-                    context.<Boolean>getOne("<container>").get(),
-                    context.<Boolean>getOne("<switch>").get());
+            perm = new Permission(context.<Boolean>getOne("<build>").orElse(false),
+                    context.<Boolean>getOne("<container>").orElse(false),
+                    context.<Boolean>getOne("<switch>").orElse(false));
 
         NewDiplomacy(player, faction, perm);
         return CommandResult.success();

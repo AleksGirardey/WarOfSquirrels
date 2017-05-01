@@ -22,7 +22,7 @@ public class ElementCity extends CommandElement {
 
         if (!Core.getCityHandler().getCityNameList().contains(city))
             throw commandArgs.createError(Text.of(city + " is not a valid city name."));
-        return city;
+        return Core.getCityHandler().get(city);
     }
 
     @Override

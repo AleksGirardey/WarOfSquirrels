@@ -2,6 +2,7 @@ package fr.AleksGirardey.Commands.War;
 
 import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.DBObject.Attackable;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.DBObject.Faction;
@@ -16,6 +17,7 @@ public class                    DeclareWar extends CityCommandAssistant {
     @Override
     protected boolean           SpecialCheck(DBPlayer player, CommandContext context) {
         PartyWar                party = Core.getPartyHandler().getFromPlayer(player);
+        Attackable              target = context.<Attackable>getOne("[enemy]").get();
 
         if (party == null) {
             player.sendMessage(Text.of("You need a party to attack. /party create"));
@@ -24,8 +26,8 @@ public class                    DeclareWar extends CityCommandAssistant {
 
         for (DBPlayer p : party.toList()) {
             if (p.getCity() != party.getLeader().getCity()
-                    && (!Core.getFactionHandler().areEnemies(p.getCity().getFaction(), context.<Faction>getOne("[enemy]").get()))
-                    || !Core.getFactionHandler().areAllies(p.getCity().getFaction(), party.getLeader().getCity().getFaction())) {
+                    && (!Core.getFactionHandler().areEnemies(p.getCity().getFaction(), target.getFaction())
+                    || !Core.getFactionHandler().areAllies(p.getCity().getFaction(), party.getLeader().getCity().getFaction()))) {
                 player.sendMessage(Text.of("Your party member '" + p.getDisplayName() + "' can't participate to this war."));
                 return false;
             }
@@ -39,11 +41,11 @@ public class                    DeclareWar extends CityCommandAssistant {
     @Override
     protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
         PartyWar                party = Core.getPartyHandler().getFromPlayer(player);
-        City                    city = Core.getCityHandler().get(context.<Integer>getOne("[enemy]").get());
+        Attackable              target = context.<Attackable>getOne("[enemy]").get();
 
         if (Core.getWarHandler().createWar(
                 player.getCity(),
-                city,
+                target,
                 party))
             return CommandResult.success();
         return CommandResult.empty();

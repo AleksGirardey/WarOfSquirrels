@@ -21,7 +21,7 @@ public class ElementFaction extends CommandElement {
 
         if (Core.getFactionHandler().get(faction) == null)
             throw commandArgs.createError(Text.of(faction + " is not a valid faction name."));
-        return faction;
+        return Core.getFactionHandler().get(faction);
     }
 
     @Override

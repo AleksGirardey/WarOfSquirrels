@@ -7,6 +7,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.world.World;
 
 public class OnPlayerMove {
     @Listener
@@ -15,6 +16,8 @@ public class OnPlayerMove {
             return;
         Player              pl = (Player) event.getTargetEntity();
         DBPlayer            player = Core.getPlayerHandler().get(pl);
+        World               world = pl.getWorld();
+
         int                 x = event.getFromTransform().getLocation().getBlockX(),
                 z = event.getFromTransform().getLocation().getBlockZ(),
                 lastX, lastZ;
@@ -30,8 +33,8 @@ public class OnPlayerMove {
         }
         Chunk     lastC, C;
 
-        lastC = Core.getChunkHandler().get(lastX, lastZ);
-        C = Core.getChunkHandler().get(player.getLastChunkX(), player.getLastChunkZ());
+        lastC = Core.getChunkHandler().get(lastX, lastZ, world);
+        C = Core.getChunkHandler().get(player.getLastChunkX(), player.getLastChunkZ(), world);
 
         /* Il faut identifier si le changement de chunk indique un changement de propriété */
 

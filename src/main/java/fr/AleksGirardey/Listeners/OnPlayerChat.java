@@ -22,7 +22,7 @@ public class OnPlayerChat {
             for (MessageReceiver mr : event.getChannel().get().getMembers()) {
                 Player pl = (Player) mr;
                 DBPlayer p = Core.getPlayerHandler().get(pl);
-                if (pl.getLocation().getPosition().distance(player.getUser().getPlayer().get().getLocation().getPosition()) <= 30)
+                if (pl.getLocation().getPosition().distance(player.getUser().getPlayer().get().getLocation().getPosition()) <= Core.getConfig().getSayDistance())
                     p.sendMessage(message);
             }
         } else

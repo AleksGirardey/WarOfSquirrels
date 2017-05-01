@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class City extends DBObject {
+public class City extends DBObject implements Attackable {
     private static String       _fields = "`" + GlobalCity.displayName
             + "`, `" + GlobalCity.tag
             + "`, `" + GlobalCity.rank
@@ -136,27 +136,28 @@ public class City extends DBObject {
         this.edit(GlobalCity.displayName, "'" + displayName + "'");
     }
 
-    public void setTag(String tag) {
+    public void     setTag(String tag) {
         this.tag = tag;
         this.edit(GlobalCity.tag, "'" + tag + "'");
     }
 
-    public void setRank(int rank) {
+    public void     setRank(int rank) {
         this.rank = rank;
+        Core.getInfoCityMap().get(this).setCityRank();
         this.edit(GlobalCity.rank, "'" + rank + "'");
     }
 
-    public void setOwner(DBPlayer owner) {
+    public void     setOwner(DBPlayer owner) {
         this.owner = owner;
         this.edit(GlobalCity.playerOwner, "'" + owner.getUser().getUniqueId().toString() + "'");
     }
 
-    public void setFaction(Faction faction) {
+    public void     setFaction(Faction faction) {
         this.faction = faction;
         this.edit(GlobalCity.faction, (faction == null ? "NULL" : "'" + faction.getId() + "'"));
     }
 
-    public void setPermRec(Permission permRec) {
+    public void     setPermRec(Permission permRec) {
         this.permRec = permRec;
         this.edit(GlobalCity.permRec, permRec != null ? ("'" + permRec.getId() + "'") : "NULL");
     }

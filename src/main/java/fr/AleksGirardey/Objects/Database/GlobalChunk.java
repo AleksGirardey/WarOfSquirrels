@@ -11,4 +11,5 @@ public class  GlobalChunk {
     public static String        respawnX = "chunk_respawnX";
     public static String        respawnY = "chunk_respawnY";
     public static String        respawnZ = "chunk_respawnZ";
+    public static String        world = "chunk_world";
 }

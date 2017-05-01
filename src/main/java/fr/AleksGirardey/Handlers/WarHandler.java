@@ -2,10 +2,7 @@ package fr.AleksGirardey.Handlers;
 
 import com.flowpowered.math.vector.Vector3i;
 import fr.AleksGirardey.Objects.Core;
-import fr.AleksGirardey.Objects.DBObject.Cubo;
-import fr.AleksGirardey.Objects.DBObject.Chunk;
-import fr.AleksGirardey.Objects.DBObject.City;
-import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.DBObject.*;
 import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.War.PartyWar;
 import fr.AleksGirardey.Objects.War.War;
@@ -62,6 +59,10 @@ public class WarHandler {
                         Cause.source(Core.getMain().getPluginContainer()).build());
             }
         });
+    }
+
+    public boolean  createWar(City city, Attackable target, PartyWar party) {
+        return target instanceof City && createWar(city, (City) target, party);
     }
 
     public boolean  createWar(City attacker, City defender, PartyWar party) {
@@ -152,15 +153,18 @@ public class WarHandler {
 
     public void     displayList(DBPlayer player) {
         if (Core.getConfig().isPeaceTime()) {
-            player.sendMessage(Text.of("---=== Peace is ON ===---"));
+            player.sendMessage(Text.of("---=== Nous sommes en temps de paix ===---"));
             return;
         }
 
-        player.sendMessage(Text.of("---=== War list [" + wars.size() + "] ===---"));
+        if (wars.size() > 0) {
+            player.sendMessage(Text.of("---=== Guerres en cours [" + wars.size() + "] ===---"));
 
-        for (War war : wars)
-            player.sendMessage(Text.of(war.getAttacker().getDisplayName() + " [" + war.getAttackerPoints() + "] vs. "
-                    + war.getDefender().getDisplayName() + " [" + war.getDefenderPoints() + "]"));
+            for (War war : wars)
+                player.sendMessage(Text.of(war.getAttacker().getDisplayName() + " [" + war.getAttackerPoints() + "] vs. "
+                        + war.getDefender().getDisplayName() + " [" + war.getDefenderPoints() + "]"));
+        } else
+            player.sendMessage(Text.of("Aucune war n'est actuellement en cours."));
     }
 
     public void     AddPoints(DBPlayer killer, DBPlayer victim) {
@@ -176,8 +180,8 @@ public class WarHandler {
         }
     }
 
-    public boolean      isConcerned(Vector3i position) {
-        Chunk           c = Core.getChunkHandler().get(position.getX() / 16, position.getZ() / 16);
+    public boolean      isConcerned(Vector3i position, World world) {
+        Chunk           c = Core.getChunkHandler().get(position.getX() / 16, position.getZ() / 16, world);
 
         return c != null && getWar(c.getCity()).getDefender() == c.getCity();
     }

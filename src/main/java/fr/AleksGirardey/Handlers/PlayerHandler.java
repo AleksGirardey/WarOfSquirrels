@@ -112,4 +112,15 @@ public class        PlayerHandler {
         list.addAll(players.keySet());
         return list;
     }
+
+    public Map<User, DBPlayer> getMap() { return playersMap; }
+
+    public void delete(DBPlayer p) {
+        incarnationMap.remove(p);
+        players.remove(p.getDisplayName());
+        playersMap.remove(p.getUser());
+        p.delete();
+    }
+
+    public void clearFake() { }
 }

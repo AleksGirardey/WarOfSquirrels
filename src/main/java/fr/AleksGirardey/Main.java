@@ -24,6 +24,7 @@ import fr.AleksGirardey.Commands.RefuseCommand;
 import fr.AleksGirardey.Commands.Shop.ShopDelete;
 import fr.AleksGirardey.Commands.Shop.ShopReassign;
 import fr.AleksGirardey.Commands.Utils.CommandPay;
+import fr.AleksGirardey.Commands.Utils.LevelUp;
 import fr.AleksGirardey.Commands.War.*;
 import fr.AleksGirardey.Listeners.*;
 import fr.AleksGirardey.Objects.CommandElements.*;
@@ -210,7 +211,7 @@ public class Main {
 
     private CommandSpec     commandCitySet() {
         CommandSpec         setHelp, setSpawn, setMayor, setAssistant, setResident, setRecruit,
-                setOutside, setAllies, setPermResident, setPermRecruit, setPerm, setCubo;
+                setOutside, setAllies, setPermResident, setPermRecruit, setPerm, setCubo, setHomeblock;
 
         setHelp = CommandSpec.builder()
                 .description(Text.of("Display /city set help"))
@@ -291,14 +292,23 @@ public class Main {
                 .description(Text.of("Set a citizen resident"))
                 .executor(new setResident())
                 .arguments(
-                        GenericArguments.onlyOne(new ElementCitizen(Text.of("[citizen]"))))
+                        GenericArguments.onlyOne(new ElementCitizen(Text.of("[citizen]"))),
+                        GenericArguments.repeated(
+                                GenericArguments.optional(GenericArguments.onlyOne(new ElementCitizen(Text.of("<citizen>")))), 10))
                 .build();
 
         setRecruit = CommandSpec.builder()
                 .description(Text.of("Set a citizen recruit"))
                 .executor(new setRecruit())
                 .arguments(
-                        GenericArguments.onlyOne(new ElementCitizen(Text.of("[citizen]"))))
+                        GenericArguments.onlyOne(new ElementCitizen(Text.of("[citizen]"))),
+                        GenericArguments.repeated(
+                                GenericArguments.optional(GenericArguments.onlyOne(new ElementCitizen(Text.of("<citizen>")))), 10))
+                .build();
+
+        setHomeblock = CommandSpec.builder()
+                .description(Text.of("Set city homeblock"))
+                .executor(new setHomeblock())
                 .build();
 
         return (CommandSpec.builder()
@@ -311,6 +321,7 @@ public class Main {
                 .child(setCubo, "cubo", "c")
                 .child(setResident, "resident", "r")
                 .child(setRecruit, "recruit", "rec")
+                .child(setHomeblock, "homeblock", "hb")
                 .build());
     }
 
@@ -326,7 +337,7 @@ public class Main {
                 .description(Text.of("Display faction information"))
                 .executor(new FactionInfo())
                 .arguments(GenericArguments.optional(
-                        GenericArguments.onlyOne(new ElementFaction(Text.of("[faction]")))))
+                        GenericArguments.onlyOne(new ElementFaction(Text.of("<faction>")))))
                 .build();
 
         faction_create = CommandSpec.builder()
@@ -358,7 +369,7 @@ public class Main {
                 .build());
     }
 
-    private CommandSpec    commandFactionSet() {
+    private CommandSpec     commandFactionSet() {
         CommandSpec         setAlly, setNeutral, setEnemy;
 
         setAlly = CommandSpec.builder()
@@ -478,7 +489,7 @@ public class Main {
                 .description(Text.of("attack a city"))
                 .executor(new DeclareWar())
                 .arguments(
-                        GenericArguments.onlyOne(new ElementEnemy(Text.of("[enemy]"))))
+                        GenericArguments.onlyOne(new ElementAttackable(Text.of("[target]"))))
                 .build();
 
         warWinAtt = CommandSpec.builder()
@@ -583,7 +594,7 @@ public class Main {
     @Listener
     public void             onServerInit(GameInitializationEvent event) {
         CommandSpec         city, faction, party, war, shop, accept, refuse,
-                chat, say, shout, town, near, list, setSpawn, pay;
+                chat, say, shout, town, near, list, setSpawn, pay, levelUp;
 
         city = commandCity();
 
@@ -676,6 +687,14 @@ public class Main {
                 )
                 .build();
 
+        levelUp = CommandSpec.builder()
+                .description(Text.of("Level up a city"))
+                .executor(new LevelUp())
+                .arguments(
+                        GenericArguments.onlyOne(new ElementCity(Text.of("[city]"))),
+                        GenericArguments.onlyOne(GenericArguments.integer(Text.of("[level]")))
+                ).build();
+
         game.getCommandManager().register(this, city, "city", "c");
         game.getCommandManager().register(this, faction, "faction", "f");
         game.getCommandManager().register(this, party, "party", "p");
@@ -691,6 +710,7 @@ public class Main {
         game.getCommandManager().register(this, setSpawn, "setSpawn");
         game.getCommandManager().register(this, pay, "pay");
         game.getCommandManager().register(this, shop, "shop", "s");
+        game.getCommandManager().register(this, levelUp, "setlevel", "sl");
 
         logger.info("Welcome in the War Of Squirrels. Have fun !");
     }

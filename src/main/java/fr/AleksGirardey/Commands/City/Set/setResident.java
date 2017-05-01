@@ -8,33 +8,58 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.util.Collection;
+
 public class                    setResident extends CityCommandAssistant {
+
+    private void                set(DBPlayer resident) {
+        resident.setResident(true);
+        resident.setAssistant(false);
+    }
+
     @Override
     protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
         DBPlayer                resident = context.<DBPlayer>getOne("[citizen]").orElse(null);
 
-        resident.setResident(true);
-        resident.setAssistant(false);
+        set(resident);
+        if (context.hasAny("<citizen>")) {
+            Collection<DBPlayer> all = context.getAll("<citizen>");
+
+            all.forEach(this::set);
+        }
         return CommandResult.success();
+    }
+
+    private boolean     check(DBPlayer player, DBPlayer newResident) {
+        Text            message;
+
+        if (newResident == null)
+            message = Text.of("Aucun citoyen ne correspond.");
+        else if (newResident.getCity() != player.getCity())
+            message = Text.of(newResident + " n'appartient pas a votre ville.");
+        else if (player.getCity().getOwner() == newResident)
+            message = Text.of(newResident + " vous ne pouvez pas retrograder votre maire.");
+        else
+            return true;
+
+        player.sendMessage(Text.of(TextColors.RED, newResident + " is not a valid citizen.", TextColors.RESET));
+        return false;
     }
 
     @Override
     protected boolean SpecialCheck(DBPlayer player, CommandContext context) {
         DBPlayer            newCitizen = context.<DBPlayer>getOne("[citizen]").orElse(null);
 
-        if (newCitizen == null) {
-            Core.getLogger().info("[DEBUG] NOT NULL");
+        if (!check(player, newCitizen))
             return false;
-        } else if (newCitizen.getCity() != player.getCity()) {
-            Core.getLogger().info("[DEBUG] Not in the city");
-            return false;
-        } else if (player.getCity().getOwner() == newCitizen) {
-            Core.getLogger().info("[DEBUG] Mayor : " + player.getCity().getOwner().getDisplayName() + " !!!");
-            return false;
-        } else
-            return true;
 
-//        player.sendMessage(Text.of(TextColors.RED, newCitizen + " is not a valid citizen.", TextColors.RESET));
-//        return false;
+        if (context.hasAny("<citizen>")) {
+            Collection<DBPlayer>    all = context.getAll("<citizen>");
+
+            for (DBPlayer p : all)
+                if (!check(player, p))
+                    return false;
+        }
+        return true;
     }
 }
