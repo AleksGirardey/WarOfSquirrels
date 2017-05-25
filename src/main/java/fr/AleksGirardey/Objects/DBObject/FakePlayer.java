@@ -27,13 +27,13 @@ public class                FakePlayer extends DBPlayer {
     @Override
     public void     delete() {
         ((DBPlayer)this).delete();
-        _sql = "DELETE FROM `" + _tablename + "` WHERE `" + GlobalFakePlayer.id + "` = ``";
+        _sql = "DELETE FROM `" + this.tableName + "` WHERE `" + GlobalFakePlayer.id + "` = ``";
         this.update();
     }
 
     @Override
     public String   add(String values) {
-        _sql = "INSERT INTO `" + _tablename + "` (" + fields + ") VALUES (`" + values + "`);";
+        _sql = "INSERT INTO `" + this.tableName + "` (" + fields + ") VALUES (`" + values + "`);";
         return this.update();
     }
 
