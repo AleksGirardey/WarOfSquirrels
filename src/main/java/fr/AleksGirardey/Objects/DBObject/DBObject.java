@@ -9,13 +9,13 @@ import java.sql.SQLException;
 
 public abstract class DBObject {
 
-    protected String        _sql;
-    protected String        _primaryKeyName;
+    protected String          _sql;
+    private String          _primaryKeyName;
     protected String        _primaryKeyValue;
-    protected String        _tablename;
-    private String        _fields;
+    protected String          _tablename;
+    private String          _fields;
 
-    public DBObject(String primaryKeyName, String tablename, String fields) {
+    public                  DBObject(String primaryKeyName, String tablename, String fields) {
         this._primaryKeyName = primaryKeyName;
         this._tablename = tablename;
         this._fields = fields;

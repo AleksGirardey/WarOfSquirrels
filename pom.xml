@@ -77,23 +77,20 @@
         <dependency>
             <groupId>org.spongepowered</groupId>
             <artifactId>spongeapi</artifactId>
-            <version>5.1.0-SNAPSHOT</version>
+            <version>5.2.0-20170523.191214-6</version>
         </dependency>
         <dependency>
             <groupId>org.spongepowered</groupId>
             <artifactId>spongeforge</artifactId>
-            <version>1.10.2-2171-5.1.0-BETA-1971</version>
+            <version>1.10.2-2281-5.2.0-BETA-2350</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>net.minecraftforge.gradle</groupId>
             <artifactId>ForgeGradle</artifactId>
             <version>2.1-20160116.192356-17</version>
-        </dependency>
+        </dependency>-->
         <!--Local-->
-        <dependency>
-            <groupId>net.theviolentsquirrels</groupId>
-            <artifactId>craftandconquer</artifactId>
-        </dependency>
+
         <!--Mysql Jdbc -->
         <dependency>
             <groupId>mysql</groupId>

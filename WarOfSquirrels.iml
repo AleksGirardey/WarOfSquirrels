@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -10,7 +10,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.spongepowered:spongeapi:5.1.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.spongepowered:spongeapi:5.2.0-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.21" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:17.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.2.4" level="project" />
@@ -31,22 +31,15 @@
     <orderEntry type="library" name="Maven: com.flowpowered:flow-math:1.0.3" level="project" />
     <orderEntry type="library" name="Maven: com.flowpowered:flow-noise:1.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.ow2.asm:asm:5.0.3" level="project" />
-    <orderEntry type="library" name="Maven: org.spongepowered:event-gen-core:2.1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.spongepowered:spongeforge:1.10.2-2171-5.1.0-BETA-1971" level="project" />
-    <orderEntry type="library" name="Maven: org.spongepowered:mixin:0.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.9" level="project" />
-    <orderEntry type="library" name="Maven: org.ow2.asm:asm-commons:5.0.3" level="project" />
-    <orderEntry type="library" name="Maven: org.ow2.asm:asm-tree:5.0.3" level="project" />
+    <orderEntry type="library" name="Maven: org.spongepowered:spongeforge:1.10.2-2281-5.2.0-BETA-2350" level="project" />
+    <orderEntry type="library" name="Maven: org.spongepowered:mixin:0.6.8-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
-    <orderEntry type="library" name="Maven: com.googlecode.jarjar:jarjar:1.1" level="project" />
     <orderEntry type="library" name="Maven: com.h2database:h2:1.4.192" level="project" />
     <orderEntry type="library" name="Maven: it.unimi.dsi:fastutil:7.0.12" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.0-beta9" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.logging.log4j:log4j-api:2.0-beta9" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.mariadb.jdbc:mariadb-java-client:1.5.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.xerial:sqlite-jdbc:3.14.2.1" level="project" />
-    <orderEntry type="library" name="Maven: net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: net.theviolentsquirrels:craftandconquer:unknown" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.6" level="project" />
     <orderEntry type="library" name="Maven: com.zaxxer:HikariCP:2.4.5" level="project" />
   </component>
