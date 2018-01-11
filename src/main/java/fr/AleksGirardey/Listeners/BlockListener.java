@@ -108,7 +108,7 @@ public class BlockListener {
 
     @Listener(order = Order.FIRST)
     public void             onBlockInteract(InteractBlockEvent.Secondary event) {
-        DBPlayer            player = Core.getPlayerHandler().get((Player) event.getCause().getNamedCauses().get("Source"));
+        DBPlayer            player = Core.getPlayerHandler().get(event.getCause().first(Player.class).get());
         Location<World>     location = event.getTargetBlock().getLocation().orElse(null);
         World               world = player.getUser().getPlayer().get().getWorld();
         int                 x, z;

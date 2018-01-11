@@ -18,6 +18,11 @@ public class DBPlayer extends DBObject {
             + "`, `" + GlobalPlayer.cityId
             + "`, `" + GlobalPlayer.assistant
             + "`, `" + GlobalPlayer.resident
+            + "`, `" + GlobalPlayer.account
+            + "`, `" + GlobalPlayer.isBot
+            + "`, `" + GlobalPlayer.isBot
+            + "`, `" + GlobalPlayer.isBot
+            + "`, `" + GlobalPlayer.isBot
             + "`, `" + GlobalPlayer.account + "`";
     private String          _newFields = "`" + GlobalPlayer.uuid + "`, " + _fields;
 
@@ -70,7 +75,7 @@ public class DBPlayer extends DBObject {
         writeLog();
     }
 
-    public DBPlayer(String name) {
+    public DBPlayer(String uuid, String name) {
         super(GlobalPlayer.uuid, GlobalPlayer.tableName, _fields);
         this.user = null;
         this.displayName = name;
@@ -81,7 +86,7 @@ public class DBPlayer extends DBObject {
         this.assistant = false;
         this.resident = false;
         this.reincarnation = false;
-        this._primaryKeyValue = UUID.randomUUID().toString();
+        this._primaryKeyValue = uuid;
         this.add("'" + _primaryKeyValue + "', '"
                 + displayName + "', "
                 + score + ", "

@@ -5,17 +5,16 @@ import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.Chunk;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
-import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.BlockChangeFlag;
+import org.spongepowered.api.world.BlockChangeFlags;
 import org.spongepowered.api.world.World;
 
 import java.io.IOException;
@@ -205,7 +204,7 @@ public class War {
 
     private void        rollback() {
         for (Transaction<BlockSnapshot> t : _rollbackBlocks)
-            t.getOriginal().restore(true, BlockChangeFlag.ALL);
+            t.getOriginal().restore(true, BlockChangeFlags.ALL);
     }
 
     boolean      checkWin() {

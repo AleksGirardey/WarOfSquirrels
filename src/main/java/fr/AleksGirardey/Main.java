@@ -6,6 +6,10 @@ import fr.AleksGirardey.Commands.Chat.*;
 import fr.AleksGirardey.Commands.City.*;
 import fr.AleksGirardey.Commands.City.Cubo.CuboCommandAdd;
 import fr.AleksGirardey.Commands.City.Cubo.CuboCommandMode;
+import fr.AleksGirardey.Commands.City.Set.Permissions.PermAllies;
+import fr.AleksGirardey.Commands.City.Set.Permissions.PermOutside;
+import fr.AleksGirardey.Commands.City.Set.Permissions.PermRecruit;
+import fr.AleksGirardey.Commands.City.Set.Permissions.PermResident;
 import fr.AleksGirardey.Commands.City.Set.*;
 import fr.AleksGirardey.Commands.Faction.FactionCreate;
 import fr.AleksGirardey.Commands.Faction.FactionDelete;
@@ -14,11 +18,7 @@ import fr.AleksGirardey.Commands.Faction.FactionInfo;
 import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetAlly;
 import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetEnemy;
 import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetNeutral;
-import fr.AleksGirardey.Commands.City.Set.Permissions.PermAllies;
-import fr.AleksGirardey.Commands.City.Set.Permissions.PermOutside;
-import fr.AleksGirardey.Commands.City.Set.Permissions.PermResident;
 import fr.AleksGirardey.Commands.Faction.Set.FactionSetHelp;
-import fr.AleksGirardey.Commands.City.Set.Permissions.*;
 import fr.AleksGirardey.Commands.Party.*;
 import fr.AleksGirardey.Commands.RefuseCommand;
 import fr.AleksGirardey.Commands.Shop.ShopDelete;
@@ -30,7 +30,6 @@ import fr.AleksGirardey.Listeners.*;
 import fr.AleksGirardey.Objects.CommandElements.*;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
-import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -49,7 +48,6 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.common.text.serializer.xml.U;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -590,11 +588,42 @@ public class Main {
                 .child(delete, "delete", "d")
                 .build());
     }
+/*
+    private CommandSpec     commandBot() {
+        CommandSpec         newBot, delete, rename, move;
+
+        newBot = CommandSpec.builder()
+                .description(Text.of("Add a new BOT"))
+                .permission("minecraft.command.op")
+                .executor(new BotNew())
+                .arguments(
+                        GenericArguments.onlyOne(GenericArguments.string(Text.of("[Name]"))),
+                        GenericArguments.optional(GenericArguments.onlyOne(new ElementSkinBot(Text.of("[Skin]")))))
+                .build();
+
+        delete = CommandSpec.builder()
+                .description(Text.of("Delete a BOT"))
+                .permission("minecraft.command.op")
+                .executor(new BotDelete())
+                .arguments(
+                        GenericArguments.optional(GenericArguments.onlyOne(new ElementBot(Text.of("[Bot]")))))
+                .build();
+
+        rename = CommandSpec.builder()
+
+        return (CommandSpec.builder()
+                .description(Text.of("Bot admin commands"))
+                .permission("minecraft.command.op")
+                .child(newBot, "new", "n")
+                .child(delete, "delete", "d")
+        )
+
+    } */
 
     @Listener
     public void             onServerInit(GameInitializationEvent event) {
         CommandSpec         city, faction, party, war, shop, accept, refuse,
-                chat, say, shout, town, near, list, setSpawn, pay, levelUp;
+                chat, say, shout, town, near, list, setSpawn, pay, levelUp, bot;
 
         city = commandCity();
 
@@ -605,6 +634,8 @@ public class Main {
         war = commandWar();
 
         shop = commandShop();
+
+        //bot = commandBot();
 
         accept = CommandSpec.builder()
                 .description(Text.of("Accept a pending invitation."))

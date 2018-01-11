@@ -1,6 +1,7 @@
 package fr.AleksGirardey.Objects.DBObject;
 
 import fr.AleksGirardey.Objects.Core;
+import fr.AleksGirardey.Objects.Database.GlobalPlayer;
 import fr.AleksGirardey.Objects.Database.Statement;
 import org.spongepowered.api.text.LiteralText;
 import org.spongepowered.api.text.Text;
@@ -29,6 +30,8 @@ public abstract class DBObject {
     protected void      edit(String field, String value) {
         _sql = "UPDATE `" + _tablename + "` SET `" + _tablename + "`.`" + field + "` = "
                 + value + " WHERE `" + _primaryKeyName + "` = '" + _primaryKeyValue + "';";
+        Core.getLogger().info("[DB] Editing " + _tablename + " at id '" + this._primaryKeyValue + "' :" +
+                " '" + field + "' => '" + value + "'");
         this.update();
     }
 
