@@ -9,6 +9,9 @@ import fr.AleksGirardey.Objects.Database.Statement;
 import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import org.slf4j.Logger;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.sql.SQLException;
@@ -51,11 +54,12 @@ public class ChunkHandler {
     public Chunk            get(int id) { return chunks.get(id); }
 
     public Chunk            get(int posX, int posZ, World world) {
-        for (Chunk chunk : chunks.values())
-            if (chunk.getPosX() == posX
-                    && chunk.getPosZ() == posZ
-                    && chunk.getWorld() == world)
+        for (Chunk chunk : chunks.values()) {
+            if (chunk.getPosX() == posX && chunk.getPosZ() == posZ
+                    && chunk.getWorld().getUniqueId().equals(world.getUniqueId())) {
                 return chunk;
+            }
+        }
         return null;
     }
 
@@ -65,7 +69,7 @@ public class ChunkHandler {
         for (Chunk chunk : chunks.values())
             if (chunk.getPosX() == posX
                     && chunk.getPosZ() == posZ
-                    && chunk.getWorld() == world)
+                    && chunk.getWorld().getUniqueId().equals(world.getUniqueId()))
                 return true;
         return false;
     }
@@ -97,10 +101,10 @@ public class ChunkHandler {
         if (outpost)
             return Utils.CanPlaceOutpost(posX, posZ);
 
-        return (Core.getWorld() == world && (get(posX + 1, posZ, world) != null && get(posX + 1, posZ, world).getCity() == city) ||
-                (get(posX - 1, posZ, world) != null && get(posX - 1, posZ, world).getCity() == city) ||
+        return (get(posX, posZ - 1, world) != null && get(posX, posZ - 1, world).getCity() == city) ||
                 (get(posX, posZ + 1, world) != null && get(posX, posZ + 1, world).getCity() == city) ||
-                (get(posX, posZ - 1, world) != null && get(posX, posZ - 1, world).getCity() == city));
+                (get(posX - 1, posZ, world) != null && get(posX - 1, posZ, world).getCity() == city) ||
+                (get(posX + 1, posZ, world) != null && get(posX + 1, posZ, world).getCity() == city);
     }
 
     public List<Chunk>  getHomeblockList() {
@@ -124,16 +128,27 @@ public class ChunkHandler {
     }
 
     public void         setHomeblock(DBPlayer player) {
-        Chunk           homeblock;
+        Location<World> position = player.getUser().getPlayer().get().getLocation();
+        Chunk           newHb, oldHb;
         City            city;
 
-        homeblock = get(player.getLastChunkX(), player.getLastChunkZ(), player.getUser().getPlayer().get().getWorld());
-        if (homeblock.getCity() == player.getCity())
+        newHb = get(player.getLastChunkX(), player.getLastChunkZ(), player.getUser().getPlayer().get().getWorld());
+        if (newHb.getCity() == player.getCity())
             city = player.getCity();
         else
-            city = homeblock.getCity();
+            city = newHb.getCity();
 
-        homeblock.setHomeblock(true);
-        getHomeblock(city).setHomeblock(false);
+        oldHb = getHomeblock(city);
+        
+        newHb.setHomeblock(true);
+        oldHb.setHomeblock(false);
+        newHb.setRespawnX(position.getBlockX());
+        newHb.setRespawnY(position.getBlockY());
+        newHb.setRespawnZ(position.getBlockZ());
+        
+        oldHb.setRespawnX(-1);
+        oldHb.setRespawnY(-1);
+        oldHb.setRespawnZ(-1);
+        Core.getBroadcastHandler().cityChannel(city, "Le homeblock de la ville est désormais en [" + newHb.getPosX() + ";" + newHb.getPosZ() + "]", TextColors.GOLD);
     }
 }

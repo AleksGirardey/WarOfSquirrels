@@ -8,5 +8,6 @@ public class PermResident extends CityCommandSetPerm {
     @Override
     protected void setPerm(DBPlayer player, CommandContext context) {
         this.perm = player.getCity().getPermRes();
+        this.name = "Citoyen";
     }
 }

@@ -6,9 +6,12 @@ import fr.AleksGirardey.Objects.Utilitaires.ConfigLoader;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.world.World;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 public class DBPlayer extends DBObject {
@@ -18,11 +21,6 @@ public class DBPlayer extends DBObject {
             + "`, `" + GlobalPlayer.cityId
             + "`, `" + GlobalPlayer.assistant
             + "`, `" + GlobalPlayer.resident
-            + "`, `" + GlobalPlayer.account
-            + "`, `" + GlobalPlayer.isBot
-            + "`, `" + GlobalPlayer.isBot
-            + "`, `" + GlobalPlayer.isBot
-            + "`, `" + GlobalPlayer.isBot
             + "`, `" + GlobalPlayer.account + "`";
     private String          _newFields = "`" + GlobalPlayer.uuid + "`, " + _fields;
 
@@ -36,10 +34,13 @@ public class DBPlayer extends DBObject {
     private int             balance;
 
     /* -- Extra Fields -- */
-    private int             lastChunkX;
-    private int             lastChunkZ;
+    private int             lastChunkX = 10000;
+    private int             lastChunkZ = 10000;
+    private World           lastWorld = null;
     private boolean         reincarnation;
     private int             cityId;
+    private boolean         adminMode;
+    private long            lastClick;
 
     public DBPlayer(Player player) {
         super(GlobalPlayer.uuid, GlobalPlayer.tableName, _fields);
@@ -52,6 +53,7 @@ public class DBPlayer extends DBObject {
         this.assistant = false;
         this.resident = false;
         this.reincarnation = false;
+        this.adminMode = false;
         this._primaryKeyValue = player.getUniqueId().toString();
         this.add("'" + _primaryKeyValue + "', '"
                 + displayName + "', "
@@ -72,6 +74,7 @@ public class DBPlayer extends DBObject {
         this.resident = rs.getBoolean(GlobalPlayer.resident);
         this.balance = rs.getInt(GlobalPlayer.account);
         this.reincarnation = false;
+        this.lastClick = Instant.now().getEpochSecond();
         writeLog();
     }
 
@@ -86,7 +89,9 @@ public class DBPlayer extends DBObject {
         this.assistant = false;
         this.resident = false;
         this.reincarnation = false;
+        this.adminMode = false;
         this._primaryKeyValue = uuid;
+        this.lastClick = Instant.now().getEpochSecond();
         this.add("'" + _primaryKeyValue + "', '"
                 + displayName + "', "
                 + score + ", "
@@ -169,10 +174,15 @@ public class DBPlayer extends DBObject {
 
     public int      getLastChunkX() { return lastChunkX; }
     public int      getLastChunkZ() { return lastChunkZ; }
+    public World    getLastWorld() { return lastWorld; }
     public boolean  isInReincarnation() { return reincarnation; }
+
+    public void     setAdminMode() { adminMode = !adminMode; }
+    public boolean  hasAdminMode() { return adminMode; }
 
     public void     setLastChunkX(int pos) { lastChunkX = pos; }
     public void     setLastChunkZ(int pos) { lastChunkZ = pos; }
+    public void     setLastWorld(World world) { lastWorld = world; }
     public void     setReincarnation(boolean reinca) {
         reincarnation = reinca;
     }
@@ -196,4 +206,13 @@ public class DBPlayer extends DBObject {
 
     @Override
     public String       toString() { return this.displayName; }
+
+    public long getLastClick() { return lastClick; }
+    public void setLastClick(long time) { this.lastClick = time; }
+    public boolean getElapsedTimeClick() {
+        if (lastClick == 0)
+            return true;
+
+        return (Instant.now().getEpochSecond() - lastClick) > 1;
+    }
 }

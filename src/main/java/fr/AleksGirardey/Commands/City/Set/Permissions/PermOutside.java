@@ -8,5 +8,6 @@ public class PermOutside extends CityCommandSetPerm{
     @Override
     protected void setPerm(DBPlayer player, CommandContext context) {
         this.perm = player.getCity().getPermOutside();
+        this.name = "Outside";
     }
 }

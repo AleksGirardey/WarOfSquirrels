@@ -19,7 +19,7 @@ public class CityCommandInfo extends CityCommand {
     @Override
     protected boolean SpecialCheck(DBPlayer player, CommandContext context) {
         if (!context.hasAny("[city]") && player.getCity() == null) {
-            Text        message = Text.of("Vous devez appartenir à une ville pour obtenir ses informations. (/city [ville])");
+            Text message = Text.of("Vous devez appartenir à une ville pour obtenir ses informations. (/city [ville])");
             player.sendMessage(Text.of(TextColors.RED, message, TextColors.RESET));
             return false;
         }
@@ -31,10 +31,9 @@ public class CityCommandInfo extends CityCommand {
         City                    city;
         Text                    text;
 
-        city = context.<City>getOne("[city]").orElse(null);
+        city = context.<City>getOne("[city]").orElse(player.getCity());
 
-        if (city == null)
-            return CommandResult.empty();
+        if (city == null) return CommandResult.empty();
 
         text = Text.of("---===| " + Core.getInfoCityMap().get(city).getCityRank().getName() + " " + city.getDisplayName() + " [" + city.getCitizens().size() + "] |===---\n"
                 + "Faction: " + city.getFaction().getDisplayName() + "\n"

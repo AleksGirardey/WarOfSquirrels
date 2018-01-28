@@ -59,6 +59,7 @@ public class                        FactionHandler {
         factions.remove(faction.getId());
         faction.setCapital(null);
         cities.forEach(c -> Core.getCityHandler().delete(c));
+        Core.getDiplomacyHandler().delete(faction);
         faction.delete();
         return true;
     }
@@ -67,7 +68,7 @@ public class                        FactionHandler {
         List<Diplomacy>         res = new ArrayList<>(),
                 diplo = Core.getDiplomacyHandler().get(faction);
 
-        res.addAll(diplo.stream().filter(d -> d.getRelation() == relation).collect(Collectors.toList()));
+        if (diplo != null) res.addAll(diplo.stream().filter(d -> d.getRelation() == relation).collect(Collectors.toList()));
         return res;
     }
 

@@ -132,7 +132,8 @@ public class WarHandler {
 
         return  getWar(player).getPhase().equals("War")
                 && Contains(player)
-                && getWar(player).getDefender() == city;
+                && getWar(player).getDefender() == city
+                && !chunk.isHomeblock() && !chunk.isOutpost();
     }
 
     public List<String>     getCitiesList() {
@@ -182,7 +183,7 @@ public class WarHandler {
     public boolean      isConcerned(Vector3i position, World world) {
         Chunk           c = Core.getChunkHandler().get(position.getX() / 16, position.getZ() / 16, world);
 
-        return c != null && getWar(c.getCity()).getDefender() == c.getCity();
+        return c != null && getWar(c.getCity()) != null && getWar(c.getCity()).getDefender() == c.getCity();
     }
 
     public ConfigurationLoader<CommentedConfigurationNode>      getManager() { return manager; }

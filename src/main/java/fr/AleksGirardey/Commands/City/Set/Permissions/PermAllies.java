@@ -8,5 +8,6 @@ public class PermAllies extends CityCommandSetPerm {
     @Override
     protected void setPerm(DBPlayer player, CommandContext context) {
         this.perm = player.getCity().getPermAllies();
+        this.name = "Allié";
     }
 }

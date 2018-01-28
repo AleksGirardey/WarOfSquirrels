@@ -9,6 +9,7 @@ import fr.AleksGirardey.Objects.War.PartyWar;
 import fr.AleksGirardey.Objects.War.War;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
@@ -31,11 +32,15 @@ public class BroadcastHandler {
     public GlobalChannel        getGlobalChannel() { return global; }
 
     public void                 cityChannel(City city, String message) {
+        cityChannel(city, message, TextColors.WHITE);
+    }
+
+    public void                 cityChannel(City city, String message, TextColor color) {
         Collection<DBPlayer>    players = city.getCitizens();
 
         for (DBPlayer player : players)
             if (player.getUser().isOnline())
-                player.getUser().getPlayer().get().sendMessage(Text.of(message));
+                player.getUser().getPlayer().get().sendMessage(Text.of(color, message, TextColors.RESET));
     }
 
     public void                 factionChannel(Faction faction, String message) {
@@ -78,8 +83,12 @@ public class BroadcastHandler {
     }
 
     public void         partyChannel(PartyWar party, String message) {
+        partyChannel(party, message, null);
+    }
+
+    public void         partyChannel(PartyWar party, String message, TextColor color) {
         for (DBPlayer p : party.toList())
-            p.sendMessage(Text.of(TextColors.YELLOW, message, TextColors.RESET));
+            p.sendMessage(Text.of(color == null ? TextColors.YELLOW : color, message, TextColors.RESET));
     }
 
     public void         partyInvitation(DBPlayer sender, DBPlayer receiver) {

@@ -1,8 +1,9 @@
 package fr.AleksGirardey.Objects.Database;
 
-public class GlobalFakePlayer {
-    public static String        id = "fakePlayer_dbPlayerId";
-    public static String        posX = "fakePlayer_posX";
-    public static String        posY = "fakePlayer_posY";
-    public static String        posZ = "fakePlayer_posZ";
+public class GlobalBotPlayer {
+    public static String        isFake = "player_isFake";
+    public static String        posX = "player_posX";
+    public static String        posY = "player_posY";
+    public static String        posZ = "player_posZ";
+    public static String        skinUUID = "player_skinUuid";
 }

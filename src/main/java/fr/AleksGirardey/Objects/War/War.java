@@ -10,6 +10,11 @@ import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.scoreboard.Scoreboard;
+import org.spongepowered.api.scoreboard.critieria.Criteria;
+import org.spongepowered.api.scoreboard.objective.Objective;
+import org.spongepowered.api.scoreboard.objective.displaymode.ObjectiveDisplayMode;
+import org.spongepowered.api.scoreboard.objective.displaymode.ObjectiveDisplayModes;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
@@ -23,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
 public class War {
     public enum WarState{
@@ -42,6 +48,7 @@ public class War {
     private int             _attackersLimit;
     private long            _timeStart;
     private DBPlayer        _target;
+    private boolean         _targetDead;
     private int             _attackerPoints = 0;
     private int             _defenderPoints = 0;
 
@@ -68,11 +75,33 @@ public class War {
                 + " attack " + _cityDefender.getDisplayName() + " !");
         setTarget();
         launchPreparation();
+        setScoreboard();
+    }
+
+    public void         setScoreboard() {
+        _attackers.forEach(this::displayScoreboard);
+    }
+
+    private void displayScoreboard(DBPlayer player) {
+        List<Objective> objs = new ArrayList<>();
+
+        Objective test = Objective.builder()
+                .displayName(Text.of("[" + _tag + "]"))
+                .name("Name")
+                .objectiveDisplayMode(ObjectiveDisplayModes.INTEGER)
+                .criterion(Criteria.DUMMY)
+                .build();
+
+        objs.add(test);
+
+        player.getUser().getPlayer().get().setScoreboard(Scoreboard.builder()
+                .objectives(objs)
+                .build());
     }
 
     public void         setTarget(DBPlayer player) { this._target = player; }
 
-    private void        setTarget() {
+    public void        setTarget() {
         _defenders.forEach(defender -> {
             if (defender.getCity().getOwner() == defender) {
                 _target = defender;
@@ -115,6 +144,9 @@ public class War {
         ConfigurationNode       rb = _node.getNode("Rollback" + size);
         BlockSnapshot           block = transaction.getOriginal();
 
+        if (_rollbackBlocks.stream().anyMatch(
+                t -> t.getOriginal().getPosition().equals(transaction.getOriginal().getPosition()))) return;
+
         Utils.replaceContainer(block);
 
         rb.getNode("world").setValue(block.getWorldUniqueId().toString());
@@ -149,7 +181,11 @@ public class War {
     }
 
     public void         addAttackerPointsTarget() {
-        this._attackerPoints += 650;
+        if (!_targetDead) {
+            this._attackerPoints += 650;
+            _targetDead = true;
+        } else
+            addAttackerKillPoints();
     }
 
     private int          addAttackerCapturePoints() {
@@ -159,6 +195,7 @@ public class War {
         int             resultat = Math.round( max <= 15 ? 1000 / used : 67 * (max / used));
 
         Core.getBroadcastHandler().warAnnounce(this, "Un chunk à été capturé pour un total de " + resultat + " points.");
+        _attackerPoints += resultat;
         return  resultat;
     }
 
@@ -317,10 +354,21 @@ public class War {
         player.sendMessage(Text.of(TextColors.GOLD, "\nTarget : " + this._target.getDisplayName(), TextColors.RESET));
         player.sendMessage(Text.of("Phase : " + this.getPhase() + " (time left : " + timeLeft() + ")"));
         player.sendMessage(Text.of(TextStyles.BOLD, "\n=== " + _attackerPoints + " - " + _defenderPoints + " ===", TextStyles.RESET));
+        _inCaptureChunk.forEach((chunk, f) -> {
+            float val = capture(chunk);
+
+            if (val != 0f)
+                player.sendMessage(Text.of("["
+                    + (chunk.getPosX() * 16) + ";"
+                    + (chunk.getPosZ() * 16) + "] "
+                    + Utils.toTime((int) (_inCaptureChunk.get(chunk) / val))
+                    + " secondes."));
+        //Core.getLogger().warn("Incapture " + _inCaptureChunk.get(chunk) + " / " + capture(chunk) + " = " + (int) (_inCaptureChunk.get(chunk) / capture(chunk)));
+        });
     }
 
     private void        capture() {
-        int             chunkMax = Core.getInfoCityMap().get(_cityDefender).getCityRank().getChunkMax();
+        int             chunkMax = Core.getInfoCityMap().get(_cityDefender).getCityRank().getChunkMax() - 1;
         float           t = (chunkMax <= 15.0f ? 900.0f/chunkMax : 60f);
 
         this._vitesseCapture = (100.0f / (_attackers.size() * t));
@@ -354,6 +402,7 @@ public class War {
         }
 
         ret = ((_vitesseCapture * att) - (0.45F * _vitesseCapture * def));
+        Core.getLogger().warn("Ret : (" + _vitesseCapture + " * " + att + ") - (0.45 * " + _vitesseCapture + " * " + def + ") = " + ret);
         return ret;
     }
 
@@ -376,7 +425,7 @@ public class War {
                         v = 100;
                         _inCaptureChunk.put(chunk, 100 - capture(chunk));
                     }
-                    Core.getBroadcastHandler().warAnnounce(this, "[Capture][" + (chunk.getPosX() * 16) + ";" + (chunk.getPosZ() * 16) + "] Temps restant avant capture " + Utils.toTime((int) (_inCaptureChunk.get(chunk) / (v - _inCaptureChunk.get(chunk)))) + " secondes.");
+                    //Core.getBroadcastHandler().warAnnounce(this, "[Capture][" + (chunk.getPosX() * 16) + ";" + (chunk.getPosZ() * 16) + "] Temps restant avant capture " + Utils.toTime((int) (_inCaptureChunk.get(chunk) / (v - _inCaptureChunk.get(chunk)))) + " secondes.");
                     if (_inCaptureChunk.get(chunk) <= 0) {
                         _capturedChunk.add(chunk);
                         _inCaptureChunk.remove(chunk);

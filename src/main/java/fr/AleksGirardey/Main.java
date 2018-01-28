@@ -11,10 +11,7 @@ import fr.AleksGirardey.Commands.City.Set.Permissions.PermOutside;
 import fr.AleksGirardey.Commands.City.Set.Permissions.PermRecruit;
 import fr.AleksGirardey.Commands.City.Set.Permissions.PermResident;
 import fr.AleksGirardey.Commands.City.Set.*;
-import fr.AleksGirardey.Commands.Faction.FactionCreate;
-import fr.AleksGirardey.Commands.Faction.FactionDelete;
-import fr.AleksGirardey.Commands.Faction.FactionHelp;
-import fr.AleksGirardey.Commands.Faction.FactionInfo;
+import fr.AleksGirardey.Commands.Faction.*;
 import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetAlly;
 import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetEnemy;
 import fr.AleksGirardey.Commands.Faction.Set.Diplomacy.SetNeutral;
@@ -23,8 +20,7 @@ import fr.AleksGirardey.Commands.Party.*;
 import fr.AleksGirardey.Commands.RefuseCommand;
 import fr.AleksGirardey.Commands.Shop.ShopDelete;
 import fr.AleksGirardey.Commands.Shop.ShopReassign;
-import fr.AleksGirardey.Commands.Utils.CommandPay;
-import fr.AleksGirardey.Commands.Utils.LevelUp;
+import fr.AleksGirardey.Commands.Utils.*;
 import fr.AleksGirardey.Commands.War.*;
 import fr.AleksGirardey.Listeners.*;
 import fr.AleksGirardey.Objects.CommandElements.*;
@@ -85,7 +81,6 @@ public class Main {
 
         Core.initCore(logger, game, this);
         game.getEventManager().registerListeners(this, new OnPlayerMove());
-
         game.getEventManager().registerListeners(this, new BlockListener());
         game.getEventManager().registerListeners(this, new PlayerListener());
         game.getEventManager().registerListeners(this, new EntityListener());
@@ -109,6 +104,7 @@ public class Main {
                 .arguments(
                         GenericArguments.optional(
                                 GenericArguments.onlyOne(new ElementCity(Text.of("[city]")))))
+                .childArgumentParseExceptionFallback(false)
                 .build();
 
         city_create = CommandSpec.builder()
@@ -139,10 +135,9 @@ public class Main {
                 .description(Text.of("Invite a player to join your city"))
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.player(Text.of("[player]"))),
-                        GenericArguments.repeated(
-                                GenericArguments.optional(
-                                        GenericArguments.onlyOne(GenericArguments.player(Text.of("<player>"))))
-                                , 10))
+                        GenericArguments.optional(
+                                GenericArguments.repeated(GenericArguments.player(Text.of("<player>")), 10)))
+                .childArgumentParseExceptionFallback(false)
                 .executor(new CityCommandAdd())
                 .build();
 
@@ -150,10 +145,9 @@ public class Main {
                 .description(Text.of("Kick a player from your city"))
                 .arguments(
                         GenericArguments.onlyOne(new ElementCitizen(Text.of("[citizen]"))),
-                        GenericArguments.repeated(
-                                GenericArguments.optional(
-                                        GenericArguments.onlyOne(new ElementCitizen(Text.of("<citizen>"))))
-                                , 10))
+                        GenericArguments.optional(
+                                GenericArguments.repeated(GenericArguments.onlyOne(new ElementCitizen(Text.of("<citizen>"))), 10)))
+                .childArgumentParseExceptionFallback(false)
                 .executor(new CityCommandRemove())
                 .build();
 
@@ -186,6 +180,9 @@ public class Main {
 
         return (CommandSpec.builder()
                 .description(Text.of("Commands related to your city"))
+                .executor(new CityCommandInfo())
+                .arguments(GenericArguments.optional(new ElementCity(Text.of("[city]"))))
+                .childArgumentParseExceptionFallback(false)
                 .child(city_help, "help", "?")
                 .child(city_info, "info", "i")
                 //.child(city_create, "create", "new")
@@ -200,10 +197,6 @@ public class Main {
                 .child(city_cubo, "cubo", "c")
                 .child(city_deposit, "deposit", "d")
                 .child(city_withdraw, "withdraw", "w")
-                .executor(new CityCommandInfo())
-                .arguments(
-                        GenericArguments.optional(
-                                GenericArguments.onlyOne(new ElementCity(Text.of("[city]")))))
                 .build());
     }
 
@@ -324,7 +317,7 @@ public class Main {
     }
 
     private CommandSpec     commandFaction() {
-        CommandSpec         faction_help, faction_info, faction_create, faction_delete, faction_set;
+        CommandSpec         faction_help, faction_info, faction_list, faction_create, faction_delete, faction_set;
 
         faction_help = CommandSpec.builder()
                 .description(Text.of("Display help commands"))
@@ -336,6 +329,11 @@ public class Main {
                 .executor(new FactionInfo())
                 .arguments(GenericArguments.optional(
                         GenericArguments.onlyOne(new ElementFaction(Text.of("<faction>")))))
+                .build();
+
+        faction_list = CommandSpec.builder()
+                .description(Text.of("Affiche la liste des factions"))
+                .executor(new FactionList())
                 .build();
 
         faction_create = CommandSpec.builder()
@@ -357,6 +355,7 @@ public class Main {
                 .description(Text.of("Commands related to your city"))
                 .child(faction_help, "help", "?")
                 .child(faction_info, "info", "i")
+                .child(faction_list, "list", "l")
                 .child(faction_create, "create", "c")
                 .child(faction_delete, "delete", "d")
                 .child(faction_set, "set", "s")
@@ -429,8 +428,8 @@ public class Main {
                 .executor(new PartyInvite())
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.player(Text.of("[player]"))),
-                        GenericArguments.repeated(
-                                GenericArguments.optional(GenericArguments.player(Text.of("<player>"))), 10))
+                        GenericArguments.optional(
+                                GenericArguments.repeated(GenericArguments.player(Text.of("<player>")), 10)))
                 .build();
 
         partyRemove = CommandSpec.builder()
@@ -469,6 +468,7 @@ public class Main {
                 .executor(new WarJoin())
                 .arguments(
                         GenericArguments.onlyOne(new ElementWar(Text.of("[ally]"))))
+                .childArgumentParseExceptionFallback(false)
                 .build();
 
         warLeave = CommandSpec.builder()
@@ -476,6 +476,7 @@ public class Main {
                 .executor(new WarLeave())
                 .arguments(
                         GenericArguments.onlyOne(new ElementWar(Text.of("[ally]"))))
+                .childArgumentParseExceptionFallback(false)
                 .build();
 
         warList = CommandSpec.builder()
@@ -488,6 +489,7 @@ public class Main {
                 .executor(new DeclareWar())
                 .arguments(
                         GenericArguments.onlyOne(new ElementAttackable(Text.of("[target]"))))
+                .childArgumentParseExceptionFallback(false)
                 .build();
 
         warWinAtt = CommandSpec.builder()
@@ -496,14 +498,16 @@ public class Main {
                 .executor(new ForceWinAttacker())
                 .arguments(
                         GenericArguments.onlyOne(new ElementWar(Text.of("[city]"))))
+                .childArgumentParseExceptionFallback(false)
                 .build();
 
         warWinDef = CommandSpec.builder()
-                .description(Text.of("Force win : attacker"))
+                .description(Text.of("Force win : defender"))
                 .permission("minecraft.command.op")
                 .executor(new ForceWinDefender())
                 .arguments(
                         GenericArguments.onlyOne(new ElementWar(Text.of("[city]"))))
+                .childArgumentParseExceptionFallback(false)
                 .build();
 
         warPeace = CommandSpec.builder()
@@ -511,12 +515,14 @@ public class Main {
                 .permission("minecraft.command.op")
                 .executor(new WarPeace())
                 .arguments(GenericArguments.onlyOne(GenericArguments.bool(Text.of("[peace]"))))
+                .childArgumentParseExceptionFallback(false)
                 .build();
 
         warTarget = CommandSpec.builder()
                 .description(Text.of("Set a player as the new target"))
                 .executor(new WarTarget())
                 .arguments(GenericArguments.onlyOne(new ElementDefender(Text.of("[player]"))))
+                .childArgumentParseExceptionFallback(false)
                 .build();
 
         return (CommandSpec.builder()
@@ -525,6 +531,7 @@ public class Main {
                 .arguments(
                         GenericArguments.optional(
                                 GenericArguments.onlyOne(new ElementWar(Text.of("[city]")))))
+                .childArgumentParseExceptionFallback(false)
                 .child(warAttack, "attack", "a")
                 .child(warWinAtt, "winattacker", "wa")
                 .child(warWinDef, "windefender", "wd")
@@ -588,42 +595,74 @@ public class Main {
                 .child(delete, "delete", "d")
                 .build());
     }
-/*
-    private CommandSpec     commandBot() {
-        CommandSpec         newBot, delete, rename, move;
 
-        newBot = CommandSpec.builder()
-                .description(Text.of("Add a new BOT"))
+    private CommandSpec     commandAdmin() {
+        CommandSpec setSpawn, levelUp, setadmin, moneyAdd, moneyRemove;
+
+        setSpawn = CommandSpec.builder()
+                .description(Text.of("Set World spawn"))
                 .permission("minecraft.command.op")
-                .executor(new BotNew())
-                .arguments(
-                        GenericArguments.onlyOne(GenericArguments.string(Text.of("[Name]"))),
-                        GenericArguments.optional(GenericArguments.onlyOne(new ElementSkinBot(Text.of("[Skin]")))))
+                .executor((commandSource, commandContext) -> {
+                    if (!(commandSource instanceof Player))
+                        return CommandResult.empty();
+                    Player  player = (Player) commandSource;
+                    player.getWorld().getProperties().setSpawnPosition(player.getLocation().getBlockPosition());
+                    player.sendMessage(Text.of("Spawn of '" + player.getWorld().getName() + "' is now at ["
+                            + player.getLocation().getBlockPosition().getX() + ";"
+                            + player.getLocation().getBlockPosition().getY() + ";"
+                            + player.getLocation().getBlockPosition().getZ() + "]"));
+                    return CommandResult.success();
+                })
                 .build();
 
-        delete = CommandSpec.builder()
-                .description(Text.of("Delete a BOT"))
-                .permission("minecraft.command.op")
-                .executor(new BotDelete())
+
+        levelUp = CommandSpec.builder()
+                .description(Text.of("Level up a city"))
+                .executor(new LevelUp())
                 .arguments(
-                        GenericArguments.optional(GenericArguments.onlyOne(new ElementBot(Text.of("[Bot]")))))
+                        GenericArguments.onlyOne(new ElementCity(Text.of("[city]"))),
+                        GenericArguments.onlyOne(GenericArguments.integer(Text.of("[level]")))
+                ).build();
+
+        setadmin = CommandSpec.builder()
+                .description(Text.of("Donne le status d'admin à un joueur"))
+                .executor(new SetAdmin())
+                .arguments(GenericArguments.optional(new ElementDBPlayer(Text.of("[joueur]"))))
+                .permission("minecraft.command.op")
                 .build();
 
-        rename = CommandSpec.builder()
 
-        return (CommandSpec.builder()
-                .description(Text.of("Bot admin commands"))
+        moneyAdd = CommandSpec.builder()
+                .description(Text.of("Ajoute de l'argent au solde du joueur"))
+                .executor(new MoneyAdd())
                 .permission("minecraft.command.op")
-                .child(newBot, "new", "n")
-                .child(delete, "delete", "d")
-        )
+                .arguments(
+                        GenericArguments.firstParsing(new ElementCity(Text.of("[city]")), new ElementDBPlayer(Text.of("[joueur]"))),
+                        GenericArguments.onlyOne(GenericArguments.integer(Text.of("[montant]"))))
+                .build();
 
-    } */
+        moneyRemove = CommandSpec.builder()
+                .description(Text.of("Enlève de l'argent au solde du joueur"))
+                .executor(new MoneyRemove())
+                .permission("minecraft.command.op")
+                .arguments(
+                        GenericArguments.firstParsing(new ElementCity(Text.of("[city]")), new ElementDBPlayer(Text.of("[joueur]"))),
+                        GenericArguments.onlyOne(GenericArguments.integer(Text.of("[montant]"))))
+                .build();
+
+        return CommandSpec.builder()
+                .child(setSpawn, "setspawn", "ss")
+                .child(levelUp, "setlevel", "sl")
+                .child(setadmin, "setadmin", "sa")
+                .child(moneyAdd, "moneyadd", "ma")
+                .child(moneyRemove, "moneyremove", "mr")
+                .build();
+    }
 
     @Listener
     public void             onServerInit(GameInitializationEvent event) {
         CommandSpec         city, faction, party, war, shop, accept, refuse,
-                chat, say, shout, town, near, list, setSpawn, pay, levelUp, bot;
+                chat, say, shout, town, near, list, pay, me, admin;
 
         city = commandCity();
 
@@ -635,7 +674,9 @@ public class Main {
 
         shop = commandShop();
 
-        //bot = commandBot();
+        admin = commandAdmin();
+
+        chat = commandChat();
 
         accept = CommandSpec.builder()
                 .description(Text.of("Accept a pending invitation."))
@@ -646,8 +687,6 @@ public class Main {
                 .description(Text.of("Refuse a pending invitation."))
                 .executor(new RefuseCommand())
                 .build();
-
-        chat = commandChat();
 
         say = CommandSpec.builder()
                 .description(Text.of("Send a message global channel"))
@@ -692,23 +731,6 @@ public class Main {
             return CommandResult.success();
         })
                 .build();
-
-        setSpawn = CommandSpec.builder()
-                .description(Text.of("Set World spawn"))
-                .permission("minecraft.command.op")
-                .executor((commandSource, commandContext) -> {
-            if (!(commandSource instanceof Player))
-                return CommandResult.empty();
-            Player  player = (Player) commandSource;
-            player.getWorld().getProperties().setSpawnPosition(player.getLocation().getBlockPosition());
-            player.sendMessage(Text.of("Spawn of '" + player.getWorld().getName() + "' is now at ["
-                    + player.getLocation().getBlockPosition().getX() + ";"
-                    + player.getLocation().getBlockPosition().getY() + ";"
-                    + player.getLocation().getBlockPosition().getZ() + "]"));
-            return CommandResult.success();
-        })
-                .build();
-
         pay = CommandSpec.builder()
                 .description(Text.of("Give money to someone"))
                 .executor(new CommandPay())
@@ -718,18 +740,16 @@ public class Main {
                 )
                 .build();
 
-        levelUp = CommandSpec.builder()
-                .description(Text.of("Level up a city"))
-                .executor(new LevelUp())
-                .arguments(
-                        GenericArguments.onlyOne(new ElementCity(Text.of("[city]"))),
-                        GenericArguments.onlyOne(GenericArguments.integer(Text.of("[level]")))
-                ).build();
+        me = CommandSpec.builder()
+                .description(Text.of("Donne les informations lié à son compte"))
+                .executor(new Me())
+                .build();
 
         game.getCommandManager().register(this, city, "city", "c");
         game.getCommandManager().register(this, faction, "faction", "f");
         game.getCommandManager().register(this, party, "party", "p");
         game.getCommandManager().register(this, war, "war", "w");
+        game.getCommandManager().register(this, admin, "admin", "ad");
         game.getCommandManager().register(this, accept, "accept", "a");
         game.getCommandManager().register(this, refuse, "refuse", "r");
         game.getCommandManager().register(this, chat, "chat", "ch");
@@ -738,10 +758,9 @@ public class Main {
         game.getCommandManager().register(this, town, "town", "t");
         game.getCommandManager().register(this, near, "near", "n");
         game.getCommandManager().register(this, list, "list");
-        game.getCommandManager().register(this, setSpawn, "setSpawn");
         game.getCommandManager().register(this, pay, "pay");
         game.getCommandManager().register(this, shop, "shop", "s");
-        game.getCommandManager().register(this, levelUp, "setlevel", "sl");
+        game.getCommandManager().register(this, me, "me");
 
         logger.info("Welcome in the War Of Squirrels. Have fun !");
     }

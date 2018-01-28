@@ -25,7 +25,9 @@ public abstract class           SetDiplomacy extends CityCommandAssistant{
         return false;
     }
 
-    protected boolean           SpecialCheck(DBPlayer player, CommandContext context) { return true; }
+    protected boolean           SpecialCheck(DBPlayer player, CommandContext context) {
+        return player.getCity().getFaction() != context.<Faction>getOne(Text.of("[faction]")).orElse(player.getCity().getFaction());
+    }
 
     protected CommandResult ExecCommand(DBPlayer player, CommandContext context) {
         Faction                 faction = context.<Faction>getOne(Text.of("[faction]")).get();

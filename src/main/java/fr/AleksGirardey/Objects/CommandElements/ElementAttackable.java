@@ -28,7 +28,7 @@ public class ElementAttackable extends CommandElement {
     protected Object parseValue(CommandSource commandSource, CommandArgs commandArgs) throws ArgumentParseException {
         if (!(commandSource instanceof Player))
             throw commandArgs.createError(Text.of("Only a player can perform this command."));
-        DBPlayer            player = (DBPlayer) commandSource;
+        DBPlayer            player = Core.getPlayerHandler().get(((Player) commandSource).getPlayer().get());
         String              name = commandArgs.next();
 
         if (player.getCity() == null)
@@ -39,7 +39,7 @@ public class ElementAttackable extends CommandElement {
         if (attackables.keySet().contains(name))
             return attackables.get(name);
 
-        throw commandArgs.createError(Text.of("Aucune attaque n'est possible sur cet cible ou la ciblé n'éxiste pas."));
+        throw commandArgs.createError(Text.of("Aucune attaque n'est possible sur cet cible ou la cible n'éxiste pas."));
     }
 
     @Override

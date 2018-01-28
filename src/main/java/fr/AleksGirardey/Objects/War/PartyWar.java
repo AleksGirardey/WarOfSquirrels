@@ -44,6 +44,8 @@ public class                    PartyWar {
         return list;
     }
 
+    public void     SendMessage(Text message) { leader.sendMessage(message); }
+
     public void     Send(String message) {
         leader.sendMessage(Text.of(message));
     }

@@ -2,6 +2,7 @@ package fr.AleksGirardey.Handlers;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.google.inject.Inject;
+import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.*;
 import fr.AleksGirardey.Objects.Cuboide.CuboVector;
 import fr.AleksGirardey.Objects.Database.GlobalCubo;
@@ -10,6 +11,7 @@ import fr.AleksGirardey.Objects.Utilitaires.Pair;
 import fr.AleksGirardey.Objects.Database.Statement;
 import org.slf4j.Logger;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -61,11 +63,11 @@ public class CuboHandler {
 
     private Logger      getLogger() { return logger; }
 
-    public void         add(DBPlayer player, String name) {
+    public boolean         add(DBPlayer player, String name) {
         if (!points.containsKey(player)) {
             player.getUser().getPlayer().get()
                     .sendMessage(Text.of("You need to active the cubo mode first"));
-            return;
+            return false;
         }
         Pair<Vector3i, Vector3i>    value = points.get(player);
         CuboVector                  vector = new CuboVector(value.getL(), value.getR());
@@ -80,10 +82,11 @@ public class CuboHandler {
         logger.info("[Cubo] "
                     + player.getDisplayName()
                     + " has created a cubo at ["
-                    + vector.getOne().getX() + ";" + vector.getOne().getY() + ";" + vector.getOne().getZ()
+                    + vector.getA().getX() + ";" + vector.getA().getY() + ";" + vector.getA().getZ()
                     + "] to ["
-                    + vector.getEight().getX() + ";" + vector.getEight().getY() + ";" + vector.getEight().getZ()
+                    + vector.getB().getX() + ";" + vector.getB().getY() + ";" + vector.getB().getZ()
                     + "]");
+        return true;
     }
 
     public Cubo                 get(int id) {
@@ -103,10 +106,14 @@ public class CuboHandler {
     public Cubo         get(Vector3i block) {
         Cubo            last = null;
 
-        for (Cubo c : cubos.values())
-            if (c.contains(block))
-                if (last == null || last.getPriority() < c.getPriority())
+        for (Cubo c : cubos.values()) {
+            if (c.contains(block)) {
+                Core.getLogger().warn("Block contained in cubo " + c.getName());
+                if (last == null || last.getPriority() < c.getPriority()) {
                     last = c;
+                }
+            }
+        }
         return  last;
     }
 
@@ -114,7 +121,7 @@ public class CuboHandler {
         Cubo            last = null;
 
         for (Cubo c : cubos.values())
-            if (c.contains(vector.getOne()) && c.contains(vector.getEight()))
+            if (c.contains(vector.getA()) && c.contains(vector.getB()))
                 if (last == null || last.getPriority() < c.getPriority())
                     last = c;
 
@@ -146,10 +153,19 @@ public class CuboHandler {
     }
 
     public void         set(DBPlayer p, Vector3i block, boolean aorb) {
-        if (aorb)
+        Text.Builder message = Text.builder().append(Text.of(TextColors.LIGHT_PURPLE));
+
+        if (aorb) {
             points.get(p).setL(block);
-        else
+            message.append(Text.of("Block A"));
+        }
+        else {
             points.get(p).setR(block);
+            message.append(Text.of("Block B"));
+        }
+
+        message.append(Text.of("défini à la position [" + block.getX() + ";" + block.getY() + ";" + block.getZ() + "]"));
+        p.sendMessage(message.build());
     }
 
     public void         deleteCity(City city) {

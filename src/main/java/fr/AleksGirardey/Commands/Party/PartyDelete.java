@@ -4,9 +4,12 @@ import fr.AleksGirardey.Commands.City.CityCommandAssistant;
 import fr.AleksGirardey.Commands.Commands;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.War.PartyWar;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 public class                    PartyDelete extends Commands {
     @Override
@@ -16,6 +19,8 @@ public class                    PartyDelete extends Commands {
 
     @Override
     protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
+        PartyWar party = Core.getPartyHandler().getFromPlayer(player);
+        Core.getBroadcastHandler().partyChannel(party, "Le groupe a été dissout.", TextColors.RED);
         Core.getPartyHandler().removeParty(player);
         return CommandResult.success();
     }
