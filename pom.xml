@@ -7,17 +7,50 @@
     <groupId>Squiq</groupId>
     <artifactId>WarOfSquirrels</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>spongeapi</artifactId>
+            <version>7.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>spongeforge</artifactId>
+            <version>1.12.2-2555-7.1.0-BETA-2819</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.spongepowered</groupId>
+                    <artifactId>testplugins</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!--        <dependency>
+                    <groupId>net.minecraftforge.gradle</groupId>
+                    <artifactId>ForgeGradle</artifactId>
+                    <version>2.1-20160116.192356-17</version>
+                </dependency>-->
+        <!--Local-->
+        <!--        <dependency>
+                    <groupId>net.theviolentsquirrels</groupId>
+                    <artifactId>craftandconquer</artifactId>
+                </dependency>-->
+        <!--Mysql Jdbc -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.6</version>
+        </dependency>
+        <!-- HikariCP -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>2.4.5</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -45,13 +78,22 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>theMainClass</mainClass>
+                            <mainClass>fr.AleksGirardey.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
     <repositories>
         <repository>
             <id>sponge-maven-repo</id>
@@ -73,35 +115,5 @@
             <url>http://pex-repo.aoeu.xyz</url>
         </repository>-->
     </repositories>
-    <dependencies>
-        <dependency>
-            <groupId>org.spongepowered</groupId>
-            <artifactId>spongeapi</artifactId>
-            <version>5.2.0-20170523.191214-6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.spongepowered</groupId>
-            <artifactId>spongeforge</artifactId>
-            <version>1.10.2-2281-5.2.0-BETA-2350</version>
-        </dependency>
-        <!--<dependency>
-            <groupId>net.minecraftforge.gradle</groupId>
-            <artifactId>ForgeGradle</artifactId>
-            <version>2.1-20160116.192356-17</version>
-        </dependency>-->
-        <!--Local-->
 
-        <!--Mysql Jdbc -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.6</version>
-        </dependency>
-        <!-- HikariCP -->
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>2.4.5</version>
-        </dependency>
-    </dependencies>
 </project>

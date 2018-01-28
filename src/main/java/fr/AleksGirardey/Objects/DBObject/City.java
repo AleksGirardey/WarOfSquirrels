@@ -239,9 +239,13 @@ public class City extends DBObject implements Attackable {
         return citizens.containsValue(player);
     }
 
-    public void         addCitizen(DBPlayer player) { this.citizens.put(player.getDisplayName(), player); }
+    public void         addCitizen(DBPlayer player) {
+        this.citizens.put(player.getDisplayName(), player);
+        Core.getInfoCityMap().get(this).updateRank();
+    }
     public void         removeCitizen(DBPlayer player) {
         this.citizens.remove(player.getDisplayName());
+        Core.getInfoCityMap().get(this).getChannel().removeMember(player.getUser().getPlayer().get());
     }
 
     public String       getAssistantsAsString() {

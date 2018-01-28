@@ -13,6 +13,7 @@ import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.block.tileentity.TileEntity;
 import org.spongepowered.api.block.tileentity.carrier.TileEntityCarrier;
+import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.*;
 import org.spongepowered.api.text.Text;
@@ -21,10 +22,8 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class Utils {
 
@@ -131,20 +130,26 @@ public class Utils {
         List<Chunk>                 chunks = new ArrayList<>();
         Location<World>             pLocation = player.getUser().getPlayer().get().getLocation(),
                 save = null;
-        Vector3d                    chunk = null;
 
         chunks.addAll(Core.getChunkHandler().getOupostList(player.getCity()));
         chunks.add(Core.getChunkHandler().getHomeblock(player.getCity()));
 
+        Core.getLogger().warn("[Spawn] Chunks size : " + chunks.size());
+
         for (Chunk c : chunks) {
-            if (c.getWorld() == player.getUser().getPlayer().get().getWorld()) {
+            if (c.getWorld().getUniqueId() == player.getUser().getPlayer().get().getWorld().getUniqueId()) {
                 Vector3d vec = new Vector3d(
                         c.getRespawnX(),
                         c.getRespawnY(),
                         c.getRespawnZ());
-                if (save == null || (pLocation.getPosition().distance(chunk) < pLocation.getPosition().distance(save.getPosition())))
+                if (save == null || (pLocation.getPosition().distance(save.getPosition()) > pLocation.getPosition().distance(vec))) {
                     save = player.getUser().getPlayer().get().getWorld().getLocation(vec);
+                }
             }
+        }
+        if (save == null) {
+            Chunk hb = Core.getChunkHandler().getHomeblock(player.getCity());
+            return hb.getWorld().getLocation(new Vector3d(hb.getRespawnX(), hb.getRespawnY(), hb.getRespawnZ()));
         }
         return (save);
     }
@@ -228,22 +233,16 @@ public class Utils {
     }
 
     public static boolean       canOffer(Inventory inventory, ItemStack itemStack) {
-        Inventory               i = Inventory.builder().of(InventoryArchetypes.PLAYER).build(Core.getPlugin());
+        Inventory duplicate = Inventory.builder().from(inventory).build(Core.getMain());
 
-        for (Inventory slot : inventory.slots()) {
-            Optional<ItemStack>     item = slot.peek();
-
-            item.ifPresent(itemStack1 -> i.offer(itemStack1.copy()));
-        }
-
-        return i.offer(itemStack).getRejectedItems().size() <= 0;
+        return duplicate.offer(itemStack).getRejectedItems().isEmpty();
     }
 
     public static String toTime(int value) {
         int                 minutes, seconds;
         String              res = "";
 
-
+        Core.getLogger().debug("[ToTime] value : " + value);
         minutes = value / 60;
         seconds = value % 60;
         if (minutes > 0)
@@ -256,37 +255,88 @@ public class Utils {
     public static void  displayCommandList(Player commandSource) {
         DBPlayer        pl = Core.getPlayerHandler().get(commandSource);
         Map<City, InfoCity>     map = Core.getCityHandler().getCityMap();
-        Text            message = Text.of(TextColors.BLUE);
+        Collection<Player>      onlinePlayers = Core.getPlugin().getServer().getOnlinePlayers(), wanderers = new ArrayList<>();
+        Text.Builder            message = Text.builder().append(Text.of(TextColors.BLUE, "=========[ " + onlinePlayers.size() + " joueur(s) en ligne ]=========\n", TextColors.RESET));
         int                     j = 0, sizeMap = map.keySet().size();
 
         for (City city : map.keySet()) {
-            int                 i = 0, size;
+            int size;
             List<DBPlayer>      onlines = Core.getCityHandler().getOnlineDBPlayers(city);
 
             size = onlines.size();
-            message.concat(Text.of("[" + city.getDisplayName() + "] "));
-            for (DBPlayer player : onlines) {
-                if (city.getOwner() == player)
-                    message.concat(Text.of(map.get(city).getCityRank().getPrefixMayor() + " "));
-                message.concat(Text.of(player.getDisplayName()));
-                if (i <= size - 1)
-                    message.concat(Text.of(", "));
-                i++;
+            if (size != 0) {
+                message.append(Text.of(
+                        Core.getCityHandler().getCityMap().get(city).getColor(),
+                        "[" + city.getDisplayName() + "] "));
+                buildCitizenList(message, city, onlines);
             }
             if (j <= sizeMap - 1)
-                message.concat(Text.of("\n"));
+                message.append(Text.of("\n", TextColors.RESET));
+            j++;
         }
 
-        pl.sendMessage(message);
+        for (Player player : onlinePlayers) {
+            if (Core.getPlayerHandler().get(player).getCity() == null)
+                wanderers.add(player);
+        }
+        if (wanderers.size() > 0) {
+            message.append(Text.of(TextColors.GRAY, "[Vagabons] "));
+            int i = 0;
+            for (Player p : wanderers) {
+                message.append(Text.of(Core.getPlayerHandler().get(p).getDisplayName()));
+                if (i != wanderers.size() - 1)
+                    message.append(Text.of(", "));
+            }
+        }
+        message.append(Text.of(TextColors.RESET));
+        pl.sendMessage(message.build());
+    }
+
+    private static void buildCitizenList(Text.Builder message, City city, List<DBPlayer> onlines) {
+        int i = 0;
+        DBPlayer mayor = null;
+        List<DBPlayer> assistants = new ArrayList<>(), residents = new ArrayList<>();
+
+        for (DBPlayer player : onlines) {
+            if (player.getCity().getOwner() == player)
+                mayor = player;
+            else if (player.isAssistant())
+                assistants.add(player);
+            else
+                residents.add(player);
+        }
+        message.append(Text.of(Core.getCityHandler().getCityMap().get(city).getCityRank().getPrefixMayor() + " " + mayor.getDisplayName()));
+        if (assistants.size() > 0) message.append(Text.of(", "));
+        for (DBPlayer player : assistants) {
+            message.append(Text.of(Core.getCityHandler().getCityMap().get(city).getCityRank().getPrefixAssistant() + " " + player.getDisplayName()));
+            if (i != assistants.size() - 1)
+                message.append(Text.of(", "));
+            i++;
+        }
+        if (residents.size() > 0) message.append(Text.of(", "));
+        i = 0;
+        for (DBPlayer player : residents) {
+            message.append(Text.of(player.getDisplayName()));
+            if (i != residents.size() - 1)
+                message.append(Text.of(", "));
+            i++;
+        }
     }
 
     public static void replaceContainer(BlockSnapshot block) {
         TileEntity              ti;
 
-        ti = block.getLocation().get().getTileEntity().orElse(null);
-        if (ti instanceof TileEntityCarrier) {
-            TileEntityCarrier   carrier = (TileEntityCarrier) ti;
-            carrier.getInventory().clear();
+        if (block.getLocation().get().getTileEntity().isPresent()) {
+            Core.getLogger().warn("FOUND A TILEENTITYCARRIER");
+            ti = block.getLocation().get().getTileEntity().orElse(null);
+            if (ti instanceof TileEntityCarrier) {
+                TileEntityCarrier carrier = (TileEntityCarrier) ti;
+                Inventory inventory = carrier.getInventory();
+                int sizeB = inventory.size(), sizeA;
+                inventory.clear();
+                sizeA = inventory.size();
+                Core.getLogger().warn("Before : " + sizeB + " and then " + sizeA);
+            }
         }
     }
 
@@ -296,5 +346,45 @@ public class Utils {
     */
     public static boolean Attackable(City city, Faction faction) {
         return true;
+    }
+
+    public static String toStringFromList(List<String> factionNameList) {
+        int i = 0;
+        StringBuilder message = new StringBuilder();
+
+        for (String faction : factionNameList) {
+            message.append(faction);
+            if (i != factionNameList.size() - 1) message.append(", ");
+            i++;
+        }
+        return message.toString();
+    }
+
+    public static boolean checkShopFormat(SignData datas) {
+        Text tag = datas.lines().get(0),
+            id = datas.lines().get(1),
+            price = datas.lines().get(2),
+            quantity = datas.lines().get(3);
+
+        Pattern patternId = Pattern.compile("[0-9]+");
+        Pattern patternPrice = Pattern.compile("[0-9]+:[0-9]+");
+
+        return tag.equals(Text.of("[Shop]")) &&
+                /*(patternIdOne.matcher(id.toString()).matches() ||
+                        patternPrice.matcher(id.toString()).matches()) &&*/
+                !id.toString().equals("") &&
+                patternPrice.matcher(price.toPlain()).matches() &&
+                patternId.matcher(quantity.toPlain()).matches();
+    }
+
+    public static Inventory duplicateInventory(Inventory inventory) {
+        Inventory   duplicate = Inventory.builder().of(InventoryArchetypes.CHEST).build(Core.getMain());
+
+        for (Inventory slot : inventory.slots()) {
+            ItemStack onSlot = slot.peek().orElse(null);
+            if (onSlot == null) continue;
+            duplicate.offer(onSlot.copy());
+        }
+        return duplicate;
     }
 }

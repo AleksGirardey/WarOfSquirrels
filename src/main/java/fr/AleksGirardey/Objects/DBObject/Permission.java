@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Permission extends DBObject{
+    public String          name;
     private Boolean         build;
     private Boolean         container;
     private Boolean         switch_;
@@ -18,6 +19,7 @@ public class Permission extends DBObject{
         build = _build;
         container = _container;
         switch_ = _switch;
+        name = _primaryKeyValue;
         this.add((build ? "TRUE" : "FALSE") + ","
                 + (container ? "TRUE" : "FALSE") + ","
                 + (switch_ ? "TRUE" : "FALSE"));

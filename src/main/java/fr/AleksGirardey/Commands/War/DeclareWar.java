@@ -17,7 +17,7 @@ public class                    DeclareWar extends CityCommandAssistant {
     @Override
     protected boolean           SpecialCheck(DBPlayer player, CommandContext context) {
         PartyWar                party = Core.getPartyHandler().getFromPlayer(player);
-        Attackable              target = context.<Attackable>getOne("[enemy]").get();
+        Attackable              target = context.<Attackable>getOne("[target]").get();
 
         if (party == null) {
             player.sendMessage(Text.of("You need a party to attack. /party create"));
@@ -41,7 +41,7 @@ public class                    DeclareWar extends CityCommandAssistant {
     @Override
     protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
         PartyWar                party = Core.getPartyHandler().getFromPlayer(player);
-        Attackable              target = context.<Attackable>getOne("[enemy]").get();
+        Attackable              target = context.<Attackable>getOne("[target]").get();
 
         if (Core.getWarHandler().createWar(
                 player.getCity(),

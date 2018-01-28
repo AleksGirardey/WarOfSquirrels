@@ -23,7 +23,7 @@ public class        PartyWarInvitation extends Invitation{
 
     @Override
     public void refuse() {
-        _party.Send(_player.getDisplayName() + " refuse to join the party");
+        _party.SendMessage(Text.of(TextColors.RED, _player.getDisplayName() + " refuse to join the party", TextColors.RESET));
         _player.sendMessage(Text.of(TextColors.RED, "The invitation from " + _sender.getDisplayName() + " have been refused.", TextColors.RESET));
     }
 

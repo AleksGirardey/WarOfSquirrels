@@ -33,6 +33,7 @@ public class                CityCommandClaim extends CityCommandAssistant {
                 return true;
             } else if (chh.canBePlaced(player.getCity(), x, z, true, world))
                 return true;
+            Core.getLogger().warn("CHUNK CAN'T BE PLACED HERE");
         }
         player.sendMessage(Text.of(TextColors.RED, "You can't claim here.", TextColors.RESET));
         return false;

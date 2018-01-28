@@ -41,6 +41,6 @@ public class CuboCommandAdd extends CityCommandAssistant {
     @Override
     protected CommandResult         ExecCommand(DBPlayer player, CommandContext context) {
         Core.getCuboHandler().add(player, context.<String>getOne("[name]").get());
-        return null;
+        return CommandResult.empty();
     }
 }

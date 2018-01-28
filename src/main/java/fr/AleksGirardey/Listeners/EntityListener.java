@@ -4,6 +4,7 @@ import com.flowpowered.math.vector.Vector3i;
 import com.sun.org.apache.xpath.internal.operations.Or;
 import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
+import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockTypes;
@@ -63,7 +64,12 @@ public class EntityListener {
         SignData            datas = event.getText();
         DBPlayer            player;
 
-        if (!datas.lines().get(0).equals(Text.of("[Shop]"))) return;
+        if (Core.getShopHandler().get(loc.getBlockPosition()) != null) {
+            Core.getShopHandler().get(loc.getBlockPosition()).actualize();
+            return;
+        }
+
+        if (!Utils.checkShopFormat(datas)) return;
 
         player = Core.getPlayerHandler().get(event.getCause().first(Player.class).orElse(null));
         if (player == null) return;
@@ -75,15 +81,15 @@ public class EntityListener {
 
         DirectionalData     direction = opt.get();
         if (direction.get(Keys.DIRECTION).get().equals(Direction.NORTH))
-            chest = world.getLocation(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ() - 1);
-        else if (direction.get(Keys.DIRECTION).get().equals(Direction.SOUTH))
             chest = world.getLocation(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ() + 1);
+        else if (direction.get(Keys.DIRECTION).get().equals(Direction.SOUTH))
+            chest = world.getLocation(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ() - 1);
         else if (direction.get(Keys.DIRECTION).get().equals(Direction.EAST))
             chest = world.getLocation(loc.getBlockX() - 1, loc.getBlockY(), loc.getBlockZ());
         else if (direction.get(Keys.DIRECTION).get().equals(Direction.WEST))
             chest = world.getLocation(loc.getBlockX() + 1, loc.getBlockY(), loc.getBlockZ());
 
-        if (chest != null)
+        if (chest != null && chest.getTileEntity().orElse(null) != null)
             Core.getShopHandler().add(player, datas, sign, (Chest) chest.getTileEntity().orElse(null));
     }
 
@@ -92,11 +98,12 @@ public class EntityListener {
         BlockState      block = event.getTargetBlock().getState();
 
         if (block.getType() == BlockTypes.WALL_SIGN) {
+            Core.getLogger().warn("InteractBlockEvent triggered on SIGN");
             Vector3i        loc = event.getTargetBlock().getLocation().get().getBlockPosition();
             if (Core.getShopHandler().get(loc) != null) {
                 if (event instanceof InteractBlockEvent.Primary)
                     Core.getShopHandler().get(loc).buy(player);
-                else if (event instanceof InteractBlockEvent.Secondary)
+                else
                     Core.getShopHandler().get(loc).sell(player);
             }
         }
@@ -107,7 +114,7 @@ public class EntityListener {
         event.getEntities().forEach(entity -> {
             if (types.contains(entity.getType()) &&
                     Core.getChunkHandler().get(entity.getLocation().getBlockX() / 16, entity.getLocation().getBlockZ() / 16, entity.getWorld()) != null) {
-                Core.getLogger().info("[EntitySpawning] Canceled spawn of : '" + entity.getType().toString() + "'");
+                Core.getLogger().warn("[EntitySpawning] Canceled spawn of : '" + entity.getType().toString() + "'");
                 event.setCancelled(true);
             }
         });

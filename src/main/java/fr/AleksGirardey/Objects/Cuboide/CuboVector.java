@@ -1,38 +1,26 @@
 package fr.AleksGirardey.Objects.Cuboide;
 
 import com.flowpowered.math.vector.Vector3i;
+import fr.AleksGirardey.Objects.Core;
 
 import java.sql.ResultSet;
 import java.sql.SQLDataException;
 import java.sql.SQLException;
 
 public class CuboVector {
-    private Vector3i        one;
-    private Vector3i        two;
-    private Vector3i        three;
-    private Vector3i        four;
-    private Vector3i        five;
-    private Vector3i        six;
-    private Vector3i        seven;
-    private Vector3i        eight;
+    private Vector3i        A;
+    private Vector3i        B;
 
     public CuboVector(Vector3i A, Vector3i B) {
         if (A.getX() <= B.getX()
                 && A.getY() <= B.getY()
                 && A.getZ() <= B.getZ()) {
-            one = A;
-            eight = B;
+            this.A = A;
+            this.B = B;
         } else {
-            one = B;
-            eight = A;
+            this.A = B;
+            this.B = A;
         }
-
-        two = new Vector3i(A.getX(), B.getY(), A.getZ());
-        three = new Vector3i(B.getX(), A.getY(), A.getZ());
-        four = new Vector3i(B.getX(), B.getZ(), A.getZ());
-        five = new Vector3i(A.getX(), A.getY(), B.getZ());
-        six = new Vector3i(A.getX(), B.getY(), B.getZ());
-        seven = new Vector3i(B.getY(), A.getY(), B.getZ());
     }
 
     public CuboVector(ResultSet rs) throws SQLException {
@@ -55,40 +43,23 @@ public class CuboVector {
                 y = block.getX(),
                 z = block.getZ();
 
-        return (x >= one.getX() && x <= three.getX()
-                && y >= one.getY() && y <= two.getY()
-                && z >= one.getZ() && z <= eight.getZ());
+        Core.getLogger().warn("\n" +
+                x + " >= " + A.getX() + " && " + x + " <= " + B.getX() + " " +
+                y + " >= " + A.getY() + " && " + x + " <= " + B.getY() + " " +
+                z + " >= " + A.getZ() + " && " + z + " <= " + B.getZ());
+
+        boolean compareX = (A.getX() <= B.getX() ? (x >= A.getX() && x <= B.getX()) : (x >= B.getX() && x <= A.getX()));
+        boolean compareY = (A.getY() <= B.getY() ? (y >= A.getY() && y <= B.getY()) : (y >= B.getY() && y <= A.getY()));
+        boolean compareZ = (A.getZ() <= B.getZ() ? (z >= A.getZ() && z <= B.getZ()) : (z >= B.getZ() && z <= A.getZ()));
+        
+        return (compareX && compareY && compareZ);
     }
 
-    public Vector3i getOne() {
-        return one;
+    public Vector3i getA() {
+        return A;
     }
 
-    public Vector3i getTwo() {
-        return two;
-    }
-
-    public Vector3i getThree() {
-        return three;
-    }
-
-    public Vector3i getFour() {
-        return four;
-    }
-
-    public Vector3i getFive() {
-        return five;
-    }
-
-    public Vector3i getSix() {
-        return six;
-    }
-
-    public Vector3i getSeven() {
-        return seven;
-    }
-
-    public Vector3i getEight() {
-        return eight;
+    public Vector3i getB() {
+        return B;
     }
 }

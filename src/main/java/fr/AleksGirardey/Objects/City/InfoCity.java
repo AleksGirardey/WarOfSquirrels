@@ -1,5 +1,6 @@
 package fr.AleksGirardey.Objects.City;
 
+import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.City;
 import org.spongepowered.api.text.channel.MutableMessageChannel;
 import org.spongepowered.api.text.format.TextColor;
@@ -13,7 +14,7 @@ public class InfoCity {
 
     static {
         /*
-        ** Faire ceci par la lecture d'un fichier config !!!
+        ** TODO : Faire ceci par la lecture d'un fichier config !!!
          */
         MapRanks = new HashMap<Integer, CityRank>();
 
@@ -39,10 +40,10 @@ public class InfoCity {
         MapRanks.put(6, new CityRank("Empire", "Empereur", "Assistant", 50, 25, TextColors.YELLOW));
     }
 
-    City                    city;
-    MutableMessageChannel   channel;
-    TextColor               color;
-    CityRank                cityRank;
+    private City                    city;
+    private MutableMessageChannel   channel;
+    private TextColor               color;
+    private CityRank                cityRank;
 
     public InfoCity(City city) {
         this.city = city;
@@ -58,6 +59,7 @@ public class InfoCity {
     public void     setCityRank() {
         this.cityRank = MapRanks.get(city.getRank());
         this.color = cityRank.getColor();
+        Core.getBroadcastHandler().cityChannel(city, "La ville a désormais le rang de '" + cityRank.getName() + "'.", TextColors.GREEN);
     }
 
     public City     getCity() {
@@ -74,5 +76,22 @@ public class InfoCity {
 
     public CityRank getCityRank() {
         return cityRank;
+    }
+
+    public void updateRank() {
+        int rank = city.getRank();
+        int citizens = city.getCitizens().size();
+
+        if (rank < MapRanks.size() - 1) {
+            if (rank != 0 && MapRanks.get(rank - 1).getCitizensMax() >= citizens) {
+                city.setRank(rank - 1);
+            } else if (MapRanks.get(rank + 1).getCitizensMax() <= citizens){
+                city.setRank(rank + 1);
+            }
+        } else {
+            if (MapRanks.get(rank - 1).getCitizensMax() >= citizens) {
+                city.setRank(rank - 1);
+            }
+        }
     }
 }

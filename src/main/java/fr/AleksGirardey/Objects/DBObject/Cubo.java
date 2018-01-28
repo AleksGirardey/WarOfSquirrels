@@ -25,8 +25,8 @@ public class            Cubo extends DBObject {
     private int                 parentId;
     private List<DBPlayer>      inList = new ArrayList<>();
 
-    private static final String              fields = "`" + GlobalCubo.nom
-            + "`, `" + GlobalCubo.cityId
+    private static final String              fields = "`" + GlobalCubo.cityId
+            + "`, `" + GlobalCubo.nom
             + "`, `" + GlobalCubo.parent
             + "`, `" + GlobalCubo.owner
             + "`, `" + GlobalCubo.pInlist
@@ -44,23 +44,26 @@ public class            Cubo extends DBObject {
         super(GlobalCubo.id, GlobalCubo.tableName, fields);
         this.name = name;
         this.parent = parent;
+        this.city = owner.getCity();
         this.owner = owner;
         this.vector = vector;
         this.priority = priority;
         this.permissionIn = in;
         this.permissionOut = out;
-        this._primaryKeyValue = "" + this.add("`" + name
-                + "`, `" + (parent != null ? parent.getId() : "NULL")
-                + "`, `" + owner.getId()
-                + "`, `" + permissionIn.getId()
-                + "`, `" + permissionOut.getId()
-                + "`, `" + priority
-                + "`, `" + vector.getOne().getX()
-                + "`, `" + vector.getOne().getY()
-                + "`, `" + vector.getOne().getZ()
-                + "`, `" + vector.getEight().getX()
-                + "`, `" + vector.getEight().getY()
-                + "`, `" + vector.getEight().getZ() + "`");
+        this._primaryKeyValue = "" + this.add(
+                city.getId()
+                + ", '" + name
+                + "', " + (parent != null ? parent.getId() : "NULL")
+                + ", '" + owner.getId()
+                + "', " + permissionIn.getId()
+                + ", " + permissionOut.getId()
+                + ", " + priority
+                + ", " + vector.getA().getX()
+                + ", " + vector.getA().getY()
+                + ", " + vector.getA().getZ()
+                + ", " + vector.getB().getX()
+                + ", " + vector.getB().getY()
+                + ", " + vector.getB().getZ() + "");
         writeLog();
     }
 
@@ -164,12 +167,12 @@ public class            Cubo extends DBObject {
 
     public void         setVector(CuboVector vector) {
         this.vector = vector;
-        this.edit(GlobalCubo.AposX, "" + vector.getOne().getX());
-        this.edit(GlobalCubo.AposY, "" + vector.getOne().getY());
-        this.edit(GlobalCubo.AposZ, "" + vector.getOne().getZ());
-        this.edit(GlobalCubo.AposX, "" + vector.getEight().getX());
-        this.edit(GlobalCubo.AposY, "" + vector.getEight().getY());
-        this.edit(GlobalCubo.AposZ, "" + vector.getEight().getZ());
+        this.edit(GlobalCubo.AposX, "" + vector.getA().getX());
+        this.edit(GlobalCubo.AposY, "" + vector.getA().getY());
+        this.edit(GlobalCubo.AposZ, "" + vector.getA().getZ());
+        this.edit(GlobalCubo.AposX, "" + vector.getB().getX());
+        this.edit(GlobalCubo.AposY, "" + vector.getB().getY());
+        this.edit(GlobalCubo.AposZ, "" + vector.getB().getZ());
     }
 
     public void             add(DBPlayer player) { inList.add(player); }

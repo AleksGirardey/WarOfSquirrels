@@ -15,7 +15,7 @@ public class        OnPlayerCubo {
         Boolean     b;
 
         if (player != null && Core.getCuboHandler().playerExists(player)) {
-            player.sendMessage(Text.of("[Cubo Debug] My cubo mode is activated"));
+            //player.sendMessage(Text.of("[Cubo Debug] My cubo mode is activated"));
             b = event instanceof InteractBlockEvent.Primary;
             Core.getCuboHandler().set(
                     player,

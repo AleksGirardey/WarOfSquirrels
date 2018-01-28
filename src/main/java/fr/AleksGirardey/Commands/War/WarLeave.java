@@ -7,6 +7,8 @@ import fr.AleksGirardey.Objects.War.War;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 public class                    WarLeave extends CityCommand {
     @Override
@@ -20,6 +22,7 @@ public class                    WarLeave extends CityCommand {
 
         if (war.removePlayer(player))
             return CommandResult.success();
+        player.sendMessage(Text.of(TextColors.RED, "Vous ne pouvez pas quitter la guerre en cours.", TextColors.RESET));
         return CommandResult.empty();
     }
 }

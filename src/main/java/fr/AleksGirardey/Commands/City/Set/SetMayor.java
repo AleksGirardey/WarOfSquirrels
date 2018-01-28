@@ -13,7 +13,7 @@ public class SetMayor extends CityCommandMayor {
 
     @Override
     protected boolean           SpecialCheck(DBPlayer player, CommandContext context) {
-        return context.<DBPlayer>getOne("[citizen]").get().getCity() == player.getCity();
+        return context.<DBPlayer>getOne("[citizen]").get().getCity() == player.getCity() || player.hasAdminMode();
     }
 
     @Override

@@ -1,12 +1,15 @@
 package fr.AleksGirardey.Handlers;
 
 import com.google.inject.Inject;
+import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.City;
 import fr.AleksGirardey.Objects.DBObject.Diplomacy;
 import fr.AleksGirardey.Objects.DBObject.Faction;
 import fr.AleksGirardey.Objects.DBObject.Permission;
 import fr.AleksGirardey.Objects.Database.GlobalDiplomacy;
+import fr.AleksGirardey.Objects.Database.GlobalFaction;
 import fr.AleksGirardey.Objects.Database.Statement;
+import fr.AleksGirardey.Objects.Faction.InfoFaction;
 import org.slf4j.Logger;
 
 import java.sql.SQLException;
@@ -23,6 +26,12 @@ public class DiplomacyHandler {
     public DiplomacyHandler(Logger logger) {
         this.logger = logger;
     }
+
+    public void        init(Faction faction) {
+        diplomacyMap.computeIfAbsent(faction, k -> new ArrayList<>());
+    }
+
+    public void         init(Faction faction, InfoFaction info) { init(faction); }
 
     public void        populate() {
         String          sql = "SELECT * FROM `" + GlobalDiplomacy.tableName + "`;";

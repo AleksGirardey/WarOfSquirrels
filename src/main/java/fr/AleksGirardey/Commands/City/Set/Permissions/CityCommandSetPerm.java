@@ -7,12 +7,15 @@ import fr.AleksGirardey.Objects.DBObject.Permission;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class           CityCommandSetPerm extends CityCommandAssistant{
 
+    protected String            name;
     protected Permission        perm;
     protected boolean[]         values = new boolean[3];
 
@@ -33,6 +36,7 @@ public abstract class           CityCommandSetPerm extends CityCommandAssistant{
         perm.setBuild(values[0]);
         perm.setContainer(values[1]);
         perm.setSwitch_(values[2]);
+        Core.getBroadcastHandler().cityChannel(player.getCity(), "Les permissions '" + name + "' sont désormais " + perm, TextColors.GOLD);
         return CommandResult.success();
     }
 }

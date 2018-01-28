@@ -6,6 +6,7 @@ import fr.AleksGirardey.Objects.Core;
 import fr.AleksGirardey.Objects.DBObject.DBPlayer;
 import fr.AleksGirardey.Objects.Utilitaires.Utils;
 import fr.AleksGirardey.Objects.War.PartyWar;
+import fr.AleksGirardey.Objects.War.War;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
@@ -42,11 +43,13 @@ public class PlayerListener {
             DBPlayer victim = Core.getPlayerHandler().get((Player) event.getTargetEntity()),
                     killer = Core.getPlayerHandler().get((Player) check);
 
-            if (Core.getWarHandler().Contains(killer) && Core.getWarHandler().Contains(victim))
+            if (Core.getWarHandler().Contains(killer) && Core.getWarHandler().Contains(victim) && Core.getWarHandler().getWar(killer.getCity()).getPhase().equals(War.WarState.War.toString())) {
+                Core.getLogger().debug("[War] Player got killed, points added");
                 Core.getWarHandler().AddPoints(killer, victim);
+            }
             /*
 
-              Add personnal points && money transfer
+              Add personal points && money transfer
 
             */
         }
@@ -74,7 +77,7 @@ public class PlayerListener {
     }
 
     @Listener(order = Order.FIRST)
-    public void onPlayerLogin(ClientConnectionEvent.Join event) throws SQLException {
+    public void onPlayerLogin(ClientConnectionEvent.Join event) {
         DBPlayer player = Core.getPlayerHandler().get(event.getTargetEntity());
 
         event.setChannel(MessageChannel.TO_ALL);
@@ -110,8 +113,20 @@ public class PlayerListener {
             else
                 partyWar.remove(player);
         }
-        channel = Core.getInfoCityMap().get(player.getCity()).getChannel();
-        Core.getLogger().info("[Logout] Channel '" + channel.toString() + "' contains '" + channel.getMembers().toString() + "'");
+        if (Core.getWarHandler().Contains(player)) {
+            War war = Core.getWarHandler().getWar(player);
+            war.removePlayer(player);
+            if (war.isTarget(player)) {
+                if (war.getPhase().equals(War.WarState.War.toString()))
+                    war.addAttackerPointsTarget();
+                else
+                    war.setTarget();
+            }
+        }
+        if (player.getCity() != null) {
+            channel = Core.getInfoCityMap().get(player.getCity()).getChannel();
+            Core.getLogger().info("[Logout] Channel '" + channel.toString() + "' contains '" + channel.getMembers().toString() + "'");
+        }
         if (Core.getBroadcastHandler().getGlobalChannel().getMembers().contains(event.getTargetEntity()))
             Core.getBroadcastHandler().getGlobalChannel().removeMember(event.getTargetEntity());
 

@@ -25,10 +25,12 @@ public class FactionInfo extends Commands {
 
     @Override
     protected CommandResult ExecCommand(DBPlayer player, CommandContext context) {
-        Faction             faction = player.getCity().getFaction();
+        Faction             faction;
 
         if (context.hasAny("<faction>"))
             faction = context.<Faction>getOne("<faction>").orElse(null);
+        else
+            faction = player.getCity().getFaction();
 
         if (faction == null)
             return CommandResult.empty();

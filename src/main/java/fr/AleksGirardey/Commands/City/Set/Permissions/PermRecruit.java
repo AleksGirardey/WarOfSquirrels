@@ -7,5 +7,6 @@ public class PermRecruit extends CityCommandSetPerm {
     @Override
     protected void setPerm(DBPlayer player, CommandContext context) {
         this.perm = player.getCity().getPermRec();
+        this.name = "Recrue";
     }
 }

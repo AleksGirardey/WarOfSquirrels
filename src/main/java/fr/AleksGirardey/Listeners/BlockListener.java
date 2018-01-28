@@ -12,6 +12,10 @@ import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.Transaction;
+import org.spongepowered.api.data.type.HandType;
+import org.spongepowered.api.data.type.HandTypes;
+import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Listener;
@@ -19,12 +23,20 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.entity.InteractEntityEvent;
+import org.spongepowered.api.event.entity.SpawnEntityEvent;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.world.ExplosionEvent;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +45,7 @@ public class BlockListener {
 
     private static List<BlockType>  ContainersBlock;
     private static List<BlockType>  SwitchableBlocks;
+    private static List<EntityType> EntitiesBlocks;
 
     static {
         SwitchableBlocks = new ArrayList<>();
@@ -51,6 +64,7 @@ public class BlockListener {
         SwitchableBlocks.add(BlockTypes.STONE_BUTTON);
         SwitchableBlocks.add(BlockTypes.WOODEN_BUTTON);
         SwitchableBlocks.add(BlockTypes.LEVER);
+        SwitchableBlocks.add(BlockTypes.WALL_SIGN);
 
         ContainersBlock = new ArrayList<>();
         ContainersBlock.add(BlockTypes.CHEST);
@@ -61,25 +75,40 @@ public class BlockListener {
         ContainersBlock.add(BlockTypes.DISPENSER);
         ContainersBlock.add(BlockTypes.LIT_FURNACE);
         ContainersBlock.add(BlockTypes.HOPPER);
+
+        EntitiesBlocks = new ArrayList<>();
+        EntitiesBlocks.add(EntityTypes.ARMOR_STAND);
+        EntitiesBlocks.add(EntityTypes.BOAT);
+        EntitiesBlocks.add(EntityTypes.CHESTED_MINECART);
+        EntitiesBlocks.add(EntityTypes.FURNACE_MINECART);
+        EntitiesBlocks.add(EntityTypes.RIDEABLE_MINECART);
+        EntitiesBlocks.add(EntityTypes.TNT_MINECART);
+        EntitiesBlocks.add(EntityTypes.HOPPER_MINECART);
+        EntitiesBlocks.add(EntityTypes.ITEM_FRAME);
+        EntitiesBlocks.add(EntityTypes.PAINTING);
     }
 
     @Listener(order = Order.FIRST)
-    public void         onBlockDestroy(ChangeBlockEvent.Break event) {
-        final Player    player = event.getCause().first(Player.class).orElse(null);
-        Text            message = Text.builder("You can't destroy this").color(TextColors.RED).build();
+    public void         onEntitySpawn(SpawnEntityEvent event) {
 
-        if (event.getCause().root() instanceof BlockSnapshot && ((BlockSnapshot) event.getCause().root()).getState().getType() == BlockTypes.FIRE) {
-            event.setCancelled(true);
+    }
+
+    @Listener(order = Order.FIRST)
+    public void         onBlockBuild(ChangeBlockEvent event, @First Player player) {
+        Text            message = Text.builder("Vous ne pouvez pas construire ici").color(TextColors.RED).build();
+        final Boolean[] rollback = {false};
+        boolean         destroy = (event instanceof ChangeBlockEvent.Break);
+
+        if (destroy) {
+            event.getTransactions().stream().filter(transaction -> transaction.getOriginal().getState().getType() == BlockTypes.WALL_SIGN)
+                    .forEach(transaction -> {
+                        if (Core.getShopHandler().get(transaction.getOriginal().getPosition()) != null
+                                && !Core.getWarHandler().isConcerned(transaction.getOriginal().getPosition(), Core.getPlugin().getServer().getWorld(transaction.getOriginal().getWorldUniqueId()).get()))
+                            Core.getShopHandler().delete(transaction.getOriginal().getPosition());
+                    });
         }
 
-        event.getTransactions().stream().filter(transaction -> transaction.getOriginal().getState().getType() == BlockTypes.WALL_SIGN)
-                .forEach(transaction -> {
-                    if (Core.getShopHandler().get(transaction.getOriginal().getPosition()) != null
-                            && !Core.getWarHandler().isConcerned(transaction.getOriginal().getPosition(), Core.getPlugin().getServer().getWorld(transaction.getOriginal().getWorldUniqueId()).get()))
-                        Core.getShopHandler().delete(transaction.getOriginal().getPosition());
-                });
-
-        if (player != null) {
+        if (player != null && !Core.getPlayerHandler().get(player).hasAdminMode()) {
             if (!checkCuboPerms(player, event)) {
                 player.sendMessage(message);
                 event.setCancelled(true);
@@ -88,35 +117,79 @@ public class BlockListener {
                 event.setCancelled(true);
             }
         }
+
+        event.getTransactions().forEach(t -> {
+            World world = Core.getPlugin().getServer().getWorld(t.getOriginal().getWorldUniqueId()).get();
+            if (Core.getWarHandler().isConcerned(t.getOriginal().getPosition(), world))
+                rollback[0] = true;
+        });
+
+        shouldRollback(rollback, event.getTransactions());
+    }
+
+    private void shouldRollback(Boolean[] rollback, List<Transaction<BlockSnapshot>> transactions) {
+        if (rollback[0]) {
+            transactions.forEach(t -> {
+                World world = Core.getPlugin().getServer().getWorld(t.getOriginal().getWorldUniqueId()).get();
+                Vector3i posO = t.getOriginal().getPosition();
+
+                Core.getWarHandler().getWar(Core.getChunkHandler().get(
+                        posO.getX() / 16,
+                        posO.getZ() / 16,
+                        world
+                ).getCity()).addRollbackBlock(t);
+            });
+        }
     }
 
     @Listener(order = Order.FIRST)
-    public void         onBlockPlaced(ChangeBlockEvent.Place event) {
-        final Player    player = event.getCause().first(Player.class).orElse(null);
-        Text            message = Text.builder("You can't build here").color(TextColors.RED).build();
+    public void             onEntityInteract(InteractEntityEvent event) {
+        Player              player = event.getCause().first(Player.class).orElseGet(null);
+        DBPlayer            dbplayer = Core.getPlayerHandler().get(player);
+        Location<World>     location = event.getTargetEntity().getLocation();
 
-        if (player != null) {
-            if (!checkChunkPerms(player, event)) {
-                player.sendMessage(message);
-                event.setCancelled(true);
-            } else if (!checkCuboPerms(player, event)) {
-                player.sendMessage(message);
-                event.setCancelled(true);
+        int                 x, z;
+
+        if (player != null && EntitiesBlocks.contains(event.getTargetEntity().getType())) {
+            World               world = player.getWorld();
+            x = location.getBlockX();
+            z = location.getBlockZ();
+            if (!dbplayer.hasAdminMode() && Core.getChunkHandler().exists(x / 16, z / 16, world)) {
+                Chunk chunk = Core.getChunkHandler().get(x / 16, z / 16, world);
+                if (event instanceof InteractEntityEvent.Primary && !checkEntityPerms(player, event))
+                    event.setCancelled(true);
+                else if (event instanceof InteractEntityEvent.Secondary &&
+                        !Core.getPermissionHandler().ableTo(dbplayer, chunk, "Container", location.getBlockPosition()))
+                    event.setCancelled(true);
             }
         }
     }
 
     @Listener(order = Order.FIRST)
-    public void             onBlockInteract(InteractBlockEvent.Secondary event) {
-        DBPlayer            player = Core.getPlayerHandler().get((Player) event.getCause().getNamedCauses().get("Source"));
+    public void             onBlockInteract(InteractBlockEvent.Secondary event, @First Player pl) {
+        DBPlayer            player = Core.getPlayerHandler().get(pl);
         Location<World>     location = event.getTargetBlock().getLocation().orElse(null);
         World               world = player.getUser().getPlayer().get().getWorld();
         int                 x, z;
 
-        if (location != null) {
+        ItemStack hand = pl.getItemInHand(HandTypes.MAIN_HAND).orElse(null);
+        if (location != null && player.getElapsedTimeClick()) {
+            player.setLastClick(Instant.now().getEpochSecond());
             x = location.getBlockX();
             z = location.getBlockZ();
-            if (Core.getChunkHandler().exists(x / 16, z / 16, world)) {
+
+            if (hand != null && hand.getType().equals(ItemTypes.FEATHER)) {
+                Chunk chunk = Core.getChunkHandler().get(x / 16, z / 16, world);
+                Cubo cubo = Core.getCuboHandler().get(location.getBlockPosition());
+
+                player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "===| Parcelle [" + (x / 16) + ";" + (z / 16) + "] |===", TextColors.RESET));
+                player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "Propriétaire : " + (chunk == null ? "Nature" : chunk.getCity().getDisplayName()), TextColors.RESET));
+                if (cubo != null)
+                    player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "===| Cubo '" + cubo.getName() + "' [" + cubo.getOwner().getDisplayName() + "] |===", TextColors.RESET));
+            }
+
+
+            if (!player.hasAdminMode() && Core.getChunkHandler().exists(x / 16, z / 16, world) && !Core.getWarHandler().isConcerned(location.getBlockPosition(), world)) {
                 if (SwitchableBlocks.contains(event.getTargetBlock().getState().getType()) &&
                         !Core.getPermissionHandler().ableTo(player, Core.getChunkHandler().get(x / 16, z / 16, world), "Switch", event.getTargetBlock().getPosition()))
                     event.setCancelled(true);
@@ -132,114 +205,53 @@ public class BlockListener {
         ((Cancellable) event).setCancelled(true);
     }
 
-/*    @Listener(order = Order.FIRST)
-    public void             onBlockExplosion(ExplosionEvent.Post event) {
-        event.setCancelled(true);
-        /*
-        for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
-            transaction.setValid(false);
-        }
-    }
-    */
+    private boolean         checkCubo(DBPlayer player, Vector3i pos) {
+        Cubo cubo = Core.getCuboHandler().get(pos);
 
-    @Listener(order = Order.FIRST)
-    public void             onBlockBurn(ChangeBlockEvent event) {
-        List<Transaction<BlockSnapshot>> transactions = event.getTransactions();
-
-        transactions.stream().filter(trans -> trans.getFinal().getState()
-                .getType() == BlockTypes.FIRE).forEach(trans -> {
-                    if (!(event.getCause().root() instanceof Player))
-                        trans.setValid(false);
-        });
-    }
-
-    private boolean         checkCuboPerms(Player player, ChangeBlockEvent event) {
-        DBPlayer            dbPlayer = Core.getPlayerHandler().get(player);
-        Cubo                cubo;
-        int                 x, y, z;
-
-        for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
-            BlockSnapshot   original = transaction.getOriginal();
-
-            x = original.getLocation().get().getBlockX();
-            y = original.getLocation().get().getBlockY();
-            z = original.getLocation().get().getBlockZ();
-
-            cubo = Core.getCuboHandler().get(new Vector3i(x, y, z));
-
-            /*
-            ** Pour chaque transaction, verification si le block est dans un cubo
-            */
-            if (cubo != null) {
-                /*
-                ** Le block est dans un cubo, on verifie les droits du joueur par rapport au cubo
-                */
-                if (!cubo.getInList().contains(dbPlayer)) {
-                    /*
-                    ** Le joueur n'a pas les droits mais il existe une exception en temps de guerre
-                    */
-                    if (Core.getWarHandler().Contains(dbPlayer) && Core.getWarHandler().ableTo(dbPlayer, cubo)) {
-                        /*
-                        ** Il est en guerre contre la ville propiétaire du cubo, on ajoute la transaction aux logs
-                        */
-                        Core.getWarHandler().getWar(dbPlayer).addRollbackBlock(transaction);
-                    } else
-                        return false;
-                }
-                /*
-                ** Le joueur est autorisé à build cependant on verifie si c'est
-                */
-                if (Core.getWarHandler().ContainsDefender(cubo.getOwner().getCity()))
-                    Core.getWarHandler().getWar(cubo.getOwner().getCity()).addRollbackBlock(transaction);
+        if (cubo != null) {
+            if (!cubo.getInList().contains(player)) {
+                return Core.getWarHandler().Contains(player) && Core.getWarHandler().ableTo(player, cubo);
             }
         }
         return true;
     }
 
-    private boolean         checkChunkPerms(Player player, ChangeBlockEvent event) {
+    private boolean         checkCuboPerms(Player player, ChangeBlockEvent event) {
         DBPlayer            dbPlayer = Core.getPlayerHandler().get(player);
-        Chunk               chunk;
-        int                 x, z;
 
         for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
-            BlockSnapshot   original = transaction.getOriginal();
-
-            x = transaction.getOriginal().getLocation().get().getBlockX();
-            z = transaction.getOriginal().getLocation().get().getBlockZ();
-
-            chunk = Core.getChunkHandler().get(x / 16, z / 16, player.getWorld());
-
-            /*
-            ** Pour chaque transaction, verification si le block est dans un chunk claim
-            */
-            if (chunk != null) {
-                /*
-                ** Le chunk est claim, verifions si le joueur peut build dessus
-                */
-                if (!Core.getPermissionHandler().ableTo(dbPlayer, chunk, Permissions.BUILD, original.getPosition())) {
-                    /*
-                    ** Le joueur n'a pas le droit mais une exception s'applique en cas de guerre
-                    */
-                    if (Core.getWarHandler().Contains(dbPlayer) && Core.getWarHandler().ableTo(dbPlayer, chunk)) {
-                        /*
-                        ** Le joueur est en guerre avec la ville owner du claim, on en profites pour ajouter
-                        ** la transaction aux logs
-                        */
-                        Core.getWarHandler().getWar(dbPlayer).addRollbackBlock(transaction);
-                    } else
-                        return false;
-                }
-                /*
-                ** Le joueur est autorisé à build cependant on verifie si la transaction doit être ajouter aux logs
-                */
-                if (Core.getWarHandler().ContainsDefender(chunk.getCity()))
-                        Core.getWarHandler().getWar(chunk.getCity()).addRollbackBlock(transaction);
-                }
+            if (!checkCubo(dbPlayer, transaction.getOriginal().getPosition()))
+                return false;
         }
+        return true;
+    }
 
-        /*
-        ** L'ensemble des transactions on été verifié (et sauvegardé si besoin)
-        */
+    private boolean         checkEntityPerms(Player player, InteractEntityEvent event) {
+        DBPlayer dbPlayer = Core.getPlayerHandler().get(player);
+
+        return checkPerm(dbPlayer, event.getTargetEntity().getLocation().getBlockPosition(), player.getWorld());
+    }
+
+    private boolean         checkChunkPerms(Player player, ChangeBlockEvent event) {
+        DBPlayer dbPlayer = Core.getPlayerHandler().get(player);
+
+        for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
+            if (!checkPerm(dbPlayer, transaction.getOriginal().getLocation().get().getBlockPosition(),
+                    player.getWorld())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean         checkPerm(DBPlayer dbPlayer, Vector3i pos, World world) {
+        Chunk chunk = Core.getChunkHandler().get(pos.getX() / 16, pos.getZ() / 16, world);
+
+        if (chunk != null) {
+            if (!Core.getPermissionHandler().ableTo(dbPlayer, chunk, Permissions.BUILD, pos)) {
+                return Core.getWarHandler().Contains(dbPlayer) && Core.getWarHandler().ableTo(dbPlayer, chunk);
+            }
+        }
         return true;
     }
 }

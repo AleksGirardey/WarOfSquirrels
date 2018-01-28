@@ -5,6 +5,7 @@ import fr.AleksGirardey.Objects.Database.GlobalChunk;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.World;
 
+import javax.annotation.Nullable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
@@ -68,6 +69,7 @@ public class                Chunk extends DBObject {
         respawnX = (homeblock || outpost ? rs.getInt(GlobalChunk.respawnX) : 0);
         respawnY = (homeblock || outpost ? rs.getInt(GlobalChunk.respawnY) : 0);
         respawnZ = (homeblock || outpost ? rs.getInt(GlobalChunk.respawnZ) : 0);
+        writeLog();
     }
 
     protected void      writeLog() {
@@ -76,7 +78,7 @@ public class                Chunk extends DBObject {
         if (homeblock || outpost)
             message = " respawn at [" + respawnX + ";" + respawnY + ";" + respawnZ + "]";
         Core.getLogger().info("[Creating] Chunk at '" + this.posX + ";" + this.posZ + "' for "
-                + this.getCity().getDisplayName() + "[" + (homeblock ? "YES" : "NO") + ";" + (outpost ? "YES" : "NO") + "]" + message);
+                + this.getCity().getDisplayName() + "[" + (homeblock ? "YES" : "NO") + ";" + (outpost ? "YES" : "NO") + "] in world " + world.getName() + message);
     }
 
     public int      getId() { return Integer.parseInt(_primaryKeyValue); }
@@ -120,21 +122,21 @@ public class                Chunk extends DBObject {
 
     public void     setRespawnX(int respawnX) {
         this.respawnX = respawnX;
-        this.edit(GlobalChunk.respawnX, "'" + respawnX + "'");
+        this.edit(GlobalChunk.respawnX, (respawnX == -1 ? "NULL" : "'" + respawnX + "'"));
     }
 
     public int      getRespawnY() { return respawnY; }
 
     public void     setRespawnY(int respawnY) {
         this.respawnY = respawnY;
-        this.edit(GlobalChunk.respawnY, "'" + respawnY + "'");
+        this.edit(GlobalChunk.respawnY, (respawnY == -1 ? "NULL" : "'" + respawnY + "'"));
     }
 
     public int      getRespawnZ() { return respawnZ; }
 
     public void     setRespawnZ(int respawnZ) {
         this.respawnZ = respawnZ;
-        this.edit(GlobalChunk.respawnZ, "'" + respawnZ + "'");
+        this.edit(GlobalChunk.respawnZ, (respawnZ == -1 ? "NULL" : "'" + respawnZ + "'"));
     }
 
     public World    getWorld() { return world; }
@@ -144,10 +146,10 @@ public class                Chunk extends DBObject {
         this.edit(GlobalChunk.world, "'" + world.getUniqueId() + "'");
     }
 
-    public boolean equals(Chunk chunk) { return chunk.getPosX() == this.posX && chunk.getPosZ() == this.posZ && chunk.getWorld() == this.world; }
+    public boolean equals(Chunk chunk) { return chunk.getPosX() == this.posX && chunk.getPosZ() == this.posZ && chunk.getWorld().getUniqueId().equals(this.world.getUniqueId()); }
 
     @Override
     public String toString() {
-        return ("[" + posX + ";" + posZ + "]");
+        return ("[" + posX + ";" + posZ + "] in world " + world.getName());
     }
 }

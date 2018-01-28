@@ -9,6 +9,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
 
 public class                WarInfo implements CommandExecutor {
     @Override
@@ -20,8 +21,10 @@ public class                WarInfo implements CommandExecutor {
             commandContext.<War>getOne("[city]").get().displayInfo(player);
             return CommandResult.success();
         }
-        if (Core.getWarHandler().getWar(player) == null)
+        if (Core.getWarHandler().getWar(player) == null) {
+            player.sendMessage(Text.of("Vous ne participer actuellement à aucune guerre."));
             return CommandResult.empty();
+        }
         Core.getWarHandler().getWar(player).displayInfo(player);
         return CommandResult.success();
     }

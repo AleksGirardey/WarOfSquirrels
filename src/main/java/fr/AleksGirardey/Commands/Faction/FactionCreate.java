@@ -27,7 +27,7 @@ public class FactionCreate extends Commands {
         if (super.CanDoIt(player) && Core.getPartyHandler().isLeader(player)) {
             PartyWar    party = Core.getPartyHandler().getPartyFromLeader(player);
 
-            if (player.getUser().getPlayer().get().hasPermission("minecraft.command.op"))
+            if (player.hasAdminMode())
                 return true;
             else if (party.size() >= 4
                     && party.createCityCheck())
@@ -96,6 +96,7 @@ public class FactionCreate extends Commands {
             Core.getInfoFactionMap().get(faction).getChannel().addMember(p.getUser().getPlayer().get());
         }
         faction.addCity(city);
+        Core.getDiplomacyHandler().init(faction);
 
         Text        message = Text.of(player.getDisplayName() + " est maintenant le leader de la faction ", TextStyles.BOLD, faction.getDisplayName(), TextStyles.RESET, " dont la capitale est ",
                 TextStyles.BOLD, city.getDisplayName(), TextStyles.RESET, ".");
