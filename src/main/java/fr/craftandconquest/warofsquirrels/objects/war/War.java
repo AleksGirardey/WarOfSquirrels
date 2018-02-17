@@ -1,19 +1,21 @@
-package fr.craftandconquest.objects.war;
+package fr.craftandconquest.warofsquirrels.objects.war;
 
-import fr.craftandconquest.objects.city.CityRank;
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.Chunk;
-import fr.craftandconquest.objects.dbobject.City;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
-import fr.craftandconquest.objects.utils.Utils;
-import fr.craftandconquest.objects.city.CityRank;
-import fr.craftandconquest.objects.dbobject.Chunk;
-import fr.craftandconquest.objects.dbobject.City;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
-import fr.craftandconquest.objects.utils.Utils;
+import fr.craftandconquest.warofsquirrels.objects.city.CityRank;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.Chunk;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.City;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.utils.Utils;
+import fr.craftandconquest.warofsquirrels.objects.city.CityRank;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.Chunk;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.City;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.scoreboard.Scoreboard;
 import org.spongepowered.api.scoreboard.critieria.Criteria;
@@ -50,10 +52,11 @@ public class War {
     private int             _attackersLimit;
     private long            _timeStart;
     private DBPlayer        _target;
-    private boolean         _targetDead;
+    private boolean         _targetDead = false;
     private int             _attackerPoints = 0;
     private int             _defenderPoints = 0;
 
+    private int             lastAnnouceCapture = 0;
     private float           _vitesseCapture;
 
     private ConfigurationNode   _node;
@@ -66,15 +69,18 @@ public class War {
         _cityAttacker = attacker;
         _cityDefender = defender;
         _target = null;
-        _attackers = new ArrayList<>(attackersList);
-        _defenders = new ArrayList<>(Core.getCityHandler().getOnlineDBPlayers(defender));
-        _rollbackBlocks = new ArrayList<>();
+        _defenders = new ArrayList<>();
+        Core.getCityHandler().getOnlineDBPlayers(defender).forEach(this::addDefender);
         _attackersLimit = _defenders.size() + 1;
+        _attackers = new ArrayList<>();
+        attackersList.forEach(this::addAttacker);
+        _rollbackBlocks = new ArrayList<>();
         _state = WarState.Preparation;
         _tag = setTag();
         _node = node.getNode(_tag);
-        Core.Send("A war is about to start ! " + _cityAttacker.getDisplayName()
-                + " attack " + _cityDefender.getDisplayName() + " !");
+        Core.Send(Text.of(TextColors.GOLD, "Une attaque vient d'être lancé ! ", TextColors.RED, _cityAttacker.getDisplayName(),
+                TextColors.GOLD, " attaque ",
+                TextColors.BLUE, _cityDefender.getDisplayName(), TextColors.RESET));
         setTarget();
         launchPreparation();
         setScoreboard();
@@ -84,7 +90,7 @@ public class War {
         _attackers.forEach(this::displayScoreboard);
     }
 
-    private void displayScoreboard(DBPlayer player) {
+    private void        displayScoreboard(DBPlayer player) {
         List<Objective> objs = new ArrayList<>();
 
         Objective test = Objective.builder()
@@ -123,19 +129,23 @@ public class War {
     }
 
     public boolean      addAttacker(DBPlayer player) {
+        Player attacker = player.getUser().getPlayer().get();
         if (_attackers.size() == _attackersLimit) {
             player.sendMessage(Text.of("You can't join this war, wait for defenders to join"));
             return false;
         }
         _attackers.add(player);
+        attacker.offer(Keys.DISPLAY_NAME, Text.of(TextColors.RED, player.getDisplayName(), TextColors.RESET));
         Core.getBroadcastHandler().warAnnounce(this, player.getDisplayName() +
                 " join as Attacker ! [" + _attackers.size() + "/" + _attackersLimit + "]");
         return true;
     }
 
     public boolean      addDefender(DBPlayer player) {
+        Player defender = player.getUser().getPlayer().get();
         _defenders.add(player);
         ++_attackersLimit;
+        defender.offer(Keys.DISPLAY_NAME, Text.of(TextColors.BLUE, player.getDisplayName(), TextColors.RESET));
         Core.getBroadcastHandler().warAnnounce(this, player.getDisplayName() +
                 " join as Defender ! [" + _attackers.size() + "/" + _attackersLimit + "]");
         return true;
@@ -174,12 +184,9 @@ public class War {
         this._defenderPoints += points;
     }
 
-    public void         addDefenderKillPoints() {
-        this._defenderPoints += 166 / (5 * _attackers.size());
-    }
-
+    public void         addDefenderKillPoints() { this._defenderPoints += 166 / (3 * _attackers.size()); }
     public void         addAttackerKillPoints() {
-        this._attackerPoints += 166 / (5 * _defenders.size());
+        this._attackerPoints += 166 / (3 * _defenders.size());
     }
 
     public void         addAttackerPointsTarget() {
@@ -328,6 +335,7 @@ public class War {
         }
         else
             return false;
+        player.getUser().getPlayer().get().offer(Keys.DISPLAY_NAME, Text.of(TextColors.WHITE, player.getDisplayName(), TextColors.RESET));
         Core.getBroadcastHandler().warAnnounce(this, player.getDisplayName() +
                 " left the war [" + _attackers.size() + "/" + _attackersLimit + "]");
         return true;
@@ -340,6 +348,14 @@ public class War {
     public City             getDefender() { return _cityDefender; }
     public int              getAttackerPoints() { return _attackerPoints; }
     public int              getDefenderPoints() { return _defenderPoints; }
+
+    public List<DBPlayer>   getAttackers() { return _attackers; }
+    public List<String>     getAttackersAsString() {
+        List<String>        list = new ArrayList<>();
+
+        _attackers.forEach(a -> list.add(a.getDisplayName()));
+        return list;
+    }
 
     public List<DBPlayer>   getDefenders() { return _defenders; }
     public List<String>     getDefendersAsString() {
@@ -355,17 +371,17 @@ public class War {
         player.sendMessage(Text.of(TextColors.BLUE, "Defenders [" + _cityDefender.getDisplayName() + "] : " + Utils.getStringFromPlayerList(_defenders), TextColors.RESET));
         player.sendMessage(Text.of(TextColors.GOLD, "\nTarget : " + this._target.getDisplayName(), TextColors.RESET));
         player.sendMessage(Text.of("Phase : " + this.getPhase() + " (time left : " + timeLeft() + ")"));
-        player.sendMessage(Text.of(TextStyles.BOLD, "\n=== " + _attackerPoints + " - " + _defenderPoints + " ===", TextStyles.RESET));
+        player.sendMessage(Text.of(TextStyles.BOLD, "\n===[" + _cityAttacker.getTag() + "] " + _attackerPoints + " - " + _defenderPoints + " [" + _cityDefender.getTag() + "]===", TextStyles.RESET));
         _inCaptureChunk.forEach((chunk, f) -> {
             float val = capture(chunk);
 
-            if (val != 0f)
+            if (val > 0f)
                 player.sendMessage(Text.of("["
                     + (chunk.getPosX() * 16) + ";"
                     + (chunk.getPosZ() * 16) + "] "
                     + Utils.toTime((int) (_inCaptureChunk.get(chunk) / val))
                     + " secondes."));
-        //Core.getLogger().warn("Incapture " + _inCaptureChunk.get(chunk) + " / " + capture(chunk) + " = " + (int) (_inCaptureChunk.get(chunk) / capture(chunk)));
+
         });
     }
 
@@ -418,7 +434,9 @@ public class War {
                 world = att.getUser().getPlayer().get().getWorld();
                 Chunk chunk = Core.getChunkHandler().get(att.getLastChunkX(), att.getLastChunkZ(), world);
 
-                if (chunk != null && !updated.contains(chunk) && !_capturedChunk.contains(chunk) && !chunk.isHomeblock() && !chunk.isOutpost()) {
+                if (chunk != null && chunk.getCity() == _cityDefender
+                        && !updated.contains(chunk) && !_capturedChunk.contains(chunk)
+                        && !chunk.isHomeblock() && !chunk.isOutpost()) {
                     updated.add(chunk);
                     if (_inCaptureChunk.containsKey(chunk)) {
                         v = _inCaptureChunk.get(chunk);
@@ -427,7 +445,8 @@ public class War {
                         v = 100;
                         _inCaptureChunk.put(chunk, 100 - capture(chunk));
                     }
-                    //Core.getBroadcastHandler().warAnnounce(this, "[Capture][" + (chunk.getPosX() * 16) + ";" + (chunk.getPosZ() * 16) + "] Temps restant avant capture " + utils.toTime((int) (_inCaptureChunk.get(chunk) / (v - _inCaptureChunk.get(chunk)))) + " secondes.");
+                    if (this.lastAnnouceCapture == 0)
+                        Core.getBroadcastHandler().warAnnounce(this, "[Capture][" + (chunk.getPosX() * 16) + ";" + (chunk.getPosZ() * 16) + "] Temps restant avant capture " + Utils.toTime((int) (_inCaptureChunk.get(chunk) / (v - _inCaptureChunk.get(chunk)))) + " secondes.");
                     if (_inCaptureChunk.get(chunk) <= 0) {
                         _capturedChunk.add(chunk);
                         _inCaptureChunk.remove(chunk);
@@ -436,5 +455,8 @@ public class War {
                 }
             }
         }
+        if (this.lastAnnouceCapture == 0)
+            this.lastAnnouceCapture = 30;
+        this.lastAnnouceCapture -= 1;
     }
 }

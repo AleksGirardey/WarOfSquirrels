@@ -1,12 +1,12 @@
-package fr.craftandconquest.handlers;
+package fr.craftandconquest.warofsquirrels.handlers;
 
 import com.google.inject.Inject;
-import fr.craftandconquest.objects.dbobject.Diplomacy;
-import fr.craftandconquest.objects.dbobject.Faction;
-import fr.craftandconquest.objects.dbobject.Permission;
-import fr.craftandconquest.objects.database.GlobalDiplomacy;
-import fr.craftandconquest.objects.database.Statement;
-import fr.craftandconquest.objects.faction.InfoFaction;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.Diplomacy;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.Faction;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.Permission;
+import fr.craftandconquest.warofsquirrels.objects.database.GlobalDiplomacy;
+import fr.craftandconquest.warofsquirrels.objects.database.Statement;
+import fr.craftandconquest.warofsquirrels.objects.faction.InfoFaction;
 import org.slf4j.Logger;
 
 import java.sql.SQLException;

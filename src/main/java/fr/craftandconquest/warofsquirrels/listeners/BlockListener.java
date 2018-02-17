@@ -1,11 +1,8 @@
-package fr.craftandconquest.listeners;
+package fr.craftandconquest.warofsquirrels.listeners;
 
 import com.flowpowered.math.vector.Vector3i;
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.Cubo;
-import fr.craftandconquest.objects.dbobject.Chunk;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
-import fr.craftandconquest.objects.dbobject.Permissions;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.*;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
@@ -80,26 +77,30 @@ public class BlockListener {
         EntitiesBlocks.add(EntityTypes.PAINTING);
     }
 
-    @Listener(order = Order.FIRST)
-    public void         onBlockBuild(ChangeBlockEvent event, @First Player player) {
+    @Listener
+    public void         onBlockDestroy(ChangeBlockEvent.Break event, @First Player player) {
+        event.getTransactions().stream().filter(transaction -> transaction.getOriginal().getState().getType() == BlockTypes.WALL_SIGN)
+                .forEach(transaction -> {
+                    if (Core.getShopHandler().get(transaction.getOriginal().getPosition()) != null
+                            && !Core.getWarHandler().isConcerned(transaction.getOriginal().getPosition(), Core.getPlugin().getServer().getWorld(transaction.getOriginal().getWorldUniqueId()).get()))
+                        Core.getShopHandler().delete(transaction.getOriginal().getPosition());
+                });
+
+        handleEventConstruction(event, player);
+    }
+
+    @Listener
+    public void         onBlockPlaced(ChangeBlockEvent.Place event, @First Player player) {
+        handleEventConstruction(event, player);
+    }
+
+    private void         handleEventConstruction(ChangeBlockEvent event, Player player) {
         Text            message = Text.builder("Vous ne pouvez pas construire ici").color(TextColors.RED).build();
         final Boolean[] rollback = {false};
-        boolean         destroy = (event instanceof ChangeBlockEvent.Break);
-
-        if (destroy) {
-            event.getTransactions().stream().filter(transaction -> transaction.getOriginal().getState().getType() == BlockTypes.WALL_SIGN)
-                    .forEach(transaction -> {
-                        if (Core.getShopHandler().get(transaction.getOriginal().getPosition()) != null
-                                && !Core.getWarHandler().isConcerned(transaction.getOriginal().getPosition(), Core.getPlugin().getServer().getWorld(transaction.getOriginal().getWorldUniqueId()).get()))
-                            Core.getShopHandler().delete(transaction.getOriginal().getPosition());
-                    });
-        }
 
         if (player != null && !Core.getPlayerHandler().get(player).hasAdminMode()) {
-            if (!checkCuboPerms(player, event, Permissions.BUILD)) {
-                player.sendMessage(message);
-                event.setCancelled(true);
-            } else if (!checkChunkPerms(player, event, "Build")) {
+            if (!checkCuboPerms(player, event, Permissions.BUILD)
+                    || !checkChunkPerms(player, event, Permissions.BUILD)) {
                 player.sendMessage(message);
                 event.setCancelled(true);
             }
@@ -130,10 +131,10 @@ public class BlockListener {
     }
 
     @Listener(order = Order.FIRST)
-    public void             onEntityInteract(InteractEntityEvent event) {
-        Player              player = event.getCause().first(Player.class).orElseGet(null);
+    public void             onEntityInteract(InteractEntityEvent event, @First Player player) {
         DBPlayer            dbplayer = Core.getPlayerHandler().get(player);
         Location<World>     location = event.getTargetEntity().getLocation();
+        Text                message = Text.of(TextColors.RED, "Vous ne pouvez pas faire ça.", TextColors.RESET);
 
         int                 x, z;
 
@@ -142,22 +143,77 @@ public class BlockListener {
             x = location.getBlockX();
             z = location.getBlockZ();
             if (!dbplayer.hasAdminMode() && Core.getChunkHandler().exists(x / 16, z / 16, world)) {
-                Chunk chunk = Core.getChunkHandler().get(x / 16, z / 16, world);
                 if (event instanceof InteractEntityEvent.Primary && !checkEntityPerms(player, event, Permissions.BUILD))
                     event.setCancelled(true);
                 else if (event instanceof InteractEntityEvent.Secondary) {
-                    if (!checkCubo(dbplayer, location.getBlockPosition(), "Container")) {
-                        player.sendMessage(Text.of(TextColors.RED, "Vous ne pouvez pas faire ça.", TextColors.RESET));
-                        event.setCancelled(true);
-                    } else if (!checkPerm(dbplayer, location.getBlockPosition(), world, Permissions.CONTAINER)) {
-                        player.sendMessage(Text.of(TextColors.RED, "Vous ne pouvez pas faire ça.", TextColors.RESET));
-                        event.setCancelled(true);
+                    if (Core.getCuboHandler().get(location.getBlockPosition()) != null) {
+                        if (!checkCubo(dbplayer, location.getBlockPosition(), Permissions.CONTAINER)) {
+                            player.sendMessage(message);
+                            event.setCancelled(true);
+                        }
+                    } else {
+                        if (!checkPerm(dbplayer, location.getBlockPosition(), world, Permissions.CONTAINER)) {
+                            player.sendMessage(message);
+                            event.setCancelled(true);
+                        }
                     }
                 }
             }
         }
     }
 
+    @Listener
+    public void             onInteractBlockSecondaryMainhand(InteractBlockEvent.Secondary.MainHand event, @First Player player) {
+        BlockType           block = event.getTargetBlock().getState().getType();
+
+        if (event.getTargetBlock().getLocation().isPresent() && !block.equals(BlockTypes.AIR))
+            this.handleEventInteract(event, event.getTargetBlock().getLocation().get(), player);
+    }
+
+    private void            handleEventInteract(InteractBlockEvent.Secondary.MainHand event, Location<World> location, Player player) {
+        DBPlayer            dbPlayer = Core.getPlayerHandler().get(player);
+        World               world = player.getWorld();
+        int                 x = location.getBlockX();
+        int                 z = location.getBlockZ();
+        ItemStack           itemStack = player.getItemInHand(HandTypes.MAIN_HAND).orElse(null);
+        Text                message = Text.of(TextColors.RED, "Vous ne pouvez pas effectuer cette action", TextColors.RESET);
+
+        if (dbPlayer.getElapsedTimeClick() && itemStack != null && itemStack.getType().equals(ItemTypes.FEATHER)) {
+            this.displayInfoFeather(dbPlayer, location, world);
+            dbPlayer.setLastClick(Instant.now().getEpochSecond());
+        }
+
+        if (!dbPlayer.hasAdminMode() && Core.getChunkHandler().exists(x / 16, z / 16, world)) {
+            if (SwitchableBlocks.contains(event.getTargetBlock().getState().getType())) {
+                if (!checkCubo(dbPlayer, location.getBlockPosition(), "Switch") || !checkPerm(dbPlayer, location.getBlockPosition(), world, "Switch")) {
+                    dbPlayer.sendMessage(message);
+                    event.setCancelled(true);
+                }
+            } else if (ContainersBlock.contains(event.getTargetBlock().getState().getType())) {
+                if (!checkCubo(dbPlayer, location.getBlockPosition(), "Container") || !checkPerm(dbPlayer, location.getBlockPosition(), world, "Container")) {
+                    dbPlayer.sendMessage(message);
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    private boolean         allowTo(DBPlayer player, Vector3i blockPosition, World world, String permission) {
+        if (Core.getCuboHandler().get(blockPosition) != null) {
+
+        }
+    }
+
+    private void            displayInfoFeather(DBPlayer player, Location<World> location, World world) {
+        Chunk chunk = Core.getChunkHandler().get(location.getBlockX() / 16, location.getBlockZ() / 16, world);
+        Cubo cubo = Core.getCuboHandler().get(location.getBlockPosition());
+
+        player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "===| Parcelle [" + (location.getBlockX() / 16) + ";" + (location.getBlockZ() / 16) + "] |===", TextColors.RESET));
+        player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "Propriétaire : " + (chunk == null ? "Nature" : chunk.getCity().getDisplayName()), TextColors.RESET));
+        if (cubo != null)
+            player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "===| cubo '" + cubo.getName() + "' [" + cubo.getOwner().getDisplayName() + "] |===", TextColors.RESET));
+    }
+/*
     @Listener(order = Order.FIRST)
     public void             onBlockInteract(InteractBlockEvent.Secondary event, @First Player pl) {
         DBPlayer            player = Core.getPlayerHandler().get(pl);
@@ -203,7 +259,7 @@ public class BlockListener {
                 }
             }
         }
-    }
+    } */
 
     @Listener(order = Order.FIRST)
     public void             onBlockExplosion(ExplosionEvent event) {
@@ -212,8 +268,18 @@ public class BlockListener {
 
     private boolean         checkCubo(DBPlayer player, Vector3i pos, String permission) {
         Cubo cubo = Core.getCuboHandler().get(pos);
+        List<DBPlayer> list = new ArrayList<>();
 
         if (cubo != null) {
+            list.add(cubo.getOwner());
+            list.addAll(cubo.getCity().getAssistants());
+            list.add(cubo.getCity().getOwner());
+            if (cubo.getLoan() != null && cubo.getLoan().getLoaner() != null)
+                list.add(cubo.getLoan().getLoaner());
+
+            if (list.contains(player))
+                return true;
+
             if (cubo.getInList().contains(player)) {
                 if (!Core.getPermissionHandler().ableToInList(player, cubo, permission, pos))
                     return Core.getWarHandler().Contains(player) && Core.getWarHandler().ableTo(player, cubo);

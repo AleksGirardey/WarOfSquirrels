@@ -1,11 +1,11 @@
-package fr.craftandconquest.commands.war;
+package fr.craftandconquest.warofsquirrels.commands.war;
 
-import fr.craftandconquest.commands.city.CityCommandAssistant;
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.Attackable;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
-import fr.craftandconquest.objects.war.PartyWar;
-import fr.craftandconquest.commands.city.CityCommandAssistant;
+import fr.craftandconquest.warofsquirrels.commands.city.CityCommandAssistant;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.Attackable;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.war.PartyWar;
+import fr.craftandconquest.warofsquirrels.commands.city.CityCommandAssistant;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.text.Text;

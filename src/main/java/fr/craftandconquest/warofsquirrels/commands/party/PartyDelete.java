@@ -1,9 +1,9 @@
-package fr.craftandconquest.commands.party;
+package fr.craftandconquest.warofsquirrels.commands.party;
 
-import fr.craftandconquest.commands.Commands;
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
-import fr.craftandconquest.objects.war.PartyWar;
+import fr.craftandconquest.warofsquirrels.commands.Commands;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.war.PartyWar;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.text.format.TextColors;

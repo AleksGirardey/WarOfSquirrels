@@ -1,4 +1,4 @@
-package fr.craftandconquest.objects.city;
+package fr.craftandconquest.warofsquirrels.objects.city;
 
 import org.spongepowered.api.text.format.TextColor;
 

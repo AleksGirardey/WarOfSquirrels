@@ -1,57 +1,96 @@
-package fr.craftandconquest.listeners;
+package fr.craftandconquest.warofsquirrels.listeners;
 
-import fr.craftandconquest.objects.channels.CityChannel;
-import fr.craftandconquest.objects.city.InfoCity;
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
-import fr.craftandconquest.objects.utils.Utils;
-import fr.craftandconquest.objects.war.PartyWar;
-import fr.craftandconquest.objects.war.War;
+import fr.craftandconquest.warofsquirrels.objects.channels.CityChannel;
+import fr.craftandconquest.warofsquirrels.objects.city.InfoCity;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.utils.Utils;
+import fr.craftandconquest.warofsquirrels.objects.war.PartyWar;
+import fr.craftandconquest.warofsquirrels.objects.war.War;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
+import org.spongepowered.api.event.cause.entity.damage.source.IndirectEntityDamageSource;
+import org.spongepowered.api.event.entity.AttackEntityEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.living.humanoid.player.RespawnPlayerEvent;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.channel.MutableMessageChannel;
+import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
+
+import java.util.regex.Pattern;
 
 public class PlayerListener {
 
-    @Listener(order = Order.FIRST)
-    public void onPlayerDeath(DestructEntityEvent.Death event) {
-        EntityDamageSource source = event.getCause().first(EntityDamageSource.class).orElse(null);
-        Entity check;
+    @Listener
+    public void     onPvp(DamageEntityEvent event, @First IndirectEntityDamageSource source) {
+        if (event.getTargetEntity() instanceof Player && !source.isExplosive() && source.getIndirectSource() instanceof Player) {
+            Player player = (Player) source.getIndirectSource();
+            Player targetPlayer = (Player) event.getTargetEntity();
 
-        if (source == null)
-            return;
+            if (handleEvent(event, player.getLocation(), player) || handleEvent(event, targetPlayer.getLocation(), targetPlayer)) {
+                event.setCancelled(true);
+            }
+        }
+    }
 
+    @Listener
+    public void     onPvp(AttackEntityEvent event, @First EntityDamageSource source) {
+        if (event.getTargetEntity() instanceof Player && source.getSource() instanceof Player) {
+            Player player = (Player) source.getSource();
+            Player targetPlayer = (Player) event.getTargetEntity();
+
+            if (handleEvent(event, player.getLocation(), player) || handleEvent(event, targetPlayer.getLocation(), targetPlayer))
+                event.setCancelled(true);
+        }
+    }
+
+    private boolean handleEvent(Cancellable event, Location<World> location, Player player) {
+        return false;
+    }
+
+    @Listener
+    public void onPlayerDeath(DestructEntityEvent.Death event, @First IndirectEntityDamageSource source) {
         if (event.getTargetEntity() instanceof Player) {
             event.setChannel(MessageChannel.TO_ALL);
             Core.getPlayerHandler().setReincarnation(Core.getPlayerHandler().get((Player) event.getTargetEntity()));
-        }
-
-        check = source.getSource();
-        if (check instanceof Player && event.getTargetEntity() instanceof Player) {
-            DBPlayer victim = Core.getPlayerHandler().get((Player) event.getTargetEntity()),
-                    killer = Core.getPlayerHandler().get((Player) check);
-
-            if (Core.getWarHandler().Contains(killer) && Core.getWarHandler().Contains(victim) && Core.getWarHandler().getWar(killer.getCity()).getPhase().equals(War.WarState.War.toString())) {
-                Core.getLogger().debug("[war] Player got killed, points added");
-                Core.getWarHandler().AddPoints(killer, victim);
+            if (source.getIndirectSource() instanceof Player) {
+                Core.getLogger().warn("[Death] IndirectEntityDamageSource is a player");
+                handleEventDeath(event, (Player) source.getIndirectSource());
             }
-            /*
-
-              Add personal points && money transfer
-
-            */
         }
     }
+
+    @Listener(order = Order.FIRST)
+    public void onPlayerDeath(DestructEntityEvent.Death event, @First EntityDamageSource source) {
+        if (event.getTargetEntity() instanceof Player) {
+            event.setChannel(MessageChannel.TO_ALL);
+            Core.getPlayerHandler().setReincarnation(Core.getPlayerHandler().get((Player) event.getTargetEntity()));
+            if (source.getSource() instanceof Player) {
+                Core.getLogger().warn("[Death] EntityDamageSource is a player");
+                handleEventDeath(event, (Player) source.getSource());
+            }
+        }
+    }
+
+    private void handleEventDeath(DestructEntityEvent.Death event, Player source) {
+        DBPlayer victim = Core.getPlayerHandler().get((Player) event.getTargetEntity());
+        DBPlayer killer = Core.getPlayerHandler().get(source);
+
+        if (Core.getWarHandler().Contains(killer)
+                && Core.getWarHandler().Contains(victim))
+            Core.getWarHandler().AddPoints(killer, victim);
+    }
+
+
 
     @Listener(order = Order.FIRST)
     public void onPlayerDamaged(DamageEntityEvent event) {
@@ -69,12 +108,9 @@ public class PlayerListener {
         Transform<World> transform;
 
         if (player.getCity() != null) {
-            Core.getLogger().warn("Le joueur mort possède une ville");
             transform = new Transform<>(Utils.getNearestSpawn(player));
-            Core.getLogger().warn("Le respawn choisit est le suivant : '" + transform.getLocation().getBlockPosition() + "'");
             event.setToTransform(transform);
         }
-        Core.getLogger().warn("Final transform : " + event.getToTransform().toString());
     }
 
     @Listener(order = Order.FIRST)

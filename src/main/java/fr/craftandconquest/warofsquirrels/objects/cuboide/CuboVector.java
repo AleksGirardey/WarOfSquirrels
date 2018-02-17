@@ -1,7 +1,7 @@
-package fr.craftandconquest.objects.cuboide;
+package fr.craftandconquest.warofsquirrels.objects.cuboide;
 
 import com.flowpowered.math.vector.Vector3i;
-import fr.craftandconquest.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.Core;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -49,5 +49,10 @@ public class CuboVector {
 
     public Vector3i getB() {
         return B;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + A.getX() + ";" + A.getY() + ";" + A.getZ() + "][" + B.getX() + ";" + B.getY() + ";" + B.getZ() + "]";
     }
 }

@@ -1,4 +1,4 @@
-package fr.craftandconquest.objects.war;
+package fr.craftandconquest.warofsquirrels.objects.war;
 
 import org.spongepowered.api.scheduler.Task;
 

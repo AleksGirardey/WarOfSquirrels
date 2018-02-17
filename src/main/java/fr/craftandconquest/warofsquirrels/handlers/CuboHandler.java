@@ -1,22 +1,24 @@
-package fr.craftandconquest.handlers;
+package fr.craftandconquest.warofsquirrels.handlers;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.google.inject.Inject;
-import fr.craftandconquest.objects.dbobject.*;
-import fr.craftandconquest.objects.cuboide.CuboVector;
-import fr.craftandconquest.objects.database.GlobalCubo;
-import fr.craftandconquest.objects.database.GlobalCuboAssociation;
-import fr.craftandconquest.objects.utils.Pair;
-import fr.craftandconquest.objects.database.Statement;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.*;
+import fr.craftandconquest.warofsquirrels.objects.cuboide.CuboVector;
+import fr.craftandconquest.warofsquirrels.objects.database.GlobalCubo;
+import fr.craftandconquest.warofsquirrels.objects.database.GlobalCuboAssociation;
+import fr.craftandconquest.warofsquirrels.objects.utils.Pair;
+import fr.craftandconquest.warofsquirrels.objects.database.Statement;
 import org.slf4j.Logger;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.sqlite.core.DB;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class CuboHandler {
@@ -79,14 +81,10 @@ public class CuboHandler {
                 parent == null ? 0 : parent.getPriority() + 1, vector);
 
         cubos.put(cubo.getId(), cubo);
+        cuboMap.put(cubo.getName(), cubo);
 
-        logger.info("[cubo] "
-                    + player.getDisplayName()
-                    + " has created a cubo at ["
-                    + vector.getA().getX() + ";" + vector.getA().getY() + ";" + vector.getA().getZ()
-                    + "] to ["
-                    + vector.getB().getX() + ";" + vector.getB().getY() + ";" + vector.getB().getZ()
-                    + "]");
+        player.sendMessage(Text.of(TextColors.GREEN, "Création du cubo ", cubo, TextColors.RESET));
+        logger.info(String.format("[cubo] %s has created a cubo at %s.", player.getDisplayName(), vector));
         return true;
     }
 
@@ -100,6 +98,8 @@ public class CuboHandler {
     public Cubo                 get(int id) {
         return cubos.get(id);
     }
+
+    public Cubo                 getFromName(String name) { return cuboMap.get(name); }
 
     public List<Cubo>           getFromCity(City city) {
         List<Cubo>              resultat = new ArrayList<Cubo>();
@@ -175,6 +175,12 @@ public class CuboHandler {
         p.sendMessage(message.build());
     }
 
+    public void         delete(Cubo cubo) {
+        cubos.remove(cubo.getId());
+        cuboMap.remove(cubo.getName());
+        cubo.delete();
+    }
+
     public void         deleteCity(City city) {
         List<Integer>      remove = new ArrayList<>();
         cubos.values().stream().filter(cubo -> cubo.getCity() == city).forEach(cubo -> {
@@ -186,6 +192,21 @@ public class CuboHandler {
             cubo.delete();
         });
         remove.forEach(id -> cubos.remove(id));
+    }
+
+    public List<String>     getStringFromPlayer(DBPlayer player) {
+        List<String>        names = new ArrayList<>();
+        List<Cubo>          cubos = getFromPlayer(player);
+
+        for (Cubo c : cubos) {
+            names.add(c.getName());
+        }
+
+        return names;
+    }
+
+    public List<Cubo>       getFromPlayer(DBPlayer player) {
+        return cubos.values().stream().filter(cubo -> cubo.getOwner() == player || cubo.getLoan().getLoaner() == player).collect(Collectors.toList());
     }
 
     public void         updateDependencies() { cubos.values().forEach(Cubo::updateDependencies); }

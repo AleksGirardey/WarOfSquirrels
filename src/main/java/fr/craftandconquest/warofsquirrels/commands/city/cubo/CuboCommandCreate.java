@@ -1,15 +1,16 @@
-package fr.craftandconquest.commands.city.cubo;
+package fr.craftandconquest.warofsquirrels.commands.city.cubo;
 
 import com.flowpowered.math.vector.Vector3i;
-import fr.craftandconquest.commands.city.CityCommandAssistant;
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.City;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
-import fr.craftandconquest.objects.utils.Pair;
-import fr.craftandconquest.objects.utils.Utils;
+import fr.craftandconquest.warofsquirrels.commands.city.CityCommandAssistant;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.City;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.utils.Pair;
+import fr.craftandconquest.warofsquirrels.objects.utils.Utils;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.World;
 
 public class CuboCommandCreate extends CityCommandAssistant {
@@ -38,6 +39,6 @@ public class CuboCommandCreate extends CityCommandAssistant {
     @Override
     protected CommandResult         ExecCommand(DBPlayer player, CommandContext context) {
         Core.getCuboHandler().add(player, context.<String>getOne("[name]").get());
-        return CommandResult.empty();
+        return CommandResult.success();
     }
 }

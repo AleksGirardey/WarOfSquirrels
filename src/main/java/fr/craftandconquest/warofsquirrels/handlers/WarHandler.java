@@ -1,10 +1,10 @@
-package fr.craftandconquest.handlers;
+package fr.craftandconquest.warofsquirrels.handlers;
 
 import com.flowpowered.math.vector.Vector3i;
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.*;
-import fr.craftandconquest.objects.war.PartyWar;
-import fr.craftandconquest.objects.war.War;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.*;
+import fr.craftandconquest.warofsquirrels.objects.war.PartyWar;
+import fr.craftandconquest.warofsquirrels.objects.war.War;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -163,6 +163,8 @@ public class WarHandler {
 
     public void     AddPoints(DBPlayer killer, DBPlayer victim) {
         War         war = getWar(killer);
+
+        if (!war.getPhase().equals(War.WarState.War.toString())) return;
 
         if (war.isDefender(killer) && war.isAttacker(victim))
             war.addDefenderKillPoints();

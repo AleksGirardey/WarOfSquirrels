@@ -1,9 +1,9 @@
-package fr.craftandconquest.commands.city;
+package fr.craftandconquest.warofsquirrels.commands.city;
 
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
-import fr.craftandconquest.objects.invitations.CityInvitation;
-import fr.craftandconquest.objects.invitations.Invitation;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.invitations.CityInvitation;
+import fr.craftandconquest.warofsquirrels.objects.invitations.Invitation;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;

@@ -1,12 +1,12 @@
-package fr.craftandconquest.handlers;
+package fr.craftandconquest.warofsquirrels.handlers;
 
-import fr.craftandconquest.objects.channels.GlobalChannel;
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.City;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
-import fr.craftandconquest.objects.dbobject.Faction;
-import fr.craftandconquest.objects.war.PartyWar;
-import fr.craftandconquest.objects.war.War;
+import fr.craftandconquest.warofsquirrels.objects.channels.GlobalChannel;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.City;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.Faction;
+import fr.craftandconquest.warofsquirrels.objects.war.PartyWar;
+import fr.craftandconquest.warofsquirrels.objects.war.War;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;

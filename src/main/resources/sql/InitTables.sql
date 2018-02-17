@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS `Cubo` (
     `cubo_nom` CHAR(36) NOT NULL,
     `cubo_parent` INT,
     `cubo_owner` CHAR(36) NOT NULL,
+    `cubo_tenant` CHAR(36),
     `cubo_permissionInlist` INT,
     `cubo_permissionOutside` INT,
     `cubo_priority` INT NOT NULL,
@@ -79,6 +80,7 @@ CREATE TABLE IF NOT EXISTS `Cubo` (
     PRIMARY KEY (`cubo_id`),
     FOREIGN KEY (`cubo_cityId`) REFERENCES `City` (`city_id`),
     FOREIGN KEY (`cubo_owner`) REFERENCES `Player` (`player_uuid`),
+    FOREIGN KEY (`cubo_tenant`) REFERENCES `Player` (`player_uuid`),
     FOREIGN KEY (`cubo_parent`) REFERENCES `Cubo` (`cubo_id`),
     FOREIGN KEY (`cubo_permissionInlist`) REFERENCES `Permission` (`permission_id`),
     FOREIGN KEY (`cubo_permissionOutside`) REFERENCES `Permission` (`permission_id`));
@@ -109,6 +111,24 @@ CREATE TABLE IF NOT EXISTS `Shop` (
   `shop_world` CHAR(36) NOT NULL,
   PRIMARY KEY (`shop_id`),
   FOREIGN KEY (`shop_player`) REFERENCES `Player`(`player_uuid`));
+
+CREATE TABLE IF NOT EXISTS `Loan` (
+  `loan_id` INT AUTO_INCREMENT,
+  `loan_player` CHAR(36),
+  `loan_city` INT,
+  `loan_loaner` CHAR(36),
+  `loan_signX` INT NOT NULL,
+  `loan_signY` INT NOT NULL,
+  `loan_signZ` INT NOT NULL,
+  `loan_cubo` INT NOT NULL,
+  `loan_buyPrice` INT NOT NULL,
+  `loan_rentPrice` INT NOT NULL,
+  `loan_world` CHAR(36) NOT NULL,
+  PRIMARY KEY (`loan_id`),
+  FOREIGN KEY (`loan_player`) REFERENCES `Player`(`player_uuid`),
+  FOREIGN KEY (`loan_loaner`) REFERENCES `Player`(`player_uuid`),
+  FOREIGN KEY (`loan_city`) REFERENCES `City`(`city_id`)
+);
 
 CREATE TABLE IF NOT EXISTS `Faction` (
   `faction_id` INT AUTO_INCREMENT,

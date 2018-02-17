@@ -1,7 +1,7 @@
-package fr.AleksGirardey.Objects.DBObject;
+package fr.craftandconquest.warofsquirrels.objects.dbobject;
 
-import fr.AleksGirardey.Objects.Core;
-import fr.AleksGirardey.Objects.Database.GlobalAccount;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.database.GlobalAccount;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +12,7 @@ public class            DBAccount extends DBObject{
             + "`"; /*, `" + GlobalAccount.pa
             + "`, `" + GlobalAccount.pb + "`"; */
 
-    /* -- DBObject class related -- */
+    /* -- dbobject class related -- */
     private int         po;
 /*    private int         pa;
     private int         pb;*/

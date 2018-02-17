@@ -1,9 +1,9 @@
-package fr.craftandconquest.listeners;
+package fr.craftandconquest.warofsquirrels.listeners;
 
-import fr.craftandconquest.objects.channels.GlobalChannel;
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
-import fr.craftandconquest.objects.utils.Utils;
+import fr.craftandconquest.warofsquirrels.objects.channels.GlobalChannel;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.message.MessageChannelEvent;

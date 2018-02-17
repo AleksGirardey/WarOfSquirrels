@@ -1,8 +1,8 @@
-package fr.craftandconquest.commands.shop;
+package fr.craftandconquest.warofsquirrels.commands.shop;
 
-import fr.craftandconquest.commands.Commands;
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.commands.Commands;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;

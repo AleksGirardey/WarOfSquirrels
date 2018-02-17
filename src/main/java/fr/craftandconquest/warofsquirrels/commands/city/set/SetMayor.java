@@ -1,10 +1,12 @@
-package fr.craftandconquest.commands.city.set;
+package fr.craftandconquest.warofsquirrels.commands.city.set;
 
-import fr.craftandconquest.commands.city.CityCommandMayor;
-import fr.craftandconquest.objects.dbobject.City;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.commands.city.CityCommandMayor;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.City;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.text.format.TextColors;
 
 public class SetMayor extends CityCommandMayor {
 
@@ -19,6 +21,7 @@ public class SetMayor extends CityCommandMayor {
         DBPlayer                newMayor = context.<DBPlayer>getOne("[citizen]").get();
 
         city.setOwner(newMayor);
+        Core.getBroadcastHandler().cityChannel(city, newMayor + " est maintenant le nouveau maire de la ville.", TextColors.GOLD);
         return CommandResult.success();
     }
 }

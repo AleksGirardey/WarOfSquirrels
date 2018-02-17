@@ -1,8 +1,8 @@
-package fr.craftandconquest.handlers;
+package fr.craftandconquest.warofsquirrels.handlers;
 
-import fr.craftandconquest.objects.dbobject.DBAccount;
-import fr.craftandconquest.objects.database.GlobalAccount;
-import fr.craftandconquest.objects.database.Statement;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBAccount;
+import fr.craftandconquest.warofsquirrels.objects.database.GlobalAccount;
+import fr.craftandconquest.warofsquirrels.objects.database.Statement;
 
 import java.sql.SQLException;
 import java.util.HashMap;

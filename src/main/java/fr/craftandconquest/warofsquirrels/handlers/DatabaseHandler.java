@@ -1,9 +1,9 @@
-package fr.craftandconquest.handlers;
+package fr.craftandconquest.warofsquirrels.handlers;
 
 import com.google.inject.Inject;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import fr.craftandconquest.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.Core;
 import org.slf4j.Logger;
 
 import java.io.File;

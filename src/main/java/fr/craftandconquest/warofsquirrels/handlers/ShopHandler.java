@@ -1,11 +1,11 @@
-package fr.craftandconquest.handlers;
+package fr.craftandconquest.warofsquirrels.handlers;
 
 import com.flowpowered.math.vector.Vector3i;
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
-import fr.craftandconquest.objects.dbobject.Shop;
-import fr.craftandconquest.objects.database.GlobalShop;
-import fr.craftandconquest.objects.database.Statement;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.Shop;
+import fr.craftandconquest.warofsquirrels.objects.database.GlobalShop;
+import fr.craftandconquest.warofsquirrels.objects.database.Statement;
 import org.slf4j.Logger;
 import org.spongepowered.api.block.tileentity.Sign;
 import org.spongepowered.api.block.tileentity.carrier.Chest;
@@ -83,10 +83,10 @@ public class ShopHandler {
     }
 
     public List<Shop>       get(DBPlayer player) {
-        List<Shop>          shops = new ArrayList<>();
+        List<Shop>          playerShops = new ArrayList<>();
 
-        this.shops.values().stream().filter(shop -> shop.getPlayer().equals(player)).forEach(shops::add);
-        return shops;
+        this.shops.values().stream().filter(shop -> shop.getPlayer().equals(player)).forEach(playerShops::add);
+        return playerShops;
     }
 
     public void     delete(Vector3i position) {

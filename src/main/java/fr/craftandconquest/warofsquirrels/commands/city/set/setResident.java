@@ -1,7 +1,8 @@
-package fr.craftandconquest.commands.city.set;
+package fr.craftandconquest.warofsquirrels.commands.city.set;
 
-import fr.craftandconquest.commands.city.CityCommandAssistant;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.commands.city.CityCommandAssistant;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.text.Text;
@@ -26,6 +27,7 @@ public class                    setResident extends CityCommandAssistant {
 
             all.forEach(this::set);
         }
+        Core.getBroadcastHandler().cityChannel(player.getCity(), resident.getDisplayName() + " est maintenant citoyen.", TextColors.BLUE);
         return CommandResult.success();
     }
 
@@ -41,7 +43,7 @@ public class                    setResident extends CityCommandAssistant {
         else
             return true;
 
-        player.sendMessage(Text.of(TextColors.RED, newResident + " is not a valid citizen.", TextColors.RESET));
+        player.sendMessage(Text.of(TextColors.RED, message, TextColors.RESET));
         return false;
     }
 

@@ -1,7 +1,7 @@
-package fr.craftandconquest.objects.war;
+package fr.craftandconquest.warofsquirrels.objects.war;
 
-import fr.craftandconquest.objects.dbobject.DBPlayer;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
 import org.spongepowered.api.text.Text;
 
 import java.util.ArrayList;

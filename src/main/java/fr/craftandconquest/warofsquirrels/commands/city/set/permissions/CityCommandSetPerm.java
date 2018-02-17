@@ -1,9 +1,9 @@
-package fr.craftandconquest.commands.city.set.permissions;
+package fr.craftandconquest.warofsquirrels.commands.city.set.permissions;
 
-import fr.craftandconquest.commands.city.CityCommandAssistant;
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
-import fr.craftandconquest.objects.dbobject.Permission;
+import fr.craftandconquest.warofsquirrels.commands.city.CityCommandAssistant;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.Permission;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.text.format.TextColors;

@@ -1,11 +1,11 @@
-package fr.craftandconquest.handlers;
+package fr.craftandconquest.warofsquirrels.handlers;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.google.inject.Inject;
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.*;
-import fr.craftandconquest.objects.database.GlobalPermission;
-import fr.craftandconquest.objects.database.Statement;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.*;
+import fr.craftandconquest.warofsquirrels.objects.database.GlobalPermission;
+import fr.craftandconquest.warofsquirrels.objects.database.Statement;
 import org.slf4j.Logger;
 
 import java.sql.SQLException;

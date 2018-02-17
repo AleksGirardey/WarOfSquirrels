@@ -1,4 +1,4 @@
-package fr.craftandconquest.warofsquirrels.commands.city.cubo;
+package fr.craftandconquest.warofsquirrels.commands.city;
 
 import fr.craftandconquest.warofsquirrels.commands.city.CityCommandAssistant;
 import fr.craftandconquest.warofsquirrels.objects.Core;

@@ -1,6 +1,6 @@
-package fr.craftandconquest.objects.database;
+package fr.craftandconquest.warofsquirrels.objects.database;
 
-import fr.craftandconquest.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.Core;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

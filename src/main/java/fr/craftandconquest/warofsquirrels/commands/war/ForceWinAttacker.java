@@ -1,6 +1,6 @@
-package fr.craftandconquest.commands.war;
+package fr.craftandconquest.warofsquirrels.commands.war;
 
-import fr.craftandconquest.objects.war.War;
+import fr.craftandconquest.warofsquirrels.objects.war.War;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;

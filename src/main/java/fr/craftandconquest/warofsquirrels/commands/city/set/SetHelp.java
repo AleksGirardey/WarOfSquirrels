@@ -1,7 +1,7 @@
-package fr.craftandconquest.commands.city.set;
+package fr.craftandconquest.warofsquirrels.commands.city.set;
 
-import fr.craftandconquest.commands.city.CityCommand;
-import fr.craftandconquest.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.commands.city.CityCommand;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.text.Text;

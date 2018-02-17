@@ -1,6 +1,6 @@
-package fr.craftandconquest.commands.city.set.permissions;
+package fr.craftandconquest.warofsquirrels.commands.city.set.permissions;
 
-import fr.craftandconquest.objects.dbobject.DBPlayer;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
 import org.spongepowered.api.command.args.CommandContext;
 
 public class PermAllies extends CityCommandSetPerm {

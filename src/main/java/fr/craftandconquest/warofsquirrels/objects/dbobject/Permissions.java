@@ -1,4 +1,4 @@
-package fr.AleksGirardey.Objects.DBObject;
+package fr.craftandconquest.warofsquirrels.objects.dbobject;
 
 public class Permissions {
     public static String           BUILD = "Build";

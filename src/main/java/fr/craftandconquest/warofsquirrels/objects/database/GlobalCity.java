@@ -1,4 +1,4 @@
-package fr.craftandconquest.objects.database;
+package fr.craftandconquest.warofsquirrels.objects.database;
 
 public class GlobalCity {
     public static String        id = "city_id";
@@ -13,5 +13,5 @@ public class GlobalCity {
     public static String        permFaction = "city_permissionFaction";
     public static String        account = "city_account";
     public static String        faction = "city_faction";
-    public static String        tableName = "city";
+    public static String        tableName = "City";
 }

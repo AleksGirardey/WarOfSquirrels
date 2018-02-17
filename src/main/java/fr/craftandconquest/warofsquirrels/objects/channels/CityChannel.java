@@ -1,8 +1,8 @@
-package fr.craftandconquest.objects.channels;
+package fr.craftandconquest.warofsquirrels.objects.channels;
 
-import fr.craftandconquest.objects.Core;
-import fr.craftandconquest.objects.dbobject.City;
-import fr.craftandconquest.objects.dbobject.City;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.City;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.City;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageReceiver;
 import org.spongepowered.api.text.channel.MutableMessageChannel;

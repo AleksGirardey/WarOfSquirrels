@@ -1,4 +1,4 @@
-package fr.craftandconquest.objects.database;
+package fr.craftandconquest.warofsquirrels.objects.database;
 
 public class GlobalCubo {
     public static String        id = "cubo_id";
@@ -15,5 +15,5 @@ public class GlobalCubo {
     public static String        BposX = "cubo_BposX";
     public static String        BposY = "cubo_BposY";
     public static String        BposZ = "cubo_BposZ";
-    public static String        tableName = "cubo";
+    public static String        tableName = "Cubo";
 }
