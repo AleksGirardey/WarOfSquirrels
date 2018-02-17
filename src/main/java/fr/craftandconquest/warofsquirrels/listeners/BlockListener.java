@@ -146,16 +146,9 @@ public class BlockListener {
                 if (event instanceof InteractEntityEvent.Primary && !checkEntityPerms(player, event, Permissions.BUILD))
                     event.setCancelled(true);
                 else if (event instanceof InteractEntityEvent.Secondary) {
-                    if (Core.getCuboHandler().get(location.getBlockPosition()) != null) {
-                        if (!checkCubo(dbplayer, location.getBlockPosition(), Permissions.CONTAINER)) {
-                            player.sendMessage(message);
-                            event.setCancelled(true);
-                        }
-                    } else {
-                        if (!checkPerm(dbplayer, location.getBlockPosition(), world, Permissions.CONTAINER)) {
-                            player.sendMessage(message);
-                            event.setCancelled(true);
-                        }
+                    if (!allowTo(dbplayer, location.getBlockPosition(), world, Permissions.CONTAINER)) {
+                        player.sendMessage(message);
+                        event.setCancelled(true);
                     }
                 }
             }
@@ -185,12 +178,12 @@ public class BlockListener {
 
         if (!dbPlayer.hasAdminMode() && Core.getChunkHandler().exists(x / 16, z / 16, world)) {
             if (SwitchableBlocks.contains(event.getTargetBlock().getState().getType())) {
-                if (!checkCubo(dbPlayer, location.getBlockPosition(), "Switch") || !checkPerm(dbPlayer, location.getBlockPosition(), world, "Switch")) {
+                if (!allowTo(dbPlayer, location.getBlockPosition(), world, Permissions.SWITCH)) {
                     dbPlayer.sendMessage(message);
                     event.setCancelled(true);
                 }
             } else if (ContainersBlock.contains(event.getTargetBlock().getState().getType())) {
-                if (!checkCubo(dbPlayer, location.getBlockPosition(), "Container") || !checkPerm(dbPlayer, location.getBlockPosition(), world, "Container")) {
+                if (!allowTo(dbPlayer, location.getBlockPosition(), world, Permissions.CONTAINER)) {
                     dbPlayer.sendMessage(message);
                     event.setCancelled(true);
                 }
@@ -200,7 +193,9 @@ public class BlockListener {
 
     private boolean         allowTo(DBPlayer player, Vector3i blockPosition, World world, String permission) {
         if (Core.getCuboHandler().get(blockPosition) != null) {
-
+            return checkCubo(player, blockPosition, permission);
+        } else {
+            return checkPerm(player, blockPosition, world, permission);
         }
     }
 
@@ -213,53 +208,6 @@ public class BlockListener {
         if (cubo != null)
             player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "===| cubo '" + cubo.getName() + "' [" + cubo.getOwner().getDisplayName() + "] |===", TextColors.RESET));
     }
-/*
-    @Listener(order = Order.FIRST)
-    public void             onBlockInteract(InteractBlockEvent.Secondary event, @First Player pl) {
-        DBPlayer            player = Core.getPlayerHandler().get(pl);
-        Location<World>     location = event.getTargetBlock().getLocation().orElse(null);
-        World               world = player.getUser().getPlayer().get().getWorld();
-        int                 x, z;
-
-        ItemStack hand = pl.getItemInHand(HandTypes.MAIN_HAND).orElse(null);
-        if (location != null && player.getElapsedTimeClick()) {
-            player.setLastClick(Instant.now().getEpochSecond());
-            x = location.getBlockX();
-            z = location.getBlockZ();
-
-            if (hand != null && hand.getType().equals(ItemTypes.FEATHER)) {
-                Chunk chunk = Core.getChunkHandler().get(x / 16, z / 16, world);
-                Cubo cubo = Core.getCuboHandler().get(location.getBlockPosition());
-
-                player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "===| Parcelle [" + (x / 16) + ";" + (z / 16) + "] |===", TextColors.RESET));
-                player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "Propriétaire : " + (chunk == null ? "Nature" : chunk.getCity().getDisplayName()), TextColors.RESET));
-                if (cubo != null)
-                    player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "===| cubo '" + cubo.getName() + "' [" + cubo.getOwner().getDisplayName() + "] |===", TextColors.RESET));
-            }
-
-
-            if (!player.hasAdminMode() && Core.getChunkHandler().exists(x / 16, z / 16, world) && !Core.getWarHandler().isConcerned(location.getBlockPosition(), world)) {
-                if (SwitchableBlocks.contains(event.getTargetBlock().getState().getType())) {
-                    if (!checkCubo(player, location.getBlockPosition(), "Switch")) {
-                        player.sendMessage(Text.of(TextColors.RED, "Vous ne pouvez pas effectuer cette action", TextColors.RESET));
-                        event.setCancelled(true);
-                    } else if (!checkPerm(player, location.getBlockPosition(), world, "Switch")) {
-                        player.sendMessage(Text.of(TextColors.RED, "Vous ne pouvez pas effectuer cette action", TextColors.RESET));
-                        event.setCancelled(true);
-                    }
-                } else if (ContainersBlock.contains(event.getTargetBlock().getState().getType())) {
-                    if (!checkCubo(player, location.getBlockPosition(), "Container")) {
-                        player.sendMessage(Text.of(TextColors.RED, "Vous ne pouvez pas effectuer cette action", TextColors.RESET));
-                        event.setCancelled(true);
-                    } else if (!checkPerm(player, location.getBlockPosition(), world, "Container")) {
-                        player.sendMessage(Text.of(TextColors.RED, "Vous ne pouvez pas effectuer cette action", TextColors.RESET));
-                        event.setCancelled(true);
-                    }
-                    event.setCancelled(true);
-                }
-            }
-        }
-    } */
 
     @Listener(order = Order.FIRST)
     public void             onBlockExplosion(ExplosionEvent event) {
