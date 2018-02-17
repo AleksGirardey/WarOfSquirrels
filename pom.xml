@@ -25,6 +25,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>us.dynmap</groupId>
+            <artifactId>DynmapCoreAPI</artifactId>
+            <version>2.6-SNAPSHOT</version>
+            <systemPath>${project.basedir}/libs/DynmapCoreAPI-2.6-SNAPSHOT.jar</systemPath>
+        </dependency>
         <!--        <dependency>
                     <groupId>net.minecraftforge.gradle</groupId>
                     <artifactId>ForgeGradle</artifactId>
@@ -78,7 +84,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>fr.AleksGirardey.Main</mainClass>
+                            <mainClass>fr.craftandconquest.warofsquirrels.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
