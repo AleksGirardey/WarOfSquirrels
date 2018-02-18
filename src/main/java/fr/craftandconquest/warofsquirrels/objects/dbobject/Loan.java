@@ -102,6 +102,7 @@ public class Loan extends DBObject {
         this.world = Core.getPlugin().getServer().getWorld(UUID.fromString(rs.getString(GlobalLoan.WORLD))).orElse(null);
 
         this.sign = (Sign) world.getLocation(signLocation).getTileEntity().orElse(null);
+        this.cubo.setLoan(this);
     }
 
     public void actualize() {

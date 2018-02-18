@@ -81,9 +81,12 @@ public class BlockListener {
     public void         onBlockDestroy(ChangeBlockEvent.Break event, @First Player player) {
         event.getTransactions().stream().filter(transaction -> transaction.getOriginal().getState().getType() == BlockTypes.WALL_SIGN)
                 .forEach(transaction -> {
-                    if (Core.getShopHandler().get(transaction.getOriginal().getPosition()) != null
-                            && !Core.getWarHandler().isConcerned(transaction.getOriginal().getPosition(), Core.getPlugin().getServer().getWorld(transaction.getOriginal().getWorldUniqueId()).get()))
-                        Core.getShopHandler().delete(transaction.getOriginal().getPosition());
+                    if (!Core.getWarHandler().isConcerned(transaction.getOriginal().getPosition(), Core.getPlugin().getServer().getWorld(transaction.getOriginal().getWorldUniqueId()).get())) {
+                        if (Core.getShopHandler().get(transaction.getOriginal().getPosition()) != null)
+                            Core.getShopHandler().delete(transaction.getOriginal().getPosition());
+                        else if (Core.getLoanHandler().get(transaction.getOriginal().getPosition()) != null)
+                            Core.getLoanHandler().delete(transaction.getOriginal().getPosition());
+                    }
                 });
 
         handleEventConstruction(event, player);
@@ -99,8 +102,9 @@ public class BlockListener {
         final Boolean[] rollback = {false};
 
         if (player != null && !Core.getPlayerHandler().get(player).hasAdminMode()) {
-            if (!checkCuboPerms(player, event, Permissions.BUILD)
-                    || !checkChunkPerms(player, event, Permissions.BUILD)) {
+            Location<World>     location = event.getTransactions().get(0).getOriginal().getLocation().get();
+            World   world = Core.getPlugin().getServer().getWorld(event.getTransactions().get(0).getOriginal().getWorldUniqueId()).get();
+            if (!allowTo(Core.getPlayerHandler().get(player), location.getBlockPosition(), world, Permissions.BUILD)) {
                 player.sendMessage(message);
                 event.setCancelled(true);
             }
@@ -222,9 +226,9 @@ public class BlockListener {
             list.add(cubo.getOwner());
             list.addAll(cubo.getCity().getAssistants());
             list.add(cubo.getCity().getOwner());
-            if (cubo.getLoan() != null && cubo.getLoan().getLoaner() != null)
+            if (cubo.getLoan() != null && cubo.getLoan().getLoaner() != null) {
                 list.add(cubo.getLoan().getLoaner());
-
+            }
             if (list.contains(player))
                 return true;
 

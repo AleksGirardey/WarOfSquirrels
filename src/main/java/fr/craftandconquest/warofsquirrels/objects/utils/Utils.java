@@ -397,6 +397,7 @@ public class Utils {
         Pattern patternPrice = Pattern.compile("[0-9]+");
 
         return patternHeader.matcher(header.toPlain()).matches() &&
+                Core.getPlayerHandler().getFromName(header.toPlain().replaceAll("[<>]", "")) != null &&
                 !cubo.toPlain().equals("") &&
                 patternPrice.matcher(buy.toPlain()).matches() &&
                 patternPrice.matcher(rent.toPlain()).matches();
