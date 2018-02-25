@@ -45,6 +45,7 @@ public class Core {
     private static PlayerHandler playerHandler;
     private static CityHandler cityHandler;
     private static ChunkHandler chunkHandler;
+    private static TerritoryHandler territoryHandler;
     private static PermissionHandler permissionHandler;
     private static BroadcastHandler         broadcastHandler;
     private static InvitationHandler        invitationHandler;
@@ -97,6 +98,7 @@ public class Core {
         playerHandler = new PlayerHandler(logger);
         cityHandler = new CityHandler(logger);
         chunkHandler = new ChunkHandler(logger);
+        territoryHandler = new TerritoryHandler(_world);
         broadcastHandler = new BroadcastHandler();
         invitationHandler = new InvitationHandler();
         warHandler = new WarHandler(managerWarHandler);
@@ -113,6 +115,7 @@ public class Core {
         factionHandler.populate();
         cityHandler.populate();
         chunkHandler.populate();
+        territoryHandler.populate();
         cuboHandler.populate();
         diplomacyHandler.populate();
         shopHandler.populate();
@@ -161,6 +164,8 @@ public class Core {
     public static ChunkHandler          getChunkHandler() {
         return chunkHandler;
     }
+
+    public static TerritoryHandler      getTerritoryHandler() { return territoryHandler; }
 
     public static PermissionHandler     getPermissionHandler() { return permissionHandler; }
 

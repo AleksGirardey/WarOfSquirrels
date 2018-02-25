@@ -410,7 +410,7 @@ public class War {
                 z = player.getLastChunkZ();
 
                 c = Core.getChunkHandler().get(x, z, world);
-                if (c != null && c == chunk) {
+                if (c != null && c == chunk && inCaptureRange(player.getUser().getPlayer().get().getLocation().getBlockY(), c.getCity())) {
                     if (isAttacker(player))
                         att++;
                     else if (isDefender(player))
@@ -420,8 +420,14 @@ public class War {
         }
 
         ret = ((_vitesseCapture * att) - (0.45F * _vitesseCapture * def));
-        Core.getLogger().warn("Ret : (" + _vitesseCapture + " * " + att + ") - (0.45 * " + _vitesseCapture + " * " + def + ") = " + ret);
+        //Core.getLogger().warn("Ret : (" + _vitesseCapture + " * " + att + ") - (0.45 * " + _vitesseCapture + " * " + def + ") = " + ret);
         return ret;
+    }
+
+    private boolean     inCaptureRange(int y, City city) {
+        int ySpawn = Core.getChunkHandler().getHomeblock(city).getRespawnY();
+
+        return y <= ySpawn + 20 && y >= ySpawn - 20;
     }
 
     void         updateCapture() {

@@ -33,6 +33,7 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.DefaultConfig;
@@ -126,6 +127,7 @@ public class Main {
         cityClaim = CommandSpec.builder()
                 .description(Text.of("Claim chunk for your city"))
                 .executor(new CityCommandClaim())
+                .arguments(GenericArguments.optional(GenericArguments.string(Text.of("[name]"))))
                 .build();
 
         cityUnclaim = CommandSpec.builder()
@@ -312,7 +314,7 @@ public class Main {
 
     private CommandSpec     commandCitySet() {
         CommandSpec         setHelp, setSpawn, setMayor, setAssistant, setResident, setRecruit,
-                setOutside, setAllies, setPermResident, setPermRecruit, setPerm, setHomeblock;
+                setOutside, setAllies, setPermResident, setPermRecruit, setPerm, setHomeblock, setClaim;
 
         setHelp = CommandSpec.builder()
                 .description(Text.of("Display /city set help"))
@@ -405,6 +407,12 @@ public class Main {
                 .executor(new setHomeblock())
                 .build();
 
+        setClaim = CommandSpec.builder()
+                .description(Text.of("Donne un nom au chunk"))
+                .executor(new SetClaim())
+                .arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("[name]"))))
+                .build();
+
         return (CommandSpec.builder()
                 .description(Text.of("commands related to new attribution in your city"))
                 .child(setHelp, "help", "?")
@@ -415,6 +423,7 @@ public class Main {
                 .child(setResident, "resident", "r")
                 .child(setRecruit, "recruit", "rec")
                 .child(setHomeblock, "homeblock", "hb")
+                .child(setClaim, "claim", "c")
                 .build());
     }
 

@@ -1,12 +1,16 @@
 package fr.craftandconquest.warofsquirrels.objects.utils;
 
 import com.google.common.reflect.TypeToken;
+import fr.craftandconquest.warofsquirrels.objects.Core;
+import fr.craftandconquest.warofsquirrels.objects.dbobject.Territory;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConfigLoader {
 
@@ -22,6 +26,14 @@ public class ConfigLoader {
     private ConfigurationNode   startBalance;
     private ConfigurationNode   preparationPhase;
     private ConfigurationNode   rollbackPhase;
+    private ConfigurationNode   mapSize;
+    private ConfigurationNode   territoriesGenerated;
+    private ConfigurationNode   territorySize;
+    
+    private static final String DISTANCES = "Distances";
+    private static final String WAR = "war";
+    private static final String JOUEUR = "Joueur";
+    private static final String TERRITORIES = "Territoires";
 
     public ConfigLoader(ConfigurationLoader<CommentedConfigurationNode> configManager) {
 
@@ -34,40 +46,50 @@ public class ConfigLoader {
                 rootNode = manager.load();
             }
         } catch (IOException | ObjectMappingException e) {
-            e.printStackTrace();
+            Core.getLogger().warn("ConfigLoader error " + e);
         }
 
         /* Distances */
-        distanceCities = rootNode.getNode("Distances", "cities");
-        distanceOutpost = rootNode.getNode("Distances", "outpost");
-        shoutDistance = rootNode.getNode("Distances", "shout");
-        sayDistance = rootNode.getNode("Distances", "say");
+        distanceCities = rootNode.getNode(DISTANCES, "cities");
+        distanceOutpost = rootNode.getNode(DISTANCES, "outpost");
+        shoutDistance = rootNode.getNode(DISTANCES, "shout");
+        sayDistance = rootNode.getNode(DISTANCES, "say");
 
         /* war */
-        peaceTime = rootNode.getNode("war", "peace");
-        preparationPhase = rootNode.getNode("war", "preparationSeconds");
-        rollbackPhase = rootNode.getNode("war", "rollbackSeconds");
+        peaceTime = rootNode.getNode(WAR, "peace");
+        preparationPhase = rootNode.getNode(WAR, "preparationSeconds");
+        rollbackPhase = rootNode.getNode(WAR, "rollbackSeconds");
 
         /* Player */
-        reincarnationTime = rootNode.getNode("Joueur", "reincarnation");
-        startBalance = rootNode.getNode("Joueur", "startBalance");
+        reincarnationTime = rootNode.getNode(JOUEUR, "reincarnation");
+        startBalance = rootNode.getNode(JOUEUR, "startBalance");
+
+        /* Territoires */
+        mapSize = rootNode.getNode(TERRITORIES, "mapSize");
+        territoriesGenerated = rootNode.getNode(TERRITORIES, "generated");
+        territorySize = rootNode.getNode(TERRITORIES, "territorySize");
     }
 
     private void setDefaultConfig() throws ObjectMappingException, IOException {
         /* Distances */
-        rootNode.getNode("Distances", "cities").setValue(20);
-        rootNode.getNode("Distances", "outpost").setValue(20);
-        rootNode.getNode("Distances", "shout").setValue(50);
-        rootNode.getNode("Distances", "say").setValue(30);
+        rootNode.getNode(DISTANCES, "cities").setValue(20);
+        rootNode.getNode(DISTANCES, "outpost").setValue(10);
+        rootNode.getNode(DISTANCES, "shout").setValue(50);
+        rootNode.getNode(DISTANCES, "say").setValue(30);
 
         /* war */
-        rootNode.getNode("war", "peace").setValue(true);
-        rootNode.getNode("war", "preparationSeconds").setValue(TypeToken.of(Long.class), 120L);
-        rootNode.getNode("war", "rollbackSeconds").setValue(TypeToken.of(Long.class), 60L);
+        rootNode.getNode(WAR, "peace").setValue(true);
+        rootNode.getNode(WAR, "preparationSeconds").setValue(TypeToken.of(Long.class), 120L);
+        rootNode.getNode(WAR, "rollbackSeconds").setValue(TypeToken.of(Long.class), 60L);
 
         /* Player */
-        rootNode.getNode("Joueur", "reincarnation").setValue(30);
-        rootNode.getNode("Joueur", "startBalance").getValue(100);
+        rootNode.getNode(JOUEUR, "reincarnation").setValue(30);
+        rootNode.getNode(JOUEUR, "startBalance").setValue(100);
+
+        /* Territoires */
+        rootNode.getNode(TERRITORIES, "mapSize").setValue(5120);
+        rootNode.getNode(TERRITORIES, "generated").setValue(false);
+        rootNode.getNode(TERRITORIES, "territorySize").setValue(256);
 
         manager.save(rootNode);
     }
@@ -134,4 +156,10 @@ public class ConfigLoader {
     public long getRollbackPhase() { return rollbackPhase.getLong(); }
 
     public void setRollbackPhase(long rollbackPhase) { this.set(this.rollbackPhase, rollbackPhase); }
+
+    public int  getMapSize() { return mapSize.getInt(); }
+
+    public boolean getTerritoriesGenerated() { return territoriesGenerated.getBoolean(); }
+
+    public int getTerritorySize() { return territorySize.getInt(); }
 }
