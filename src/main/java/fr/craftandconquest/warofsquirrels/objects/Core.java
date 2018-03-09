@@ -41,12 +41,12 @@ public class Core {
     private static ConfigLoader             _config;
     private static Logger                   _logger;
 
-    private static DatabaseHandler database;
-    private static PlayerHandler playerHandler;
-    private static CityHandler cityHandler;
-    private static ChunkHandler chunkHandler;
-    private static TerritoryHandler territoryHandler;
-    private static PermissionHandler permissionHandler;
+    private static DatabaseHandler          database;
+    private static PlayerHandler            playerHandler;
+    private static CityHandler              cityHandler;
+    private static ChunkHandler             chunkHandler;
+    private static TerritoryHandler         territoryHandler;
+    private static PermissionHandler        permissionHandler;
     private static BroadcastHandler         broadcastHandler;
     private static InvitationHandler        invitationHandler;
     private static WarHandler               warHandler;
@@ -56,6 +56,8 @@ public class Core {
     private static ShopHandler              shopHandler;
     private static LoanHandler              loanHandler;
     private static FactionHandler           factionHandler;
+    private static InfluenceHandler         influenceHandler;
+    private static UpdateHandler            updateHandler;
 
     private static Map<City, InfoCity>          infoCityMap;
     private static Map<Faction, InfoFaction>    infoFactionMap;
@@ -108,6 +110,8 @@ public class Core {
         shopHandler = new ShopHandler(logger);
         loanHandler = new LoanHandler(logger);
         factionHandler = new FactionHandler(logger);
+        influenceHandler = new InfluenceHandler();
+        updateHandler = new UpdateHandler();
 
         logger.info("Updating dependencies..");
         permissionHandler.populate();
@@ -120,6 +124,7 @@ public class Core {
         diplomacyHandler.populate();
         shopHandler.populate();
         loanHandler.populate();
+        influenceHandler.populate();
         factionHandler.updateDependencies();
         playerHandler.updateDependencies();
         cuboHandler.updateDependencies();
@@ -200,6 +205,10 @@ public class Core {
     public static LoanHandler           getLoanHandler() { return loanHandler; }
 
     public static FactionHandler        getFactionHandler() { return factionHandler; }
+
+    public static InfluenceHandler      getInfluenceHandler() { return influenceHandler; }
+
+    public static UpdateHandler         getUpdateHandler() { return updateHandler; }
 
     public static Map<City, InfoCity>           getInfoCityMap() { return infoCityMap; }
 

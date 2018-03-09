@@ -43,7 +43,7 @@ public class War {
     }
 
     private String          _tag;
-    private City _cityAttacker;
+    private City            _cityAttacker;
     private City            _cityDefender;
     private List<DBPlayer>  _attackers;
     private List<DBPlayer>  _defenders;

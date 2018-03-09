@@ -1,18 +1,32 @@
 package fr.craftandconquest.warofsquirrels.objects.utils;
 
 import com.google.common.reflect.TypeToken;
+import com.google.inject.Inject;
 import fr.craftandconquest.warofsquirrels.objects.Core;
 import fr.craftandconquest.warofsquirrels.objects.dbobject.Territory;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.config.DefaultConfig;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigLoader {
+
+    @Inject
+    @DefaultConfig(sharedRoot = true)
+    private Path defaultConfig;
+
+    @Inject
+    @DefaultConfig(sharedRoot = true)
+    private ConfigurationLoader<CommentedConfigurationNode>             configManager;
+
+
 
     private ConfigurationNode                                           rootNode;
     private ConfigurationLoader<CommentedConfigurationNode>             manager;
@@ -35,11 +49,9 @@ public class ConfigLoader {
     private static final String JOUEUR = "Joueur";
     private static final String TERRITORIES = "Territoires";
 
-    public ConfigLoader(ConfigurationLoader<CommentedConfigurationNode> configManager) {
-
-        manager = configManager;
+    public ConfigLoader() {
         try {
-            rootNode = manager.load();
+            rootNode = configManager.load();
 
             if (!rootNode.hasListChildren()) {
                 this.setDefaultConfig();
@@ -162,4 +174,8 @@ public class ConfigLoader {
     public boolean getTerritoriesGenerated() { return territoriesGenerated.getBoolean(); }
 
     public int getTerritorySize() { return territorySize.getInt(); }
+
+    public void setTerritoriesGenerated(boolean territoriesGenerated) {
+        this.set(this.territoriesGenerated, territoriesGenerated);
+    }
 }

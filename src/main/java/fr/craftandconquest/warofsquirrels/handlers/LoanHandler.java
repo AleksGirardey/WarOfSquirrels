@@ -94,4 +94,10 @@ public class LoanHandler {
             toDelete.delete();
         }
     }
+
+    public void update() {
+        for (Loan loan : loans.values()) {
+            loan.payDay();
+        }
+    }
 }

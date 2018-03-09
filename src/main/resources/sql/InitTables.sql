@@ -37,17 +37,6 @@ CREATE TABLE IF NOT EXISTS `City` (
   FOREIGN KEY (`city_permissionOutside`) REFERENCES `Permission`(`permission_id`),
   FOREIGN KEY (`city_permissionFaction`) REFERENCES `Permission`(`permission_id`));
 
-CREATE TABLE IF NOT EXISTS `Territory`(
-  `territory_id` INT AUTO_INCREMENT,
-  `territory_name` CHAR(36),
-  `territory_posX` INT NOT NULL,
-  `territory_posZ` INT NOT NULL,
-  `territory_factionId` INT,
-  `territory_bastionId` INT,
-  `territory_world` CHAR(36) NOT NULL,
-  PRIMARY KEY (`territory_id`),
-  FOREIGN KEY (`territory_factionId`) REFERENCES `Faction`(`faction_id`));
-
 CREATE TABLE IF NOT EXISTS `Chunk` (
   `chunk_id` INT AUTO_INCREMENT,
   `chunk_posX` INT NOT NULL,
@@ -149,6 +138,17 @@ CREATE TABLE IF NOT EXISTS `Faction` (
   PRIMARY KEY (`faction_id`),
   FOREIGN KEY (`faction_capital`) REFERENCES `City`(`city_id`)
 );
+
+CREATE TABLE IF NOT EXISTS `Territory`(
+  `territory_id` INT AUTO_INCREMENT,
+  `territory_name` CHAR(36),
+  `territory_posX` INT NOT NULL,
+  `territory_posZ` INT NOT NULL,
+  `territory_factionId` INT,
+  `territory_bastionId` INT,
+  `territory_world` CHAR(36) NOT NULL,
+  PRIMARY KEY (`territory_id`),
+  FOREIGN KEY (`territory_factionId`) REFERENCES `Faction`(`faction_id`));
 
 CREATE TABLE IF NOT EXISTS `Influence` (
   `influence_id` INT AUTO_INCREMENT,

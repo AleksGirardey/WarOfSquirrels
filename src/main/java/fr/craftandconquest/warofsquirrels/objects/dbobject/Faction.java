@@ -22,11 +22,11 @@ public class Faction extends DBObject {
 
     private Map<String, City>   cities = new HashMap<>();
 
-    public Faction(String _displayName, City _capital) {
+    public Faction(String displayName, City capital) {
         super(GlobalFaction.id, GlobalFaction.tableName, fields);
 
-        this.displayName = _displayName;
-        this.capital = _capital;
+        this.displayName = displayName;
+        this.capital = capital;
         this.add("'" + displayName + "', NULL");
         writeLog();
     }

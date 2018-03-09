@@ -24,8 +24,10 @@ public class TerritoryHandler {
     public      TerritoryHandler(World world) {
         mapSize = Core.getConfig().getMapSize();
         territorySize = Core.getConfig().getTerritorySize();
-        if (!Core.getConfig().getTerritoriesGenerated())
+        if (!Core.getConfig().getTerritoriesGenerated()) {
             generate(world);
+            Core.getConfig().setTerritoriesGenerated(true);
+        }
     }
 
     public void     populate() {
@@ -54,7 +56,7 @@ public class TerritoryHandler {
         for (int i = 0; i < z; i++) {
             for (int j = 0; j < x; j++) {
                 Territory territory = new Territory("Province inconnue", i, j, null, world);
-                Core.getTerritoryHandler().add(territory);
+                this.add(territory);
             }
         }
     }
@@ -80,5 +82,10 @@ public class TerritoryHandler {
 
     public void     claim(int posX, int posZ, World world, Faction faction) {
         this.get(posX, posZ, world).setFaction(faction);
+    }
+
+    public void update() {
+        for (Territory territory : territories.values())
+            territory.spreadInfluence();
     }
 }

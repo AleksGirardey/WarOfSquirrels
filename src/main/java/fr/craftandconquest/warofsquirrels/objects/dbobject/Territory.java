@@ -6,6 +6,8 @@ import org.spongepowered.api.world.World;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Territory extends DBObject {
@@ -61,7 +63,7 @@ public class Territory extends DBObject {
     @Override
     protected void writeLog() {
         Core.getLogger().info("[Territory] '{0}' created at [{1},{2}][{3}] with owner '{4}'",
-                name, posX, posZ, world.getName(), faction.getDisplayName());
+                name, posX, posZ, world.getName(), (faction != null ? faction.getDisplayName() : "NONE"));
     }
 
     public int  getId() { return Integer.parseInt(_primaryKeyValue); }
@@ -100,5 +102,26 @@ public class Territory extends DBObject {
     public void     setWorld(World world) {
         this.world = world;
         this.edit(GlobalTerritory.WORLD, "'" + world.getUniqueId() + "'");
+    }
+
+    private List<Territory>  getNeighbors() {
+        List<Territory> territories = new ArrayList<>();
+
+        territories.add(Core.getTerritoryHandler().get(this.posX, this.posZ + 1, this.world));
+        territories.add(Core.getTerritoryHandler().get(this.posX, this.posZ - 1, this.world));
+        territories.add(Core.getTerritoryHandler().get(this.posX + 1, this.posZ, this.world));
+        territories.add(Core.getTerritoryHandler().get(this.posX - 1, this.posZ, this.world));
+
+        return territories;
+    }
+
+    public int getInfluenceGenerated() { return 100; }
+
+    public void spreadInfluence() {
+        List<Territory> neighbors = getNeighbors();
+
+        for (Territory territory : neighbors) {
+            Core.getInfluenceHandler().pushInfluence(territory, getInfluenceGenerated());
+        }
     }
 }

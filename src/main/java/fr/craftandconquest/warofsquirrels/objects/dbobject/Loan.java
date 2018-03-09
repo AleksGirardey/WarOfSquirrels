@@ -242,6 +242,15 @@ public class Loan extends DBObject {
         list.forEach(p -> p.sendMessage(message));
     }
 
+    public void payDay() {
+        if (loaner == null) return;
+
+        if (this.loaner.getBalance() >= this.rentPrice) {
+            if(this.player != null) this.player.insert(this.rentPrice);
+            else this.city.insert(rentPrice);
+        } else this.leave(this.player.getUser().getPlayer().get());
+    }
+
     @Override
     protected void writeLog() {
         Core.getLogger().info("[Loan] (" + _fields + ") : #" + _primaryKeyValue

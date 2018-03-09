@@ -151,7 +151,7 @@ public class WarHandler {
             return;
         }
 
-        if (wars.size() > 0) {
+        if (!wars.isEmpty()) {
             player.sendMessage(Text.of("---=== Guerres en cours [" + wars.size() + "] ===---"));
 
             for (War war : wars)
