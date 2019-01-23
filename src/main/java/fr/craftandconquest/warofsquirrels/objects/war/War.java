@@ -6,11 +6,6 @@ import fr.craftandconquest.warofsquirrels.objects.dbobject.Chunk;
 import fr.craftandconquest.warofsquirrels.objects.dbobject.City;
 import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
 import fr.craftandconquest.warofsquirrels.objects.utils.Utils;
-import fr.craftandconquest.warofsquirrels.objects.city.CityRank;
-import fr.craftandconquest.warofsquirrels.objects.dbobject.Chunk;
-import fr.craftandconquest.warofsquirrels.objects.dbobject.City;
-import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
-import fr.craftandconquest.warofsquirrels.objects.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
@@ -78,7 +73,7 @@ public class War {
         _state = WarState.Preparation;
         _tag = setTag();
         _node = node.getNode(_tag);
-        Core.Send(Text.of(TextColors.GOLD, "Une attaque vient d'être lancé ! ", TextColors.RED, _cityAttacker.getDisplayName(),
+        Core.send(Text.of(TextColors.GOLD, "Une attaque vient d'être lancé ! ", TextColors.RED, _cityAttacker.getDisplayName(),
                 TextColors.GOLD, " attaque ",
                 TextColors.BLUE, _cityDefender.getDisplayName(), TextColors.RESET));
         setTarget();
@@ -167,12 +162,6 @@ public class War {
         rb.getNode("z").setValue(block.getPosition().getZ());
         rb.getNode("type").setValue(block.getState().getType().toString());
 
-        try {
-            Core.getWarHandler().getManager().save(_node);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         _rollbackBlocks.add(transaction);
         Core.getLogger().info("[Rollback][" + size + "->" + _rollbackBlocks.size() + "] "
                 + transaction.getOriginal().getState().getType().toString()
@@ -255,10 +244,10 @@ public class War {
 
     boolean      checkWin() {
         if (_defenderPoints >= 1000)
-            Core.Send(_cityAttacker.getDisplayName() + " fail to win his attack against "
+            Core.send(_cityAttacker.getDisplayName() + " fail to win his attack against "
                     + _cityDefender.getDisplayName() + " (" + _attackerPoints + " to " + _defenderPoints + ")");
         else if (_attackerPoints >= 1000)
-            Core.Send(_cityAttacker.getDisplayName() + " win his attack against "
+            Core.send(_cityAttacker.getDisplayName() + " win his attack against "
                     + _cityDefender.getDisplayName() + " (" + _attackerPoints + " to " + _defenderPoints + ")");
         else
             return false;

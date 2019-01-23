@@ -1,6 +1,7 @@
 package fr.craftandconquest.warofsquirrels.commands.war;
 
 import fr.craftandconquest.warofsquirrels.objects.Core;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -16,12 +17,12 @@ public class WarPeace implements CommandExecutor {
 
         Core.getConfig().setPeaceTime(args.<Boolean>getOne("[peace]").get());
 
-        if (Core.getConfig().isPeaceTime())
+        if (Core.getConfig().isTimeAtPeace())
             message = Text.of(TextColors.GREEN, "Ho no.. Seems like peace have been declared", TextColors.RESET);
         else
             message = Text.of(TextColors.DARK_GREEN, "MOUHAHAHAH, TIME TO FIGHT !", TextColors.RESET);
 
-        Core.SendText(message);
+        Core.sendText(message);
         return CommandResult.success();
     }
 }

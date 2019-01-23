@@ -8,6 +8,7 @@ public class GameListener {
 
     @Listener
     public void onGameInit(GameInitializationEvent event) {
+        Core.getLogger().debug("GameInitializationEvent proc");
         Core.getUpdateHandler().create();
     }
 }

@@ -36,6 +36,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -53,8 +54,6 @@ import java.nio.file.Path;
 @Plugin(id = "wos", name = "war Of Squirrels", version = "1.0", description = "BASTOOOOOOON")
 public class Main {
 
-    public static String        path = "WarOfSquirrels";
-
     @Inject
     private Game    game;
 
@@ -65,11 +64,11 @@ public class Main {
     private Logger logger;
 
     @Inject
-    @DefaultConfig(sharedRoot = false)
-    private ConfigurationLoader<CommentedConfigurationNode> configManager;
+    @DefaultConfig(sharedRoot = true)
+    private Path        privateConfigFile;
 
     @Inject
-    @DefaultConfig(sharedRoot = false)
+    @ConfigDir(sharedRoot = true)
     private Path        privateConfigDir;
 
     private final Text textCubo = Text.of("[cubo]");
@@ -82,16 +81,9 @@ public class Main {
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-        File        f = new File("WarOfSquirrels/config");
-
         logger.info("Please, wait for the war Of Squirrels plugin to be initialized");
-        if (!f.exists()) {
-            if (!f.mkdirs()) {
-                logger.error("Can't create plugin directory");
-            }
-        }
 
-        Core.initCore(logger, game, this);
+        Core.initCore(logger, game, this, privateConfigFile, privateConfigDir);
         game.getEventManager().registerListeners(this, new OnPlayerMove());
         game.getEventManager().registerListeners(this, new BlockListener());
         game.getEventManager().registerListeners(this, new PlayerListener());
@@ -428,7 +420,7 @@ public class Main {
     }
 
     private CommandSpec     commandFaction() {
-        CommandSpec         faction_help, faction_info, faction_list, faction_create, faction_delete, faction_set;
+        CommandSpec         faction_help, faction_info, faction_list, faction_claim, faction_create, faction_delete, faction_set;
 
         faction_help = CommandSpec.builder()
                 .description(Text.of("Display help commands"))
@@ -445,6 +437,14 @@ public class Main {
         faction_list = CommandSpec.builder()
                 .description(Text.of("Affiche la liste des factions"))
                 .executor(new FactionList())
+                .build();
+
+        faction_claim = CommandSpec.builder()
+                .description(Text.of("Revendique le territoire"))
+                .executor(new FactionClaim())
+                .arguments(GenericArguments.optional(
+                        GenericArguments.string(Text.of("[name]"))
+                ))
                 .build();
 
         faction_create = CommandSpec.builder()
@@ -467,6 +467,7 @@ public class Main {
                 .child(faction_help, "help", "?")
                 .child(faction_info, "info", "i")
                 .child(faction_list, "list", "l")
+                .child(faction_claim, "claim")
                 .child(faction_create, "create", "c")
                 .child(faction_delete, "delete", "d")
                 .child(faction_set, "set", "s")
@@ -708,7 +709,7 @@ public class Main {
     }
 
     private CommandSpec     commandAdmin() {
-        CommandSpec setSpawn, levelUp, setadmin, moneyAdd, moneyRemove;
+        CommandSpec setSpawn, levelUp, setadmin, moneyAdd, moneyRemove, cancelTask, lauchTask;
 
         setSpawn = CommandSpec.builder()
                 .description(Text.of("set World spawn"))
@@ -761,12 +762,30 @@ public class Main {
                         GenericArguments.onlyOne(GenericArguments.integer(Text.of("[montant]"))))
                 .build();
 
+        cancelTask = CommandSpec.builder()
+                .description(Text.of("Annule la tâche payday"))
+                .executor((c , cc) -> {
+                    Core.getUpdateHandler().cancelTask();
+                    return CommandResult.success();
+                })
+                .build();
+
+        lauchTask = CommandSpec.builder()
+                .description(Text.of("Lance la tâche Payday"))
+                .executor((c, cc) -> {
+                    Core.getUpdateHandler().create();
+                    return CommandResult.success();
+                })
+                .build();
+
         return CommandSpec.builder()
                 .child(setSpawn, "setspawn", "ss")
                 .child(levelUp, "setlevel", "sl")
                 .child(setadmin, "setadmin", "sa")
                 .child(moneyAdd, "moneyadd", "ma")
                 .child(moneyRemove, "moneyremove", "mr")
+                .child(lauchTask, "launchTask", "lt")
+                .child(cancelTask, "cancelTask", "ct")
                 .build();
     }
 
@@ -800,19 +819,19 @@ public class Main {
                 .build();
 
         say = CommandSpec.builder()
-                .description(Text.of("Send a message global channel"))
+                .description(Text.of("send a message global channel"))
                 .arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("[text]"))))
                 .executor(new SendNormal())
                 .build();
 
         shout = CommandSpec.builder()
-                .description(Text.of("Send a loud message"))
+                .description(Text.of("send a loud message"))
                 .arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("[text]"))))
                 .executor(new SendShout())
                 .build();
 
         town = CommandSpec.builder()
-                .description(Text.of("Send a city message"))
+                .description(Text.of("send a city message"))
                 .arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("[text]"))))
                 .executor(new SendCity())
                 .build();

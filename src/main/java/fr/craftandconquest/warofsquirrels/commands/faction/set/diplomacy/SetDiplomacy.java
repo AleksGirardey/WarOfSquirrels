@@ -12,7 +12,7 @@ public abstract class           SetDiplomacy extends CityCommandAssistant{
     protected abstract void     NewDiplomacy(DBPlayer player, Faction faction, Permission perm);
 
     void              Annouce(Faction factionA, Faction factionB, String relation) {
-        Core.Send("[diplomacy Alert] " + factionA.getDisplayName()
+        Core.send("[diplomacy Alert] " + factionA.getDisplayName()
                 + " now treat "
                 + factionB.getDisplayName()
                 + " as " + relation + ".");

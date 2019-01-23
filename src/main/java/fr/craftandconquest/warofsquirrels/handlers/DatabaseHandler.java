@@ -5,11 +5,13 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import fr.craftandconquest.warofsquirrels.objects.Core;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -17,16 +19,15 @@ import java.util.Scanner;
 
 public class    DatabaseHandler {
 
-    private Logger logger;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseHandler.class);
     private HikariConfig            config;
     private HikariDataSource        dataSource;
     private Connection              connection;
 
     @Inject
-    public DatabaseHandler(Logger logger) throws IOException, SQLException {
-
-        this.logger = logger;
-        File f = new File("WarOfSquirrels/database.properties");
+    public DatabaseHandler(Path path) throws IOException, SQLException {
+        String configPath = path + "/wos.database.conf";
+        File f = new File(configPath);
 
         if (!f.exists()) {
             if (!f.createNewFile())
@@ -41,14 +42,14 @@ public class    DatabaseHandler {
                             "dataSource.serverName=localhost";
             fw.write(def);
             fw.close();
-            getLogger().info("[database] Default properties created.");
+            LOGGER.info("[database] Default properties created.");
         }
-        getLogger().info("Catching up database properties...");
-        config = new HikariConfig("WarOfSquirrels/database.properties");
-        getLogger().info("Creating dataSource...");
+        LOGGER.info("Catching up database properties...");
+        config = new HikariConfig(configPath);
+        LOGGER.info("Creating dataSource...");
         config.addDataSourceProperty("autoReconnect", true);
         dataSource = new HikariDataSource(config);
-        getLogger().info("Everything went good.");
+        LOGGER.info("Everything went good.");
         this.init();
         connection = dataSource.getConnection();
     }
@@ -57,7 +58,7 @@ public class    DatabaseHandler {
         Connection              c = null;
         PreparedStatement       statement = null;
 
-        getLogger().info("Initializing sql database...");
+        LOGGER.info("Initializing sql database...");
         try {
             InputStreamReader   isr = new InputStreamReader(getClass().getClassLoader().getResourceAsStream("sql/InitTables.sql"));
             Scanner             scanner = new Scanner(isr);
@@ -72,7 +73,7 @@ public class    DatabaseHandler {
                 statement.close();
                 statement = null;
             }
-            getLogger().info("database initialization done.");
+            LOGGER.info("database initialization done.");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -95,9 +96,5 @@ public class    DatabaseHandler {
 
     public HikariDataSource getDataSource() {
         return dataSource;
-    }
-
-    private Logger getLogger() {
-        return logger;
     }
 }

@@ -23,6 +23,7 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -204,9 +205,14 @@ public class BlockListener {
     }
 
     private void            displayInfoFeather(DBPlayer player, Location<World> location, World world) {
+        Territory territory = Core.getTerritoryHandler().get(
+                location.getBlockX() / Core.getConfig().getTerritorySize(),
+                location.getBlockZ() / Core.getConfig().getTerritorySize(), world);
         Chunk chunk = Core.getChunkHandler().get(location.getBlockX() / 16, location.getBlockZ() / 16, world);
         Cubo cubo = Core.getCuboHandler().get(location.getBlockPosition());
 
+        player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "===| Territoire ", TextStyles.BOLD, territory.getName(), TextStyles.RESET, " [" + territory.getPosX() + ";" + territory.getPosZ() + "] |===", TextColors.RESET));
+        player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "Propriétaire : " + (territory.getFaction() == null ? "Nature" : territory.getFaction().getDisplayName()), TextColors.RESET));
         player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "===| Parcelle [" + (location.getBlockX() / 16) + ";" + (location.getBlockZ() / 16) + "] |===", TextColors.RESET));
         player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "Propriétaire : " + (chunk == null ? "Nature" : chunk.getCity().getDisplayName()), TextColors.RESET));
         if (cubo != null)

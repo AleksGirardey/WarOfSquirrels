@@ -3,8 +3,6 @@ package fr.craftandconquest.warofsquirrels.objects.channels;
 import fr.craftandconquest.warofsquirrels.objects.Core;
 import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
 import fr.craftandconquest.warofsquirrels.objects.utils.Utils;
-import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
-import fr.craftandconquest.warofsquirrels.objects.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageReceiver;
@@ -72,7 +70,7 @@ public class GlobalChannel implements MutableMessageChannel{
 
     public void         send(Object sender, Text original) {
         if (sender == null)
-            Core.Send("Sender is NULL");
+            Core.send("Sender is NULL");
         Text    text = transformMessage(sender, (MessageReceiver) sender, original, ChatTypes.CHAT).get();
         Player  player = (Player) sender;
 

@@ -62,8 +62,9 @@ public class Territory extends DBObject {
 
     @Override
     protected void writeLog() {
-        Core.getLogger().info("[Territory] '{0}' created at [{1},{2}][{3}] with owner '{4}'",
-                name, posX, posZ, world.getName(), (faction != null ? faction.getDisplayName() : "NONE"));
+        String factionName = (faction != null ? faction.getDisplayName() : "NONE");
+        Core.getLogger().info("[Territory] '{}' created at [{},{}][{}] with owner '{}'",
+                name, posX, posZ, world.getName(), factionName);
     }
 
     public int  getId() { return Integer.parseInt(_primaryKeyValue); }
@@ -115,13 +116,20 @@ public class Territory extends DBObject {
         return territories;
     }
 
-    public int getInfluenceGenerated() { return 100; }
+    private int getInfluenceGenerated() { return 100; }
 
     public void spreadInfluence() {
         List<Territory> neighbors = getNeighbors();
+        City city = Core.getCityHandler().getFromTerritory(this);
 
-        for (Territory territory : neighbors) {
-            Core.getInfluenceHandler().pushInfluence(territory, getInfluenceGenerated());
+        if (city != null)
+            Core.getInfluenceHandler().pushInfluence(city.getFaction(), this, getInfluenceGenerated() * 2);
+
+        if (faction != null) {
+            for (Territory territory : neighbors) {
+                if (territory != null)
+                    Core.getInfluenceHandler().pushInfluence(faction, territory, getInfluenceGenerated());
+            }
         }
     }
 }

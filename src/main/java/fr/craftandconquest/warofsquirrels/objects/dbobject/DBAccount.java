@@ -83,6 +83,6 @@ public class            DBAccount extends DBObject{
 
     @Override
     protected void writeLog() {
-        Core.Send("[Account] " + _fields + " : #" + _primaryKeyValue + " , " + po /*+ " , " + pa + " , " + pb*/);
+        Core.send("[Account] " + _fields + " : #" + _primaryKeyValue + " , " + po /*+ " , " + pa + " , " + pb*/);
     }
 }

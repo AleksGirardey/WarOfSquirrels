@@ -37,16 +37,18 @@ public class Influence extends DBObject {
 
     public void addInfluence(int influence) {
         this.influence += influence;
+        this.edit(GlobalInfluence.INFLUENCE,"" + this.influence);
     }
 
     public void subInfluence(int influence) {
         this.influence -= influence;
+        this.edit(GlobalInfluence.INFLUENCE,"" + this.influence);
     }
 
     @Override
     protected void writeLog() {
-        Core.getLogger().info("[Influence] {0} influence le territoire {1} à hauteur de {3}",
-                faction.getDisplayName(), territory.getName());
+        Core.getLogger().info("[Influence] {} influence le territoire {} à hauteur de {}",
+                faction.getDisplayName(), territory.getName(), influence);
     }
 
     public int          getId() { return Integer.parseInt(_primaryKeyValue); }

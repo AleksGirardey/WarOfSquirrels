@@ -1,35 +1,25 @@
 package fr.craftandconquest.warofsquirrels.objects.utils;
 
 import com.google.common.reflect.TypeToken;
-import com.google.inject.Inject;
 import fr.craftandconquest.warofsquirrels.objects.Core;
-import fr.craftandconquest.warofsquirrels.objects.dbobject.Territory;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
-import org.spongepowered.api.config.ConfigDir;
-import org.spongepowered.api.config.DefaultConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ConfigLoader {
 
-    @Inject
-    @DefaultConfig(sharedRoot = true)
-    private Path defaultConfig;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigLoader.class);
 
-    @Inject
-    @DefaultConfig(sharedRoot = true)
     private ConfigurationLoader<CommentedConfigurationNode>             configManager;
 
-
-
     private ConfigurationNode                                           rootNode;
-    private ConfigurationLoader<CommentedConfigurationNode>             manager;
     
     private ConfigurationNode   distanceCities;
     private ConfigurationNode   distanceOutpost;
@@ -43,22 +33,30 @@ public class ConfigLoader {
     private ConfigurationNode   mapSize;
     private ConfigurationNode   territoriesGenerated;
     private ConfigurationNode   territorySize;
-    
+    private ConfigurationNode   territoryClaimLimit;
+
     private static final String DISTANCES = "Distances";
-    private static final String WAR = "war";
+    private static final String WAR = "War";
     private static final String JOUEUR = "Joueur";
     private static final String TERRITORIES = "Territoires";
 
-    public ConfigLoader() {
+    public ConfigLoader(Path path) {
         try {
+            configManager = HoconConfigurationLoader.builder().setPath(path).build();
             rootNode = configManager.load();
 
-            if (!rootNode.hasListChildren()) {
+            if (rootNode.hasMapChildren())
+                Core.getLogger().debug("ConfigLoader Map size : " + rootNode.getChildrenMap().size());
+            if (rootNode.hasListChildren())
+                Core.getLogger().debug("ConfigLoader List size : " + rootNode.getChildrenList().size());
+
+            if (!rootNode.hasMapChildren()) {
+                LOGGER.info("ConfigLoader default init");
                 this.setDefaultConfig();
-                rootNode = manager.load();
+                configManager.save(rootNode);
             }
         } catch (IOException | ObjectMappingException e) {
-            Core.getLogger().warn("ConfigLoader error " + e);
+            LOGGER.warn("ConfigLoader init error : " + e);
         }
 
         /* Distances */
@@ -80,9 +78,10 @@ public class ConfigLoader {
         mapSize = rootNode.getNode(TERRITORIES, "mapSize");
         territoriesGenerated = rootNode.getNode(TERRITORIES, "generated");
         territorySize = rootNode.getNode(TERRITORIES, "territorySize");
+        territoryClaimLimit = rootNode.getNode(TERRITORIES, "territoryClaimLimit");
     }
 
-    private void setDefaultConfig() throws ObjectMappingException, IOException {
+    private void setDefaultConfig() throws ObjectMappingException {
         /* Distances */
         rootNode.getNode(DISTANCES, "cities").setValue(20);
         rootNode.getNode(DISTANCES, "outpost").setValue(10);
@@ -102,80 +101,77 @@ public class ConfigLoader {
         rootNode.getNode(TERRITORIES, "mapSize").setValue(5120);
         rootNode.getNode(TERRITORIES, "generated").setValue(false);
         rootNode.getNode(TERRITORIES, "territorySize").setValue(256);
-
-        manager.save(rootNode);
+        rootNode.getNode(TERRITORIES, "territoryClaimLimit").setValue(1500);
     }
 
     public void      close() {
         try {
-            manager.save(rootNode);
+            configManager.save(rootNode);
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void    set(ConfigurationNode node, Object value) {
-        try {
-            node.setValue(value);
-            manager.save(rootNode);
-        } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("Cannot close the configuration class");
         }
     }
 
     public int getDistanceCities() { return distanceCities.getInt(); }
+    public int getDistanceOutpost() { return distanceOutpost.getInt(); }
+    public int getShoutDistance() { return shoutDistance.getInt(); }
+    public int getSayDistance() { return sayDistance.getInt(); }
+    public boolean isTimeAtPeace() { return peaceTime.getBoolean(); }
+    public int getReincarnationTime() { return reincarnationTime.getInt(); }
+    public int getStartBalance() { return startBalance.getInt(); }
+    public long getPreparationPhase() { return preparationPhase.getLong(); }
+    public long getRollbackPhase() { return rollbackPhase.getLong(); }
+    public int  getMapSize() { return mapSize.getInt(); }
+    public boolean getTerritoriesGenerated() { return territoriesGenerated.getBoolean(); }
+    public int getTerritorySize() { return territorySize.getInt(); }
+    public int getTerritoryClaimLimit() { return territoryClaimLimit.getInt(); }
+
+    private void setNode(ConfigurationNode node, Object value) {
+        node.setValue(value);
+        try {
+            this.configManager.save(rootNode);
+        } catch (IOException e) {
+            LOGGER.warn("Cannot save new value for node : " + node.toString() + " error : " + e);
+        }
+    }
 
     public void setDistanceCities(int distanceCities) {
-        this.set(this.distanceCities, distanceCities);
+        this.setNode(this.distanceCities, distanceCities);
     }
-
-    public int getDistanceOutpost() { return distanceOutpost.getInt(); }
 
     public void setDistanceOutpost(int distanceOutpost) {
-        this.set(this.distanceOutpost, distanceOutpost);
+        this.setNode(this.distanceOutpost, distanceOutpost);
     }
-
-    public int getShoutDistance() { return shoutDistance.getInt(); }
 
     public void setShoutDistance(int shoutDistance) {
-        this.set(this.shoutDistance, shoutDistance);
+        this.setNode(this.shoutDistance, shoutDistance);
     }
-
-    public int getSayDistance() { return sayDistance.getInt(); }
 
     public void setSayDistance(int sayDistance) {
-        this.set(this.sayDistance, sayDistance);
+        this.setNode(this.sayDistance, sayDistance);
     }
-
-    public boolean isPeaceTime() { return peaceTime.getBoolean(); }
 
     public void      setPeaceTime(Boolean peace) {
-        this.set(this.peaceTime, peace);
+        this.setNode(this.peaceTime, peace);
     }
 
-    public int getReincarnationTime() { return reincarnationTime.getInt(); }
+    public void setReincarnationTime(int reincarnationTime) {
+        this.setNode(this.reincarnationTime, reincarnationTime);
+    }
 
-    public void setReincarnationTime(int reincarnationTime) { this.set(this.reincarnationTime, reincarnationTime); }
+    public void setStartBalance(int startBalance) {
+        this.setNode(this.startBalance, startBalance);
+    }
 
-    public int getStartBalance() { return startBalance.getInt(); }
+    public void setPreparationPhase(long preparationPhase) {
+        this.setNode(this.preparationPhase, preparationPhase);
+    }
 
-    public void setStartBalance(int startBalance) { this.set(this.startBalance, startBalance); }
-
-    public long getPreparationPhase() { return preparationPhase.getLong(); }
-
-    public void setPreparationPhase(long preparationPhase) { this.set(this.preparationPhase, preparationPhase); }
-
-    public long getRollbackPhase() { return rollbackPhase.getLong(); }
-
-    public void setRollbackPhase(long rollbackPhase) { this.set(this.rollbackPhase, rollbackPhase); }
-
-    public int  getMapSize() { return mapSize.getInt(); }
-
-    public boolean getTerritoriesGenerated() { return territoriesGenerated.getBoolean(); }
-
-    public int getTerritorySize() { return territorySize.getInt(); }
+    public void setRollbackPhase(long rollbackPhase) {
+        this.setNode(this.rollbackPhase, rollbackPhase);
+    }
 
     public void setTerritoriesGenerated(boolean territoriesGenerated) {
-        this.set(this.territoriesGenerated, territoriesGenerated);
+        this.setNode(this.territoriesGenerated, territoriesGenerated);
     }
 }

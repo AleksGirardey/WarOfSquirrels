@@ -5,6 +5,7 @@ import fr.craftandconquest.warofsquirrels.objects.database.GlobalTerritory;
 import fr.craftandconquest.warofsquirrels.objects.database.Statement;
 import fr.craftandconquest.warofsquirrels.objects.dbobject.Faction;
 import fr.craftandconquest.warofsquirrels.objects.dbobject.Territory;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.world.World;
 
 import java.sql.SQLException;
@@ -53,8 +54,11 @@ public class TerritoryHandler {
         int x = mapSize / territorySize;
         int z = mapSize / territorySize;
 
-        for (int i = 0; i < z; i++) {
-            for (int j = 0; j < x; j++) {
+        x /= 2;
+        z /= 2;
+
+        for (int i = -z; i < z; i++) {
+            for (int j = -x; j < x; j++) {
                 Territory territory = new Territory("Province inconnue", i, j, null, world);
                 this.add(territory);
             }

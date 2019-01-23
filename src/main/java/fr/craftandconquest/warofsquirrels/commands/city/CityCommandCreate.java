@@ -10,8 +10,6 @@ import fr.craftandconquest.warofsquirrels.objects.dbobject.Chunk;
 import fr.craftandconquest.warofsquirrels.objects.dbobject.City;
 import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
 import fr.craftandconquest.warofsquirrels.objects.utils.Utils;
-import fr.craftandconquest.warofsquirrels.handlers.ChunkHandler;
-import fr.craftandconquest.warofsquirrels.handlers.CityHandler;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
@@ -82,7 +80,7 @@ public class            CityCommandCreate extends Commands {
             Core.getInfoCityMap().get(city).getChannel().addMember(p.getUser().getPlayer().get());
         }
         Text message = Text.of("[BREAKING NEWS] " + cityName + " have been created by " + player.getDisplayName());
-        Core.SendText(Text.of(TextColors.GOLD, message, TextColors.RESET));
+        Core.sendText(Text.of(TextColors.GOLD, message, TextColors.RESET));
         return CommandResult.success();
     }
 }

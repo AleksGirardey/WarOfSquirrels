@@ -16,7 +16,7 @@ public class FactionDelete extends FactionCommandMayor {
     protected CommandResult ExecCommand(DBPlayer player, CommandContext context) {
         String          fName = player.getCity().getFaction().getDisplayName(), cName = player.getCity().getDisplayName();
         if (Core.getFactionHandler().delete(player.getCity().getFaction())) {
-            Core.SendText(Text.of(TextColors.DARK_RED, "La faction ", TextStyles.ITALIC, fName, TextStyles.RESET, " à été dissoute et sa capitale ",
+            Core.sendText(Text.of(TextColors.DARK_RED, "La faction ", TextStyles.ITALIC, fName, TextStyles.RESET, " à été dissoute et sa capitale ",
                     TextStyles.ITALIC, cName, TextStyles.RESET, " n'est plus.", TextColors.RESET));
             return CommandResult.success();
         }

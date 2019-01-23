@@ -24,7 +24,7 @@ public class                    CityCommandDelete extends CityCommandMayor {
 
         Core.getCityHandler().delete(city);
         Text message = Text.of("[BREAKING NEWS] " + city.getDisplayName() + " has fallen !");
-        Core.SendText(Text.of(TextColors.GOLD, message, TextColors.RESET));
+        Core.sendText(Text.of(TextColors.GOLD, message, TextColors.RESET));
         return CommandResult.success();
     }
 }

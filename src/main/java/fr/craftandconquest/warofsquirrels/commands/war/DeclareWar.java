@@ -5,7 +5,6 @@ import fr.craftandconquest.warofsquirrels.objects.Core;
 import fr.craftandconquest.warofsquirrels.objects.dbobject.Attackable;
 import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
 import fr.craftandconquest.warofsquirrels.objects.war.PartyWar;
-import fr.craftandconquest.warofsquirrels.commands.city.CityCommandAssistant;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.text.Text;
@@ -31,9 +30,9 @@ public class                    DeclareWar extends CityCommandAssistant {
             }
         }
 
-        if (Core.getConfig().isPeaceTime())
+        if (Core.getConfig().isTimeAtPeace())
             player.sendMessage(Text.of(TextColors.DARK_RED, "You cannot declare war in time of peace !!", TextColors.RESET));
-        return (!Core.getConfig().isPeaceTime());
+        return (!Core.getConfig().isTimeAtPeace());
     }
 
     @Override

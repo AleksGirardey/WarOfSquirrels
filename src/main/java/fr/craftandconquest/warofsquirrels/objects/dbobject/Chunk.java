@@ -12,6 +12,7 @@ import java.util.UUID;
 public class                Chunk extends DBObject {
     private static String   _fields = "`" + GlobalChunk.posX
             + "`, `" + GlobalChunk.posZ
+            + "`, `" + GlobalChunk.name
             + "`, `" + GlobalChunk.cityId
             + "`, `" + GlobalChunk.homeblock
             + "`, `" + GlobalChunk.outpost
@@ -83,11 +84,11 @@ public class                Chunk extends DBObject {
         String          message = "";
 
         if (name != null) {
-            Core.getLogger().info("[Chunk] '{0}' created at [{1};{2}]", name, this.posX, this.posZ);
+            Core.getLogger().info("[Chunk] '{}' created at [{};{}]", name, this.posX, this.posZ);
         } else {
             if (homeblock || outpost)
                 message = " respawn at [" + respawnX + ";" + respawnY + ";" + respawnZ + "]";
-            Core.getLogger().info("[Creating] Chunk at '{0};{1}' for {2}[{3};[4}] in world {5}{7}", this.posX, this.posZ, this.getCity().getDisplayName(), homeblock ? "YES" : "NO", outpost ? "YES" : "NO", world.getName(), message);
+            Core.getLogger().info("[Creating] Chunk at '{};{}' for {}[{};[}] in world {}{}", this.posX, this.posZ, this.getCity().getDisplayName(), homeblock ? "YES" : "NO", outpost ? "YES" : "NO", world.getName(), message);
         }
     }
 
