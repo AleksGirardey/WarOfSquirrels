@@ -22,7 +22,7 @@ public class            AllianceInvitation extends Invitation {
     public void         accept() {
         Core.getDiplomacyHandler().add(_senderFaction, _faction, true, _permission);
         Core.getDiplomacyHandler().add(_faction, _senderFaction, true, null);
-        Core.Send(_senderFaction.getDisplayName()
+        Core.send(_senderFaction.getDisplayName()
                 + " and "
                 + _faction.getDisplayName()
                 + " are now allies.");

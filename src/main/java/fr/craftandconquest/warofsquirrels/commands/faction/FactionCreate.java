@@ -14,8 +14,6 @@ import fr.craftandconquest.warofsquirrels.objects.dbobject.Faction;
 import fr.craftandconquest.warofsquirrels.objects.faction.InfoFaction;
 import fr.craftandconquest.warofsquirrels.objects.utils.Utils;
 import fr.craftandconquest.warofsquirrels.objects.war.PartyWar;
-import fr.craftandconquest.warofsquirrels.handlers.CityHandler;
-import fr.craftandconquest.warofsquirrels.handlers.FactionHandler;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.text.Text;
@@ -102,7 +100,7 @@ public class FactionCreate extends Commands {
         Text        message = Text.of(player.getDisplayName() + " est maintenant le leader de la faction ", TextStyles.BOLD, faction.getDisplayName(), TextStyles.RESET, " dont la capitale est ",
                 TextStyles.BOLD, city.getDisplayName(), TextStyles.RESET, ".");
 
-        Core.SendText(Text.of(TextColors.GOLD, message, TextColors.RESET));
+        Core.sendText(Text.of(TextColors.GOLD, message, TextColors.RESET));
         return CommandResult.success();
     }
 }

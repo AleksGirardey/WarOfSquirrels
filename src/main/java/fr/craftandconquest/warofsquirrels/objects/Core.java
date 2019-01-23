@@ -9,18 +9,11 @@ import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
 import fr.craftandconquest.warofsquirrels.objects.dbobject.Faction;
 import fr.craftandconquest.warofsquirrels.objects.faction.InfoFaction;
 import fr.craftandconquest.warofsquirrels.objects.utils.ConfigLoader;
-import fr.craftandconquest.warofsquirrels.Main;
-import fr.craftandconquest.warofsquirrels.handlers.*;
-import fr.craftandconquest.warofsquirrels.objects.city.InfoCity;
-import fr.craftandconquest.warofsquirrels.objects.dbobject.City;
-import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
-import fr.craftandconquest.warofsquirrels.objects.dbobject.Faction;
-import fr.craftandconquest.warofsquirrels.objects.faction.InfoFaction;
-import fr.craftandconquest.warofsquirrels.objects.utils.ConfigLoader;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
@@ -33,19 +26,22 @@ import java.util.*;
 
 public class Core {
 
+    private static final Logger LOGGERS = LoggerFactory.getLogger(Core.class);
+
     @Inject
     private static Game                     plugin;
-    private static Main                     _main;
-    private static World                    _world;
+    private static Main                     main;
+    private static World                    world;
 
-    private static ConfigLoader             _config;
-    private static Logger                   _logger;
+    private static ConfigLoader             config;
+    private static Logger                   logger;
 
-    private static DatabaseHandler database;
-    private static PlayerHandler playerHandler;
-    private static CityHandler cityHandler;
-    private static ChunkHandler chunkHandler;
-    private static PermissionHandler permissionHandler;
+    private static DatabaseHandler          database;
+    private static PlayerHandler            playerHandler;
+    private static CityHandler              cityHandler;
+    private static ChunkHandler             chunkHandler;
+    private static TerritoryHandler         territoryHandler;
+    private static PermissionHandler        permissionHandler;
     private static BroadcastHandler         broadcastHandler;
     private static InvitationHandler        invitationHandler;
     private static WarHandler               warHandler;
@@ -55,57 +51,51 @@ public class Core {
     private static ShopHandler              shopHandler;
     private static LoanHandler              loanHandler;
     private static FactionHandler           factionHandler;
+    private static InfluenceHandler         influenceHandler;
+    private static UpdateHandler            updateHandler;
 
     private static Map<City, InfoCity>          infoCityMap;
     private static Map<Faction, InfoFaction>    infoFactionMap;
 
+    private Core() {}
+
     public static void          initCore(
             Logger logger,
             Game game,
-            Main main) {
+            Main main,
+            Path configFile, Path configDir) {
         logger.info("Core initialization...");
 
-        Path configPath = FileSystems.getDefault().getPath("WarOfSquirrels/", "WOS.properties"),
-                warPath = FileSystems.getDefault().getPath("WarOfSquirrels/", "WOS.rollbacks");
-        ConfigurationLoader<CommentedConfigurationNode>          managerConfigLoad, managerWarHandler;
+        plugin = game;
+        Core.main = main;
+        Core.logger = logger;
+        world = game.getServer().getWorld(game.getServer().getDefaultWorldName()).orElse(null);
+
+        config = new ConfigLoader(configFile);
 
         try {
-            if (!configPath.toFile().exists()) {
-                File conf = configPath.toFile();
-                if (!conf.createNewFile())
-                    Core.getLogger().error("Can't create WOS.properties");
-            } else if (!warPath.toFile().exists()) {
-                File conf = warPath.toFile();
-                if (!conf.createNewFile())
-                    Core.getLogger().error("Can't create WOS.rollbacks");
-            }
-            database = new DatabaseHandler(logger);
+            database = new DatabaseHandler(configDir);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGERS.warn("Cannot create database : " + e);
         }
 
-        managerConfigLoad = HoconConfigurationLoader.builder().setPath(configPath).build();
-        managerWarHandler = HoconConfigurationLoader.builder().setPath(warPath).build();
-
-        plugin = game;
-        _main = main;
-        _logger = logger;
-        _world = game.getServer().getWorld(game.getServer().getDefaultWorldName()).orElse(null);
-        _config = new ConfigLoader(managerConfigLoad);
         logger.info("Setting up handlers..");
         permissionHandler = new PermissionHandler(logger);
         playerHandler = new PlayerHandler(logger);
         cityHandler = new CityHandler(logger);
         chunkHandler = new ChunkHandler(logger);
+        territoryHandler = new TerritoryHandler(world);
         broadcastHandler = new BroadcastHandler();
         invitationHandler = new InvitationHandler();
-        warHandler = new WarHandler(managerWarHandler);
+        warHandler = new WarHandler();
         partyHandler = new PartyHandler();
         cuboHandler = new CuboHandler(logger);
         diplomacyHandler = new DiplomacyHandler(logger);
         shopHandler = new ShopHandler(logger);
         loanHandler = new LoanHandler(logger);
         factionHandler = new FactionHandler(logger);
+        influenceHandler = new InfluenceHandler();
+        updateHandler = new UpdateHandler();
 
         logger.info("Updating dependencies..");
         permissionHandler.populate();
@@ -113,10 +103,12 @@ public class Core {
         factionHandler.populate();
         cityHandler.populate();
         chunkHandler.populate();
+        territoryHandler.populate();
         cuboHandler.populate();
         diplomacyHandler.populate();
         shopHandler.populate();
         loanHandler.populate();
+        influenceHandler.populate();
         factionHandler.updateDependencies();
         playerHandler.updateDependencies();
         cuboHandler.updateDependencies();
@@ -130,7 +122,7 @@ public class Core {
         try {
             database.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGERS.warn("Failed to close database");
         }
     }
 
@@ -140,9 +132,9 @@ public class Core {
 
     public static Game                  getPlugin() { return plugin; }
 
-    public static Main                  getMain() { return _main; }
+    public static Main                  getMain() { return main; }
 
-    public static Logger                getLogger() { return _logger; }
+    public static Logger                getLogger() { return logger; }
 
     /*
     ** handlers
@@ -162,6 +154,8 @@ public class Core {
         return chunkHandler;
     }
 
+    public static TerritoryHandler      getTerritoryHandler() { return territoryHandler; }
+
     public static PermissionHandler     getPermissionHandler() { return permissionHandler; }
 
     public static BroadcastHandler      getBroadcastHandler() { return broadcastHandler; }
@@ -172,19 +166,19 @@ public class Core {
 
     public static PartyHandler          getPartyHandler() { return partyHandler; }
 
-    public static void                  Send(String message) {
-        Send(Text.of(message));
+    public static void                  send(String message) {
+        send(Text.of(message));
     }
 
-    public static void                  Send(Text message) {
+    public static void                  send(Text message) {
         plugin.getServer().getBroadcastChannel().send(message);
     }
 
-    public static void                  SendText(Text text) {
+    public static void                  sendText(Text text) {
         plugin.getServer().getBroadcastChannel().send(text);
     }
 
-    public static ConfigLoader          getConfig() { return _config; }
+    public static ConfigLoader          getConfig() { return config; }
 
     public static CuboHandler           getCuboHandler() { return cuboHandler; }
 
@@ -196,11 +190,15 @@ public class Core {
 
     public static FactionHandler        getFactionHandler() { return factionHandler; }
 
+    public static InfluenceHandler      getInfluenceHandler() { return influenceHandler; }
+
+    public static UpdateHandler         getUpdateHandler() { return updateHandler; }
+
     public static Map<City, InfoCity>           getInfoCityMap() { return infoCityMap; }
 
     public static Map<Faction, InfoFaction>     getInfoFactionMap() { return infoFactionMap; }
 
-    public static World                         getWorld() { return _world; }
+    public static World                         getWorld() { return world; }
 
 
     /*

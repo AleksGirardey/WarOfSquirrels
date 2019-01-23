@@ -34,7 +34,6 @@ public class                CityCommandClaim extends CityCommandAssistant {
                 return true;
             } else if (chh.canBePlaced(player.getCity(), x, z, true, world))
                 return true;
-            Core.getLogger().warn("CHUNK CAN'T BE PLACED HERE");
         }
         player.sendMessage(Text.of(TextColors.RED, "You can't claim here.", TextColors.RESET));
         return false;
@@ -61,6 +60,8 @@ public class                CityCommandClaim extends CityCommandAssistant {
         Core.getChunkHandler().add(chunk);
         Text message = Text.of("Votre ville possède désormais un post avancé en " + chunk.toString());
         Core.getInfoCityMap().get(player.getCity()).getChannel().send(Text.of(TextColors.GREEN, message, TextColors.RESET));
+        if (context.hasAny(Text.of("[name]")))
+            chunk.setName(context.<String>getOne(Text.of("[name]")).get());
         return CommandResult.success();
     }
 }

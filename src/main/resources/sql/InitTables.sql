@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `Chunk` (
   `chunk_id` INT AUTO_INCREMENT,
   `chunk_posX` INT NOT NULL,
   `chunk_posZ` INT NOT NULL,
+  `chunk_name` CHAR(36),
   `chunk_cityId` INT,
   `chunk_homeblock` BOOLEAN DEFAULT FALSE,
   `chunk_outpost` BOOLEAN DEFAULT FALSE,
@@ -137,6 +138,27 @@ CREATE TABLE IF NOT EXISTS `Faction` (
   PRIMARY KEY (`faction_id`),
   FOREIGN KEY (`faction_capital`) REFERENCES `City`(`city_id`)
 );
+
+CREATE TABLE IF NOT EXISTS `Territory`(
+  `territory_id` INT AUTO_INCREMENT,
+  `territory_name` CHAR(36),
+  `territory_posX` INT NOT NULL,
+  `territory_posZ` INT NOT NULL,
+  `territory_factionId` INT,
+  `territory_bastionId` INT,
+  `territory_world` CHAR(36) NOT NULL,
+  PRIMARY KEY (`territory_id`),
+  FOREIGN KEY (`territory_factionId`) REFERENCES `Faction`(`faction_id`));
+
+CREATE TABLE IF NOT EXISTS `Influence` (
+  `influence_id` INT AUTO_INCREMENT,
+  `influence_faction` INT NOT NULL,
+  `influence_territory` INT NOT NULL,
+  `influence_influence` INT NOT NULL,
+  PRIMARY KEY (`influence_id`),
+  FOREIGN KEY (`influence_faction`) REFERENCES `Faction`(`faction_id`),
+  FOREIGN KEY (`influence_territory`) REFERENCES `Territory`(`territory_id`),
+  UNIQUE KEY (`influence_faction`, `influence_territory`));
 
 ALTER TABLE `Player`
 ADD FOREIGN KEY (`player_cityId`)

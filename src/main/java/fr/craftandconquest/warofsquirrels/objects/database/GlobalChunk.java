@@ -5,6 +5,7 @@ public class  GlobalChunk {
     public static String        id = "chunk_id";
     public static String        posX = "chunk_posX";
     public static String        posZ = "chunk_posZ";
+    public static String        name = "chunk_name";
     public static String        cityId = "chunk_cityId";
     public static String        homeblock = "chunk_homeblock";
     public static String        outpost = "chunk_outpost";

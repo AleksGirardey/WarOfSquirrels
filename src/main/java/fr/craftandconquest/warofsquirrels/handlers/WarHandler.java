@@ -23,21 +23,7 @@ public class WarHandler {
 
     private List<War> wars = new ArrayList<>();
 
-    private ConfigurationNode                                rootNode;
-    private ConfigurationLoader<CommentedConfigurationNode>  manager;
-
-    public      WarHandler(ConfigurationLoader<CommentedConfigurationNode>  configManager) {
-        manager = configManager;
-        try {
-            rootNode = manager.load();
-            if (rootNode.hasListChildren())
-                rootNode.getChildrenList().forEach(this::rollback);
-            rootNode = manager.createEmptyNode();
-            manager.save(rootNode);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    public      WarHandler() {}
 
     private void    rollback (ConfigurationNode node) {
         node.getChildrenList().forEach(block -> {
@@ -68,7 +54,7 @@ public class WarHandler {
             }
 
             if (party.getLeader().getUser().hasPermission("minecraft.command.op") || (defenders > 4 && party.size() < (defenders + 1))) {
-                wars.add(new War(attacker, defender, party.toList(), rootNode));
+               // wars.add(new War(attacker, defender, party.toList(), rootNode));
                 return true;
             }
             else
@@ -141,17 +127,17 @@ public class WarHandler {
     }
 
     public void     delete(War war, ConfigurationNode node) {
-        rootNode.removeChild(node);
+        //rootNode.removeChild(node);
         wars.remove(war);
     }
 
     public void     displayList(DBPlayer player) {
-        if (Core.getConfig().isPeaceTime()) {
+        if (Core.getConfig().isTimeAtPeace()) {
             player.sendMessage(Text.of("---=== Nous sommes en temps de paix ===---"));
             return;
         }
 
-        if (wars.size() > 0) {
+        if (!wars.isEmpty()) {
             player.sendMessage(Text.of("---=== Guerres en cours [" + wars.size() + "] ===---"));
 
             for (War war : wars)
@@ -181,6 +167,4 @@ public class WarHandler {
 
         return c != null && getWar(c.getCity()) != null && getWar(c.getCity()).getDefender() == c.getCity();
     }
-
-    public ConfigurationLoader<CommentedConfigurationNode>      getManager() { return manager; }
 }

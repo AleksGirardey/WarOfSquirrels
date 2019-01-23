@@ -12,6 +12,7 @@ import java.util.UUID;
 public class                Chunk extends DBObject {
     private static String   _fields = "`" + GlobalChunk.posX
             + "`, `" + GlobalChunk.posZ
+            + "`, `" + GlobalChunk.name
             + "`, `" + GlobalChunk.cityId
             + "`, `" + GlobalChunk.homeblock
             + "`, `" + GlobalChunk.outpost
@@ -22,6 +23,7 @@ public class                Chunk extends DBObject {
 
     private int         posX;
     private int         posZ;
+    private String      name;
     private City        city;
     private Boolean     homeblock;
     private Boolean     outpost;
@@ -30,30 +32,8 @@ public class                Chunk extends DBObject {
     private int         respawnZ;
     private World       world;
 
-    public Chunk(DBPlayer player, boolean _homeblock, boolean _outpost) {
-        super(GlobalChunk.id, GlobalChunk.tableName, _fields);
-        Player  p = player.getUser().getPlayer().get();
-
-        posX = p.getLocation().getBlockX() / 16;
-        posZ = p.getLocation().getBlockZ() / 16;
-        city = player.getCity();
-        homeblock = _homeblock;
-        outpost = _outpost;
-        if (homeblock || outpost) {
-            respawnX = p.getLocation().getBlockX();
-            respawnY = p.getLocation().getBlockY();
-            respawnZ = p.getLocation().getBlockZ();
-        }
-        world = p.getWorld();
-        this.add("'" + posX + "', '"
-                + posZ + "', '"
-                + city.getId() + "',"
-                + (homeblock ? "TRUE" : "FALSE") + ","
-                + (outpost ? "TRUE" : "FALSE") + ","
-                + (homeblock || outpost ? "'" + respawnX + "'" : "NULL") + ","
-                + (homeblock || outpost? "'" + respawnY + "'" : "NULL") + ","
-                + (homeblock || outpost? "'" + respawnZ + "'" : "NULL") + ",'"
-                + world.getUniqueId().toString() + "'");
+    public Chunk(DBPlayer player, boolean homeblock, boolean outpost) {
+        this(player, homeblock, outpost, null);
     }
 
     public      Chunk(ResultSet rs) throws SQLException {
@@ -61,6 +41,7 @@ public class                Chunk extends DBObject {
         this._primaryKeyValue = "" + rs.getInt(GlobalChunk.id);
         this.posX = rs.getInt(GlobalChunk.posX);
         this.posZ = rs.getInt(GlobalChunk.posZ);
+        this.name = rs.getString(GlobalChunk.name);
         this.city = Core.getCityHandler().get(rs.getInt(GlobalChunk.cityId));
         this.homeblock = rs.getBoolean(GlobalChunk.homeblock);
         this.outpost = rs.getBoolean(GlobalChunk.outpost);
@@ -71,13 +52,44 @@ public class                Chunk extends DBObject {
         writeLog();
     }
 
+    public      Chunk(DBPlayer player, boolean homeblock, boolean outpost, String name) {
+        super(GlobalChunk.id, GlobalChunk.tableName, _fields);
+        Player  p = player.getUser().getPlayer().get();
+
+        this.posX = p.getLocation().getBlockX() / 16;
+        this.posZ = p.getLocation().getBlockZ() / 16;
+        this.city = player.getCity();
+        this.homeblock = homeblock;
+        this.outpost = outpost;
+        this.name = name;
+        if (homeblock || outpost) {
+            respawnX = p.getLocation().getBlockX();
+            respawnY = p.getLocation().getBlockY();
+            respawnZ = p.getLocation().getBlockZ();
+        }
+        world = p.getWorld();
+        this._primaryKeyValue = this.add("'" + posX + "', '"
+                + posZ + "', "
+                + (name == null ? "NULL" : "'" + name + "'") + ", '"
+                + city.getId() + "',"
+                + (homeblock ? "TRUE" : "FALSE") + ","
+                + (outpost ? "TRUE" : "FALSE") + ","
+                + (homeblock || outpost ? "'" + respawnX + "'" : "NULL") + ","
+                + (homeblock || outpost? "'" + respawnY + "'" : "NULL") + ","
+                + (homeblock || outpost? "'" + respawnZ + "'" : "NULL") + ",'"
+                + world.getUniqueId().toString() + "'");
+    }
+
     protected void      writeLog() {
         String          message = "";
 
-        if (homeblock || outpost)
-            message = " respawn at [" + respawnX + ";" + respawnY + ";" + respawnZ + "]";
-        Core.getLogger().info("[Creating] Chunk at '" + this.posX + ";" + this.posZ + "' for "
-                + this.getCity().getDisplayName() + "[" + (homeblock ? "YES" : "NO") + ";" + (outpost ? "YES" : "NO") + "] in world " + world.getName() + message);
+        if (name != null) {
+            Core.getLogger().info("[Chunk] '{}' created at [{};{}]", name, this.posX, this.posZ);
+        } else {
+            if (homeblock || outpost)
+                message = " respawn at [" + respawnX + ";" + respawnY + ";" + respawnZ + "]";
+            Core.getLogger().info("[Creating] Chunk at '{};{}' for {}[{};[}] in world {}{}", this.posX, this.posZ, this.getCity().getDisplayName(), homeblock ? "YES" : "NO", outpost ? "YES" : "NO", world.getName(), message);
+        }
     }
 
     public int      getId() { return Integer.parseInt(_primaryKeyValue); }
@@ -94,6 +106,13 @@ public class                Chunk extends DBObject {
     public void     setPosZ(int posZ) {
         this.posZ = posZ;
         this.edit(GlobalChunk.posZ, "'" + posZ + "'");
+    }
+
+    public String   getName() { return name; }
+
+    public void     setName(String name) {
+        this.name = name;
+        this.edit(GlobalChunk.name, name != null ? ("'" + name + "'") : "NULL");
     }
 
     public City     getCity() { return city; }

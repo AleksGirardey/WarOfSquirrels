@@ -18,7 +18,7 @@ public abstract class FactionCommand implements CommandExecutor {
     protected abstract CommandResult    ExecCommand(DBPlayer player, CommandContext context);
 
     @Override
-    public CommandResult execute(CommandSource commandSource, CommandContext commandContext) throws CommandException {
+    public CommandResult execute(CommandSource commandSource, CommandContext commandContext) {
         if (commandSource instanceof Player) {
             DBPlayer    player = Core.getPlayerHandler().get((Player) commandSource);
 

@@ -1,17 +1,25 @@
 package fr.craftandconquest.warofsquirrels.objects.utils;
 
 import com.google.common.reflect.TypeToken;
+import fr.craftandconquest.warofsquirrels.objects.Core;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class ConfigLoader {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigLoader.class);
+
+    private ConfigurationLoader<CommentedConfigurationNode>             configManager;
+
     private ConfigurationNode                                           rootNode;
-    private ConfigurationLoader<CommentedConfigurationNode>             manager;
     
     private ConfigurationNode   distanceCities;
     private ConfigurationNode   distanceOutpost;
@@ -22,116 +30,148 @@ public class ConfigLoader {
     private ConfigurationNode   startBalance;
     private ConfigurationNode   preparationPhase;
     private ConfigurationNode   rollbackPhase;
+    private ConfigurationNode   mapSize;
+    private ConfigurationNode   territoriesGenerated;
+    private ConfigurationNode   territorySize;
+    private ConfigurationNode   territoryClaimLimit;
 
-    public ConfigLoader(ConfigurationLoader<CommentedConfigurationNode> configManager) {
+    private static final String DISTANCES = "Distances";
+    private static final String WAR = "War";
+    private static final String JOUEUR = "Joueur";
+    private static final String TERRITORIES = "Territoires";
 
-        manager = configManager;
+    public ConfigLoader(Path path) {
         try {
-            rootNode = manager.load();
+            configManager = HoconConfigurationLoader.builder().setPath(path).build();
+            rootNode = configManager.load();
 
-            if (!rootNode.hasListChildren()) {
+            if (rootNode.hasMapChildren())
+                Core.getLogger().debug("ConfigLoader Map size : " + rootNode.getChildrenMap().size());
+            if (rootNode.hasListChildren())
+                Core.getLogger().debug("ConfigLoader List size : " + rootNode.getChildrenList().size());
+
+            if (!rootNode.hasMapChildren()) {
+                LOGGER.info("ConfigLoader default init");
                 this.setDefaultConfig();
-                rootNode = manager.load();
+                configManager.save(rootNode);
             }
         } catch (IOException | ObjectMappingException e) {
-            e.printStackTrace();
+            LOGGER.warn("ConfigLoader init error : " + e);
         }
 
         /* Distances */
-        distanceCities = rootNode.getNode("Distances", "cities");
-        distanceOutpost = rootNode.getNode("Distances", "outpost");
-        shoutDistance = rootNode.getNode("Distances", "shout");
-        sayDistance = rootNode.getNode("Distances", "say");
+        distanceCities = rootNode.getNode(DISTANCES, "cities");
+        distanceOutpost = rootNode.getNode(DISTANCES, "outpost");
+        shoutDistance = rootNode.getNode(DISTANCES, "shout");
+        sayDistance = rootNode.getNode(DISTANCES, "say");
 
         /* war */
-        peaceTime = rootNode.getNode("war", "peace");
-        preparationPhase = rootNode.getNode("war", "preparationSeconds");
-        rollbackPhase = rootNode.getNode("war", "rollbackSeconds");
+        peaceTime = rootNode.getNode(WAR, "peace");
+        preparationPhase = rootNode.getNode(WAR, "preparationSeconds");
+        rollbackPhase = rootNode.getNode(WAR, "rollbackSeconds");
 
         /* Player */
-        reincarnationTime = rootNode.getNode("Joueur", "reincarnation");
-        startBalance = rootNode.getNode("Joueur", "startBalance");
+        reincarnationTime = rootNode.getNode(JOUEUR, "reincarnation");
+        startBalance = rootNode.getNode(JOUEUR, "startBalance");
+
+        /* Territoires */
+        mapSize = rootNode.getNode(TERRITORIES, "mapSize");
+        territoriesGenerated = rootNode.getNode(TERRITORIES, "generated");
+        territorySize = rootNode.getNode(TERRITORIES, "territorySize");
+        territoryClaimLimit = rootNode.getNode(TERRITORIES, "territoryClaimLimit");
     }
 
-    private void setDefaultConfig() throws ObjectMappingException, IOException {
+    private void setDefaultConfig() throws ObjectMappingException {
         /* Distances */
-        rootNode.getNode("Distances", "cities").setValue(20);
-        rootNode.getNode("Distances", "outpost").setValue(20);
-        rootNode.getNode("Distances", "shout").setValue(50);
-        rootNode.getNode("Distances", "say").setValue(30);
+        rootNode.getNode(DISTANCES, "cities").setValue(20);
+        rootNode.getNode(DISTANCES, "outpost").setValue(10);
+        rootNode.getNode(DISTANCES, "shout").setValue(50);
+        rootNode.getNode(DISTANCES, "say").setValue(30);
 
         /* war */
-        rootNode.getNode("war", "peace").setValue(true);
-        rootNode.getNode("war", "preparationSeconds").setValue(TypeToken.of(Long.class), 120L);
-        rootNode.getNode("war", "rollbackSeconds").setValue(TypeToken.of(Long.class), 60L);
+        rootNode.getNode(WAR, "peace").setValue(true);
+        rootNode.getNode(WAR, "preparationSeconds").setValue(TypeToken.of(Long.class), 120L);
+        rootNode.getNode(WAR, "rollbackSeconds").setValue(TypeToken.of(Long.class), 60L);
 
         /* Player */
-        rootNode.getNode("Joueur", "reincarnation").setValue(30);
-        rootNode.getNode("Joueur", "startBalance").getValue(100);
+        rootNode.getNode(JOUEUR, "reincarnation").setValue(30);
+        rootNode.getNode(JOUEUR, "startBalance").setValue(100);
 
-        manager.save(rootNode);
+        /* Territoires */
+        rootNode.getNode(TERRITORIES, "mapSize").setValue(5120);
+        rootNode.getNode(TERRITORIES, "generated").setValue(false);
+        rootNode.getNode(TERRITORIES, "territorySize").setValue(256);
+        rootNode.getNode(TERRITORIES, "territoryClaimLimit").setValue(1500);
     }
 
     public void      close() {
         try {
-            manager.save(rootNode);
+            configManager.save(rootNode);
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void    set(ConfigurationNode node, Object value) {
-        try {
-            node.setValue(value);
-            manager.save(rootNode);
-        } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("Cannot close the configuration class");
         }
     }
 
     public int getDistanceCities() { return distanceCities.getInt(); }
+    public int getDistanceOutpost() { return distanceOutpost.getInt(); }
+    public int getShoutDistance() { return shoutDistance.getInt(); }
+    public int getSayDistance() { return sayDistance.getInt(); }
+    public boolean isTimeAtPeace() { return peaceTime.getBoolean(); }
+    public int getReincarnationTime() { return reincarnationTime.getInt(); }
+    public int getStartBalance() { return startBalance.getInt(); }
+    public long getPreparationPhase() { return preparationPhase.getLong(); }
+    public long getRollbackPhase() { return rollbackPhase.getLong(); }
+    public int  getMapSize() { return mapSize.getInt(); }
+    public boolean getTerritoriesGenerated() { return territoriesGenerated.getBoolean(); }
+    public int getTerritorySize() { return territorySize.getInt(); }
+    public int getTerritoryClaimLimit() { return territoryClaimLimit.getInt(); }
+
+    private void setNode(ConfigurationNode node, Object value) {
+        node.setValue(value);
+        try {
+            this.configManager.save(rootNode);
+        } catch (IOException e) {
+            LOGGER.warn("Cannot save new value for node : " + node.toString() + " error : " + e);
+        }
+    }
 
     public void setDistanceCities(int distanceCities) {
-        this.set(this.distanceCities, distanceCities);
+        this.setNode(this.distanceCities, distanceCities);
     }
-
-    public int getDistanceOutpost() { return distanceOutpost.getInt(); }
 
     public void setDistanceOutpost(int distanceOutpost) {
-        this.set(this.distanceOutpost, distanceOutpost);
+        this.setNode(this.distanceOutpost, distanceOutpost);
     }
-
-    public int getShoutDistance() { return shoutDistance.getInt(); }
 
     public void setShoutDistance(int shoutDistance) {
-        this.set(this.shoutDistance, shoutDistance);
+        this.setNode(this.shoutDistance, shoutDistance);
     }
-
-    public int getSayDistance() { return sayDistance.getInt(); }
 
     public void setSayDistance(int sayDistance) {
-        this.set(this.sayDistance, sayDistance);
+        this.setNode(this.sayDistance, sayDistance);
     }
-
-    public boolean isPeaceTime() { return peaceTime.getBoolean(); }
 
     public void      setPeaceTime(Boolean peace) {
-        this.set(this.peaceTime, peace);
+        this.setNode(this.peaceTime, peace);
     }
 
-    public int getReincarnationTime() { return reincarnationTime.getInt(); }
+    public void setReincarnationTime(int reincarnationTime) {
+        this.setNode(this.reincarnationTime, reincarnationTime);
+    }
 
-    public void setReincarnationTime(int reincarnationTime) { this.set(this.reincarnationTime, reincarnationTime); }
+    public void setStartBalance(int startBalance) {
+        this.setNode(this.startBalance, startBalance);
+    }
 
-    public int getStartBalance() { return startBalance.getInt(); }
+    public void setPreparationPhase(long preparationPhase) {
+        this.setNode(this.preparationPhase, preparationPhase);
+    }
 
-    public void setStartBalance(int startBalance) { this.set(this.startBalance, startBalance); }
+    public void setRollbackPhase(long rollbackPhase) {
+        this.setNode(this.rollbackPhase, rollbackPhase);
+    }
 
-    public long getPreparationPhase() { return preparationPhase.getLong(); }
-
-    public void setPreparationPhase(long preparationPhase) { this.set(this.preparationPhase, preparationPhase); }
-
-    public long getRollbackPhase() { return rollbackPhase.getLong(); }
-
-    public void setRollbackPhase(long rollbackPhase) { this.set(this.rollbackPhase, rollbackPhase); }
+    public void setTerritoriesGenerated(boolean territoriesGenerated) {
+        this.setNode(this.territoriesGenerated, territoriesGenerated);
+    }
 }

@@ -90,7 +90,6 @@ public class City extends DBObject implements Attackable {
         permFaction = Core.getPermissionHandler().get(rs.getInt(GlobalCity.permFaction));
         balance = rs.getInt(GlobalCity.account);
 
-        //get Players name with this ID;
         this.populate();
         writeLog();
     }

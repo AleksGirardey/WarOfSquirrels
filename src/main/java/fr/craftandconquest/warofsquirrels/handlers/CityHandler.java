@@ -185,4 +185,16 @@ public class CityHandler {
         }
         return cities;
     }
+
+    public City getFromTerritory(Territory territory) {
+        for (City city : cities.values()) {
+            Chunk hb = Core.getChunkHandler().getHomeblock(city);
+            int x = (hb.getPosX() * 16) / Core.getConfig().getTerritorySize();
+            int z = (hb.getPosZ() * 16) / Core.getConfig().getTerritorySize();
+
+            if (x == territory.getPosX() && z == territory.getPosZ())
+                return city;
+        }
+        return null;
+    }
 }
