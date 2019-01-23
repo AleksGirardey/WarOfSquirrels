@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `Permission` (
-  `permission_id` INT AUTO_INCREMENT,
+  `permission_id` INT(11) AUTO_INCREMENT,
   `permission_build` BOOLEAN DEFAULT FALSE,
   `permission_container` BOOLEAN DEFAULT FALSE,
   `permission_switch` BOOLEAN DEFAULT FALSE,
@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `Player` (
   `player_score` INT DEFAULT 0,
   `player_cityId` INT DEFAULT NULL,
   `player_assistant` BOOLEAN DEFAULT FALSE,
+  `player_resident` BOOLEAN DEFAULT FALSE,
   `player_account` INT DEFAULT 0 NOT NULL,
   PRIMARY KEY (`player_uuid`));
 
@@ -23,40 +24,43 @@ CREATE TABLE IF NOT EXISTS `City` (
   `city_rank` INT NOT NULL DEFAULT 0,
   `city_account` INT DEFAULT 0 NOT NULL,
   `city_playerOwner` CHAR(36) NOT NULL,
+  `city_faction` INT,
+  `city_permissionRecruit` INT,
   `city_permissionResident` INT,
   `city_permissionAllies` INT,
   `city_permissionOutside` INT,
+  `city_permissionFaction` INT,
   PRIMARY KEY (`city_id`),
+  FOREIGN KEY (`city_permissionRecruit`) REFERENCES `Permission`(`permission_id`),
   FOREIGN KEY (`city_permissionResident`) REFERENCES `Permission`(`permission_id`),
   FOREIGN KEY (`city_permissionAllies`) REFERENCES `Permission`(`permission_id`),
-  FOREIGN KEY (`city_permissionOutside`) REFERENCES `Permission`(`permission_id`));
+  FOREIGN KEY (`city_permissionOutside`) REFERENCES `Permission`(`permission_id`),
+  FOREIGN KEY (`city_permissionFaction`) REFERENCES `Permission`(`permission_id`));
 
 CREATE TABLE IF NOT EXISTS `Chunk` (
   `chunk_id` INT AUTO_INCREMENT,
   `chunk_posX` INT NOT NULL,
   `chunk_posZ` INT NOT NULL,
+  `chunk_name` CHAR(36),
   `chunk_cityId` INT,
   `chunk_homeblock` BOOLEAN DEFAULT FALSE,
   `chunk_outpost` BOOLEAN DEFAULT FALSE,
   `chunk_respawnX` INT,
   `chunk_respawnY` INT,
   `chunk_respawnZ` INT,
+  `chunk_world` CHAR(36) NOT NULL,
   PRIMARY KEY (`chunk_id`),
   FOREIGN KEY (`chunk_cityId`) REFERENCES `City`(`city_id`));
 
 CREATE TABLE IF NOT EXISTS `Diplomacy` (
   `diplomacy_id` INT AUTO_INCREMENT,
-  `diplomacy_mainCityId` INT,
-  `diplomacy_subCityId` INT,
+  `diplomacy_faction` INT,
+  `diplomacy_target` INT,
   `diplomacy_relation` BOOLEAN,
-  `diplomacy_permissionMain` INT,
-  `diplomacy_permissionSub` INT,
+  `diplomacy_permission` INT,
   PRIMARY KEY (`diplomacy_id`),
-  FOREIGN KEY (`diplomacy_mainCityId`) REFERENCES `City`(`city_id`),
-  FOREIGN KEY (`diplomacy_subCityId`) REFERENCES `City`(`city_id`),
-  FOREIGN KEY (`diplomacy_permissionMain`) REFERENCES `Permission` (`permission_id`),
-  FOREIGN KEY (`diplomacy_permissionSub`) REFERENCES `Permission` (`permission_id`),
-  UNIQUE KEY (`diplomacy_mainCityId`, `diplomacy_subCityId`));
+  FOREIGN KEY (`diplomacy_permission`) REFERENCES `Permission` (`permission_id`),
+  UNIQUE KEY (`diplomacy_faction`, `diplomacy_target`));
 
 CREATE TABLE IF NOT EXISTS `Cubo` (
     `cubo_id` INT AUTO_INCREMENT,
@@ -64,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `Cubo` (
     `cubo_nom` CHAR(36) NOT NULL,
     `cubo_parent` INT,
     `cubo_owner` CHAR(36) NOT NULL,
+    `cubo_tenant` CHAR(36),
     `cubo_permissionInlist` INT,
     `cubo_permissionOutside` INT,
     `cubo_priority` INT NOT NULL,
@@ -76,6 +81,7 @@ CREATE TABLE IF NOT EXISTS `Cubo` (
     PRIMARY KEY (`cubo_id`),
     FOREIGN KEY (`cubo_cityId`) REFERENCES `City` (`city_id`),
     FOREIGN KEY (`cubo_owner`) REFERENCES `Player` (`player_uuid`),
+    FOREIGN KEY (`cubo_tenant`) REFERENCES `Player` (`player_uuid`),
     FOREIGN KEY (`cubo_parent`) REFERENCES `Cubo` (`cubo_id`),
     FOREIGN KEY (`cubo_permissionInlist`) REFERENCES `Permission` (`permission_id`),
     FOREIGN KEY (`cubo_permissionOutside`) REFERENCES `Permission` (`permission_id`));
@@ -107,12 +113,66 @@ CREATE TABLE IF NOT EXISTS `Shop` (
   PRIMARY KEY (`shop_id`),
   FOREIGN KEY (`shop_player`) REFERENCES `Player`(`player_uuid`));
 
+CREATE TABLE IF NOT EXISTS `Loan` (
+  `loan_id` INT AUTO_INCREMENT,
+  `loan_player` CHAR(36),
+  `loan_city` INT,
+  `loan_loaner` CHAR(36),
+  `loan_signX` INT NOT NULL,
+  `loan_signY` INT NOT NULL,
+  `loan_signZ` INT NOT NULL,
+  `loan_cubo` INT NOT NULL,
+  `loan_buyPrice` INT NOT NULL,
+  `loan_rentPrice` INT NOT NULL,
+  `loan_world` CHAR(36) NOT NULL,
+  PRIMARY KEY (`loan_id`),
+  FOREIGN KEY (`loan_player`) REFERENCES `Player`(`player_uuid`),
+  FOREIGN KEY (`loan_loaner`) REFERENCES `Player`(`player_uuid`),
+  FOREIGN KEY (`loan_city`) REFERENCES `City`(`city_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `Faction` (
+  `faction_id` INT AUTO_INCREMENT,
+  `faction_displayName` CHAR(36) NOT NULL,
+  `faction_capital` INT,
+  PRIMARY KEY (`faction_id`),
+  FOREIGN KEY (`faction_capital`) REFERENCES `City`(`city_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `Territory`(
+  `territory_id` INT AUTO_INCREMENT,
+  `territory_name` CHAR(36),
+  `territory_posX` INT NOT NULL,
+  `territory_posZ` INT NOT NULL,
+  `territory_factionId` INT,
+  `territory_bastionId` INT,
+  `territory_world` CHAR(36) NOT NULL,
+  PRIMARY KEY (`territory_id`),
+  FOREIGN KEY (`territory_factionId`) REFERENCES `Faction`(`faction_id`));
+
+CREATE TABLE IF NOT EXISTS `Influence` (
+  `influence_id` INT AUTO_INCREMENT,
+  `influence_faction` INT NOT NULL,
+  `influence_territory` INT NOT NULL,
+  `influence_influence` INT NOT NULL,
+  PRIMARY KEY (`influence_id`),
+  FOREIGN KEY (`influence_faction`) REFERENCES `Faction`(`faction_id`),
+  FOREIGN KEY (`influence_territory`) REFERENCES `Territory`(`territory_id`),
+  UNIQUE KEY (`influence_faction`, `influence_territory`));
+
 ALTER TABLE `Player`
 ADD FOREIGN KEY (`player_cityId`)
 REFERENCES `City`(`city_id`)
   ON DELETE SET NULL;
 
-ALTER TABLE `City`
-ADD #CONSTRAINT `fk_playerOwner`
-FOREIGN KEY (`city_playerOwner`)
-REFERENCES `Player`(`player_uuid`);
+ALTER TABLE `City` ADD
+  FOREIGN KEY (`city_playerOwner`) REFERENCES `Player`(`player_uuid`);
+
+ALTER TABLE `City` ADD
+  FOREIGN KEY (`city_faction`) REFERENCES `Faction`(`faction_id`);
+
+ALTER TABLE `Diplomacy` ADD
+  FOREIGN KEY (`diplomacy_faction`) REFERENCES `Faction`(`faction_id`);
+
+ALTER TABLE `Diplomacy` ADD
+  FOREIGN KEY (`diplomacy_target`) REFERENCES `Faction`(`faction_id`);

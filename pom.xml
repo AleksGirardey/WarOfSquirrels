@@ -7,17 +7,56 @@
     <groupId>Squiq</groupId>
     <artifactId>WarOfSquirrels</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>spongeapi</artifactId>
+            <version>7.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>spongeforge</artifactId>
+            <version>1.12.2-2555-7.1.0-BETA-2819</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.spongepowered</groupId>
+                    <artifactId>testplugins</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>us.dynmap</groupId>
+            <artifactId>DynmapCoreAPI</artifactId>
+            <version>2.6-SNAPSHOT</version>
+            <systemPath>${project.basedir}/libs/DynmapCoreAPI-2.6-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <!--        <dependency>
+                    <groupId>net.minecraftforge.gradle</groupId>
+                    <artifactId>ForgeGradle</artifactId>
+                    <version>2.1-20160116.192356-17</version>
+                </dependency>-->
+        <!--Local-->
+        <!--        <dependency>
+                    <groupId>net.theviolentsquirrels</groupId>
+                    <artifactId>craftandconquer</artifactId>
+                </dependency>-->
+        <!--Mysql Jdbc -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.6</version>
+        </dependency>
+        <!-- HikariCP -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>2.4.5</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -45,47 +84,22 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>theMainClass</mainClass>
+                            <mainClass>fr.craftandconquest.warofsquirrels.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
-            <!--            <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-dependency-plugin</artifactId>
-                            <version>2.10</version>
-                            <executions>
-                                <execution>
-                                    <id>unpack-dependencies</id>
-                                    <phase>package</phase>
-                                    <goals>
-                                        <goal>unpack-dependencies</goal>
-                                    </goals>
-                                    <configuration>
-                                        <includes>**/*.class</includes>
-                                        <excludes>**/*.properties</excludes>
-                                        <overWriteReleases>false</overWriteReleases>
-                                        <overWriteSnapshots>true</overWriteSnapshots>
-                                        <outirectory>${project.build.directory}/sources</outputDirectory>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-shade-plugin</artifactId>
-                            <version>2.4.3</version>
-                            <executions>
-                                <execution>
-                                    <phase>
-                                        package
-                                    </phase>
-
-                                </execution>
-                            </executions>
-                        </plugin> -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
     <repositories>
         <repository>
             <id>sponge-maven-repo</id>
@@ -107,39 +121,5 @@
             <url>http://pex-repo.aoeu.xyz</url>
         </repository>-->
     </repositories>
-    <dependencies>
-        <dependency>
-            <groupId>org.spongepowered</groupId>
-            <artifactId>spongeapi</artifactId>
-            <version>5.1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.spongepowered</groupId>
-            <artifactId>spongeforge</artifactId>
-            <version>1.10.2-2171-5.1.0-BETA-1971</version>
-        </dependency>
-        <dependency>
-            <groupId>net.minecraftforge.gradle</groupId>
-            <artifactId>ForgeGradle</artifactId>
-            <version>2.1-20160116.192356-17</version>
-        </dependency>
-        <!--Local-->
-        <dependency>
-            <groupId>net.theviolentsquirrels</groupId>
-            <artifactId>craftandconquer</artifactId>
-        </dependency>
-        <!--Mysql Jdbc -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.6</version>
-        </dependency>
-        <!-- HikariCP -->
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>2.4.5</version>
-        </dependency>
-    </dependencies>
 
 </project>
