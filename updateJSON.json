@@ -1,0 +1,10 @@
+{
+  "homepage": "https://github.com/AleksGirardey/WarOfSquirrels",
+  "1.15.2": {
+    "1.0.0": "Alpha", 
+  },
+  "promos": {
+    "1.15-latest": "1.0.0",
+    "1.15-recommended": "1.0.0",
+  }
+}
