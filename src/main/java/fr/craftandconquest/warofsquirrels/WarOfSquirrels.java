@@ -1,6 +1,9 @@
 package fr.craftandconquest.warofsquirrels;
 
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
+import fr.craftandconquest.warofsquirrels.object.world.Chunk;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -15,8 +18,10 @@ import java.io.File;
 @Mod(WarOfSquirrels.warOfSquirrelsModId)
 public class WarOfSquirrels {
     public static WarOfSquirrels instance;
+
     public static final String warOfSquirrelsModId = "wos";
     public static final String warOfSquirrelsConfigDir = "./WarOfSquirrels";
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ChunkHandler chunkHandler;
@@ -40,6 +45,8 @@ public class WarOfSquirrels {
         LOGGER.info("[WoS] Server Starting . . .");
 
         chunkHandler = new ChunkHandler(LOGGER);
+
+        chunkHandler.CreateChunk(new Chunk(0, 0, "Avendrah", 10));
 
         LOGGER.info("[WoS] Server Started !");
     }

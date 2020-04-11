@@ -6,18 +6,19 @@ public class Chunk {
     public int         posX;
     public int         posZ;
     private String      name;
-    private Boolean     homeblock;
-    private Boolean     outpost;
+    private Boolean     homeBlock = false;
+    private Boolean     outpost = false;
     private int         respawnX;
     private int         respawnY;
     private int         respawnZ;
     private String      cityName;
-    private String      worldName;
+    private int         dimensionId;
 
-    public Chunk(double x, double z, String city, String world) {
+    public Chunk(double x, double z, String city, int dimensionId) {
         this(x, z);
         cityName = city;
-        worldName = world;
+        this.dimensionId = dimensionId;
+        name = String.format("%s%d%d", cityName, posX, posZ);
     }
 
     public Chunk(double x, double z) {
@@ -27,55 +28,32 @@ public class Chunk {
 
     public Chunk() {}
 
-    //private City        city;
-    //private World       world;
+    @JsonProperty("city") public String         getCityName() { return cityName; }
+    @JsonProperty("city") public void           setCityName(String name) { cityName = name; }
 
-    @JsonProperty("city") public String   GetCityName() { return cityName; }
-    @JsonProperty("city") public void     SetCityName(String name) { cityName = name; }
+    @JsonProperty("dimension") public int       getDimensionId() { return dimensionId; }
+    @JsonProperty("dimension") public void      setDimensionId(int id) { dimensionId = id; }
 
-    @JsonProperty("world") public String   GetWorldName() { return worldName; }
-    @JsonProperty("world") public void     SetWorldName(String name) { worldName = name; }
+    @JsonProperty("name") public String         getName() { return name; }
+    @JsonProperty("name") public void           setName(String name) { this.name = name; }
 
-    public String   getName() { return name; }
-    public void     setName(String name) { this.name = name; }
+    @JsonProperty("homeBlock") public Boolean   getHomeBlock() { return homeBlock; }
+    @JsonProperty("homeBlock") public void      setHomeBlock(Boolean homeBlock) { this.homeBlock = homeBlock; }
 
-    public Boolean  getHomeblock() { return homeblock; }
-    public void     setHomeblock(Boolean homeblock) { this.homeblock = homeblock; }
+    @JsonProperty("outpost") public Boolean     getOutpost() { return outpost; }
+    @JsonProperty("outpost") public void        setOutpost(Boolean outpost) { this.outpost = outpost; }
 
-    public Boolean getOutpost() {
-        return outpost;
-    }
+    @JsonProperty("respawnPosX") public int     getRespawnX() { return respawnX; }
+    @JsonProperty("respawnPosX") public void    setRespawnX(int respawnX) { this.respawnX = respawnX; }
 
-    public void setOutpost(Boolean outpost) {
-        this.outpost = outpost;
-    }
+    @JsonProperty("respawnPosY") public int     getRespawnY() { return respawnY; }
+    @JsonProperty("respawnPosY") public void    setRespawnY(int respawnY) { this.respawnY = respawnY; }
 
-    public int getRespawnX() {
-        return respawnX;
-    }
-
-    public void setRespawnX(int respawnX) {
-        this.respawnX = respawnX;
-    }
-
-    public int getRespawnY() {
-        return respawnY;
-    }
-
-    public void setRespawnY(int respawnY) {
-        this.respawnY = respawnY;
-    }
-
-    public int getRespawnZ() {
-        return respawnZ;
-    }
-
-    public void setRespawnZ(int respawnZ) {
-        this.respawnZ = respawnZ;
-    }
+    @JsonProperty("respawnPosZ") public int     getRespawnZ() { return respawnZ; }
+    @JsonProperty("respawnPosZ") public void    setRespawnZ(int respawnZ) { this.respawnZ = respawnZ; }
 
     @Override
     public String toString() {
-        return ("[" + posX + ";" + posZ + "] owned by " + cityName + " in world " + worldName);
+        return ("[" + posX + ";" + posZ + "] owned by " + cityName + " in dimension " + dimensionId);
     }
 }

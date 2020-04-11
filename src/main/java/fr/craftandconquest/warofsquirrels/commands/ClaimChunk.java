@@ -31,7 +31,7 @@ public class ClaimChunk implements Command<CommandSource> {
                 context.getSource().getPos().x,
                 context.getSource().getPos().z,
                 context.getArgument("cityName", String.class),
-                context.getSource().getWorld().getWorldInfo().getWorldName());
+                context.getSource().getWorld().getDimension().getType().getId());
 
         if (WarOfSquirrels.instance.chunkHandler.CreateChunk(chunk))
             return 1;

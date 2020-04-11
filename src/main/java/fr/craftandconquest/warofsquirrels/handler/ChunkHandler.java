@@ -2,7 +2,8 @@ package fr.craftandconquest.warofsquirrels.handler;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
-import javafx.util.Pair;
+import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
+import net.minecraft.world.dimension.DimensionType;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 public class ChunkHandler extends Handler<Chunk> {
 
-    private final Map<Pair<Integer, Integer>, Chunk> chunksMap;
+    private final Map<ChunkLocation, Chunk> chunksMap;
 
     public ChunkHandler(Logger logger) {
         super("[WoS][ChunkHandler]", logger);
@@ -27,7 +28,7 @@ public class ChunkHandler extends Handler<Chunk> {
     @Override
     protected boolean Populate() {
         dataArray.iterator().forEachRemaining(chunk -> chunksMap.put(
-                new Pair<>(chunk.posX, chunk.posZ),
+                new ChunkLocation(chunk.posX, chunk.posZ, chunk.getDimensionId()),
                 chunk));
         return true;
     }
@@ -37,8 +38,10 @@ public class ChunkHandler extends Handler<Chunk> {
     }
 
     public boolean CreateChunk(Chunk chunk) {
-        Pair<Integer, Integer> position = new Pair<>(chunk.posX, chunk.posZ);
-        if (chunksMap.containsKey(position)) return false;
+        if (chunksMap.containsKey(chunk)) return false;
+
+        ChunkLocation position = new ChunkLocation(chunk.posX, chunk.posZ, chunk.getDimensionId());
+
         chunksMap.put(position, chunk);
         Save(chunksMap.values());
         LogChunkCreation(chunk);
@@ -51,7 +54,9 @@ public class ChunkHandler extends Handler<Chunk> {
                 PrefixLogger, dataArray.size()));
     }
 
-    public Chunk get()
+    public Chunk getChunk(int posX, int posZ, DimensionType dimensionType) {
+        return chunksMap.getOrDefault(new ChunkLocation(posX, posZ, dimensionType.getId()), null);
+    }
 
     public String getListAsString() {
         StringBuilder asString = new StringBuilder();
