@@ -1,9 +1,8 @@
 package fr.craftandconquest.warofsquirrels;
 
+import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
-import fr.craftandconquest.warofsquirrels.object.world.Chunk;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.common.DimensionManager;
+import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,6 +24,8 @@ public class WarOfSquirrels {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ChunkHandler chunkHandler;
+    public PermissionHandler permissionHandler;
+    public BroadCastHandler broadCastHandler;
 
     public WarOfSquirrels() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -45,8 +46,7 @@ public class WarOfSquirrels {
         LOGGER.info("[WoS] Server Starting . . .");
 
         chunkHandler = new ChunkHandler(LOGGER);
-
-        chunkHandler.CreateChunk(new Chunk(0, 0, "Avendrah", 10));
+        permissionHandler = new PermissionHandler();
 
         LOGGER.info("[WoS] Server Started !");
     }

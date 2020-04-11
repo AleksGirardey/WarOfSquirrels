@@ -1,6 +1,10 @@
 package fr.craftandconquest.warofsquirrels.object.world;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.craftandconquest.warofsquirrels.object.faction.City;
+
+import java.text.MessageFormat;
 
 public class Chunk {
     public int         posX;
@@ -14,11 +18,14 @@ public class Chunk {
     private String      cityName;
     private int         dimensionId;
 
+    private City city;
+
     public Chunk(double x, double z, String city, int dimensionId) {
         this(x, z);
         cityName = city;
         this.dimensionId = dimensionId;
         name = String.format("%s%d%d", cityName, posX, posZ);
+        //ToDo: Add city link
     }
 
     public Chunk(double x, double z) {
@@ -28,8 +35,8 @@ public class Chunk {
 
     public Chunk() {}
 
-    @JsonProperty("city") public String         getCityName() { return cityName; }
-    @JsonProperty("city") public void           setCityName(String name) { cityName = name; }
+    @JsonProperty("cityName") public String         getCityName() { return cityName; }
+    @JsonProperty("cityName") public void           setCityName(String name) { cityName = name; }
 
     @JsonProperty("dimension") public int       getDimensionId() { return dimensionId; }
     @JsonProperty("dimension") public void      setDimensionId(int id) { dimensionId = id; }
@@ -51,6 +58,35 @@ public class Chunk {
 
     @JsonProperty("respawnPosZ") public int     getRespawnZ() { return respawnZ; }
     @JsonProperty("respawnPosZ") public void    setRespawnZ(int respawnZ) { this.respawnZ = respawnZ; }
+
+    @JsonIgnore public City getCity() { return city; }
+    @JsonIgnore public void setCity(City city) { this.city = city; }
+
+    private String creationLogText() {
+        StringBuilder message = new StringBuilder();
+
+        message.append("[Chunk] The city ")
+                .append(String.format("'%s'", cityName))
+                .append(String.format(" has claim a new %s ", homeBlock ?
+                        "HomeBlock" : (outpost ?
+                        "Outpost" : "Chunk")))
+                .append(name != null ? "'"+ name + "' " : "")
+                .append(String.format("at [%d;%d]", posX, posZ));
+
+        if (homeBlock || outpost)
+            message.append(String.format(" with respawn point at [%d;%d;%d]", respawnX, respawnY, respawnZ));
+
+        return message.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Chunk) {
+            Chunk chunk = (Chunk) obj;
+            return chunk.posX == posX && chunk.posZ == posZ && chunk.getDimensionId() == dimensionId;
+        }
+        return super.equals(obj);
+    }
 
     @Override
     public String toString() {
