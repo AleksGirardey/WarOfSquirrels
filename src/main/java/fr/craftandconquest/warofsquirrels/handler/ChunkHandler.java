@@ -41,6 +41,14 @@ public class ChunkHandler extends Handler<Chunk> {
         return true;
     }
 
+    @Override
+    public boolean Delete(Chunk chunk) {
+        dataArray.remove(chunk);
+        chunksMap.remove(chunk);
+        cityMap.get(chunk.getCity()).remove(chunk);
+        return true;
+    }
+
     private void LogChunkCreation(Chunk chunk) {
         Logger.info(PrefixLogger + " Chunk created at " + chunk);
     }
@@ -50,20 +58,14 @@ public class ChunkHandler extends Handler<Chunk> {
 
         ChunkLocation position = new ChunkLocation(chunk.posX, chunk.posZ, chunk.getDimensionId());
 
-        dataArray.add(chunk);
+        if (!dataArray.contains(chunk))
+            dataArray.add(chunk);
         chunksMap.put(position, chunk);
         if (!cityMap.containsKey(chunk.getCity()))
             cityMap.put(chunk.getCity(), new ArrayList<>());
         cityMap.get(chunk.getCity()).add(chunk);
         Save(chunksMap.values());
         LogChunkCreation(chunk);
-        return true;
-    }
-
-    public boolean delete(Chunk chunk) {
-        dataArray.remove(chunk);
-        chunksMap.remove(chunk);
-        cityMap.get(chunk.getCity()).remove(chunk);
         return true;
     }
 
@@ -77,7 +79,7 @@ public class ChunkHandler extends Handler<Chunk> {
     }
 
     public boolean canBePlaced(City city, boolean outpost, ChunkLocation location) {
-        if (outpost) Utils.canPlaceOutpost(location.PosX, location.PosZ);
+        if (outpost) return Utils.CanPlaceOutpost(location.PosX, location.PosZ);
 
         Chunk bot = getChunk(location.PosX, location.PosZ - 1, location.DimensionId);
         Chunk top = getChunk(location.PosX, location.PosZ + 1, location.DimensionId);
@@ -125,7 +127,7 @@ public class ChunkHandler extends Handler<Chunk> {
         newHB.setRespawnY((int) position.y);
         newHB.setRespawnZ((int) position.z);
 
-        WarOfSquirrels.instance.broadCastHandler.BroadCastMessage(BroadCastTarget.CITY, newHB.getCity(),
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(BroadCastTarget.CITY, newHB.getCity(),
                 String.format("Le HomeBlock de la ville est désormais en [%d;%d;%d]",
                         (int) position.x,
                         (int) position.y,

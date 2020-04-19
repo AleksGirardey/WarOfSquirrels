@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.object.faction.City;
 
-import java.text.MessageFormat;
-
 public class Chunk {
     public int         posX;
     public int         posZ;

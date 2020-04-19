@@ -81,6 +81,8 @@ public abstract class Handler<T> {
         return true;
     }
 
+    public abstract boolean Delete(T value);
+
     public abstract void Log();
 
     public static String getConfigDir() {

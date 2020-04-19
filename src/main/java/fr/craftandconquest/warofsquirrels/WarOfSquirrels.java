@@ -3,6 +3,9 @@ package fr.craftandconquest.warofsquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
+import fr.craftandconquest.warofsquirrels.object.ConfigData;
+import fr.craftandconquest.warofsquirrels.utils.Config;
+import lombok.Getter;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,9 +26,11 @@ public class WarOfSquirrels {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChunkHandler chunkHandler;
-    public PermissionHandler permissionHandler;
-    public BroadCastHandler broadCastHandler;
+    @Getter private ChunkHandler chunkHandler;
+    @Getter private PermissionHandler permissionHandler;
+    @Getter private BroadCastHandler broadCastHandler;
+
+    public Config config;
 
     public WarOfSquirrels() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -49,5 +54,9 @@ public class WarOfSquirrels {
         permissionHandler = new PermissionHandler();
 
         LOGGER.info("[WoS] Server Started !");
+    }
+
+    public ConfigData getConfig() {
+        return config.getConfiguration();
     }
 }
