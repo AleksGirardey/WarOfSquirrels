@@ -1,9 +1,13 @@
 package fr.craftandconquest.warofsquirrels.object;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.craftandconquest.warofsquirrels.object.city.CityRank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,4 +25,5 @@ public class ConfigData {
     @Getter @Setter private int   territoriesGenerated;
     @Getter @Setter private int   territorySize;
     @Getter @Setter private int   territoryClaimLimit;
+    @JsonProperty("CityRanks") @Getter @Setter private Map<Integer, CityRank> cityRankMap;
 }

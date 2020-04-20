@@ -12,7 +12,7 @@ import java.util.*;
 public class CityHandler extends Handler<City> {
     private final Map<Integer, City> cityMap;
 
-    protected CityHandler(Logger logger) {
+    public CityHandler(Logger logger) {
         super("[WoS][CityHandler]", logger);
         cityMap = new HashMap<>();
 

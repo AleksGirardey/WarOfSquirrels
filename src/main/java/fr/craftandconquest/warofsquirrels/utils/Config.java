@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;
+import fr.craftandconquest.warofsquirrels.object.city.CityRank;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +15,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Config {
 
@@ -81,6 +84,15 @@ public class Config {
     }
 
     private ConfigData defaultConfiguration() {
-        return new ConfigData(20, 20, 15, 10, 3, 10, 1500, 120, 120, 5120, 400, 256, 400);
+        Map<Integer, CityRank> initRanks = new HashMap<>();
+        initRanks.put(0, new CityRank("Colonie", "Chef", "Assistant", 4, 2));
+        initRanks.put(1, new CityRank("Village", "Maire", "Assistant", 9, 4));
+        initRanks.put(2, new CityRank("Ville", "Bourgmestre", "Assistant", 15, 8));
+        initRanks.put(3, new CityRank("Comté", "Comte", "Assistant", 22, 11));
+        initRanks.put(4, new CityRank("Duché", "Duc", "Assistant", 30, 15));
+        initRanks.put(5, new CityRank("Royaume", "Roi", "Assistant", 40, 20));
+        initRanks.put(6, new CityRank("Empire", "Empereur", "Assistant", 50, 25));
+
+        return new ConfigData(20, 20, 15, 10, 3, 10, 1500, 120, 120, 5120, 400, 256, 400, initRanks);
     }
 }

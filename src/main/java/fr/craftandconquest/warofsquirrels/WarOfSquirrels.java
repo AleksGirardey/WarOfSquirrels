@@ -1,5 +1,6 @@
 package fr.craftandconquest.warofsquirrels;
 
+import fr.craftandconquest.warofsquirrels.handler.CityHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
@@ -29,6 +30,7 @@ public class WarOfSquirrels {
     @Getter private ChunkHandler chunkHandler;
     @Getter private PermissionHandler permissionHandler;
     @Getter private BroadCastHandler broadCastHandler;
+    @Getter private CityHandler cityHandler;
 
     public Config config;
 
@@ -51,6 +53,7 @@ public class WarOfSquirrels {
         LOGGER.info("[WoS] Server Starting . . .");
 
         chunkHandler = new ChunkHandler(LOGGER);
+        cityHandler = new CityHandler(LOGGER);
         permissionHandler = new PermissionHandler();
 
         LOGGER.info("[WoS] Server Started !");

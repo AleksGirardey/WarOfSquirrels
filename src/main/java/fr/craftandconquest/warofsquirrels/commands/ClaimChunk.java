@@ -20,7 +20,7 @@ public class ClaimChunk implements Command<CommandSource> {
 
         dispatcher.register(Commands.literal("ChunkList")
                 .executes(context -> {
-                    context.getSource().sendFeedback(new StringTextComponent(WarOfSquirrels.instance.chunkHandler.getListAsString()), true);
+                    context.getSource().sendFeedback(new StringTextComponent(WarOfSquirrels.instance.getChunkHandler().getListAsString()), true);
                     return 1;
                 }));
     }
@@ -33,7 +33,7 @@ public class ClaimChunk implements Command<CommandSource> {
                 context.getArgument("cityName", String.class),
                 context.getSource().getWorld().getDimension().getType().getId());
 
-        if (WarOfSquirrels.instance.chunkHandler.CreateChunk(chunk))
+        if (WarOfSquirrels.instance.getChunkHandler().add(chunk))
             return 1;
         context.getSource().sendFeedback(new StringTextComponent("Couldn't claim this chunk"), true);
         return 0;
