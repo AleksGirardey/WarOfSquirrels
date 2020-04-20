@@ -3,7 +3,7 @@ package fr.craftandconquest.warofsquirrels.handler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
-import fr.craftandconquest.warofsquirrels.object.faction.City;
+import fr.craftandconquest.warofsquirrels.object.city.City;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;

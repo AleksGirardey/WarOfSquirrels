@@ -1,6 +1,6 @@
 package fr.craftandconquest.warofsquirrels.handler.broadcast;
 
-import fr.craftandconquest.warofsquirrels.object.faction.City;
+import fr.craftandconquest.warofsquirrels.object.city.City;
 
 public class BroadCastHandler {
 

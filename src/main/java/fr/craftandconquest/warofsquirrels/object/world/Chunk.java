@@ -2,7 +2,7 @@ package fr.craftandconquest.warofsquirrels.object.world;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.craftandconquest.warofsquirrels.object.faction.City;
+import fr.craftandconquest.warofsquirrels.object.city.City;
 
 public class Chunk {
     public int         posX;

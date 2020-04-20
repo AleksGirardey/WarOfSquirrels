@@ -1,4 +1,4 @@
-package fr.craftandconquest.warofsquirrels.object.faction;
+package fr.craftandconquest.warofsquirrels.object.city;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.craftandconquest.warofsquirrels.object.Player;

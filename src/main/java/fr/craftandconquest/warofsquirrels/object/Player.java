@@ -2,7 +2,7 @@ package fr.craftandconquest.warofsquirrels.object;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.craftandconquest.warofsquirrels.object.faction.City;
+import fr.craftandconquest.warofsquirrels.object.city.City;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
