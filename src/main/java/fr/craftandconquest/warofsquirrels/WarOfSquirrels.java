@@ -5,6 +5,7 @@ import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;
+import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.utils.Config;
 import lombok.Getter;
 import net.minecraftforge.common.MinecraftForge;
@@ -17,6 +18,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 @Mod(WarOfSquirrels.warOfSquirrelsModId)
 public class WarOfSquirrels {
@@ -34,6 +37,8 @@ public class WarOfSquirrels {
 
     public Config config;
 
+    private static final List<String> configDirs;
+
     public WarOfSquirrels() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 
@@ -41,11 +46,22 @@ public class WarOfSquirrels {
         instance = this;
     }
 
-    private void setup(final FMLCommonSetupEvent event)
-    {
-        File file = new File(ChunkHandler.getConfigDir());
+    static {
+        configDirs = new ArrayList<>();
 
-        if (!file.exists() && !file.mkdirs()) LOGGER.error("[WoS][Main] Couldn't create mod directory");
+        configDirs.add(ChunkHandler.getConfigDir());
+        configDirs.add(CityHandler.getConfigDir());
+    }
+
+    private void setup(final FMLCommonSetupEvent event) {
+        File file;
+
+        for (String dir : configDirs) {
+            file = new File(dir);
+            if (!file.exists() && !file.mkdirs())
+                LOGGER.error("[WoS][Main] Couldn't create mod directory '" + dir + "'");
+
+        }
     }
 
     @SubscribeEvent

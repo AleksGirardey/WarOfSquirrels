@@ -20,9 +20,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ChunkHandler extends Handler<Chunk> {
-
     private final Map<ChunkLocation, Chunk> chunksMap;
     private final Map<City, List<Chunk>> cityMap;
+
+    protected static String DirName = "/WorldData";
+    protected static String JsonName = "/ChunkHandler.json";
 
     public ChunkHandler(Logger logger) {
         super("[WoS][ChunkHandler]", logger);

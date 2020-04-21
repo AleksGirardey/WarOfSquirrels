@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Implementation-Title: WarOfSquirrels
-Implementation-Version: 1.0
-Specification-Vendor: examplemodsareus
-Specification-Title: examplemod
-Implementation-Timestamp: 2020-04-08T22:02:58+0200
-Specification-Version: 1
-Implementation-Vendor: examplemodsareus
-

@@ -12,6 +12,9 @@ import java.util.*;
 public class CityHandler extends Handler<City> {
     private final Map<Integer, City> cityMap;
 
+    protected static String DirName = "/WorldData";
+    protected static String JsonName = "/CityHandler.json";
+
     public CityHandler(Logger logger) {
         super("[WoS][CityHandler]", logger);
         cityMap = new HashMap<>();
