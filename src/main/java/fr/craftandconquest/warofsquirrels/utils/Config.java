@@ -1,7 +1,5 @@
 package fr.craftandconquest.warofsquirrels.utils;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;
@@ -15,10 +13,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Config {
+    public final static List<String> configDirs;
+
+    static {
+        configDirs = new ArrayList<>();
+
+        configDirs.add(WarOfSquirrels.warOfSquirrelsConfigDir);
+        configDirs.add(WarOfSquirrels.warOfSquirrelsConfigDir + "/");
+    }
 
     private final String PrefixLogger;
 
@@ -31,8 +36,18 @@ public class Config {
     public  Config(String prefix, Logger logger) {
         PrefixLogger = prefix;
         Logger = logger;
+        Setup();
         if (!Init()) System.exit(-1);
         if (!Load()) System.exit(-1);
+    }
+
+    private void Setup() {
+        String errorMessage = MessageFormat.format("{0} Couldn't create Json dirs at '{1}'",
+                PrefixLogger, getConfigDir());
+        File file = new File(getConfigDir());
+        if (!file.exists() && !file.mkdirs()) {
+            Logger.error(errorMessage);
+        }
     }
 
     private boolean Init()  {
@@ -42,15 +57,15 @@ public class Config {
 
         try {
             if (!configFile.exists() && !configFile.createNewFile()) {
-                configuration = defaultConfiguration();
                 Logger.error(errorMessage);
                 return false;
             }
+            configuration = defaultConfiguration();
+            return Save();
         } catch (IOException e) {
             Logger.error(errorMessage);
             return false;
         }
-        return true;
     }
 
     public boolean Save() {
@@ -58,7 +73,10 @@ public class Config {
         try {
             mapper.writeValue(configFile, configuration);
         } catch (IOException e) {
-            Logger.error(MessageFormat.format("{0} Couldn't save data to Json", PrefixLogger));
+            Logger.error(MessageFormat.format(
+                    "{0} Couldn't save data to Json : ",
+                    PrefixLogger) +
+                    Arrays.toString(e.getStackTrace()));
             return false;
         }
         return true;
@@ -79,8 +97,12 @@ public class Config {
         return true;
     }
 
+    protected String getConfigDir() {
+        return WarOfSquirrels.warOfSquirrelsConfigDir;
+    }
+
     protected static String getConfigPath() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + "WoS.properties";
+        return WarOfSquirrels.warOfSquirrelsConfigDir + "/wos.config";
     }
 
     private ConfigData defaultConfiguration() {

@@ -1,6 +1,7 @@
 package fr.craftandconquest.warofsquirrels.object.city;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,11 +15,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class City {
-    public int cityId;
+    @Getter @Setter
+    private int cityId;
     public String displayName;
     public String tag;
     public UUID ownerUUID;
-    private CityRank   rank;
+
+    @Getter private CityRank   rank;
 /**
     private Faction     faction;
     private Permission  permRec;
@@ -47,6 +50,10 @@ public class City {
     public void SetOwner(Player owner) {
         ownerUUID = owner != null ? owner.getUUID() : null;
         this.owner = owner;
+    }
+
+    public void SetRank(int rank) {
+        this.rank = WarOfSquirrels.instance.getConfig().getCityRankMap().get(rank);
     }
 
     public List<String> getCitizensAsList() {

@@ -12,8 +12,8 @@ import java.util.*;
 public class CityHandler extends Handler<City> {
     private final Map<Integer, City> cityMap;
 
-    protected static String DirName = "/WorldData";
-    protected static String JsonName = "/CityHandler.json";
+    protected String DirName = "/WorldData";
+    protected String JsonName = "/CityHandler.json";
 
     public CityHandler(Logger logger) {
         super("[WoS][CityHandler]", logger);
@@ -33,9 +33,11 @@ public class CityHandler extends Handler<City> {
 
     public boolean add(City city) {
         int cityId = getCityId(city);
+        city.setCityId(cityId);
         if (cityMap.containsKey(cityId)) return false;
 
-        if (!dataArray.contains(city)) dataArray.add(city);
+        if (!dataArray.contains(city))
+            dataArray.add(city);
 
         cityMap.put(cityId, city);
         Save(cityMap.values());
@@ -43,10 +45,31 @@ public class CityHandler extends Handler<City> {
         return true;
     }
 
+    public boolean CreateCity(String name, String tag, Player owner) {
+        City city = new City();
+
+        city.displayName = name;
+        city.tag = tag;
+        city.SetOwner(owner);
+        city.SetRank(0);
+
+        return add(city);
+    }
+
     @Override
     public void Log() {
         Logger.info(MessageFormat.format("{0} Cities generated : {1}",
                 PrefixLogger, dataArray.size()));
+    }
+
+    @Override
+    public String getConfigDir() {
+        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
+    }
+
+    @Override
+    protected String getConfigPath() {
+        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName + JsonName;
     }
 
     public int getCityId(City city) {
@@ -71,7 +94,7 @@ public class CityHandler extends Handler<City> {
             player.setCity(null);
         }
 
-        cityMap.remove(city.cityId);
+        cityMap.remove(city.getCityId());
         city.getOwner().setCity(null);
 
         return true;

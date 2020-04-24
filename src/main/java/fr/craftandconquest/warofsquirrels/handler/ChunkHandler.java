@@ -23,7 +23,7 @@ public class ChunkHandler extends Handler<Chunk> {
     private final Map<ChunkLocation, Chunk> chunksMap;
     private final Map<City, List<Chunk>> cityMap;
 
-    protected static String DirName = "/WorldData";
+    public static String DirName = "/WorldData";
     protected static String JsonName = "/ChunkHandler.json";
 
     public ChunkHandler(Logger logger) {
@@ -141,6 +141,16 @@ public class ChunkHandler extends Handler<Chunk> {
     public void Log() {
         Logger.info(MessageFormat.format("{0} Chunks generated : {1}",
                 PrefixLogger, dataArray.size()));
+    }
+
+    @Override
+    public String getConfigDir() {
+        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
+    }
+
+    @Override
+    protected String getConfigPath() {
+        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName + JsonName;
     }
 
     public Chunk getChunk(int posX, int posZ, DimensionType dimensionType) {

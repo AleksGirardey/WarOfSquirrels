@@ -1,13 +1,21 @@
 package fr.craftandconquest.warofsquirrels;
 
-import fr.craftandconquest.warofsquirrels.handler.CityHandler;
-import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
+import fr.craftandconquest.warofsquirrels.handler.CityHandler;
 import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
+import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;
-import fr.craftandconquest.warofsquirrels.object.world.Chunk;
+import fr.craftandconquest.warofsquirrels.object.city.City;
 import fr.craftandconquest.warofsquirrels.utils.Config;
 import lombok.Getter;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,8 +26,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 @Mod(WarOfSquirrels.warOfSquirrelsModId)
 public class WarOfSquirrels {
@@ -37,8 +43,6 @@ public class WarOfSquirrels {
 
     public Config config;
 
-    private static final List<String> configDirs;
-
     public WarOfSquirrels() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 
@@ -46,31 +50,36 @@ public class WarOfSquirrels {
         instance = this;
     }
 
-    static {
-        configDirs = new ArrayList<>();
-
-        configDirs.add(ChunkHandler.getConfigDir());
-        configDirs.add(CityHandler.getConfigDir());
-    }
-
     private void setup(final FMLCommonSetupEvent event) {
-        File file;
+        /*File file;
 
-        for (String dir : configDirs) {
+        for (String dir : Config.configDirs) {
             file = new File(dir);
             if (!file.exists() && !file.mkdirs())
                 LOGGER.error("[WoS][Main] Couldn't create mod directory '" + dir + "'");
 
-        }
+        }*/
     }
 
     @SubscribeEvent
     public void OnServerStarting(FMLServerStartingEvent event) {
         LOGGER.info("[WoS] Server Starting . . .");
 
+        config = new Config("[WoS][Config]", LOGGER);
+
         chunkHandler = new ChunkHandler(LOGGER);
         cityHandler = new CityHandler(LOGGER);
         permissionHandler = new PermissionHandler();
+
+        event.getCommandDispatcher().register(LiteralArgumentBuilder
+                .literal("city")
+                .executes((Command) context -> {
+                    cityHandler.CreateCity(
+                            "Avendrah",
+                            "AVE",
+                            null);
+                    return 1;
+                }));
 
         LOGGER.info("[WoS] Server Started !");
     }

@@ -1,111 +1,74 @@
-[20avr.2020 20:04:07.369] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--gameDir, ., --launchTarget, fmluserdevclient, --fml.mcpVersion, 20200122.131323, --fml.mcVersion, 1.15.2, --fml.forgeGroup, net.minecraftforge, --fml.forgeVersion, 31.1.0, --version, MOD_DEV, --assetIndex, 1.15, --assetsDir, C:\Users\Alexi\.gradle\caches\forge_gradle\assets, --username, Dev, --accessToken, ❄❄❄❄❄❄❄❄, --userProperties, {}]
-[20avr.2020 20:04:07.385] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 5.0.0-milestone.4+67+b1a340b starting: java version 1.8.0_191 by Oracle Corporation
-[20avr.2020 20:04:07.849] [main/INFO] [net.minecraftforge.fml.loading.FixSSL/CORE]: Added Lets Encrypt root certificates as additional trust
-[20avr.2020 20:04:10.162] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'fmluserdevclient' with arguments [--version, MOD_DEV, --gameDir, ., --assetsDir, C:\Users\Alexi\.gradle\caches\forge_gradle\assets, --assetIndex, 1.15, --username, Dev, --accessToken, ❄❄❄❄❄❄❄❄, --userProperties, {}]
-[20avr.2020 20:04:14.871] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Setting user: Dev
-[20avr.2020 20:04:31.930] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Backend library: LWJGL version 3.2.2 build 10
-[20avr.2020 20:04:34.842] [modloading-worker-1/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 31.1.0, for MC 1.15.2 with MCP 20200122.131323
-[20avr.2020 20:04:34.842] [modloading-worker-1/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v31.1.0 Initialized
-[20avr.2020 20:04:35.875] [Render thread/INFO] [fr.craftandconquest.warofsquirrels.ExampleMod/]: HELLO from Register Block
-[20avr.2020 20:04:36.934] [Render thread/WARN] [net.minecraft.resources.ResourcePackInfo/]: Couldn't get pack info for: java.nio.file.NoSuchFileException: C:\Workspace\WarOfSquirrels\build\resources\main\pack.mcmeta\pack.mcmeta
-[20avr.2020 20:04:36.986] [Render thread/WARN] [net.minecraft.resources.ResourcePackInfo/]: Couldn't get pack info for: java.nio.file.NoSuchFileException: C:\Workspace\WarOfSquirrels\build\resources\main\pack.mcmeta\pack.mcmeta
-[20avr.2020 20:04:42.299] [Render thread/INFO] [com.mojang.text2speech.NarratorWindows/]: Narrator library for x64 successfully loaded
-[20avr.2020 20:04:42.600] [Render thread/INFO] [net.minecraft.resources.SimpleReloadableResourceManager/]: Reloading ResourceManager: Default, Mod Resources
-[20avr.2020 20:04:47.632] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json
-[20avr.2020 20:04:50.581] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Found status: UP_TO_DATE Current: 31.1.0 Target: null
-[20avr.2020 20:04:50.581] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Starting version check at https://raw.githubusercontent.com/AleksGirardey/WarOfSquirrels/master/updateJSON.json#
-[20avr.2020 20:04:50.958] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Found status: BETA Current: 1.0.0 Target: null
-[20avr.2020 20:04:57.771] [Render thread/INFO] [net.minecraft.client.audio.SoundSystem/]: OpenAL initialized.
-[20avr.2020 20:04:57.772] [Render thread/INFO] [net.minecraft.client.audio.SoundEngine/SOUNDS]: Sound engine started
-[20avr.2020 20:04:58.030] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 1024x512x4 minecraft:textures/atlas/blocks.png-atlas
-[20avr.2020 20:04:58.145] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 128x128x4 minecraft:textures/atlas/signs.png-atlas
-[20avr.2020 20:04:58.148] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x512x4 minecraft:textures/atlas/banner_patterns.png-atlas
-[20avr.2020 20:04:58.152] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x512x4 minecraft:textures/atlas/shield_patterns.png-atlas
-[20avr.2020 20:04:58.158] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 256x256x4 minecraft:textures/atlas/chest.png-atlas
-[20avr.2020 20:04:58.160] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x256x4 minecraft:textures/atlas/beds.png-atlas
-[20avr.2020 20:04:58.163] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x256x4 minecraft:textures/atlas/shulker_boxes.png-atlas
-[20avr.2020 20:04:59.086] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 256x256x0 minecraft:textures/atlas/particles.png-atlas
-[20avr.2020 20:04:59.102] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 256x256x0 minecraft:textures/atlas/paintings.png-atlas
-[20avr.2020 20:04:59.107] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 128x128x0 minecraft:textures/atlas/mob_effects.png-atlas
-[20avr.2020 20:05:06.125] [Realms Notification Availability checker #1/INFO] [com.mojang.realmsclient.client.RealmsClient/]: Could not authorize you against Realms server: Invalid session id
-[20avr.2020 20:05:16.137] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
-[20avr.2020 20:05:16.138] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
-[20avr.2020 20:05:16.139] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
-[20avr.2020 20:05:16.140] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
-[20avr.2020 20:05:16.141] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
-[20avr.2020 20:05:16.329] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Starting integrated minecraft server version 1.15.2
-[20avr.2020 20:05:16.329] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Generating keypair
-[20avr.2020 20:05:16.576] [Server thread/INFO] [net.minecraftforge.registries.GameData/REGISTRIES]: Injecting existing registry data into this SERVER instance
-[20avr.2020 20:05:18.550] [Server thread/WARN] [net.minecraft.resources.ResourcePackInfo/]: Couldn't get pack info for: java.nio.file.NoSuchFileException: C:\Workspace\WarOfSquirrels\build\resources\main\pack.mcmeta\pack.mcmeta
-[20avr.2020 20:05:18.552] [Server thread/INFO] [net.minecraft.resources.SimpleReloadableResourceManager/]: Reloading ResourceManager: Default, forge-1.15.2-31.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar
-[20avr.2020 20:05:20.319] [Server thread/INFO] [net.minecraft.item.crafting.RecipeManager/]: Loaded 6 recipes
-[20avr.2020 20:05:22.116] [Server thread/INFO] [net.minecraft.advancements.AdvancementList/]: Loaded 825 advancements
-[20avr.2020 20:05:23.052] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Preparing start region for dimension minecraft:overworld
-[20avr.2020 20:05:24.999] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
-[20avr.2020 20:05:24.999] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
-[20avr.2020 20:05:24.999] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
-[20avr.2020 20:05:24.999] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
-[20avr.2020 20:05:25.133] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
-[20avr.2020 20:05:25.592] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 54%
-[20avr.2020 20:05:27.903] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
-[20avr.2020 20:05:27.903] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
-[20avr.2020 20:05:27.903] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
-[20avr.2020 20:05:27.903] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
-[20avr.2020 20:05:28.108] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
-[20avr.2020 20:05:28.952] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 95%
-[20avr.2020 20:05:29.119] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 95%
-[20avr.2020 20:05:29.688] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 95%
-[20avr.2020 20:05:30.119] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 96%
-[20avr.2020 20:05:30.627] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 97%
-[20avr.2020 20:05:30.990] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS] Server Starting . . .
-[20avr.2020 20:05:31.019] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Time elapsed: 7933 ms
-[20avr.2020 20:05:31.415] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][ChunkHandler] Chunk created at [0;0] owned by null in dimension 10
-[20avr.2020 20:05:31.415] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][ChunkHandler] Chunks generated : 1
-[20avr.2020 20:05:31.431] [Server thread/ERROR] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][CityHandler] Couldnt load Json data. (File creation)
-[20avr.2020 20:05:31.431] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS] Server Started !
-[20avr.2020 20:05:32.437] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
-[20avr.2020 20:05:32.439] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
-[20avr.2020 20:05:32.444] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Changing view distance to 11, from 10
-[20avr.2020 20:05:34.957] [Netty Local Client IO #0/INFO] [net.minecraftforge.fml.network.NetworkHooks/]: Connected to a modded server.
-[20avr.2020 20:05:35.334] [Server thread/INFO] [net.minecraft.server.management.PlayerList/]: Dev[local:E:c8d5f81f] logged in with entity id 205 at (220.05475913081344, 72.2288399012067, -144.82149580487643)
-[20avr.2020 20:05:35.388] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev joined the game
-[20avr.2020 20:05:35.537] [Render thread/ERROR] [net.minecraftforge.fml.network.simple.IndexedMessageCodec/SIMPLENET]: Received empty payload on channel fml:handshake
-[20avr.2020 20:05:36.076] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Saving and pausing game...
-[20avr.2020 20:05:36.108] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'New World'/minecraft:overworld
-[20avr.2020 20:05:36.408] [Render thread/INFO] [net.minecraft.advancements.AdvancementList/]: Loaded 0 advancements
-[20avr.2020 20:05:36.990] [Server-Worker-6/WARN] [com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService/]: Couldn't look up profile properties for com.mojang.authlib.GameProfile@3327f9ff[id=380df991-f603-344c-a090-369bad2a924a,name=Dev,properties={},legacy=false]
-com.mojang.authlib.exceptions.AuthenticationException: The client has sent too many requests within a certain amount of time
-	at com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService.makeRequest(YggdrasilAuthenticationService.java:79) ~[authlib-1.5.25.jar:?]
-	at com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService.fillGameProfile(YggdrasilMinecraftSessionService.java:180) ~[authlib-1.5.25.jar:?]
-	at com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService$1.load(YggdrasilMinecraftSessionService.java:60) ~[authlib-1.5.25.jar:?]
-	at com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService$1.load(YggdrasilMinecraftSessionService.java:57) ~[authlib-1.5.25.jar:?]
-	at com.google.common.cache.LocalCache$LoadingValueReference.loadFuture(LocalCache.java:3716) ~[guava-21.0.jar:?]
-	at com.google.common.cache.LocalCache$Segment.loadSync(LocalCache.java:2424) ~[guava-21.0.jar:?]
-	at com.google.common.cache.LocalCache$Segment.lockedGetOrLoad(LocalCache.java:2298) ~[guava-21.0.jar:?]
-	at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2211) ~[guava-21.0.jar:?]
-	at com.google.common.cache.LocalCache.get(LocalCache.java:4154) ~[guava-21.0.jar:?]
-	at com.google.common.cache.LocalCache.getOrLoad(LocalCache.java:4158) ~[guava-21.0.jar:?]
-	at com.google.common.cache.LocalCache$LocalLoadingCache.get(LocalCache.java:5147) ~[guava-21.0.jar:?]
-	at com.google.common.cache.LocalCache$LocalLoadingCache.getUnchecked(LocalCache.java:5153) ~[guava-21.0.jar:?]
-	at com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService.fillProfileProperties(YggdrasilMinecraftSessionService.java:170) ~[authlib-1.5.25.jar:?]
-	at net.minecraft.client.Minecraft.getProfileProperties(Minecraft.java:1990) ~[?:?]
-	at net.minecraft.client.resources.SkinManager.lambda$loadProfileTextures$4(SkinManager.java:96) ~[?:?]
-	at java.util.concurrent.ForkJoinTask$RunnableExecuteAction.exec(ForkJoinTask.java:1402) [?:1.8.0_191]
-	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:289) [?:1.8.0_191]
-	at java.util.concurrent.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1056) [?:1.8.0_191]
-	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1692) [?:1.8.0_191]
-	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157) [?:1.8.0_191]
-[20avr.2020 20:05:37.135] [Server thread/ERROR] [net.minecraftforge.fml.network.simple.IndexedMessageCodec/SIMPLENET]: Received empty payload on channel fml:handshake
-[20avr.2020 20:05:37.719] [Server thread/WARN] [net.minecraft.server.MinecraftServer/]: Can't keep up! Is the server overloaded? Running 2076ms or 41 ticks behind
-[20avr.2020 20:05:58.945] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Saving and pausing game...
-[20avr.2020 20:05:58.950] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'New World'/minecraft:overworld
-[20avr.2020 20:06:00.306] [Server thread/INFO] [net.minecraft.network.play.ServerPlayNetHandler/]: Dev lost connection: Disconnected
-[20avr.2020 20:06:00.307] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev left the game
-[20avr.2020 20:06:00.313] [Server thread/INFO] [net.minecraft.network.play.ServerPlayNetHandler/]: Stopping singleplayer server as player logged out
-[20avr.2020 20:06:00.390] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Stopping server
-[20avr.2020 20:06:00.390] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving players
-[20avr.2020 20:06:00.390] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving worlds
-[20avr.2020 20:06:00.390] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'New World'/minecraft:overworld
-[20avr.2020 20:06:00.757] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (New World): All chunks are saved
-[20avr.2020 20:06:00.772] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (New World): All chunks are saved
-[20avr.2020 20:06:03.755] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Stopping!
+[24avr.2020 00:05:14.986] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--gameDir, ., --launchTarget, fmluserdevclient, --fml.mcpVersion, 20200122.131323, --fml.mcVersion, 1.15.2, --fml.forgeGroup, net.minecraftforge, --fml.forgeVersion, 31.1.0, --version, MOD_DEV, --assetIndex, 1.15, --assetsDir, C:\Users\Aleks\.gradle\caches\forge_gradle\assets, --username, Dev, --accessToken, ❄❄❄❄❄❄❄❄, --userProperties, {}]
+[24avr.2020 00:05:14.996] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 5.0.0-milestone.4+67+b1a340b starting: java version 1.8.0_201 by Oracle Corporation
+[24avr.2020 00:05:15.763] [main/INFO] [net.minecraftforge.fml.loading.FixSSL/CORE]: Added Lets Encrypt root certificates as additional trust
+[24avr.2020 00:05:17.801] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'fmluserdevclient' with arguments [--version, MOD_DEV, --gameDir, ., --assetsDir, C:\Users\Aleks\.gradle\caches\forge_gradle\assets, --assetIndex, 1.15, --username, Dev, --accessToken, ❄❄❄❄❄❄❄❄, --userProperties, {}]
+[24avr.2020 00:05:21.971] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Setting user: Dev
+[24avr.2020 00:05:36.574] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Backend library: LWJGL version 3.2.2 build 10
+[24avr.2020 00:05:38.364] [modloading-worker-9/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 31.1.0, for MC 1.15.2 with MCP 20200122.131323
+[24avr.2020 00:05:38.365] [modloading-worker-9/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v31.1.0 Initialized
+[24avr.2020 00:05:38.612] [Render thread/INFO] [fr.craftandconquest.warofsquirrels.ExampleMod/]: HELLO from Register Block
+[24avr.2020 00:05:38.905] [Render thread/WARN] [net.minecraft.resources.ResourcePackInfo/]: Couldn't get pack info for: java.nio.file.NoSuchFileException: D:\Workspace\Minecraft\WarOfSquirrels\build\resources\main\pack.mcmeta\pack.mcmeta
+[24avr.2020 00:05:38.919] [Render thread/WARN] [net.minecraft.resources.ResourcePackInfo/]: Couldn't get pack info for: java.nio.file.NoSuchFileException: D:\Workspace\Minecraft\WarOfSquirrels\build\resources\main\pack.mcmeta\pack.mcmeta
+[24avr.2020 00:05:42.215] [Render thread/INFO] [com.mojang.text2speech.NarratorWindows/]: Narrator library for x64 successfully loaded
+[24avr.2020 00:05:42.336] [Render thread/INFO] [net.minecraft.resources.SimpleReloadableResourceManager/]: Reloading ResourceManager: Default, Mod Resources
+[24avr.2020 00:05:42.548] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json
+[24avr.2020 00:05:44.522] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Found status: UP_TO_DATE Current: 31.1.0 Target: null
+[24avr.2020 00:05:44.522] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Starting version check at https://raw.githubusercontent.com/AleksGirardey/WarOfSquirrels/master/updateJSON.json#
+[24avr.2020 00:05:44.648] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Found status: BETA Current: 1.0.0 Target: null
+[24avr.2020 00:05:51.622] [Render thread/INFO] [net.minecraft.client.audio.SoundSystem/]: OpenAL initialized.
+[24avr.2020 00:05:51.623] [Render thread/INFO] [net.minecraft.client.audio.SoundEngine/SOUNDS]: Sound engine started
+[24avr.2020 00:05:51.814] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 1024x512x4 minecraft:textures/atlas/blocks.png-atlas
+[24avr.2020 00:05:51.863] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 128x128x4 minecraft:textures/atlas/signs.png-atlas
+[24avr.2020 00:05:51.864] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x512x4 minecraft:textures/atlas/banner_patterns.png-atlas
+[24avr.2020 00:05:51.866] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x512x4 minecraft:textures/atlas/shield_patterns.png-atlas
+[24avr.2020 00:05:51.867] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 256x256x4 minecraft:textures/atlas/chest.png-atlas
+[24avr.2020 00:05:51.868] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x256x4 minecraft:textures/atlas/beds.png-atlas
+[24avr.2020 00:05:51.869] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x256x4 minecraft:textures/atlas/shulker_boxes.png-atlas
+[24avr.2020 00:05:52.550] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 256x256x0 minecraft:textures/atlas/particles.png-atlas
+[24avr.2020 00:05:52.553] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 256x256x0 minecraft:textures/atlas/paintings.png-atlas
+[24avr.2020 00:05:52.553] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 128x128x0 minecraft:textures/atlas/mob_effects.png-atlas
+[24avr.2020 00:06:05.163] [Realms Notification Availability checker #1/INFO] [com.mojang.realmsclient.client.RealmsClient/]: Could not authorize you against Realms server: Invalid session id
+[24avr.2020 00:06:08.681] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[24avr.2020 00:06:08.682] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[24avr.2020 00:06:08.683] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+[24avr.2020 00:06:08.683] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[24avr.2020 00:06:08.685] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[24avr.2020 00:06:08.847] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Starting integrated minecraft server version 1.15.2
+[24avr.2020 00:06:08.847] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Generating keypair
+[24avr.2020 00:06:09.049] [Server thread/INFO] [net.minecraftforge.registries.GameData/REGISTRIES]: Injecting existing registry data into this SERVER instance
+[24avr.2020 00:06:09.221] [Server thread/WARN] [net.minecraft.resources.ResourcePackInfo/]: Couldn't get pack info for: java.nio.file.NoSuchFileException: D:\Workspace\Minecraft\WarOfSquirrels\build\resources\main\pack.mcmeta\pack.mcmeta
+[24avr.2020 00:06:09.223] [Server thread/INFO] [net.minecraft.resources.SimpleReloadableResourceManager/]: Reloading ResourceManager: Default, forge-1.15.2-31.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar
+[24avr.2020 00:06:11.668] [Server thread/INFO] [net.minecraft.item.crafting.RecipeManager/]: Loaded 6 recipes
+[24avr.2020 00:06:13.942] [Server thread/INFO] [net.minecraft.advancements.AdvancementList/]: Loaded 825 advancements
+[24avr.2020 00:06:14.513] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Preparing start region for dimension minecraft:overworld
+[24avr.2020 00:06:15.943] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[24avr.2020 00:06:15.943] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[24avr.2020 00:06:15.943] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[24avr.2020 00:06:16.104] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[24avr.2020 00:06:17.952] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[24avr.2020 00:06:17.952] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[24avr.2020 00:06:17.952] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[24avr.2020 00:06:18.061] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 95%
+[24avr.2020 00:06:18.638] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 95%
+[24avr.2020 00:06:19.041] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 95%
+[24avr.2020 00:06:19.528] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 96%
+[24avr.2020 00:06:19.901] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS] Server Starting . . .
+[24avr.2020 00:06:19.923] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Time elapsed: 5402 ms
+[24avr.2020 00:06:20.219] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][ChunkHandler] Chunks generated : 0
+[24avr.2020 00:06:20.233] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][CityHandler] Cities generated : 0
+[24avr.2020 00:06:20.233] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS] Server Started !
+[24avr.2020 00:06:20.851] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[24avr.2020 00:06:20.853] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[24avr.2020 00:06:20.856] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Changing view distance to 11, from 10
+[24avr.2020 00:06:23.254] [Netty Local Client IO #0/INFO] [net.minecraftforge.fml.network.NetworkHooks/]: Connected to a modded server.
+[24avr.2020 00:06:23.376] [Server thread/INFO] [net.minecraft.server.management.PlayerList/]: Dev[local:E:e521d25d] logged in with entity id 205 at (220.30458814935582, 71.0, -145.15289385312167)
+[24avr.2020 00:06:23.425] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev joined the game
+[24avr.2020 00:06:23.543] [Render thread/ERROR] [net.minecraftforge.fml.network.simple.IndexedMessageCodec/SIMPLENET]: Received empty payload on channel fml:handshake
+[24avr.2020 00:06:23.866] [Server thread/ERROR] [net.minecraftforge.fml.network.simple.IndexedMessageCodec/SIMPLENET]: Received empty payload on channel fml:handshake
+[24avr.2020 00:06:23.866] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Saving and pausing game...
+[24avr.2020 00:06:23.884] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'New World'/minecraft:overworld
+[24avr.2020 00:06:24.059] [Render thread/INFO] [net.minecraft.advancements.AdvancementList/]: Loaded 13 advancements
+[24avr.2020 00:06:32.782] [Render thread/INFO] [net.minecraft.client.gui.NewChatGui/]: [CHAT] Unknown command
+[24avr.2020 00:06:32.782] [Render thread/INFO] [net.minecraft.client.gui.NewChatGui/]: [CHAT] /c<--[HERE]
+[24avr.2020 00:06:37.414] [Render thread/INFO] [net.minecraft.client.gui.NewChatGui/]: [CHAT] An unexpected error occurred trying to execute that command
+[24avr.2020 00:09:47.129] [Server thread/WARN] [net.minecraft.server.MinecraftServer/]: Can't keep up! Is the server overloaded? Running 142689ms or 2853 ticks behind

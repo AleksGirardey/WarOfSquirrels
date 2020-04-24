@@ -40,7 +40,7 @@ public class Player {
     public DimensionType lastDimension;
 
     public void setCity(City city) {
-        cityId = city != null ? city.cityId : -1;
+        cityId = city != null ? city.getCityId() : -1;
         this.city = city;
     }
 

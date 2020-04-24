@@ -16,8 +16,6 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class Handler<T> {
-    protected static String DirName = "/WorldData";
-    protected static String JsonName = "/ChunkHandler.json";
     protected String PrefixLogger;
 
     protected Logger Logger;
@@ -30,6 +28,16 @@ public abstract class Handler<T> {
         PrefixLogger = prefix;
         Logger = logger;
         dataArray = Collections.emptyList();
+        if (!Setup()) System.exit(-1);
+    }
+
+    protected boolean Setup() {
+        File file = new File(getConfigDir());
+
+        if (!file.exists() && !file.mkdirs())
+            Logger.error("[WoS][Main] Couldn't create mod directory '" + getConfigDir() + "'");
+
+        return true;
     }
 
     protected boolean Init() {
@@ -75,7 +83,7 @@ public abstract class Handler<T> {
                 }
             }
         } catch (IOException e) {
-            Logger.error(errorMessage + " (File creation)");
+            Logger.error(errorMessage + "'" + getConfigPath() + "' (File creation)");
             return false;
         }
         return true;
@@ -85,11 +93,7 @@ public abstract class Handler<T> {
 
     public abstract void Log();
 
-    public static String getConfigDir() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
-    }
+    public abstract String getConfigDir();
 
-    protected static String getConfigPath() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName + JsonName;
-    }
+    protected abstract String getConfigPath();
 }
