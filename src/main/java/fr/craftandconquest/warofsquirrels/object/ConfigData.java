@@ -2,6 +2,8 @@ package fr.craftandconquest.warofsquirrels.object;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.object.city.CityRank;
+import fr.craftandconquest.warofsquirrels.object.permission.Permission;
+import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,4 +28,5 @@ public class ConfigData {
     @Getter @Setter private int   territorySize;
     @Getter @Setter private int   territoryClaimLimit;
     @JsonProperty("CityRanks") @Getter @Setter private Map<Integer, CityRank> cityRankMap;
+    @JsonProperty("DefaultPermissions") @Getter @Setter private Map<PermissionRelation, Permission> permissionMap;
 }

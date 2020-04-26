@@ -4,8 +4,6 @@ import fr.craftandconquest.warofsquirrels.object.city.City;
 
 public class BroadCastHandler {
 
-
-
     public void BroadCastMessage(BroadCastTarget target, Object ... objects) {
         switch (target) {
             case CITY:

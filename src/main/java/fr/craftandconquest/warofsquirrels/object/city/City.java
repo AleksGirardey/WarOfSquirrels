@@ -3,6 +3,10 @@ package fr.craftandconquest.warofsquirrels.object.city;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
+import fr.craftandconquest.warofsquirrels.object.permission.Permission;
+import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
+import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,11 +14,12 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class City {
+public class City implements IPermission {
     @Getter @Setter
     private int cityId;
     public String displayName;
@@ -22,13 +27,10 @@ public class City {
     public UUID ownerUUID;
 
     @Getter private CityRank   rank;
-/**
-    private Faction     faction;
-    private Permission  permRec;
-    private Permission  permRes;
-    private Permission  permAllies;
-    private Permission  permOutside;
-    private Permission  permFaction;*/
+
+    @Getter @Setter private Map<IPermission, Permission> customPermission;
+    @Getter @Setter private Map<PermissionRelation, Permission> defaultPermission;
+
     private int         balance;
 
     @JsonIgnore @Getter private Player owner;
@@ -63,5 +65,15 @@ public class City {
             res.add(player.getDisplayName());
         }
         return res;
+    }
+
+    @Override
+    public PermissionTarget getPermissionTarget() {
+        return PermissionTarget.CITY;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%s] %s", tag, displayName);
     }
 }

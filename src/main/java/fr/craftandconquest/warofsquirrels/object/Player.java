@@ -3,6 +3,8 @@ package fr.craftandconquest.warofsquirrels.object;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.object.city.City;
+import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
+import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +17,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class Player {
+public class Player implements IPermission {
 
     /* -- DB Fields -- */
 //    private User            user;
@@ -46,5 +48,10 @@ public class Player {
 
     public UUID getUUID() {
         return playerEntity.getUniqueID();
+    }
+
+    @Override
+    public PermissionTarget getPermissionTarget() {
+        return PermissionTarget.PLAYER;
     }
 }

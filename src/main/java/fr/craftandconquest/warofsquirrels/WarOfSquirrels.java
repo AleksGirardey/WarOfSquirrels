@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import fr.craftandconquest.warofsquirrels.events.WorldInteractionHandler;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.handler.CityHandler;
 import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
@@ -46,20 +47,13 @@ public class WarOfSquirrels {
     public WarOfSquirrels() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 
+        MinecraftForge.EVENT_BUS.register(new WorldInteractionHandler(LOGGER));
         MinecraftForge.EVENT_BUS.register(this);
+
         instance = this;
     }
 
-    private void setup(final FMLCommonSetupEvent event) {
-        /*File file;
-
-        for (String dir : Config.configDirs) {
-            file = new File(dir);
-            if (!file.exists() && !file.mkdirs())
-                LOGGER.error("[WoS][Main] Couldn't create mod directory '" + dir + "'");
-
-        }*/
-    }
+    private void setup(final FMLCommonSetupEvent event) { }
 
     @SubscribeEvent
     public void OnServerStarting(FMLServerStartingEvent event) {

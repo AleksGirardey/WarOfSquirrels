@@ -2,8 +2,11 @@ package fr.craftandconquest.warofsquirrels.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;
 import fr.craftandconquest.warofsquirrels.object.city.CityRank;
+import fr.craftandconquest.warofsquirrels.object.permission.Permission;
+import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.logging.log4j.Logger;
@@ -107,6 +110,8 @@ public class Config {
 
     private ConfigData defaultConfiguration() {
         Map<Integer, CityRank> initRanks = new HashMap<>();
+        Map<PermissionRelation, Permission> defaultPermissions = new HashMap<>();
+
         initRanks.put(0, new CityRank("Colonie", "Chef", "Assistant", 4, 2));
         initRanks.put(1, new CityRank("Village", "Maire", "Assistant", 9, 4));
         initRanks.put(2, new CityRank("Ville", "Bourgmestre", "Assistant", 15, 8));
@@ -115,6 +120,17 @@ public class Config {
         initRanks.put(5, new CityRank("Royaume", "Roi", "Assistant", 40, 20));
         initRanks.put(6, new CityRank("Empire", "Empereur", "Assistant", 50, 25));
 
-        return new ConfigData(20, 20, 15, 10, 3, 10, 1500, 120, 120, 5120, 400, 256, 400, initRanks);
+        defaultPermissions.put(PermissionRelation.ENEMY, new Permission("enemy", false, false, false));
+        defaultPermissions.put(PermissionRelation.ALLY, new Permission("ally", false, false, true));
+        defaultPermissions.put(PermissionRelation.FACTION, new Permission("faction", false, false, true));
+        defaultPermissions.put(PermissionRelation.RESIDENT, new Permission("resident", true, true, true));
+        defaultPermissions.put(PermissionRelation.RECRUIT, new Permission("recruit", false, false, true));
+        defaultPermissions.put(PermissionRelation.OUTSIDER, new Permission("outsider", false, false, false));
+
+        return new ConfigData(
+                20, 20, 15, 10,
+                3, 10, 1500, 120,
+                120, 5120, 400, 256,
+                400, initRanks, defaultPermissions);
     }
 }

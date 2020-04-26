@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.city.City;
+import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
+import fr.craftandconquest.warofsquirrels.object.permission.Permission;
+import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -12,8 +15,8 @@ import java.util.*;
 public class CityHandler extends Handler<City> {
     private final Map<Integer, City> cityMap;
 
-    protected String DirName = "/WorldData";
-    protected String JsonName = "/CityHandler.json";
+    protected static String DirName = "/WorldData";
+    protected static String JsonName = "/CityHandler.json";
 
     public CityHandler(Logger logger) {
         super("[WoS][CityHandler]", logger);
@@ -36,8 +39,11 @@ public class CityHandler extends Handler<City> {
         city.setCityId(cityId);
         if (cityMap.containsKey(cityId)) return false;
 
-        if (!dataArray.contains(city))
+        if (!dataArray.contains(city)) {
+            if (dataArray.size() == 0)
+                dataArray = new ArrayList<City>();
             dataArray.add(city);
+        }
 
         cityMap.put(cityId, city);
         Save(cityMap.values());
@@ -52,6 +58,8 @@ public class CityHandler extends Handler<City> {
         city.tag = tag;
         city.SetOwner(owner);
         city.SetRank(0);
+        city.setCustomPermission(new HashMap<>());
+        city.setDefaultPermission(new HashMap<>(WarOfSquirrels.instance.config.getConfiguration().getPermissionMap()));
 
         return add(city);
     }
@@ -124,5 +132,18 @@ public class CityHandler extends Handler<City> {
         }
 
         return res;
+    }
+
+    public void SetCustomPermission(IPermission target, Permission permission, City city) {
+        if (city.getCustomPermission().containsKey(target))
+            city.getCustomPermission().replace(target, permission);
+        else
+            city.getCustomPermission().put(target, permission);
+        Save(dataArray);
+    }
+
+    public void SetDefaultPermission(PermissionRelation relation, Permission permission, City city) {
+        city.getDefaultPermission().replace(relation, permission);
+        Save(dataArray);
     }
 }
