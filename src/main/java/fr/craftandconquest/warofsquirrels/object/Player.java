@@ -2,6 +2,7 @@ package fr.craftandconquest.warofsquirrels.object;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
@@ -19,20 +20,20 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Player implements IPermission {
 
-    /* -- DB Fields -- */
-//    private User            user;
     @JsonIgnore @Getter @Setter private PlayerEntity playerEntity;
+
+    @JsonProperty @Getter @Setter private UUID uuid;
     @JsonProperty("DisplayName") @Getter @Setter private String displayName;
-    private int             score;
-    private int             cityId;
-    @Getter @Setter private Boolean         assistant;
-    private Boolean         resident;
-    private int             balance;
+    @JsonProperty private int score;
+    @JsonProperty private int cityId;
+    @JsonProperty @Getter @Setter private Boolean assistant;
+    @JsonProperty private Boolean resident;
+    @JsonProperty @Getter @Setter private int balance;
 
     /* -- Extra Fields -- */
     private int             lastChunkX = 10000;
     private int             lastChunkZ = 10000;
-    private boolean         reincarnation;
+    @Getter @Setter private boolean         reincarnation;
     private boolean         adminMode;
     private long            lastClick;
 
@@ -46,8 +47,8 @@ public class Player implements IPermission {
         this.city = city;
     }
 
-    public UUID getUUID() {
-        return playerEntity.getUniqueID();
+    public void updateDependencies() {
+        city = WarOfSquirrels.instance.getCityHandler().getCity(cityId);
     }
 
     @Override

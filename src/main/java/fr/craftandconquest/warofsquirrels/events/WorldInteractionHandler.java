@@ -14,6 +14,5 @@ public class WorldInteractionHandler {
 
     @SubscribeEvent
     public void BuildEvent(BlockEvent.BreakEvent event) {
-        logger.info("Break time !");
     }
 }

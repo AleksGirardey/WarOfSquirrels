@@ -31,7 +31,7 @@ public class CityHandler extends Handler<City> {
     @Override
     protected boolean Populate() {
         dataArray.iterator().forEachRemaining(this::add);
-        return false;
+        return true;
     }
 
     public boolean add(City city) {
@@ -80,6 +80,15 @@ public class CityHandler extends Handler<City> {
         return WarOfSquirrels.warOfSquirrelsConfigDir + DirName + JsonName;
     }
 
+    @Override
+    public void spreadPermissionDelete(IPermission target) {
+        for (City city : cityMap.values()) {
+            city.getCustomPermission().remove(target);
+        }
+    }
+
+    public City getCity(int cityId) { return cityMap.get(cityId); }
+
     public int getCityId(City city) {
         String seedString = city.displayName + city.tag;
         int seed = 0;
@@ -91,9 +100,7 @@ public class CityHandler extends Handler<City> {
 
     @Override
     public boolean Delete(City city) {
-        /*
-         * ToDo : Delete Permissions
-         */
+        WarOfSquirrels.instance.spreadPermissionDelete(city);
 
         if (!WarOfSquirrels.instance.getChunkHandler().deleteCity(city)) return false;
 

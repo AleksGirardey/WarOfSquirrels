@@ -4,13 +4,16 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import fr.craftandconquest.warofsquirrels.events.PlayersInteractionHandler;
 import fr.craftandconquest.warofsquirrels.events.WorldInteractionHandler;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.handler.CityHandler;
 import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
+import fr.craftandconquest.warofsquirrels.handler.PlayerHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;
 import fr.craftandconquest.warofsquirrels.object.city.City;
+import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.utils.Config;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -41,6 +44,7 @@ public class WarOfSquirrels {
     @Getter private PermissionHandler permissionHandler;
     @Getter private BroadCastHandler broadCastHandler;
     @Getter private CityHandler cityHandler;
+    @Getter private PlayerHandler playerHandler;
 
     public Config config;
 
@@ -48,6 +52,7 @@ public class WarOfSquirrels {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 
         MinecraftForge.EVENT_BUS.register(new WorldInteractionHandler(LOGGER));
+        MinecraftForge.EVENT_BUS.register(new PlayersInteractionHandler());
         MinecraftForge.EVENT_BUS.register(this);
 
         instance = this;
@@ -63,6 +68,7 @@ public class WarOfSquirrels {
 
         chunkHandler = new ChunkHandler(LOGGER);
         cityHandler = new CityHandler(LOGGER);
+        playerHandler = new PlayerHandler(LOGGER);
         permissionHandler = new PermissionHandler();
 
         event.getCommandDispatcher().register(LiteralArgumentBuilder
@@ -75,10 +81,18 @@ public class WarOfSquirrels {
                     return 1;
                 }));
 
+        playerHandler.updateDependencies();
+
         LOGGER.info("[WoS] Server Started !");
     }
 
     public ConfigData getConfig() {
         return config.getConfiguration();
+    }
+
+    public void spreadPermissionDelete(IPermission target) {
+        chunkHandler.spreadPermissionDelete(target);
+        cityHandler.spreadPermissionDelete(target);
+        //cuboHandler.spreadPermissionDelete(target);
     }
 }
