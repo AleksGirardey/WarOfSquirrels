@@ -108,13 +108,24 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.3'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.3'
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.12'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+}
+
+task uberJar(type: Jar) {
+    //archiveClassifier = 'uber'
+
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

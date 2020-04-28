@@ -4,22 +4,19 @@ import com.sun.javafx.geom.Vec2d;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
-import lombok.AllArgsConstructor;
+import javafx.util.Pair;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.dimension.DimensionType;
 
-import java.net.ResponseCache;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Utils {
 
-    @AllArgsConstructor
-    public class ReSpawnPoint {
-        public DimensionType dimension;
-        public BlockPos position;
+    public static Pair<Integer, Integer> WorldToChunkCoordinates(int posX, int posZ) {
+        return new Pair<>(posX / 16, posZ / 16);
     }
 
     public static boolean       CanPlaceOutpost(int posX, int posZ) {
@@ -28,8 +25,9 @@ public class Utils {
         return (value == -1 || value >= WarOfSquirrels.instance.getConfig().getDistanceOutpost());
     }
 
-    public static BlockPos NearestSpawnPoint(PlayerEntity playerEntity) {
+    public static ReSpawnPoint NearestSpawnPoint(PlayerEntity playerEntity) {
         Player player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity);
+        DimensionType dimension = player.lastDimension;
 
         Vec3d playerPosition = playerEntity.getPositionVector();
         Vec3d spawnPoint = null;
@@ -50,6 +48,7 @@ public class Utils {
         if (spawnPoint == null) {
             Chunk homeBlock = WarOfSquirrels.instance.getChunkHandler().getHomeBlock(player.getCity());
             spawnPoint = new Vec3d(homeBlock.getRespawnX(), homeBlock.getRespawnY(), homeBlock.getRespawnZ());
+            dimension = DimensionType.getById(homeBlock.getDimensionId());
         }
 
         return new ReSpawnPoint(dimension, new BlockPos(spawnPoint));

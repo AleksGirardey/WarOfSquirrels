@@ -50,7 +50,7 @@ public class City implements IPermission {
     }
 
     public void SetOwner(Player owner) {
-        ownerUUID = owner != null ? owner.getUUID() : null;
+        ownerUUID = owner != null ? owner.getUuid() : null;
         this.owner = owner;
     }
 

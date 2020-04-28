@@ -5,6 +5,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.city.City;
+import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
@@ -153,6 +154,11 @@ public class ChunkHandler extends Handler<Chunk> {
         return WarOfSquirrels.warOfSquirrelsConfigDir + DirName + JsonName;
     }
 
+    @Override
+    public void spreadPermissionDelete(IPermission target) {
+        // Nothing To Do
+    }
+
     public Chunk getChunk(int posX, int posZ, DimensionType dimensionType) {
         return getChunk(posX, posZ, dimensionType.getId());
     }
@@ -190,5 +196,11 @@ public class ChunkHandler extends Handler<Chunk> {
             asString.append(c).append("\n");
         }
         return asString.toString();
+    }
+
+    public Chunk CreateChunk(int posX, int posZ, City city, int dimensionId) {
+        Chunk chunk = new Chunk(posX, posZ, city, dimensionId);
+
+        return chunk;
     }
 }

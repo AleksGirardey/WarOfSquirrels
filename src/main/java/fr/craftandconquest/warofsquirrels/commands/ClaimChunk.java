@@ -16,7 +16,8 @@ public class ClaimChunk implements Command<CommandSource> {
 
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("ClaimChunk")
-                .then(Commands.argument("cityName", StringArgumentType.string()).executes(CMD)));
+                .then(Commands.argument("cityName", StringArgumentType.string())
+                        .executes(CMD)));
 
         dispatcher.register(Commands.literal("ChunkList")
                 .executes(context -> {

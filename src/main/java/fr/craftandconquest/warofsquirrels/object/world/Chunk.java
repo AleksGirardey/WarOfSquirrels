@@ -2,6 +2,7 @@ package fr.craftandconquest.warofsquirrels.object.world;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.city.City;
 
 public class Chunk {
@@ -19,16 +20,16 @@ public class Chunk {
     private City city;
 
     public Chunk(double x, double z, String city, int dimensionId) {
-        this(x, z);
-        cityName = city;
-        this.dimensionId = dimensionId;
+        this(x, z, WarOfSquirrels.instance.getCityHandler().getCity(city), dimensionId);
         name = String.format("%s%d%d", cityName, posX, posZ);
-        //ToDo: Add city link
     }
 
-    public Chunk(double x, double z) {
+    public Chunk(double x, double z, City city, int dimensionId) {
         posX = (int) x;
         posZ = (int) z;
+        cityName = city.displayName;
+        this.city = city;
+        this.dimensionId = dimensionId;
     }
 
     public Chunk() {}

@@ -1,9 +1,6 @@
 package fr.craftandconquest.warofsquirrels;
 
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import fr.craftandconquest.warofsquirrels.commands.CityCommand;
 import fr.craftandconquest.warofsquirrels.events.PlayersInteractionHandler;
 import fr.craftandconquest.warofsquirrels.events.WorldInteractionHandler;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
@@ -12,14 +9,9 @@ import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
 import fr.craftandconquest.warofsquirrels.handler.PlayerHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;
-import fr.craftandconquest.warofsquirrels.object.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.utils.Config;
 import lombok.Getter;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -28,8 +20,6 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.File;
 
 @Mod(WarOfSquirrels.warOfSquirrelsModId)
 public class WarOfSquirrels {
@@ -71,15 +61,7 @@ public class WarOfSquirrels {
         playerHandler = new PlayerHandler(LOGGER);
         permissionHandler = new PermissionHandler();
 
-        event.getCommandDispatcher().register(LiteralArgumentBuilder
-                .literal("city")
-                .executes((Command) context -> {
-                    cityHandler.CreateCity(
-                            "Avendrah",
-                            "AVE",
-                            null);
-                    return 1;
-                }));
+        CityCommand.register(event.getCommandDispatcher());
 
         playerHandler.updateDependencies();
 

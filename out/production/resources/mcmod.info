@@ -1,0 +1,12 @@
+[{
+  "modid": "wos",
+  "name": "Craft and Conquest",
+  "description": "CraftAndConquest - Core mod for the Craft and Conquest server",
+  "version": "1.0.0",
+  "mcversion": "1.15.2-forge-31.1.0",
+  "logoFile": "assets/craftandconquest/textures/logo.png",
+  "url": "craftandconquest.fr/",
+  "updateJson" : "https://raw.githubusercontent.com/AleksGirardey/WarOfSquirrels/master/updateJSON.json",
+  "authorList": ["AleksGirardey"],
+  "credits": "All Hail the king Squirrel !"
+}]

@@ -39,8 +39,8 @@ public class Player implements IPermission {
 
     @JsonIgnore @Getter private City city;
 
-    public Vec3d lastPosition;
-    public DimensionType lastDimension;
+    @JsonIgnore public Vec3d lastPosition;
+    @JsonIgnore public DimensionType lastDimension;
 
     public void setCity(City city) {
         cityId = city != null ? city.getCityId() : -1;

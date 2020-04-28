@@ -51,7 +51,7 @@ public class CityHandler extends Handler<City> {
         return true;
     }
 
-    public boolean CreateCity(String name, String tag, Player owner) {
+    public City CreateCity(String name, String tag, Player owner) {
         City city = new City();
 
         city.displayName = name;
@@ -61,7 +61,9 @@ public class CityHandler extends Handler<City> {
         city.setCustomPermission(new HashMap<>());
         city.setDefaultPermission(new HashMap<>(WarOfSquirrels.instance.config.getConfiguration().getPermissionMap()));
 
-        return add(city);
+        add(city);
+
+        return city;
     }
 
     @Override
@@ -85,6 +87,14 @@ public class CityHandler extends Handler<City> {
         for (City city : cityMap.values()) {
             city.getCustomPermission().remove(target);
         }
+    }
+
+    public City getCity(String cityName) {
+        for (City city : dataArray) {
+            if (city.displayName.equals(cityName))
+                return city;
+        }
+        return null;
     }
 
     public City getCity(int cityId) { return cityMap.get(cityId); }
