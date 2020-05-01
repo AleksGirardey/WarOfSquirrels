@@ -2,9 +2,8 @@ package fr.craftandconquest.warofsquirrels.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;
-import fr.craftandconquest.warofsquirrels.object.city.CityRank;
+import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import lombok.Getter;

@@ -3,7 +3,7 @@ package fr.craftandconquest.warofsquirrels.object;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.city.City;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
 import lombok.AllArgsConstructor;
@@ -25,9 +25,9 @@ public class Player implements IPermission {
     @JsonProperty @Getter @Setter private UUID uuid;
     @JsonProperty("DisplayName") @Getter @Setter private String displayName;
     @JsonProperty private int score;
-    @JsonProperty private int cityId;
+    @JsonProperty private UUID cityUuid;
     @JsonProperty @Getter @Setter private Boolean assistant;
-    @JsonProperty private Boolean resident;
+    @JsonProperty private Boolean resident = false;
     @JsonProperty @Getter @Setter private int balance;
 
     /* -- Extra Fields -- */
@@ -43,12 +43,12 @@ public class Player implements IPermission {
     @JsonIgnore public DimensionType lastDimension;
 
     public void setCity(City city) {
-        cityId = city != null ? city.getCityId() : -1;
+        cityUuid = city != null ? city.getCityUuid() : null;
         this.city = city;
     }
 
     public void updateDependencies() {
-        city = WarOfSquirrels.instance.getCityHandler().getCity(cityId);
+        city = WarOfSquirrels.instance.getCityHandler().getCity(cityUuid);
     }
 
     @Override

@@ -13,6 +13,5 @@ public class WorldInteractionHandler {
     }
 
     @SubscribeEvent
-    public void BuildEvent(BlockEvent.BreakEvent event) {
-    }
+    public void BuildEvent(BlockEvent.BreakEvent event) {}
 }

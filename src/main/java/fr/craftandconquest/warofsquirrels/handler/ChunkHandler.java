@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.Player;
-import fr.craftandconquest.warofsquirrels.object.city.City;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
@@ -14,10 +14,7 @@ import net.minecraft.world.dimension.DimensionType;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ChunkHandler extends Handler<Chunk> {
@@ -61,8 +58,11 @@ public class ChunkHandler extends Handler<Chunk> {
 
         ChunkLocation position = new ChunkLocation(chunk.posX, chunk.posZ, chunk.getDimensionId());
 
-        if (!dataArray.contains(chunk))
+        if (!dataArray.contains(chunk)) {
+            if (dataArray.size() == 0)
+                dataArray = new ArrayList<Chunk>();
             dataArray.add(chunk);
+        }
         chunksMap.put(position, chunk);
         if (!cityMap.containsKey(chunk.getCity()))
             cityMap.put(chunk.getCity(), new ArrayList<>());
@@ -100,7 +100,9 @@ public class ChunkHandler extends Handler<Chunk> {
     }
 
     public List<Chunk>  getOutpostList(City city) {
-        return cityMap.get(city).stream().filter(Chunk::getOutpost).collect(Collectors.toList());
+        if (cityMap.containsKey(city))
+            return cityMap.get(city).stream().filter(Chunk::getOutpost).collect(Collectors.toList());
+        return Collections.emptyList();
     }
 
     public int getSize(City city) { return (cityMap.get(city).size() - getOutpostList(city).size()); }
@@ -124,7 +126,8 @@ public class ChunkHandler extends Handler<Chunk> {
         oldHB = getHomeBlock(newHB.getCity());
 
         newHB.setHomeBlock(true);
-        oldHB.setHomeBlock(false);
+        if (oldHB != null)
+            oldHB.setHomeBlock(false);
 
         newHB.setRespawnX((int) position.x);
         newHB.setRespawnY((int) position.y);
@@ -198,8 +201,19 @@ public class ChunkHandler extends Handler<Chunk> {
         return asString.toString();
     }
 
+    public Chunk CreateChunk(int posX, int posZ, City city, int dimensionId, String name) {
+        Chunk chunk = CreateChunk(posX, posZ, city, dimensionId);
+
+        chunk.setName(name);
+
+        return chunk;
+    }
+
     public Chunk CreateChunk(int posX, int posZ, City city, int dimensionId) {
         Chunk chunk = new Chunk(posX, posZ, city, dimensionId);
+        chunk.setName(String.format("Chunk[%d;%d]", posX, posZ));
+
+        add(chunk);
 
         return chunk;
     }

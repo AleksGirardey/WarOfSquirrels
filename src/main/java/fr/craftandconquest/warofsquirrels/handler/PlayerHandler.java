@@ -59,6 +59,7 @@ public class PlayerHandler extends Handler<Player> {
 
         player.setPlayerEntity(playerEntity);
         player.setUuid(playerEntity.getUniqueID());
+        player.setDisplayName(playerEntity.getDisplayName().getString());
         player.setAssistant(false);
         player.setBalance(WarOfSquirrels.instance.config.getConfiguration().getStartBalance());
         player.lastPosition = playerEntity.getPositionVec();

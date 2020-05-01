@@ -23,7 +23,7 @@ public abstract class Handler<T> {
 
     protected List<T> dataArray;
 
-    private File configFile;
+    protected File configFile;
 
     protected Handler( String prefix, Logger logger) {
         PrefixLogger = prefix;
@@ -56,6 +56,10 @@ public abstract class Handler<T> {
             return false;
         }
         return true;
+    }
+
+    public void Save() {
+        Save(dataArray);
     }
 
     protected void Save(Collection<T> data) {

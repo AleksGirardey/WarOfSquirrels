@@ -3,15 +3,14 @@ package fr.craftandconquest.warofsquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CityCommand;
 import fr.craftandconquest.warofsquirrels.events.PlayersInteractionHandler;
 import fr.craftandconquest.warofsquirrels.events.WorldInteractionHandler;
-import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
-import fr.craftandconquest.warofsquirrels.handler.CityHandler;
-import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
-import fr.craftandconquest.warofsquirrels.handler.PlayerHandler;
+import fr.craftandconquest.warofsquirrels.handler.*;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
+import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Config;
 import lombok.Getter;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,6 +24,8 @@ import org.apache.logging.log4j.Logger;
 public class WarOfSquirrels {
     public static WarOfSquirrels instance;
 
+    public static MinecraftServer server;
+
     public static final String warOfSquirrelsModId = "wos";
     public static final String warOfSquirrelsConfigDir = "./WarOfSquirrels";
 
@@ -35,6 +36,8 @@ public class WarOfSquirrels {
     @Getter private BroadCastHandler broadCastHandler;
     @Getter private CityHandler cityHandler;
     @Getter private PlayerHandler playerHandler;
+    @Getter private InfluenceHandler influenceHandler;
+    @Getter private TerritoryHandler territoryHandler;
 
     public Config config;
 
@@ -53,6 +56,8 @@ public class WarOfSquirrels {
     @SubscribeEvent
     public void OnServerStarting(FMLServerStartingEvent event) {
         LOGGER.info("[WoS] Server Starting . . .");
+
+        server = event.getServer();
 
         config = new Config("[WoS][Config]", LOGGER);
 

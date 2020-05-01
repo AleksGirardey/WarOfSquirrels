@@ -1,9 +1,6 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
 import fr.craftandconquest.warofsquirrels.object.Player;
-import fr.craftandconquest.warofsquirrels.object.city.City;
-import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
-import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 
 public class PermissionHandler {

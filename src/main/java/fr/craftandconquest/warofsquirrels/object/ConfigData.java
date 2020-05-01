@@ -1,7 +1,7 @@
 package fr.craftandconquest.warofsquirrels.object;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.craftandconquest.warofsquirrels.object.city.CityRank;
+import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import lombok.AllArgsConstructor;

@@ -3,7 +3,8 @@ package fr.craftandconquest.warofsquirrels.handler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
-import fr.craftandconquest.warofsquirrels.object.city.City;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
@@ -13,7 +14,7 @@ import java.text.MessageFormat;
 import java.util.*;
 
 public class CityHandler extends Handler<City> {
-    private final Map<Integer, City> cityMap;
+    private final Map<UUID, City> cityMap;
 
     protected static String DirName = "/WorldData";
     protected static String JsonName = "/CityHandler.json";
@@ -35,9 +36,7 @@ public class CityHandler extends Handler<City> {
     }
 
     public boolean add(City city) {
-        int cityId = getCityId(city);
-        city.setCityId(cityId);
-        if (cityMap.containsKey(cityId)) return false;
+        if (cityMap.containsKey(city.getCityUuid())) return false;
 
         if (!dataArray.contains(city)) {
             if (dataArray.size() == 0)
@@ -45,7 +44,7 @@ public class CityHandler extends Handler<City> {
             dataArray.add(city);
         }
 
-        cityMap.put(cityId, city);
+        cityMap.put(city.getCityUuid(), city);
         Save(cityMap.values());
         LogCityCreation(city);
         return true;
@@ -54,6 +53,7 @@ public class CityHandler extends Handler<City> {
     public City CreateCity(String name, String tag, Player owner) {
         City city = new City();
 
+        city.setCityUuid(UUID.randomUUID());
         city.displayName = name;
         city.tag = tag;
         city.SetOwner(owner);
@@ -61,7 +61,12 @@ public class CityHandler extends Handler<City> {
         city.setCustomPermission(new HashMap<>());
         city.setDefaultPermission(new HashMap<>(WarOfSquirrels.instance.config.getConfiguration().getPermissionMap()));
 
-        add(city);
+        for (Permission permission : city.getDefaultPermission().values()) {
+            permission.setUuid(UUID.randomUUID());
+        }
+
+        if (!add(city))
+            return null;
 
         return city;
     }
@@ -97,7 +102,7 @@ public class CityHandler extends Handler<City> {
         return null;
     }
 
-    public City getCity(int cityId) { return cityMap.get(cityId); }
+    public City getCity(UUID uuid) { return cityMap.get(uuid); }
 
     public int getCityId(City city) {
         String seedString = city.displayName + city.tag;
@@ -119,14 +124,27 @@ public class CityHandler extends Handler<City> {
             player.setCity(null);
         }
 
-        cityMap.remove(city.getCityId());
+        cityMap.remove(city.getCityUuid());
         city.getOwner().setCity(null);
+
+        Save(cityMap.values());
 
         return true;
     }
 
     private void LogCityCreation(City city) {
         Logger.info(PrefixLogger + city + " created");
+    }
+
+    public List<City> getCities(Faction faction) {
+        List<City> cities = new ArrayList<>();
+
+        for (City city : dataArray) {
+            if (city.getFaction() == faction)
+                cities.add(city);
+        }
+
+        return cities;
     }
 
     public List<Player> getAssistants(City city) {
@@ -140,8 +158,8 @@ public class CityHandler extends Handler<City> {
         return res;
     }
 
-    public List<String> getAssistants(int id) {
-        List<Player> assistants = getAssistants(cityMap.get(id));
+    public List<String> getAssistants(UUID uuid) {
+        List<Player> assistants = getAssistants(cityMap.get(uuid));
         List<String> res = new ArrayList<>();
 
         for (Player player : assistants) {

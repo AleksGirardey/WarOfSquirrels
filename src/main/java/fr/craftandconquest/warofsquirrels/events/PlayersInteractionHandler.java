@@ -2,6 +2,7 @@ package fr.craftandconquest.warofsquirrels.events;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.PlayerHandler;
+import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.utils.ReSpawnPoint;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -20,6 +21,10 @@ public class PlayersInteractionHandler {
 
     @SubscribeEvent
     public void OnPlayerReSpawn(PlayerEvent.PlayerRespawnEvent event) {
+        Player player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer());
+
+        if (player.getCity() == null) return;
+
         ReSpawnPoint spawnPoint = Utils.NearestSpawnPoint(event.getPlayer());
 
         event.getPlayer().setSpawnPoint(spawnPoint.position, true, true, spawnPoint.dimension);
