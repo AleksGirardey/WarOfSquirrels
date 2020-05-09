@@ -1,0 +1,34 @@
+package fr.craftandconquest.warofsquirrels.object.channels;
+
+import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+
+public class CityChannel extends Channel {
+
+    private final City city;
+
+    public CityChannel(City city) {
+        super();
+
+        this.city = city;
+    }
+
+    @Override
+    public void SendAnnounce(ITextComponent message) {
+        for (Player player : receivers) {
+            player.getPlayerEntity().sendMessage(new StringTextComponent(String.format("[%s] %s", city.displayName, message))
+                    .applyTextStyle(TextFormatting.GOLD));
+        }
+    }
+
+    @Override
+    public ITextComponent transformText(Player sender, ITextComponent text) {
+        return new StringTextComponent(String.format("[%s][%s] ",
+                sender.getCity().displayName, Utils.getDisplayNameWithRank(sender)))
+                .applyTextStyle(TextFormatting.DARK_AQUA);
+    }
+}

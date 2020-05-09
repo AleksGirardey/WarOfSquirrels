@@ -11,7 +11,7 @@ import java.text.MessageFormat;
 import java.util.*;
 
 public class FactionHandler extends Handler<Faction> {
-    private Map<UUID, Faction> factionMap;
+    private final Map<UUID, Faction> factionMap;
 
     protected static String DirName = "/WorldData";
     protected static String JsonName = "/FactionHandler.json";
@@ -46,8 +46,7 @@ public class FactionHandler extends Handler<Faction> {
         }
 
         factionMap.put(faction.getFactionUuid(), faction);
-        Save(factionMap.values());
-        LogFactionCreation(faction);
+
         return true;
     }
 
@@ -55,6 +54,9 @@ public class FactionHandler extends Handler<Faction> {
         Faction faction = new Faction(name, capital);
 
         if (!add(faction)) return null;
+
+        Save(factionMap.values());
+        LogFactionCreation(faction);
 
         return faction;
     }

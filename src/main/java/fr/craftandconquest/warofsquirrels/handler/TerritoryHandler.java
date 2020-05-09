@@ -18,9 +18,9 @@ import java.text.MessageFormat;
 import java.util.*;
 
 public class TerritoryHandler extends Handler<Territory> {
-    private Map<UUID, Territory> territoryMap;
-    private Map<Faction, List<Territory>> territoriesByFaction;
-    private Territory[][] territories;
+    private final Map<UUID, Territory> territoryMap;
+    private final Map<Faction, List<Territory>> territoriesByFaction;
+    private final Territory[][] territories;
 
     protected static String DirName = "/WorldData";
     protected static String JsonName = "/TerritoryHandler.json";
@@ -31,6 +31,7 @@ public class TerritoryHandler extends Handler<Territory> {
                 WarOfSquirrels.instance.config.getConfiguration().getTerritorySize();
         territoryMap = new HashMap<>();
         territories = new Territory[sizeMap][sizeMap];
+        territoriesByFaction = new HashMap<>();
 
         if (!Init()) return;
         if (!Load(new TypeReference<List<Territory>>() {})) return;
@@ -67,8 +68,9 @@ public class TerritoryHandler extends Handler<Territory> {
 
         for (int i = 0; i < maxX; i++) {
             for (int j = 0; j < maxZ; j++) {
-                territories[i][j] = new Territory("Province inconnue", i, j, null, null,
-                        WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD).getDimension().getType().getId());
+                if (CreateTerritory("Province inconnue", i, j, null, null,
+                        WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD).getDimension().getType().getId()) == null)
+                    return;
             }
         }
     }
@@ -94,8 +96,6 @@ public class TerritoryHandler extends Handler<Territory> {
             territoriesByFaction.put(territory.getFaction(), new ArrayList<>());
         territoriesByFaction.get(territory.getFaction()).add(territory);
 
-        Save(territoryMap.values());
-        LogTerritoryCreation(territory);
         return true;
     }
 
@@ -105,6 +105,9 @@ public class TerritoryHandler extends Handler<Territory> {
 
         if (!add(territory))
             return null;
+
+        Save(territoryMap.values());
+        LogTerritoryCreation(territory);
 
         return territory;
     }

@@ -48,13 +48,10 @@ public class PlayerHandler extends Handler<Player> {
             playersByName.put(player.getDisplayName(), player);
             playersByEntity.put(player.getPlayerEntity(), player);
         }
-
-        Save(playersByName.values());
-        LogPlayerCreation(player);
         return true;
     }
 
-    public boolean CreatePlayer(PlayerEntity playerEntity) {
+    public Player CreatePlayer(PlayerEntity playerEntity) {
         Player player = new Player();
 
         player.setPlayerEntity(playerEntity);
@@ -65,7 +62,12 @@ public class PlayerHandler extends Handler<Player> {
         player.lastPosition = playerEntity.getPositionVec();
         player.lastDimension = playerEntity.dimension;
 
-        return add(player);
+        if (!add(player)) return null;
+
+        Save(playersByName.values());
+        LogPlayerCreation(player);
+
+        return player;
     }
 
     @Override

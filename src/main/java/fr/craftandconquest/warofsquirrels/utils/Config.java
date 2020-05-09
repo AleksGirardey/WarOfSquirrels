@@ -130,6 +130,6 @@ public class Config {
                 20, 20, 15, 10,
                 3, 10, 1500, 120,
                 120, 5120, 400, 256,
-                400, initRanks, defaultPermissions);
+                400, 5000, initRanks, defaultPermissions);
     }
 }

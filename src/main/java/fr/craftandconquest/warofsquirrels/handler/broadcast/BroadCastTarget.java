@@ -1,5 +1,7 @@
 package fr.craftandconquest.warofsquirrels.handler.broadcast;
 
 public enum BroadCastTarget {
-    CITY
+    CITY,
+    FACTION,
+    GENERAL
 }

@@ -14,7 +14,7 @@ public class PlayersInteractionHandler {
     public void OnLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
         PlayerHandler playerHandler = WarOfSquirrels.instance.getPlayerHandler();
         if (!playerHandler.exists(event.getPlayer()))
-            playerHandler.CreatePlayer(event.getPlayer());
+            if (playerHandler.CreatePlayer(event.getPlayer()) == null) event.setCanceled(true);
         playerHandler.get(event.getPlayer()).lastDimension = event.getPlayer().dimension;
         playerHandler.get(event.getPlayer()).lastPosition = event.getPlayer().getPositionVec();
     }

@@ -29,12 +29,6 @@ public class CityHandler extends Handler<City> {
         Log();
     }
 
-    @Override
-    protected boolean Populate() {
-        dataArray.iterator().forEachRemaining(this::add);
-        return true;
-    }
-
     public boolean add(City city) {
         if (cityMap.containsKey(city.getCityUuid())) return false;
 
@@ -45,8 +39,6 @@ public class CityHandler extends Handler<City> {
         }
 
         cityMap.put(city.getCityUuid(), city);
-        Save(cityMap.values());
-        LogCityCreation(city);
         return true;
     }
 
@@ -68,6 +60,8 @@ public class CityHandler extends Handler<City> {
         if (!add(city))
             return null;
 
+        Save(cityMap.values());
+        LogCityCreation(city);
         return city;
     }
 
@@ -103,15 +97,6 @@ public class CityHandler extends Handler<City> {
     }
 
     public City getCity(UUID uuid) { return cityMap.get(uuid); }
-
-    public int getCityId(City city) {
-        String seedString = city.displayName + city.tag;
-        int seed = 0;
-        for (char c : seedString.toCharArray()) {
-            seed += c - 'a' + 1;
-        }
-        return seed;
-    }
 
     @Override
     public boolean Delete(City city) {

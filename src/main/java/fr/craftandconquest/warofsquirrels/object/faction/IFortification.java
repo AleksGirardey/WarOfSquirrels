@@ -10,6 +10,12 @@ public interface IFortification {
 
     UUID getUniqueId();
 
+    Faction getFaction();
+
+    default int getSelfInfluenceGenerated() {
+        return 100;
+    }
+
     default int getInfluenceGenerated() {
         return 100;
     }

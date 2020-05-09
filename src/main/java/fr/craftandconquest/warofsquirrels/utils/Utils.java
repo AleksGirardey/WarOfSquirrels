@@ -3,6 +3,8 @@ package fr.craftandconquest.warofsquirrels.utils;
 import com.sun.javafx.geom.Vec2d;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import javafx.util.Pair;
 import net.minecraft.entity.player.PlayerEntity;
@@ -69,5 +71,19 @@ public class Utils {
             closerDistance = Double.min(dist, closerDistance);
         }
         return (int) closerDistance;
+    }
+
+    public static String getDisplayNameWithRank(Player player) {
+        City city = player.getCity();
+
+        if (city != null) {
+            CityRank rank = city.getRank();
+
+            if (city.getOwner() == player)
+                return String.format("%s %s", rank.getPrefixMayor(), player.getDisplayName());
+            else if (player.getAssistant())
+                return String.format("%s %s", rank.getPrefixAssistant(), player.getDisplayName());
+        }
+        return player.getDisplayName();
     }
 }

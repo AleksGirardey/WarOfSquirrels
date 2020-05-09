@@ -67,8 +67,7 @@ public class ChunkHandler extends Handler<Chunk> {
         if (!cityMap.containsKey(chunk.getCity()))
             cityMap.put(chunk.getCity(), new ArrayList<>());
         cityMap.get(chunk.getCity()).add(chunk);
-        Save(chunksMap.values());
-        LogChunkCreation(chunk);
+
         return true;
     }
 
@@ -215,6 +214,8 @@ public class ChunkHandler extends Handler<Chunk> {
 
         add(chunk);
 
+        Save(chunksMap.values());
+        LogChunkCreation(chunk);
         return chunk;
     }
 }

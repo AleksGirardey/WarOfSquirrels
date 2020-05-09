@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
+import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
@@ -21,7 +22,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class City implements IPermission {
+public class City implements IPermission, IFortification {
     @JsonProperty @Getter @Setter private UUID cityUuid;
     public String displayName;
     public String tag;
@@ -83,5 +84,10 @@ public class City implements IPermission {
     @Override
     public String toString() {
         return String.format("[%s] %s", tag, displayName);
+    }
+
+    @Override
+    public UUID getUniqueId() {
+        return cityUuid;
     }
 }

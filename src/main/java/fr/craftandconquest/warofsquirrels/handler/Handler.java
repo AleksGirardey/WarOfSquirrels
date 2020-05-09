@@ -73,7 +73,12 @@ public abstract class Handler<T> {
         }
     }
 
-    protected abstract boolean Populate();
+    protected boolean Populate() {
+        dataArray.iterator().forEachRemaining(this::add);
+        return true;
+    }
+
+    protected abstract boolean add(T value);
 
     protected boolean Load(TypeReference<List<T>> typeReference) {
         String errorMessage = MessageFormat.format("{0} Couldn't load Json data.", PrefixLogger);

@@ -6,7 +6,6 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.InfluenceHandler;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
-import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,17 +52,25 @@ public class Territory {
     }
 
     public int GetInfluenceGenerated() {
-        return fortification.getInfluenceGenerated();
+        return fortification != null ? fortification.getInfluenceGenerated() : 0;
     }
 
-    public int SpreadInfluence() {
+    public int GetSelfInfluenceGenerated() {
+        return fortification != null ? fortification.getSelfInfluenceGenerated() : 0;
+    }
+
+    public void SpreadInfluence() {
         InfluenceHandler handler = WarOfSquirrels.instance.getInfluenceHandler();
         List<Territory> neighbors = WarOfSquirrels.instance.getTerritoryHandler().getNeighbors(this);
 
-        for (Territory territory : neighbors)
-            WarOfSquirrels.instance.getInfluenceHandler().pushInfluence(faction);
+        if (fortification != null) {
+            handler.pushInfluence(fortification.getFaction(), this, GetSelfInfluenceGenerated());
 
-        return 0;
+            if (faction != null) {
+                for (Territory territory : neighbors)
+                    handler.pushInfluence(faction, territory, GetInfluenceGenerated());
+            }
+        }
     }
 
     @Override
