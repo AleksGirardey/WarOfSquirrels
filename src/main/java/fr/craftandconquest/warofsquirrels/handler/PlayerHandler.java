@@ -15,10 +15,10 @@ public class PlayerHandler extends Handler<Player> {
     private static final String DirName = "/WorldData";
     private static final String JsonName = "/PlayerHandler.json";
 
-    private Map<String, Player> playersByName;
-    private Map<PlayerEntity, Player> playersByEntity;
+    private final Map<String, Player> playersByName;
+    private final Map<PlayerEntity, Player> playersByEntity;
 
-    private Map<Player, Timer> reincarnation;
+    private final Map<Player, Timer> reincarnation;
 
     public PlayerHandler(Logger logger) {
         super("[WoS][PlayerHandler]", logger);
