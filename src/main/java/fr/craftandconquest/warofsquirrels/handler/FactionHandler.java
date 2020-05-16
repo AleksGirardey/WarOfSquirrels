@@ -16,7 +16,7 @@ public class FactionHandler extends Handler<Faction> {
     protected static String DirName = "/WorldData";
     protected static String JsonName = "/FactionHandler.json";
 
-    protected FactionHandler(Logger logger) {
+    public FactionHandler(Logger logger) {
         super("[WoS][PlayerHandler]", logger);
         factionMap = new HashMap<>();
 
@@ -72,6 +72,10 @@ public class FactionHandler extends Handler<Faction> {
         }
 
         return null;
+    }
+
+    public List<Faction> getAll() {
+        return dataArray;
     }
 
     @Override

@@ -18,17 +18,15 @@ public class CityChannel extends Channel {
     }
 
     @Override
-    public void SendAnnounce(ITextComponent message) {
-        for (Player player : receivers) {
-            player.getPlayerEntity().sendMessage(new StringTextComponent(String.format("[%s] %s", city.displayName, message))
-                    .applyTextStyle(TextFormatting.GOLD));
-        }
-    }
-
-    @Override
     public ITextComponent transformText(Player sender, ITextComponent text) {
         return new StringTextComponent(String.format("[%s][%s] ",
                 sender.getCity().displayName, Utils.getDisplayNameWithRank(sender)))
                 .applyTextStyle(TextFormatting.DARK_AQUA);
+    }
+
+    @Override
+    protected ITextComponent transformTextAnnounce(ITextComponent text) {
+        return new StringTextComponent(String.format("[%s] %s", city.displayName, text))
+                .applyTextStyle(TextFormatting.GOLD);
     }
 }

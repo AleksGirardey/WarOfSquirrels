@@ -25,7 +25,7 @@ public class TerritoryHandler extends Handler<Territory> {
     protected static String DirName = "/WorldData";
     protected static String JsonName = "/TerritoryHandler.json";
 
-    protected TerritoryHandler(Logger logger) {
+    public TerritoryHandler(Logger logger) {
         super("[WoS][TerritoryHandler]", logger);
         int sizeMap = WarOfSquirrels.instance.config.getConfiguration().getMapSize() /
                 WarOfSquirrels.instance.config.getConfiguration().getTerritorySize();

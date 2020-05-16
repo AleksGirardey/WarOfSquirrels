@@ -1,5 +1,6 @@
 package fr.craftandconquest.warofsquirrels.object.channels;
 
+import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
@@ -12,18 +13,9 @@ public class FactionChannel extends Channel {
     private final Faction faction;
 
     public FactionChannel(Faction faction) {
-        super();
+        super(BroadCastTarget.FACTION);
 
         this.faction = faction;
-    }
-
-    @Override
-    public void SendAnnounce(ITextComponent message) {
-        for (Player player : receivers) {
-            player.getPlayerEntity().sendMessage(new StringTextComponent(
-                    String.format("[%s] %s", faction.getDisplayName(), message))
-                    .applyTextStyle(TextFormatting.GOLD));
-        }
     }
 
     @Override
@@ -31,5 +23,12 @@ public class FactionChannel extends Channel {
         return new StringTextComponent(String.format("[%s][%s] ",
                 sender.getCity().displayName, Utils.getDisplayNameWithRank(sender)))
                 .applyTextStyle(TextFormatting.DARK_BLUE);
+    }
+
+    @Override
+    protected ITextComponent transformTextAnnounce(ITextComponent text) {
+        return new StringTextComponent(
+                String.format("[%s] %s", faction.getDisplayName(), text))
+                .applyTextStyle(TextFormatting.GOLD);
     }
 }

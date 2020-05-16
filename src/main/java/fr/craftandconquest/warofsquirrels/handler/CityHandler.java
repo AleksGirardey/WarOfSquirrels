@@ -98,6 +98,8 @@ public class CityHandler extends Handler<City> {
 
     public City getCity(UUID uuid) { return cityMap.get(uuid); }
 
+//    public List<City> getAll() { return dataArray; }
+
     @Override
     public boolean Delete(City city) {
         WarOfSquirrels.instance.spreadPermissionDelete(city);

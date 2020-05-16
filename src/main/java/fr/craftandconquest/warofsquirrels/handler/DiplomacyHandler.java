@@ -19,7 +19,7 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
     private static final String DirName = "/WorldData";
     private static final String JsonName = "/DiplomacyHandler.json"
 
-    protected DiplomacyHandler(Logger logger) {
+    public DiplomacyHandler(Logger logger) {
         super("[WoS][DiplomacyHandler]", logger);
     }
 

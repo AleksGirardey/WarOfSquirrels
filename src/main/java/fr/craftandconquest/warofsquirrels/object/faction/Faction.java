@@ -3,6 +3,8 @@ package fr.craftandconquest.warofsquirrels.object.faction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
+import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
@@ -17,7 +19,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class Faction implements IPermission {
+public class Faction implements IPermission, IChannelTarget {
 
     @JsonProperty @Getter private UUID factionUuid;
     @JsonProperty @Getter @Setter private UUID capitalUuid;
@@ -48,6 +50,11 @@ public class Faction implements IPermission {
     public void updateDependencies() {
         this.capital = WarOfSquirrels.instance.getCityHandler().getCity(this.capitalUuid);
         Populate();
+    }
+
+    @Override
+    public BroadCastTarget getBroadCastTarget() {
+        return BroadCastTarget.FACTION;
     }
 
     @Override

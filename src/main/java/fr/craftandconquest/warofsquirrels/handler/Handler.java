@@ -80,6 +80,8 @@ public abstract class Handler<T> {
 
     protected abstract boolean add(T value);
 
+    public List<T> getAll() { return dataArray; }
+
     protected boolean Load(TypeReference<List<T>> typeReference) {
         String errorMessage = MessageFormat.format("{0} Couldn't load Json data.", PrefixLogger);
         ObjectMapper mapper = new ObjectMapper();

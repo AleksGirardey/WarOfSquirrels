@@ -35,6 +35,8 @@ public class WarOfSquirrels {
     @Getter private PermissionHandler permissionHandler;
     @Getter private BroadCastHandler broadCastHandler;
     @Getter private CityHandler cityHandler;
+    @Getter private FactionHandler factionHandler;
+    @Getter private DiplomacyHandler diplomacyHandler;
     @Getter private PlayerHandler playerHandler;
     @Getter private InfluenceHandler influenceHandler;
     @Getter private TerritoryHandler territoryHandler;
@@ -61,10 +63,22 @@ public class WarOfSquirrels {
 
         config = new Config("[WoS][Config]", LOGGER);
 
+        permissionHandler = new PermissionHandler();
+        playerHandler = new PlayerHandler(LOGGER);
         chunkHandler = new ChunkHandler(LOGGER);
         cityHandler = new CityHandler(LOGGER);
-        playerHandler = new PlayerHandler(LOGGER);
-        permissionHandler = new PermissionHandler();
+        territoryHandler = new TerritoryHandler(LOGGER);
+        broadCastHandler = new BroadCastHandler(LOGGER);
+        //invitationHandler = new InvitationHandler();
+//        warHandler = new WarHandler();
+//        partyHandler = new PartyHandler();
+//        cuboHandler = new CuboHandler(logger);
+        diplomacyHandler = new DiplomacyHandler(LOGGER);
+//        shopHandler = new ShopHandler(logger);
+//        loanHandler = new LoanHandler(logger);
+        factionHandler = new FactionHandler(LOGGER);
+        influenceHandler = new InfluenceHandler(LOGGER);
+//        updateHandler = new UpdateHandler();
 
         CityCommand.register(event.getCommandDispatcher());
 
