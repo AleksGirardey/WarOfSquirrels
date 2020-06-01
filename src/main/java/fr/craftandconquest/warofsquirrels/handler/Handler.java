@@ -2,7 +2,6 @@ package fr.craftandconquest.warofsquirrels.handler;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import org.apache.logging.log4j.Logger;
 

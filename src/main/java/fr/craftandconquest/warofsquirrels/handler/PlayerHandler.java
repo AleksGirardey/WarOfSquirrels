@@ -73,7 +73,8 @@ public class PlayerHandler extends Handler<Player> {
     @Override
     public boolean Delete(Player player) {
         if (player.getCity() != null)
-            player.getCity().removeCitizen(player);
+            if (!player.getCity().removeCitizen(player))
+                return false;
 
         WarOfSquirrels.instance.spreadPermissionDelete(player);
 

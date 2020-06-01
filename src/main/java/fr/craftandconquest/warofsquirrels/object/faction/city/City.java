@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,7 +41,11 @@ public class City implements IPermission, IFortification, IChannelTarget {
     private int         balance;
 
     @JsonIgnore @Getter private Player owner;
-    @JsonIgnore @Getter private List<Player> citizens = new ArrayList<>();
+    @JsonIgnore @Getter private final List<Player> citizens = new ArrayList<>();
+
+    public List<Player> getAssistants() {
+        return citizens.stream().filter(Player::getAssistant).collect(Collectors.toCollection(ArrayList::new));
+    }
 
     public boolean addCitizen(Player player) {
         if (citizens.contains(player)) return false;

@@ -8,6 +8,7 @@ import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
+import net.minecraft.util.text.StringTextComponent;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -117,6 +118,18 @@ public class CityHandler extends Handler<City> {
         Save(cityMap.values());
 
         return true;
+    }
+
+    public void NewCitizen(Player player, City city) {
+        player.setCity(city);
+        assert city.addCitizen(player);
+        WarOfSquirrels.instance.getPlayerHandler().Save();
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(city, null, new StringTextComponent(player.getDisplayName() + " has join the city."), true);
+    }
+
+    public void RemoveCitizen(Player player) {
+        player.getCity().removeCitizen(player);
+        player.setCity(null);
     }
 
     private void LogCityCreation(City city) {

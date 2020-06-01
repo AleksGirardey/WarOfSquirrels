@@ -38,6 +38,7 @@ public class WarOfSquirrels {
     @Getter private FactionHandler factionHandler;
     @Getter private DiplomacyHandler diplomacyHandler;
     @Getter private PlayerHandler playerHandler;
+    @Getter private PartyHandler partyHandler;
     @Getter private InfluenceHandler influenceHandler;
     @Getter private TerritoryHandler territoryHandler;
 
@@ -71,7 +72,7 @@ public class WarOfSquirrels {
         broadCastHandler = new BroadCastHandler(LOGGER);
         //invitationHandler = new InvitationHandler();
 //        warHandler = new WarHandler();
-//        partyHandler = new PartyHandler();
+        partyHandler = new PartyHandler();
 //        cuboHandler = new CuboHandler(logger);
         diplomacyHandler = new DiplomacyHandler(LOGGER);
 //        shopHandler = new ShopHandler(logger);
