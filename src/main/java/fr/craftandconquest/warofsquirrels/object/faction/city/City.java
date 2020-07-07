@@ -16,17 +16,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minecraft.server.MinecraftServer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
 public class City implements IPermission, IFortification, IChannelTarget {
     @JsonProperty @Getter @Setter private UUID cityUuid;
-    public String displayName;
+    @Getter @Setter public String displayName;
     public String tag;
     public UUID ownerUUID;
 
@@ -40,7 +42,11 @@ public class City implements IPermission, IFortification, IChannelTarget {
     private int         balance;
 
     @JsonIgnore @Getter private Player owner;
-    @JsonIgnore @Getter private List<Player> citizens = new ArrayList<>();
+    @JsonIgnore @Getter private final List<Player> citizens = new ArrayList<>();
+
+    public List<Player> getAssistants() {
+        return citizens.stream().filter(Player::getAssistant).collect(Collectors.toCollection(ArrayList::new));
+    }
 
     public boolean addCitizen(Player player) {
         if (citizens.contains(player)) return false;
@@ -96,5 +102,20 @@ public class City implements IPermission, IFortification, IChannelTarget {
     @Override
     public UUID getUniqueId() {
         return cityUuid;
+    }
+
+    public List<Player> getOnlinePlayers() {
+        List<Player> onlinePlayers = new ArrayList<>();
+        MinecraftServer server = WarOfSquirrels.server;
+
+        if (server.getPlayerList().getPlayerByUUID(owner.getUuid()) != null)
+            onlinePlayers.add(owner);
+
+        for (Player player : citizens) {
+            if (server.getPlayerList().getPlayerByUUID(player.getUuid()) != null)
+                onlinePlayers.add(player);
+        }
+
+        return onlinePlayers;
     }
 }

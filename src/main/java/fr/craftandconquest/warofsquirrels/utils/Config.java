@@ -128,7 +128,7 @@ public class Config {
 
         return new ConfigData(
                 20, 20, 15, 10,
-                3, 10, 1500, 120,
+                3, 10, 30, 1500, 120,
                 120, 5120, 400, 256,
                 400, 5000, initRanks, defaultPermissions);
     }

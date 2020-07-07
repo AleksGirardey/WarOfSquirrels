@@ -140,7 +140,7 @@ public class CityHandler {
     public void         newCitizen(DBPlayer player, City city) {
         player.setCity(city);
         city.addCitizen(player);
-        Core.getBroadcastHandler().cityChannel(city, player.getDisplayName() + " has join the city");
+        Core.getBroadcastHandler().cityChannel(city, player.getDisplayName() + " has join the city);
     }
 
     public void         removeCitizen(DBPlayer player) {

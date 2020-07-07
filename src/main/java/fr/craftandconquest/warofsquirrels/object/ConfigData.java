@@ -18,13 +18,14 @@ public class ConfigData {
     @Getter @Setter private int   distanceOutpost;
     @Getter @Setter private int   shoutDistance;
     @Getter @Setter private int   sayDistance;
-    @Getter @Setter private int   peaceTime;
+    @Getter @Setter private boolean   peaceTime;
     @Getter @Setter private int   reincarnationTime;
+    @Getter @Setter private int   invitationTime;
     @Getter @Setter private int   startBalance;
     @Getter @Setter private int   preparationPhase;
     @Getter @Setter private int   rollbackPhase;
     @Getter @Setter private int   mapSize;
-    @Getter @Setter private int   territoriesGenerated;
+    @Getter @Setter private boolean   territoriesGenerated;
     @Getter @Setter private int   territorySize;
     @Getter @Setter private int   territoryClaimLimit;
     @Getter @Setter private int   influenceMax;

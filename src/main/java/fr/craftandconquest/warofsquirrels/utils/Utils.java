@@ -1,16 +1,17 @@
 package fr.craftandconquest.warofsquirrels.utils;
 
-import com.sun.javafx.geom.Vec2d;
+import com.sun.org.apache.xml.internal.utils.IntVector;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
-import javafx.util.Pair;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.dimension.DimensionType;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 public class Utils {
 
     public static Pair<Integer, Integer> WorldToChunkCoordinates(int posX, int posZ) {
-        return new Pair<>(posX / 16, posZ / 16);
+        return Pair.of(posX / 16, posZ / 16);
     }
 
     public static boolean       CanPlaceOutpost(int posX, int posZ) {
@@ -58,14 +59,14 @@ public class Utils {
 
     public static int       NearestHomeBlock(int posX, int posZ) {
         double              closerDistance = WarOfSquirrels.instance.getConfig().getDistanceCities();
-        Vec2d playerChunk = new Vec2d(posX, posZ);
+        Vector2 playerChunk = new Vector2(posX, posZ);
         List<Chunk> homeBlockList;
 
         homeBlockList = WarOfSquirrels.instance.getChunkHandler().getHomeBlockList();
         if (homeBlockList.size() == 0)
             return (-1);
         for (Chunk c : homeBlockList) {
-            Vec2d   vec = new Vec2d(c.posX, c.posZ);
+            Vector2 vec = new Vector2(c.posX, c.posZ);
             double  dist = vec.distance(playerChunk);
 
             closerDistance = Double.min(dist, closerDistance);
@@ -85,5 +86,30 @@ public class Utils {
                 return String.format("%s %s", rank.getPrefixAssistant(), player.getDisplayName());
         }
         return player.getDisplayName();
+    }
+
+    public static String toTime(int value) {
+        int                 minutes, seconds;
+        String              res = "";
+
+        minutes = value / 60;
+        seconds = value % 60;
+        if (minutes > 0)
+            res = minutes + " min ";
+        res += seconds + " s";
+
+        return res;
+    }
+
+    public static String getStringFromPlayerList(List<Player> list) {
+        StringBuilder res = new StringBuilder();
+        int i = 0;
+
+        for (Player p : list) {
+            res.append(p.getDisplayName());
+            if (i != list.size() - 1)
+                res.append(", ");
+        }
+        return res.toString();
     }
 }

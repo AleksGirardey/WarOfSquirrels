@@ -2,6 +2,7 @@ package fr.craftandconquest.warofsquirrels.handler;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.object.faction.Diplomacy;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
@@ -9,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FactionHandler extends Handler<Faction> {
     private final Map<UUID, Faction> factionMap;
@@ -114,13 +116,13 @@ public class FactionHandler extends Handler<Faction> {
     private void LogFactionCreation(Faction faction) { Logger.info(PrefixLogger + faction + " created"); }
 
 
-//    public List<Diplomacy>      getDiplomacy(Faction faction, boolean relation) {
-//        List<Diplomacy>         res = new ArrayList<>(),
-//                diplo = Core.getDiplomacyHandler().get(faction);
-//
-//        if (diplo != null) res.addAll(diplo.stream().filter(d -> d.getRelation() == relation).collect(Collectors.toList()));
-//        return res;
-//    }
+    public List<Diplomacy>      getDiplomacy(Faction faction, boolean relation) {
+        List<Diplomacy>         res = new ArrayList<>(),
+                diplo = WarOfSquirrels.instance.getDiplomacyHandler().get(faction);
+
+        if (diplo != null) res.addAll(diplo.stream().filter(d -> d.isRelation() == relation).collect(Collectors.toList()));
+        return res;
+    }
 //
 //    public boolean          areAllies(Faction A, Faction B) {
 //        List<Diplomacy>     diploA = getDiplomacy(A, true);
@@ -131,14 +133,14 @@ public class FactionHandler extends Handler<Faction> {
 //        return false;
 //    }
 //
-//    public boolean          areEnemies(Faction A, Faction B) {
-//        List<Diplomacy>     diploA = getDiplomacy(A, false);
-//
-//        for (Diplomacy d : diploA)
-//            if (d.getTarget() == B)
-//                return true;
-//        return false;
-//    }
+    public boolean          areEnemies(Faction A, Faction B) {
+        List<Diplomacy>     diploA = getDiplomacy(A, false);
+
+        for (Diplomacy d : diploA)
+            if (d.getTarget() == B)
+                return true;
+        return false;
+    }
 //
 //    public void             setNeutral(Faction A, Faction B) {
 //        List<Diplomacy>     list = new ArrayList<>();

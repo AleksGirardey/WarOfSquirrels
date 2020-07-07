@@ -86,7 +86,7 @@ public class TerritoryHandler extends Handler<Territory> {
 
         if (!dataArray.contains(territory)) {
             if (dataArray.size() == 0)
-                dataArray = new ArrayList<Territory>();
+                dataArray = new ArrayList<>();
             dataArray.add(territory);
         }
 

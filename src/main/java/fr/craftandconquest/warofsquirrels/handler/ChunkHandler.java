@@ -10,6 +10,7 @@ import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.dimension.DimensionType;
 import org.apache.logging.log4j.Logger;
 
@@ -132,11 +133,11 @@ public class ChunkHandler extends Handler<Chunk> {
         newHB.setRespawnY((int) position.y);
         newHB.setRespawnZ((int) position.z);
 
-        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(BroadCastTarget.CITY, newHB.getCity(),
-                String.format("Le HomeBlock de la ville est désormais en [%d;%d;%d]",
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(newHB.getCity(), null,
+                new StringTextComponent(String.format("Le HomeBlock de la ville est désormais en [%d;%d;%d]",
                         (int) position.x,
                         (int) position.y,
-                        (int) position.z));
+                        (int) position.z)), true);
         return true;
     }
 

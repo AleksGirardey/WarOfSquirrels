@@ -14,6 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Diplomacy {
+    @JsonProperty @Getter @Setter private UUID uuid;
     @JsonProperty @Getter private UUID factionUuid;
     @JsonProperty @Getter private UUID targetUuid;
     @JsonProperty @Getter @Setter private boolean relation;
@@ -48,5 +49,12 @@ public class Diplomacy {
     public String toString() {
         return MessageFormat.format("[Diplomacy][Creation] diplomacy between '{0}' and '{1}' set to {2}",
                 faction.getDisplayName(), target.getDisplayName(), relation ? "Allies" : "Enemies");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Diplomacy)
+            return ((Diplomacy) obj).getUuid().equals(this.uuid);
+        return super.equals(obj);
     }
 }

@@ -12,7 +12,7 @@ public class CityChannel extends Channel {
     private final City city;
 
     public CityChannel(City city) {
-        super();
+        super(city.getBroadCastTarget());
 
         this.city = city;
     }

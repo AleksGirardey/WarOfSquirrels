@@ -7,7 +7,6 @@ import fr.craftandconquest.warofsquirrels.handler.*;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
-import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Config;
 import lombok.Getter;
 import net.minecraft.server.MinecraftServer;
@@ -38,8 +37,11 @@ public class WarOfSquirrels {
     @Getter private FactionHandler factionHandler;
     @Getter private DiplomacyHandler diplomacyHandler;
     @Getter private PlayerHandler playerHandler;
+    @Getter private PartyHandler partyHandler;
     @Getter private InfluenceHandler influenceHandler;
     @Getter private TerritoryHandler territoryHandler;
+    @Getter private InvitationHandler invitationHandler;
+    @Getter private WarHandler warHandler;
 
     public Config config;
 
@@ -69,9 +71,9 @@ public class WarOfSquirrels {
         cityHandler = new CityHandler(LOGGER);
         territoryHandler = new TerritoryHandler(LOGGER);
         broadCastHandler = new BroadCastHandler(LOGGER);
-        //invitationHandler = new InvitationHandler();
-//        warHandler = new WarHandler();
-//        partyHandler = new PartyHandler();
+        invitationHandler = new InvitationHandler(LOGGER);
+        warHandler = new WarHandler();
+        partyHandler = new PartyHandler();
 //        cuboHandler = new CuboHandler(logger);
         diplomacyHandler = new DiplomacyHandler(LOGGER);
 //        shopHandler = new ShopHandler(logger);

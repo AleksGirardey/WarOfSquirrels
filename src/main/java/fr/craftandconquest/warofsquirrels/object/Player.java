@@ -31,8 +31,8 @@ public class Player implements IPermission {
     @JsonProperty @Getter @Setter private int balance;
 
     /* -- Extra Fields -- */
-    private int             lastChunkX = 10000;
-    private int             lastChunkZ = 10000;
+    @Getter private int             lastChunkX = 10000;
+    @Getter private int             lastChunkZ = 10000;
     @Getter @Setter private boolean         reincarnation;
     private boolean         adminMode;
     private long            lastClick;
@@ -54,5 +54,9 @@ public class Player implements IPermission {
     @Override
     public PermissionTarget getPermissionTarget() {
         return PermissionTarget.PLAYER;
+    }
+
+    public boolean isOnline() {
+        return (WarOfSquirrels.server.getPlayerList().getPlayerByUUID(uuid) != null);
     }
 }
