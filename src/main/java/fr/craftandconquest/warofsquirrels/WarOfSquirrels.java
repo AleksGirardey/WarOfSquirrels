@@ -28,7 +28,7 @@ public class WarOfSquirrels {
     public static final String warOfSquirrelsModId = "wos";
     public static final String warOfSquirrelsConfigDir = "./WarOfSquirrels";
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     @Getter private ChunkHandler chunkHandler;
     @Getter private PermissionHandler permissionHandler;
@@ -42,6 +42,7 @@ public class WarOfSquirrels {
     @Getter private TerritoryHandler territoryHandler;
     @Getter private InvitationHandler invitationHandler;
     @Getter private WarHandler warHandler;
+    @Getter private CuboHandler cuboHandler;
 
     public Config config;
 
@@ -74,7 +75,7 @@ public class WarOfSquirrels {
         invitationHandler = new InvitationHandler(LOGGER);
         warHandler = new WarHandler();
         partyHandler = new PartyHandler();
-//        cuboHandler = new CuboHandler(logger);
+        cuboHandler = new CuboHandler(LOGGER);
         diplomacyHandler = new DiplomacyHandler(LOGGER);
 //        shopHandler = new ShopHandler(logger);
 //        loanHandler = new LoanHandler(logger);
