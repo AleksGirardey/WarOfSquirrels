@@ -30,6 +30,7 @@ public class CityHandler extends Handler<City> {
         Log();
     }
 
+    @Override
     public boolean add(City city) {
         if (cityMap.containsKey(city.getCityUuid())) return false;
 

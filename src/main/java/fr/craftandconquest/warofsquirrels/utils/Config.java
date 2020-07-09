@@ -126,10 +126,12 @@ public class Config {
         defaultPermissions.put(PermissionRelation.RECRUIT, new Permission("recruit", false, false, true));
         defaultPermissions.put(PermissionRelation.OUTSIDER, new Permission("outsider", false, false, false));
 
+        Permission defaultNaturePermission = new Permission(true, true, true);
+
         return new ConfigData(
                 20, 20, 15, 10,
-                3, 10, 30, 1500, 120,
-                120, 5120, 400, 256,
-                400, 5000, initRanks, defaultPermissions);
+                true, 10, 30, 1500, 120,
+                120, 5120, false, 256,
+                400, 5000, initRanks, defaultPermissions, defaultNaturePermission);
     }
 }

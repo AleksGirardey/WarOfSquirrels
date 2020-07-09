@@ -35,4 +35,6 @@ public class PlayersInteractionHandler {
         WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer())
                 .lastDimension = event.getTo();
     }
+
+
 }

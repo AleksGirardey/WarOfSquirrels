@@ -1,13 +1,25 @@
 package fr.craftandconquest.warofsquirrels.events;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
 import fr.craftandconquest.warofsquirrels.handler.PlayerHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.utils.Vector3;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
@@ -63,5 +75,66 @@ public class WorldInteractionHandler {
 
         logger.info(String.format("[WoS][WorldInteraction][PlayerLoggedOut] Player %s removed from all channels",
                 player.getDisplayName()));
+    }
+
+    @SubscribeEvent
+    public void OnBlockDestroy(BlockEvent.BreakEvent event) {
+        // Deal with sign shop
+
+        Player player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer());
+
+        HandleEventConstruction(event, player, "You cannot destroy here");
+    }
+
+    @SubscribeEvent
+    public void OnBlockPlace(BlockEvent.BreakEvent event) {
+        Player player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer());
+        HandleEventConstruction(event, player, "You cannot build here");
+    }
+
+    private void HandleEventConstruction(BlockEvent event, Player player, String failedMessage) {
+        if (PermissionAPI.hasPermission(player.getPlayerEntity(), "minecraft.command.op")) return;
+
+        boolean canConstruct = WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
+                PermissionHandler.Rights.BUILD,
+                new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
+                event.getWorld().getDimension().getType().getId(),
+                player);
+
+        if (!canConstruct) {
+            event.setCanceled(true);
+            player.getPlayerEntity().sendMessage(new StringTextComponent(failedMessage)
+                    .applyTextStyle(TextFormatting.BOLD)
+                    .applyTextStyle(TextFormatting.RED));
+        }
+    }
+
+    @SubscribeEvent
+    public void OnLivingHurtEntity(LivingHurtEvent event) {
+        if (event.getEntity() instanceof PlayerEntity) return;
+
+        if (!(event.getSource().getTrueSource() instanceof PlayerEntity)) return;
+
+        boolean canFarm = WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
+                PermissionHandler.Rights.FARM,
+                new Vector3((int) event.getEntity().lastTickPosX, (int) event.getEntity().lastTickPosY, (int) event.getEntity().lastTickPosZ),
+                event.getEntity().dimension.getId(),
+                WarOfSquirrels.instance.getPlayerHandler().get((PlayerEntity) event.getSource().getTrueSource()));
+    }
+
+    @SubscribeEvent
+    public void OnLivingSpawnEvent(LivingSpawnEvent event) {
+        Entity entity = event.getEntity();
+
+        if (!(entity instanceof MobEntity)) return;
+
+        boolean canSpawn = WarOfSquirrels.instance.getChunkHandler().getChunk(
+                entity.getPosition().getX(),
+                entity.getPosition().getZ(),
+                entity.dimension.getId()) == null;
+
+        if (!canSpawn) {
+            event.setCanceled(true);
+        }
     }
 }

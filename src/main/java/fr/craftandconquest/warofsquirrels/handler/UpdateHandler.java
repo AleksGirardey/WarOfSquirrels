@@ -1,0 +1,56 @@
+package fr.craftandconquest.warofsquirrels.handler;
+
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class UpdateHandler {
+    private Timer currentUpdateTimer;
+
+    public UpdateHandler() {
+        this.Create();
+    }
+
+    public void Update() {
+        StringTextComponent message = new StringTextComponent("A new day begin..");
+
+        message.applyTextStyle(TextFormatting.GOLD);
+        message.applyTextStyle(TextFormatting.BOLD);
+        message.applyTextStyle(TextFormatting.ITALIC);
+
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
+        WarOfSquirrels.instance.getTerritoryHandler().update();
+//        WarOfSquirrels.instance.getLoanHandler().update();
+        this.Create();
+    }
+
+    public void Create() {
+        currentUpdateTimer = new Timer();
+        currentUpdateTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Update();
+            }
+        }, DelayBeforeMidnight());
+    }
+
+    public long DelayBeforeMidnight() {
+        LocalDateTime localNow = LocalDateTime.now();
+        ZonedDateTime zonedNow = ZonedDateTime.of(localNow, ZoneId.systemDefault());
+        ZonedDateTime zonedNext = zonedNow.withHour(0).withMinute(0).withSecond(0);
+        if(zonedNow.compareTo(zonedNext) > 0)
+            zonedNext = zonedNext.plusDays(1);
+        return Duration.between(zonedNow, zonedNext).getSeconds();
+    }
+
+    public void CancelTask() {
+        currentUpdateTimer.cancel();
+    }
+}

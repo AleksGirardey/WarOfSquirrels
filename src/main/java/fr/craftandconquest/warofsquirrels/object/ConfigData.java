@@ -31,4 +31,5 @@ public class ConfigData {
     @Getter @Setter private int   influenceMax;
     @JsonProperty("CityRanks") @Getter @Setter private Map<Integer, CityRank> cityRankMap;
     @JsonProperty("DefaultPermissions") @Getter @Setter private Map<PermissionRelation, Permission> permissionMap;
+    @Getter @Setter private Permission defaultNaturePermission;
 }

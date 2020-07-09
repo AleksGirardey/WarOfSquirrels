@@ -236,7 +236,7 @@ public class War implements IChannelTarget {
         // Nothing to do for now
     }
 
-    private boolean CheckWin() {
+    protected boolean CheckWin() {
         BroadCastHandler broadCastHandler = WarOfSquirrels.instance.getBroadCastHandler();
         StringTextComponent text;
         if (defendersPoints.getScorePoints() >= 1000)
@@ -411,7 +411,7 @@ public class War implements IChannelTarget {
         return y <=  ySpawn + 20 && y <= ySpawn - 20;
     }
 
-    private void UpdateCapture() {
+    protected void UpdateCapture() {
         List<Chunk>         updated = new ArrayList<>();
         World               world;
         float               v;

@@ -43,14 +43,15 @@ public class WarOfSquirrels {
     @Getter private InvitationHandler invitationHandler;
     @Getter private WarHandler warHandler;
     @Getter private CuboHandler cuboHandler;
+    @Getter private UpdateHandler updateHandler;
 
     public Config config;
 
     public WarOfSquirrels() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 
-        MinecraftForge.EVENT_BUS.register(new WorldInteractionHandler(LOGGER));
-        MinecraftForge.EVENT_BUS.register(new PlayersInteractionHandler());
+        //MinecraftForge.EVENT_BUS.register(new WorldInteractionHandler(LOGGER));
+//        MinecraftForge.EVENT_BUS.register(new PlayersInteractionHandler());
         MinecraftForge.EVENT_BUS.register(this);
 
         instance = this;
@@ -65,7 +66,6 @@ public class WarOfSquirrels {
         server = event.getServer();
 
         config = new Config("[WoS][Config]", LOGGER);
-
         permissionHandler = new PermissionHandler();
         playerHandler = new PlayerHandler(LOGGER);
         chunkHandler = new ChunkHandler(LOGGER);
@@ -81,11 +81,12 @@ public class WarOfSquirrels {
 //        loanHandler = new LoanHandler(logger);
         factionHandler = new FactionHandler(LOGGER);
         influenceHandler = new InfluenceHandler(LOGGER);
-//        updateHandler = new UpdateHandler();
+        updateHandler = new UpdateHandler();
 
         CityCommand.register(event.getCommandDispatcher());
 
         playerHandler.updateDependencies();
+        cuboHandler.UpdateDependencies();
 
         LOGGER.info("[WoS] Server Started !");
     }
@@ -97,6 +98,6 @@ public class WarOfSquirrels {
     public void spreadPermissionDelete(IPermission target) {
         chunkHandler.spreadPermissionDelete(target);
         cityHandler.spreadPermissionDelete(target);
-        //cuboHandler.spreadPermissionDelete(target);
+        cuboHandler.spreadPermissionDelete(target);
     }
 }

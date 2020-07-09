@@ -12,24 +12,27 @@ public class Permission {
     @Getter @Setter public boolean build;
     @Getter @Setter public boolean container;
     @Getter @Setter public boolean switches;
+    @Getter @Setter public boolean farm;
 
     public Permission() {
         uuid = UUID.randomUUID();
     }
 
-    public Permission(boolean build, boolean container, boolean switches) {
+    public Permission(boolean build, boolean container, boolean switches, boolean farm) {
         super();
         this.build = build;
         this.container = container;
         this.switches = switches;
+        this.farm = farm;
     }
 
-    public Permission(String name, boolean build, boolean container, boolean switches) {
+    public Permission(String name, boolean build, boolean container, boolean switches, boolean farm) {
         super();
         this.name = name;
         this.build = build;
         this.container = container;
         this.switches = switches;
+        this.farm = farm;
     }
 
     @Override
@@ -38,7 +41,8 @@ public class Permission {
 
         res += "[" + (this.build ? "B" : "-") + ";";
         res += (this.container ? "C" : "-") + ";";
-        res += (this.switches ? "S" : "-") + "]";
+        res += (this.switches ? "S" : "-") + ";";
+        res += (this.farm ? "F" : "-") + "]";
 
         return res;
     }

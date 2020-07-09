@@ -2,6 +2,7 @@ package fr.craftandconquest.warofsquirrels.handler;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
 import fr.craftandconquest.warofsquirrels.object.war.PartyWar;

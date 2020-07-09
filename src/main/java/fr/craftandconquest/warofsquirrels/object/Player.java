@@ -27,12 +27,12 @@ public class Player implements IPermission {
     @JsonProperty private int score;
     @JsonProperty private UUID cityUuid;
     @JsonProperty @Getter @Setter private Boolean assistant;
-    @JsonProperty private Boolean resident = false;
+    @JsonProperty @Getter @Setter private Boolean resident = false;
     @JsonProperty @Getter @Setter private int balance;
 
     /* -- Extra Fields -- */
-    @Getter private int             lastChunkX = 10000;
-    @Getter private int             lastChunkZ = 10000;
+    @Getter @Setter private int             lastChunkX = 10000;
+    @Getter @Setter private int             lastChunkZ = 10000;
     @Getter @Setter private boolean         reincarnation;
     private boolean         adminMode;
     private long            lastClick;
