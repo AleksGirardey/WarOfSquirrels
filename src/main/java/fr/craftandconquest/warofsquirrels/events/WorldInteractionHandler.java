@@ -115,12 +115,23 @@ public class WorldInteractionHandler {
 
         if (!(event.getSource().getTrueSource() instanceof PlayerEntity)) return;
 
+        Player player = WarOfSquirrels.instance.getPlayerHandler().get((PlayerEntity) event.getSource().getTrueSource());
+
         boolean canFarm = WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
                 PermissionHandler.Rights.FARM,
                 new Vector3((int) event.getEntity().lastTickPosX, (int) event.getEntity().lastTickPosY, (int) event.getEntity().lastTickPosZ),
                 event.getEntity().dimension.getId(),
-                WarOfSquirrels.instance.getPlayerHandler().get((PlayerEntity) event.getSource().getTrueSource()));
+                player);
+
+        if (!canFarm) {
+            event.setCanceled(true);
+            player.getPlayerEntity().sendMessage(
+                    new StringTextComponent("You have no right no interact with this entity.")
+                            .applyTextStyle(TextFormatting.RED));
+        }
     }
+
+    public void OnPlayerRightClick(PlayerInteractEvent event) {}
 
     @SubscribeEvent
     public void OnLivingSpawnEvent(LivingSpawnEvent event) {
