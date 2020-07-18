@@ -119,14 +119,14 @@ public class Config {
         initRanks.put(5, new CityRank("Royaume", "Roi", "Assistant", 40, 20));
         initRanks.put(6, new CityRank("Empire", "Empereur", "Assistant", 50, 25));
 
-        defaultPermissions.put(PermissionRelation.ENEMY, new Permission("enemy", false, false, false));
-        defaultPermissions.put(PermissionRelation.ALLY, new Permission("ally", false, false, true));
-        defaultPermissions.put(PermissionRelation.FACTION, new Permission("faction", false, false, true));
-        defaultPermissions.put(PermissionRelation.RESIDENT, new Permission("resident", true, true, true));
-        defaultPermissions.put(PermissionRelation.RECRUIT, new Permission("recruit", false, false, true));
-        defaultPermissions.put(PermissionRelation.OUTSIDER, new Permission("outsider", false, false, false));
+        defaultPermissions.put(PermissionRelation.ENEMY, new Permission("enemy", false, false, false, false, false));
+        defaultPermissions.put(PermissionRelation.ALLY, new Permission("ally", false, false, true, false, false));
+        defaultPermissions.put(PermissionRelation.FACTION, new Permission("faction", false, false, true, false, true));
+        defaultPermissions.put(PermissionRelation.RESIDENT, new Permission("resident", true, true, true, true, true));
+        defaultPermissions.put(PermissionRelation.RECRUIT, new Permission("recruit", false, false, true, false, false));
+        defaultPermissions.put(PermissionRelation.OUTSIDER, new Permission("outsider", false, false, false, false, false));
 
-        Permission defaultNaturePermission = new Permission(true, true, true);
+        Permission defaultNaturePermission = new Permission(true, true, true, true, true);
 
         return new ConfigData(
                 20, 20, 15, 10,

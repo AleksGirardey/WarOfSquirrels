@@ -11,12 +11,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.PermissionAPI;
@@ -119,7 +121,10 @@ public class WorldInteractionHandler {
 
         boolean canFarm = WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
                 PermissionHandler.Rights.FARM,
-                new Vector3((int) event.getEntity().lastTickPosX, (int) event.getEntity().lastTickPosY, (int) event.getEntity().lastTickPosZ),
+                new Vector3(
+                        (int) event.getEntity().lastTickPosX,
+                        (int) event.getEntity().lastTickPosY,
+                        (int) event.getEntity().lastTickPosZ),
                 event.getEntity().dimension.getId(),
                 player);
 
@@ -131,7 +136,31 @@ public class WorldInteractionHandler {
         }
     }
 
-    public void OnPlayerRightClick(PlayerInteractEvent event) {}
+    @SubscribeEvent
+    public void OnPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        if (HandlePlayerRightClick(event.getPlayer(), event.getPos(), event.getWorld().dimension.getType().getId())) return;
+
+        event.getPlayer().sendMessage(new StringTextComponent("You have not the permission to interact with this block")
+                .applyTextStyle(TextFormatting.RED));
+        event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void OnPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
+        if (HandlePlayerRightClick(event.getPlayer(), event.getPos(), event.getWorld().dimension.getType().getId())) return;
+
+        event.getPlayer().sendMessage(new StringTextComponent("You have not the permission to interact with this item")
+                .applyTextStyle(TextFormatting.RED));
+        event.setCanceled(true);
+    }
+
+    private boolean HandlePlayerRightClick(PlayerEntity playerEntity, BlockPos target, int dimensionId) {
+        Vector3 position = new Vector3(target.getX(), target.getY(), target.getZ());
+        Player player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity);
+
+        return WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(PermissionHandler.Rights.SWITCH,
+                position, dimensionId, player);
+    }
 
     @SubscribeEvent
     public void OnLivingSpawnEvent(LivingSpawnEvent event) {

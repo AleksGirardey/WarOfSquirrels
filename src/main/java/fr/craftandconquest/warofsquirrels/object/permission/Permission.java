@@ -13,26 +13,29 @@ public class Permission {
     @Getter @Setter public boolean container;
     @Getter @Setter public boolean switches;
     @Getter @Setter public boolean farm;
+    @Getter @Setter public boolean interact;
 
     public Permission() {
         uuid = UUID.randomUUID();
     }
 
-    public Permission(boolean build, boolean container, boolean switches, boolean farm) {
+    public Permission(boolean build, boolean container, boolean switches, boolean farm, boolean interact) {
         super();
         this.build = build;
         this.container = container;
         this.switches = switches;
         this.farm = farm;
+        this.interact = interact;
     }
 
-    public Permission(String name, boolean build, boolean container, boolean switches, boolean farm) {
+    public Permission(String name, boolean build, boolean container, boolean switches, boolean farm, boolean interact) {
         super();
         this.name = name;
         this.build = build;
         this.container = container;
         this.switches = switches;
         this.farm = farm;
+        this.interact = interact;
     }
 
     @Override

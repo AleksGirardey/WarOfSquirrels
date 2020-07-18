@@ -19,7 +19,8 @@ public class PermissionHandler {
         BUILD,
         CONTAINER,
         SWITCH,
-        FARM
+        FARM,
+        INTERACT
     }
 
     public boolean hasRightsTo(Rights rights, Object... objects) {
@@ -34,6 +35,8 @@ public class PermissionHandler {
                 return hasRightsToSwitch((Vector3) objects[0], (int) objects[1], (Player) objects[2]);
             case FARM:
                 return hasRightsToFarm((Vector3) objects[0], (int) objects[1], (Player) objects[2]);
+            case INTERACT:
+                return hasRightsToInteract((Vector3) objects[0], (int) objects[1], (Player) objects[2]);
             default:
                 return false;
         }
@@ -53,6 +56,10 @@ public class PermissionHandler {
 
     private boolean hasRightsToFarm(Vector3 position, int dimensionId, Player player) {
         return getPermissionToCheck(position, dimensionId, player).farm;
+    }
+
+    private boolean hasRightsToInteract(Vector3 position, int dimensionId, Player player) {
+        return getPermissionToCheck(position, dimensionId, player).interact;
     }
 
     private boolean hasRightsToSetHomeBlock(Player player, Chunk chunk) {
@@ -78,7 +85,7 @@ public class PermissionHandler {
                  ** The city chunk is the same as the player chunk, we have to define is status in the city
                  */
                 if (player.getAssistant() || player.getCity().getOwner() == player)
-                    return new Permission(true, true, true, true);
+                    return new Permission(true, true, true, true, true);
                 else {
                     permission = player.getCity().getCustomPermission().getOrDefault(player, (player.getResident() ?
                             player.getCity().getDefaultPermission().get(PermissionRelation.RESIDENT) :
