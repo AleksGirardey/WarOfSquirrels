@@ -6,12 +6,12 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
+import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.dimension.DimensionType;
 
 import java.util.UUID;
@@ -34,12 +34,12 @@ public class Player implements IPermission {
     @Getter @Setter private int             lastChunkX = 10000;
     @Getter @Setter private int             lastChunkZ = 10000;
     @Getter @Setter private boolean         reincarnation;
-    private boolean         adminMode;
+    @JsonProperty @Getter @Setter private boolean         adminMode;
     private long            lastClick;
 
     @JsonIgnore @Getter private City city;
 
-    @JsonIgnore public Vec3d lastPosition;
+    @JsonIgnore public Vector3 lastPosition;
     @JsonIgnore public DimensionType lastDimension;
 
     public void setCity(City city) {

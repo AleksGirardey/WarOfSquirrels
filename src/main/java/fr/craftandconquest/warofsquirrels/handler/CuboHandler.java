@@ -49,8 +49,8 @@ public class CuboHandler extends Handler<Cubo> {
         cubo = new Cubo();
         cubo.setName(name);
         cubo.setOwner(player);
-        cubo.setPermissionIn(new Permission(true, true, true));
-        cubo.setPermissionOut(new Permission(false, false, false));
+        cubo.setPermissionIn(new Permission(true, true, true, true, true));
+        cubo.setPermissionOut(new Permission(false, false, false, false, false));
         if (parent != null) {
             cubo.setParent(parent);
             cubo.setPriority(parent.getPriority() + 1);

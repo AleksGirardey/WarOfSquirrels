@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
+import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.entity.player.PlayerEntity;
 import org.apache.logging.log4j.Logger;
 
@@ -59,7 +60,10 @@ public class PlayerHandler extends Handler<Player> {
         player.setDisplayName(playerEntity.getDisplayName().getString());
         player.setAssistant(false);
         player.setBalance(WarOfSquirrels.instance.config.getConfiguration().getStartBalance());
-        player.lastPosition = playerEntity.getPositionVec();
+        player.lastPosition = new Vector3(
+                (int) playerEntity.getPositionVec().x,
+                (int) playerEntity.getPositionVec().y,
+                (int) playerEntity.getPositionVec().z);
         player.lastDimension = playerEntity.dimension;
 
         if (!add(player)) return null;
@@ -132,6 +136,10 @@ public class PlayerHandler extends Handler<Player> {
         }, WarOfSquirrels.instance.getConfig().getReincarnationTime() * 1000);
 
         return timer;
+    }
+
+    public boolean isInReincarnation(Player player) {
+        return reincarnation.containsKey(player);
     }
 
     public void SetReincarnation(Player player) {

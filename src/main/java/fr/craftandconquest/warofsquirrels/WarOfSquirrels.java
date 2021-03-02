@@ -1,8 +1,6 @@
 package fr.craftandconquest.warofsquirrels;
 
 import fr.craftandconquest.warofsquirrels.commands.CityCommand;
-import fr.craftandconquest.warofsquirrels.events.PlayersInteractionHandler;
-import fr.craftandconquest.warofsquirrels.events.WorldInteractionHandler;
 import fr.craftandconquest.warofsquirrels.handler.*;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;

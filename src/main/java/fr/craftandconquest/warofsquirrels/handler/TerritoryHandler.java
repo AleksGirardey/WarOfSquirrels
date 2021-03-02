@@ -8,6 +8,7 @@ import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
+import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import net.minecraft.world.dimension.DimensionType;
 import org.apache.logging.log4j.Logger;
 
@@ -171,6 +172,14 @@ public class TerritoryHandler extends Handler<Territory> {
     }
 
     public Territory get(UUID uuid) { return territoryMap.get(uuid); }
+
+    public Territory get(Vector2 chunkPos, int dimensionId) {
+        int posX = (int) chunkPos.x * 16;
+        int posZ = (int) chunkPos.y * 16;
+        int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
+
+        return get(posX / territorySize, posZ / territorySize, dimensionId);
+    }
 
     public Territory get(int posX, int posZ, int dimensionId) {
         Territory territory = territories[posX][posZ];

@@ -130,7 +130,7 @@ public class War implements IChannelTarget {
                 cityDefender.displayName.substring(0, 3);
     }
 
-    private boolean AddAttacker(Player player) {
+    public boolean AddAttacker(Player player) {
         if (attackers.size() == attackersLimit) {
             player.getPlayerEntity().sendMessage(new StringTextComponent("You can't join this war, wait for defenders to join"));
             return false;
@@ -144,7 +144,7 @@ public class War implements IChannelTarget {
         return true;
     }
 
-    private boolean AddDefender(Player player) {
+    public boolean AddDefender(Player player) {
         defenders.add(player);
         ++attackersLimit;
         scoreboard.addPlayerToTeam(player.getDisplayName(), defenderTeam);
@@ -178,6 +178,14 @@ public class War implements IChannelTarget {
         } else {
             AddAttackerKillPoints();
         }
+    }
+
+    public void ForceWinAttacker() {
+        this.attackersPoints.setScorePoints(1000);
+    }
+
+    public void ForceWinDefender() {
+        this.defendersPoints.setScorePoints(1000);
     }
 
     public int AddAttackerCapturePoints() {

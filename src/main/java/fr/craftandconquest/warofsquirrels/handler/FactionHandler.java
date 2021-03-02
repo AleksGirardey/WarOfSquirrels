@@ -123,16 +123,16 @@ public class FactionHandler extends Handler<Faction> {
         if (diplo != null) res.addAll(diplo.stream().filter(d -> d.isRelation() == relation).collect(Collectors.toList()));
         return res;
     }
-//
-//    public boolean          areAllies(Faction A, Faction B) {
-//        List<Diplomacy>     diploA = getDiplomacy(A, true);
-//
-//        for (Diplomacy d : diploA)
-//            if (d.getTarget() == B)
-//                return true;
-//        return false;
-//    }
-//
+
+    public boolean          areAllies(Faction A, Faction B) {
+        List<Diplomacy>     diploA = getDiplomacy(A, true);
+
+        for (Diplomacy d : diploA)
+            if (d.getTarget() == B)
+                return true;
+        return false;
+    }
+
     public boolean          areEnemies(Faction A, Faction B) {
         List<Diplomacy>     diploA = getDiplomacy(A, false);
 

@@ -19,7 +19,7 @@ import java.util.List;
 
 public class WarHandler {
 
-    private List<War> wars = new ArrayList<>();
+    private final List<War> wars = new ArrayList<>();
 
     public WarHandler() {}
 
@@ -55,6 +55,10 @@ public class WarHandler {
                 return war;
         }
         return null;
+    }
+
+    public War getWar(AttackTarget target) {
+        return getWar((City) target);
     }
 
     public War getWar(City city) {

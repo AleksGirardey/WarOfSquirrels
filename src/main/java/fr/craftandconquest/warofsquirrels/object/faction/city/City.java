@@ -2,6 +2,13 @@ package fr.craftandconquest.warofsquirrels.object.faction.city;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.Suggestion;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
@@ -12,21 +19,20 @@ import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
+import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class City implements IPermission, IFortification, IChannelTarget {
+public class City implements IPermission, IFortification, IChannelTarget, AttackTarget {
     @JsonProperty @Getter @Setter private UUID cityUuid;
     @Getter @Setter public String displayName;
     public String tag;

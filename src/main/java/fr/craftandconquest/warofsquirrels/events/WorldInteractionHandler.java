@@ -6,17 +6,28 @@ import fr.craftandconquest.warofsquirrels.handler.PlayerHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
+import fr.craftandconquest.warofsquirrels.object.world.Chunk;
+import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ContainerBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Items;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -24,6 +35,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,27 +97,60 @@ public class WorldInteractionHandler {
 
         Player player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer());
 
-        HandleEventConstruction(event, player, "You cannot destroy here");
-    }
+        if (WarOfSquirrels.instance.getCuboHandler().playerExists(player)) {
+            event.setCanceled(true);
+            WarOfSquirrels.instance.getCuboHandler().set(
+                    player,
+                    new Vector3(event.getPos().getX(),event.getPos().getY(),event.getPos().getZ()),
+                    true);
+            return;
+        }
 
-    @SubscribeEvent
-    public void OnBlockPlace(BlockEvent.BreakEvent event) {
-        Player player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer());
-        HandleEventConstruction(event, player, "You cannot build here");
-    }
-
-    private void HandleEventConstruction(BlockEvent event, Player player, String failedMessage) {
         if (PermissionAPI.hasPermission(player.getPlayerEntity(), "minecraft.command.op")) return;
 
+        PermissionHandler.Rights rights = (WarOfSquirrels.instance.getWarHandler().Contains(player) ?
+                PermissionHandler.Rights.DESTROY_IN_WAR :
+                PermissionHandler.Rights.BUILD);
+
         boolean canConstruct = WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
-                PermissionHandler.Rights.BUILD,
+                rights,
                 new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
                 event.getWorld().getDimension().getType().getId(),
-                player);
+                player,
+                event.getState().getBlock());
 
         if (!canConstruct) {
             event.setCanceled(true);
-            player.getPlayerEntity().sendMessage(new StringTextComponent(failedMessage)
+            player.getPlayerEntity().sendMessage(new StringTextComponent("You cannot destroy here")
+                    .applyTextStyle(TextFormatting.BOLD)
+                    .applyTextStyle(TextFormatting.RED));
+        }
+    }
+
+    @SubscribeEvent
+    public void OnBlockPlace(BlockEvent.EntityPlaceEvent event) {
+        if (!(event.getEntity() instanceof PlayerEntity)) {
+            return;
+        }
+
+        Player player = WarOfSquirrels.instance.getPlayerHandler().get((PlayerEntity) event.getEntity());
+
+        if (PermissionAPI.hasPermission(player.getPlayerEntity(), "minecraft.command.op")) return;
+
+        PermissionHandler.Rights rights = (WarOfSquirrels.instance.getWarHandler().Contains(player) ?
+                PermissionHandler.Rights.PLACE_IN_WAR :
+                PermissionHandler.Rights.BUILD);
+
+        boolean canConstruct = WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
+                rights,
+                new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
+                event.getWorld().getDimension().getType().getId(),
+                player,
+                event.getPlacedBlock().getBlock());
+
+        if (!canConstruct) {
+            event.setCanceled(true);
+            player.getPlayerEntity().sendMessage(new StringTextComponent("You cannot build here")
                     .applyTextStyle(TextFormatting.BOLD)
                     .applyTextStyle(TextFormatting.RED));
         }
@@ -138,7 +183,18 @@ public class WorldInteractionHandler {
 
     @SubscribeEvent
     public void OnPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        if (HandlePlayerRightClick(event.getPlayer(), event.getPos(), event.getWorld().dimension.getType().getId())) return;
+        Player player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer());
+
+        if (WarOfSquirrels.instance.getCuboHandler().playerExists(player)) {
+            event.setCanceled(true);
+            WarOfSquirrels.instance.getCuboHandler().set(
+                    player,
+                    new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
+                    false);
+        } else if (IsContainer(event.getWorld(), event.getPos(), null, null)) {
+            if (OnPlayerContainer(event.getPlayer(), event.getPos(), event.getWorld().dimension.getType().getId()))
+                return;
+        } else if (HandlePlayerRightClick(event.getPlayer(), event.getPos(), event.getWorld().dimension.getType().getId())) return;
 
         event.getPlayer().sendMessage(new StringTextComponent("You have not the permission to interact with this block")
                 .applyTextStyle(TextFormatting.RED));
@@ -147,11 +203,44 @@ public class WorldInteractionHandler {
 
     @SubscribeEvent
     public void OnPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
+        if (event.getItemStack().getItem() == Items.FEATHER) {
+            displayInfoFeather(event.getPlayer(), event.getPos(), event.getWorld().dimension.getType().getId());
+            event.setCanceled(true);
+            return;
+        }
+
         if (HandlePlayerRightClick(event.getPlayer(), event.getPos(), event.getWorld().dimension.getType().getId())) return;
 
         event.getPlayer().sendMessage(new StringTextComponent("You have not the permission to interact with this item")
                 .applyTextStyle(TextFormatting.RED));
         event.setCanceled(true);
+    }
+
+    private void displayInfoFeather(PlayerEntity player, BlockPos pos, int dimensionId) {
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(
+                pos.getX() / WarOfSquirrels.instance.getConfig().getTerritorySize(),
+                pos.getZ() / WarOfSquirrels.instance.getConfig().getTerritorySize(), dimensionId);
+        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(pos.getX() / 16, pos.getZ() / 16, dimensionId);
+        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(
+                new Vector3(pos.getX(), pos.getY(), pos.getZ()));
+
+        player.sendMessage(new StringTextComponent("===| Territory " + territory.getName() + "[" + territory.getPosX() + ";" + territory.getPosZ() + "] |===")
+                        .applyTextStyle(TextFormatting.LIGHT_PURPLE)
+                        .applyTextStyle(TextFormatting.BOLD));
+        player.sendMessage(new StringTextComponent("Owner : " + (territory.getFaction() == null ? "Wilderness" : territory.getFaction().getDisplayName()))
+                        .applyTextStyle(TextFormatting.LIGHT_PURPLE)
+                        .applyTextStyle(TextFormatting.BOLD));
+        player.sendMessage(new StringTextComponent("===| Chunk [" + (pos.getX() / 16) + ";" + (pos.getZ() / 16) + "] |===")
+                        .applyTextStyle(TextFormatting.LIGHT_PURPLE)
+                        .applyTextStyle(TextFormatting.BOLD));
+        player.sendMessage(new StringTextComponent("Owner : " + (chunk == null ? "Nature" : chunk.getCity().getDisplayName()))
+                        .applyTextStyle(TextFormatting.LIGHT_PURPLE)
+                        .applyTextStyle(TextFormatting.BOLD));
+        if (cubo != null) {
+            player.sendMessage(new StringTextComponent("===| Cubo '" + cubo.getName() + "' [" + cubo.getOwner().getDisplayName() + "] |===")
+                    .applyTextStyle(TextFormatting.LIGHT_PURPLE)
+                    .applyTextStyle(TextFormatting.BOLD));
+        }
     }
 
     private boolean HandlePlayerRightClick(PlayerEntity playerEntity, BlockPos target, int dimensionId) {
@@ -160,6 +249,31 @@ public class WorldInteractionHandler {
 
         return WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(PermissionHandler.Rights.SWITCH,
                 position, dimensionId, player);
+    }
+
+    @SubscribeEvent
+    public void OnCropsTrampled(BlockEvent.FarmlandTrampleEvent event) {
+        event.setCanceled(true);
+    }
+
+    public boolean OnPlayerContainer(PlayerEntity playerEntity, BlockPos target, int dimensionId) {
+        Player player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity);
+
+        if (PermissionAPI.hasPermission(player.getPlayerEntity(), "minecraft.command.op")) return true;
+
+        return WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
+                PermissionHandler.Rights.CONTAINER,
+                new Vector3(target.getX(), target.getY(), target.getZ()),
+                dimensionId,
+                player);
+    }
+
+    public static boolean IsContainer(World world, BlockPos pos, @Nullable BlockState state, @Nullable TileEntity tileEntity) {
+        if(state == null)
+            state = world.getBlockState(pos);
+        if(tileEntity == null)
+            tileEntity = world.getTileEntity(pos);
+        return state.getBlock() instanceof ContainerBlock || tileEntity instanceof IInventory;
     }
 
     @SubscribeEvent

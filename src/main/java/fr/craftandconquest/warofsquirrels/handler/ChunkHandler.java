@@ -9,6 +9,7 @@ import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.dimension.DimensionType;
@@ -118,7 +119,7 @@ public class ChunkHandler extends Handler<Chunk> {
     }
 
     public boolean setHomeBlock(Player player) {
-        Vec3d position = player.lastPosition;
+        Vector3 position = player.lastPosition;
 
         Chunk oldHB, newHB;
 
@@ -160,6 +161,10 @@ public class ChunkHandler extends Handler<Chunk> {
     @Override
     public void spreadPermissionDelete(IPermission target) {
         // Nothing To Do
+    }
+
+    public Chunk getChunk(Vector3 position, int dimensionId) {
+        return getChunk((int) position.x / 16, (int) position.z / 16, dimensionId);
     }
 
     public Chunk getChunk(int posX, int posZ, DimensionType dimensionType) {

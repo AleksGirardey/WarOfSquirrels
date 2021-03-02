@@ -8,6 +8,7 @@ import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
+import it.unimi.dsi.fastutil.objects.ReferenceLists;
 import net.minecraft.util.text.StringTextComponent;
 import org.apache.logging.log4j.Logger;
 
@@ -181,5 +182,14 @@ public class CityHandler extends Handler<City> {
     public void SetDefaultPermission(PermissionRelation relation, Permission permission, City city) {
         city.getDefaultPermission().replace(relation, permission);
         Save(dataArray);
+    }
+
+    public Collection<String> getAllAsCollection() {
+        List<String> cities = new ArrayList<>();
+
+        for (City city : dataArray)
+            cities.add(city.getDisplayName());
+
+        return cities;
     }
 }
