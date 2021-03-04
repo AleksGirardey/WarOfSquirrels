@@ -13,6 +13,7 @@ public class WarCommandRegister {
     private final WarJoin warJoinCommand = new WarJoin();
     private final WarLeave warLeaveCommand = new WarLeave();
     private final WarList warListCommand = new WarList();
+    private final WarSetTarget warSetTargetCommand = new WarSetTarget();
     
     /** Admin Commands **/
     private final ForceWin forceWinCommand = new ForceWin();

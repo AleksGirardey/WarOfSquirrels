@@ -7,11 +7,17 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.util.text.ITextComponent;
 
 public class AcceptCommand extends CommandBuilder {
     @Override
     public LiteralArgumentBuilder<CommandSource> register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("accept"));
+        return null;
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> register() {
         return null;
     }
 
@@ -23,5 +29,10 @@ public class AcceptCommand extends CommandBuilder {
     @Override
     protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
         return WarOfSquirrels.instance.getInvitationHandler().HandleInvitation(player, true) ? 1 : 0;
+    }
+
+    @Override
+    protected ITextComponent ErrorMessage() {
+        return null;
     }
 }
