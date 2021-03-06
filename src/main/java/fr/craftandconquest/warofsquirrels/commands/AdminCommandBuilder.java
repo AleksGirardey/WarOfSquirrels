@@ -17,3 +17,4 @@ public abstract class AdminCommandBuilder extends CommandBuilder {
         return new StringTextComponent("You have not enough rights to perform this command");
     }
 }
+

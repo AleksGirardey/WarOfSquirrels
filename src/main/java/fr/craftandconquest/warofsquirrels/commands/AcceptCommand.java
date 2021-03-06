@@ -11,14 +11,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class AcceptCommand extends CommandBuilder {
     @Override
-    public LiteralArgumentBuilder<CommandSource> register(CommandDispatcher<CommandSource> dispatcher) {
-        dispatcher.register(Commands.literal("accept"));
-        return null;
-    }
-
-    @Override
     public LiteralArgumentBuilder<CommandSource> register() {
-        return null;
+        return Commands.literal("accept").executes(this);
     }
 
     @Override

@@ -132,6 +132,6 @@ public class Config {
                 20, 20, 15, 10,
                 true, 10, 30, 1500, 120,
                 120, 5120, false, 256,
-                400, 5000, initRanks, defaultPermissions, defaultNaturePermission);
+                400, 5000, 4, initRanks, defaultPermissions, defaultNaturePermission);
     }
 }

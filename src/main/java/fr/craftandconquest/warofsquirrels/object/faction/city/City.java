@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -148,6 +149,8 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
                 WarOfSquirrels.instance.getChunkHandler().getSize(this) + "/" +
                 rank.chunkMax + "]\n");
         message.appendText("Outpost [" + WarOfSquirrels.instance.getChunkHandler().getOutpostSize(this) + "]\n");
-        message.appendText("Permissions: " + WarOfSquirrels.instance.getPermissionHandler().display(this));
+        message.appendText("Permissions: " + defaultPermission.toString());
+
+        message.applyTextStyle(TextFormatting.BLUE);
     }
 }

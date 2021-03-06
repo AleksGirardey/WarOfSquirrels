@@ -55,7 +55,7 @@ public class CityInfo extends CommandBuilder {
         if (args) city = WarOfSquirrels.instance.getCityHandler().getCity(targetName);
         else city = player.getCity();
 
-        city.
+        city.displayInfo(player);
 
         return 0;
     }
