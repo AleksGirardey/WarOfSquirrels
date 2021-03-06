@@ -52,6 +52,8 @@ public class CityInfo extends CommandBuilder {
     protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
         City city;
 
+        targetName = context.getArgument(cityNameArgument, String.class);
+
         if (args) city = WarOfSquirrels.instance.getCityHandler().getCity(targetName);
         else city = player.getCity();
 

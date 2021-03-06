@@ -28,6 +28,12 @@ public class Utils {
         return (value == -1 || value >= WarOfSquirrels.instance.getConfig().getDistanceOutpost());
     }
 
+    public static boolean   CanPlaceCity(int posX, int posZ) {
+        int                 value = NearestHomeBlock(posX, posZ);
+
+        return (value == -1 || value >= WarOfSquirrels.instance.getConfig().getDistanceCities());
+    }
+
     public static ReSpawnPoint NearestSpawnPoint(PlayerEntity playerEntity) {
         Player player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity);
         DimensionType dimension = player.lastDimension;

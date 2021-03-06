@@ -6,7 +6,7 @@ import net.minecraft.command.CommandSource;
 
 import static net.minecraft.command.Commands.literal;
 
-public class WarCommandRegister {
+public class WarCommandRegister implements ICommandRegister {
     private final WarHelp warHelpCommand = new WarHelp();
     private final DeclareWar declareWarCommand = new DeclareWar();
     private final WarInfo warInfoCommand = new WarInfo();

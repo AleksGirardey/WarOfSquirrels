@@ -6,13 +6,21 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
+import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
+import fr.craftandconquest.warofsquirrels.handler.CityHandler;
 import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.channels.CityChannel;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.war.PartyWar;
+import fr.craftandconquest.warofsquirrels.object.world.Chunk;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 public class CityCreate extends CommandBuilder implements IAdminCommand {
     private final String cityNameArgument = "[CityName]";
@@ -26,7 +34,7 @@ public class CityCreate extends CommandBuilder implements IAdminCommand {
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean CanDoIt(Player player) {
         if (IsAdmin(player)) return true;
 
         PartyWar party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
@@ -43,12 +51,57 @@ public class CityCreate extends CommandBuilder implements IAdminCommand {
     }
 
     @Override
+    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+//        String cityName = context.getArgument(cityNameArgument, String.class);
+        StringTextComponent message;
+        int x, z;
+
+        x = player.getPlayerEntity().getPosition().getX() / 16;
+        z = player.getPlayerEntity().getPosition().getZ() / 16;
+
+        if (player.getCity() == null) {
+            if (!WarOfSquirrels.instance.getChunkHandler().exists(x, z, DimensionType.OVERWORLD) && Utils.CanPlaceCity(x, z)) {
+                return true;
+            } else
+                message = new StringTextComponent("You can't set a new city here ! Too close from civilization");
+        } else
+            message = new StringTextComponent("Leave your city first !");
+
+        message.applyTextStyle(TextFormatting.RED);
+        player.getPlayerEntity().sendMessage(message);
+        return false;
+    }
+
+    @Override
     protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+        String cityName = context.getArgument(cityNameArgument, String.class);
+        CityHandler cih = WarOfSquirrels.instance.getCityHandler();
+        ChunkHandler chh = WarOfSquirrels.instance.getChunkHandler();
+        City city = cih.CreateCity(cityName, cityName.substring(0, 3), player);
+        Chunk chunk;
+
+        player.setCity(city);
+        chunk = chh.CreateChunk(player.getPlayerEntity().chunkCoordX, player.getPlayerEntity().chunkCoordZ, city, player.getPlayerEntity().dimension.getId());
+        chh.add(chunk);
+        WarOfSquirrels.instance.getBroadCastHandler().AddTarget(city, new CityChannel(city));
+        WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(city, player);
+
+        for (Player p : WarOfSquirrels.instance.getPartyHandler().getPartyFromLeader(player).toList()) {
+            p.setCity(city);
+            city.addCitizen(p);
+            WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(city, p);
+        }
+        StringTextComponent message = new StringTextComponent("[BREAKING NEWS] " + cityName + " have been created by " + player.getDisplayName());
+
+        message.applyTextStyle(TextFormatting.GOLD);
+
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
+
         return 0;
     }
 
     @Override
     protected ITextComponent ErrorMessage() {
-        return null;
+        return new StringTextComponent("You cannot create a city.").applyTextStyle(TextFormatting.RED);
     }
 }
