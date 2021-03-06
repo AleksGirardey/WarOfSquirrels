@@ -11,12 +11,14 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
 public class WarSetTarget extends CityAssistantCommandBuilder {
+    private final String playerArgumentName = "[Player]";
+
     @Override
     public LiteralArgumentBuilder<CommandSource> register() {
         return Commands
                 .literal("target")
                 .then(Commands
-                        .argument("[Player]", StringArgumentType.string())
+                        .argument(playerArgumentName, StringArgumentType.string())
                         .executes(this));
     }
 
@@ -28,7 +30,7 @@ public class WarSetTarget extends CityAssistantCommandBuilder {
 
     @Override
     protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        WarOfSquirrels.instance.getWarHandler().getWar(player).setTarget(context.getArgument("[player]", Player.class));
+        WarOfSquirrels.instance.getWarHandler().getWar(player).setTarget(context.getArgument(playerArgumentName, Player.class));
         return 0;
     }
 }
