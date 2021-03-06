@@ -14,9 +14,10 @@ public class WarCommandRegister {
     private final WarLeave warLeaveCommand = new WarLeave();
     private final WarList warListCommand = new WarList();
     private final WarSetTarget warSetTargetCommand = new WarSetTarget();
-    
+
     /** Admin Commands **/
     private final ForceWin forceWinCommand = new ForceWin();
+    private final WarPeaceTime warWorldAtPeaceCommand = new WarPeaceTime();
 
     public void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(
@@ -29,9 +30,6 @@ public class WarCommandRegister {
                         .then(warListCommand.register())
                         .then(warWorldAtPeaceCommand.register())
                         .then(warSetTargetCommand.register())
-                        .executes(warHelpCommand)
-
-
-        );
+                        .executes(warHelpCommand));
     }
 }

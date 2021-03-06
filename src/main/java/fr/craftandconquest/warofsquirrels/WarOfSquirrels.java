@@ -1,6 +1,8 @@
 package fr.craftandconquest.warofsquirrels;
 
 import fr.craftandconquest.warofsquirrels.commands.CityCommand;
+import fr.craftandconquest.warofsquirrels.commands.register.CommandRegisterManager;
+import fr.craftandconquest.warofsquirrels.commands.register.WarCommandRegister;
 import fr.craftandconquest.warofsquirrels.handler.*;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;
@@ -28,6 +30,8 @@ public class WarOfSquirrels {
 
     public static final Logger LOGGER = LogManager.getLogger();
 
+    private final CommandRegisterManager commandRegisterManager;
+
     @Getter private ChunkHandler chunkHandler;
     @Getter private PermissionHandler permissionHandler;
     @Getter private BroadCastHandler broadCastHandler;
@@ -53,6 +57,8 @@ public class WarOfSquirrels {
         MinecraftForge.EVENT_BUS.register(this);
 
         instance = this;
+
+        commandRegisterManager = new CommandRegisterManager();
     }
 
     private void setup(final FMLCommonSetupEvent event) { }
@@ -81,10 +87,12 @@ public class WarOfSquirrels {
         influenceHandler = new InfluenceHandler(LOGGER);
         updateHandler = new UpdateHandler();
 
-        CityCommand.register(event.getCommandDispatcher());
+        //CityCommand.register(event.getCommandDispatcher());
 
         playerHandler.updateDependencies();
         cuboHandler.UpdateDependencies();
+
+        commandRegisterManager.register(event.getCommandDispatcher());
 
         LOGGER.info("[WoS] Server Started !");
     }

@@ -19,6 +19,8 @@ public class WarHelp extends CommandBuilder {
         entity.sendMessage(new StringTextComponent("- war info"));
         entity.sendMessage(new StringTextComponent("- war join"));
         entity.sendMessage(new StringTextComponent("- war leave"));
+        entity.sendMessage(new StringTextComponent("- war list"));
+        entity.sendMessage(new StringTextComponent("- war target"));
 
         return 0;
     }

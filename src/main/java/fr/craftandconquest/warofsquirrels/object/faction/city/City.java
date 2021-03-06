@@ -20,11 +20,13 @@ import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -54,6 +56,20 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         return citizens.stream().filter(Player::getAssistant).collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public List<Player> getResidents() {
+        return citizens.stream()
+                .filter(Player::getResident)
+                .filter(player -> !player.getAssistant())
+                .collect(Collectors.toList());
+    }
+
+    public List<Player> getRecruits() {
+        return citizens.stream()
+                .filter(player -> !player.getResident())
+                .filter(player -> !player.getAssistant())
+                .collect(Collectors.toList());
+    }
+
     public boolean addCitizen(Player player) {
         if (citizens.contains(player)) return false;
 
@@ -74,15 +90,6 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
     public void SetRank(int rank) {
         this.rank = WarOfSquirrels.instance.getConfig().getCityRankMap().get(rank);
-    }
-
-    public List<String> getCitizensAsList() {
-        List<String> res = new ArrayList<>();
-
-        for (Player player : citizens) {
-            res.add(player.getDisplayName());
-        }
-        return res;
     }
 
     public void SetFaction(Faction faction) {
@@ -123,5 +130,24 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         }
 
         return onlinePlayers;
+    }
+
+    public void displayInfo(Player player) {
+        StringTextComponent message = new StringTextComponent("");
+
+        WarOfSquirrels.instance.getChunkHandler().getSize(this);
+
+        message.appendText("---===| " + rank.getName() + " " + displayName + " [" + citizens.size() + "] |===---\n");
+        message.appendText("Faction: " + faction.getDisplayName() + "\n");
+        message.appendText("Mayor: " + owner.getDisplayName() + "\n");
+        message.appendText("Assistant(s): " + Utils.getStringFromPlayerList(getAssistants()) + "\n");
+        message.appendText("Resident(s): " + Utils.getStringFromPlayerList(getCitizens()) + "\n");
+        message.appendText("Recruit(s): " + Utils.getStringFromPlayerList(getRecruits()) + "\n");
+        message.appendText("Tag: " + tag + "\n");
+        message.appendText("Chunks [" +
+                WarOfSquirrels.instance.getChunkHandler().getSize(this) + "/" +
+                rank.chunkMax + "]\n");
+        message.appendText("Outpost [" + WarOfSquirrels.instance.getChunkHandler().getOutpostSize(this) + "]\n");
+        message.appendText("Permissions: " + WarOfSquirrels.instance.getPermissionHandler().display(this));
     }
 }
