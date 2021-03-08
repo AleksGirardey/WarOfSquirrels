@@ -51,10 +51,11 @@ public class CityUnClaim extends CityAssistantCommandBuilder {
 
         Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(x, z, dimensionId);
 
-        WarOfSquirrels.instance.getChunkHandler().Delete(chunk);
-        StringTextComponent message = Text.of("La parcelle " + chunk.toString() + " a été libérée de tout contrôle.");
-        Core.getInfoCityMap().get(player.getCity()).getChannel().send(
-                Text.of(TextColors.GREEN, message, TextColors.RESET));
+        if (WarOfSquirrels.instance.getChunkHandler().Delete(chunk)) {
+            StringTextComponent message = new StringTextComponent("Chunk '" + chunk.toString() + "' is now unclaimed.");
+            message.applyTextStyle(TextFormatting.GREEN);
+            WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(player.getCity(), player, message, true);
+        }
         return 0;
     }
 }

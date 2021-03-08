@@ -12,6 +12,10 @@ public class CityCommandRegister implements ICommandRegister {
     private final CityDelete cityDelete = new CityDelete();
     private final CityClaim cityClaim = new CityClaim();
     private final CityUnClaim cityUnClaim = new CityUnClaim();
+    private final CitySet citySet = new CitySet();
+    private final CityAdd cityAdd = new CityAdd();
+    private final CityRemove cityRemove = new CityRemove();
+    private final CityLeave cityLeave = new CityLeave();
 
     @Override
     public void register(CommandDispatcher<CommandSource> dispatcher) {
@@ -22,6 +26,10 @@ public class CityCommandRegister implements ICommandRegister {
                 .then(cityDelete.register())
                 .then(cityClaim.register())
                 .then(cityUnClaim.register())
+                .then(citySet.register())
+                .then(cityAdd.register())
+                .then(cityRemove.register())
+                .then(cityLeave.register())
                 .executes(cityHelp)
         );
     }
