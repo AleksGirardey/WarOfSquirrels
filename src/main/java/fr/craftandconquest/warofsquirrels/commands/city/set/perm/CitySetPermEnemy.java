@@ -10,13 +10,13 @@ import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
-public class CitySetPermOutside extends CityAssistantCommandBuilder {
+public class CitySetPermEnemy extends CityAssistantCommandBuilder {
     private final String buildArgumentName = "[build]";
     private final String containerArgumentName = "[container]";
     private final String switchArgumentName = "[switch]";
     @Override
     public LiteralArgumentBuilder<CommandSource> register() {
-        return Commands.literal("outside")
+        return Commands.literal("enemy")
                 .then(Commands.argument(buildArgumentName, BoolArgumentType.bool())
                         .then(Commands.argument(containerArgumentName, BoolArgumentType.bool())
                                 .then(Commands.argument(switchArgumentName, BoolArgumentType.bool())
@@ -30,7 +30,7 @@ public class CitySetPermOutside extends CityAssistantCommandBuilder {
 
     @Override
     protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        Permission permission = player.getCity().getDefaultPermission().get(PermissionRelation.OUTSIDER);
+        Permission permission = player.getCity().getDefaultPermission().get(PermissionRelation.ENEMY);
 
         permission.setBuild(context.getArgument(buildArgumentName, Boolean.class));
         permission.setContainer(context.getArgument(containerArgumentName, Boolean.class));
