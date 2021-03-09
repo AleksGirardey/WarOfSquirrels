@@ -39,9 +39,9 @@ public class CitySetMayor extends CityMayorCommandBuilder implements IAdminComma
     @Override
     protected boolean CanDoIt(Player player) {
         if (!hasCityArg)
-            return super.CanDoIt(player);
+            return super.CanDoIt(player) || IsAdmin(player);
         else
-            return super.CanDoIt(player) && IsAdmin(player);
+            return IsAdmin(player);
     }
 
     @Override
@@ -59,8 +59,11 @@ public class CitySetMayor extends CityMayorCommandBuilder implements IAdminComma
         else
             city = WarOfSquirrels.instance.getCityHandler().getCity(context.getArgument(argumentCityName, String.class));
         Player newMayor = WarOfSquirrels.instance.getPlayerHandler().get(context.getArgument(argumentName, String.class));
+        Player oldMayor = city.getOwner();
 
         city.SetOwner(newMayor);
+        newMayor.setAssistant(false);
+        oldMayor.setAssistant(true);
         StringTextComponent message = new StringTextComponent(newMayor.getDisplayName() + " is now the new leader of " + city.getDisplayName() + ".");
         message.applyTextStyle(TextFormatting.GOLD);
 

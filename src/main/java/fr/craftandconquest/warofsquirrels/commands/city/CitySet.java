@@ -14,6 +14,7 @@ public class CitySet extends CityAssistantCommandBuilder {
     private final CitySetAssistant citySetAssistant = new CitySetAssistant();
     private final CitySetResident citySetResident = new CitySetResident();
     private final CitySetRecruit citySetRecruit = new CitySetRecruit();
+    private final CitySetPerm citySetPerm = new CitySetPerm();
 
     @Override
     public LiteralArgumentBuilder<CommandSource> register() {
@@ -22,7 +23,8 @@ public class CitySet extends CityAssistantCommandBuilder {
                 .then(citySetMayor.register())
                 .then(citySetAssistant.register())
                 .then(citySetResident.register())
-                .then(citySetRecruit.register());
+                .then(citySetRecruit.register())
+                .then(citySetPerm.register());
     }
 
     @Override

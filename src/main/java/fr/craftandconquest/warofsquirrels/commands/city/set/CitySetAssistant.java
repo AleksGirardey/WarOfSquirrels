@@ -1,24 +1,59 @@
 package fr.craftandconquest.warofsquirrels.commands.city.set;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
 import fr.craftandconquest.warofsquirrels.commands.city.CityMayorCommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 
-public class CitySetAssistant extends CityMayorCommandBuilder {
+public class CitySetAssistant extends CityMayorCommandBuilder implements IAdminCommand {
+    public CitySetAssistant() {};
+
+    private final String argumentName = "[PlayerName]";
+
     @Override
     public LiteralArgumentBuilder<CommandSource> register() {
-        return null;
+        return Commands.literal("assistant")
+                .then(Commands
+                        .argument(argumentName, StringArgumentType.string())
+                        .executes(this));
+    }
+
+    @Override
+    protected boolean CanDoIt(Player player) {
+        return super.CanDoIt(player) || IsAdmin(player);
     }
 
     @Override
     protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
-        return false;
+        if (IsAdmin(player)) return true;
+
+        Player argument =  GetPlayerFromArguments(context);
+
+        return argument.getCity() == player.getCity() && player.getCity().getOwner() != argument;
     }
 
     @Override
     protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+        Player newAssistant = GetPlayerFromArguments(context);
+
+        newAssistant.setAssistant(true);
+
+        StringTextComponent message = new StringTextComponent(newAssistant.getDisplayName() + " is now assistant in " + player.getCity().getDisplayName() + ".");
+        message.applyTextStyle(TextFormatting.GOLD);
+
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(newAssistant.getCity(), null, message, true);
+
         return 0;
+    }
+
+    private Player GetPlayerFromArguments(CommandContext<CommandSource> context) {
+        return WarOfSquirrels.instance.getPlayerHandler().get(context.getArgument(argumentName, String.class));
     }
 }
