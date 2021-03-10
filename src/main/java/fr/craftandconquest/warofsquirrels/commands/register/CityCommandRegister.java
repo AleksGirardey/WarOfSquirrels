@@ -16,6 +16,8 @@ public class CityCommandRegister implements ICommandRegister {
     private final CityAdd cityAdd = new CityAdd();
     private final CityRemove cityRemove = new CityRemove();
     private final CityLeave cityLeave = new CityLeave();
+    private final CityList cityList = new CityList();
+    private final CityCubo cityCubo = new CityCubo();
 
     @Override
     public void register(CommandDispatcher<CommandSource> dispatcher) {
@@ -30,6 +32,8 @@ public class CityCommandRegister implements ICommandRegister {
                 .then(cityAdd.register())
                 .then(cityRemove.register())
                 .then(cityLeave.register())
+                .then(cityList.register())
+                .then(cityCubo.register())
                 .executes(cityHelp)
         );
     }

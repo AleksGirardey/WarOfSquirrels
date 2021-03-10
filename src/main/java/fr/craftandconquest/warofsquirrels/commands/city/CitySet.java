@@ -10,6 +10,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 public class CitySet extends CityAssistantCommandBuilder {
+    private final CitySetSpawn citySetSpawn = new CitySetSpawn();
+    private final CitySetHomeBlock citySetHomeBlock = new CitySetHomeBlock();
     private final CitySetMayor citySetMayor = new CitySetMayor();
     private final CitySetAssistant citySetAssistant = new CitySetAssistant();
     private final CitySetResident citySetResident = new CitySetResident();
@@ -20,6 +22,8 @@ public class CitySet extends CityAssistantCommandBuilder {
     public LiteralArgumentBuilder<CommandSource> register() {
         return Commands.literal("set")
                 .executes(this)
+                .then(citySetSpawn.register())
+                .then(citySetHomeBlock.register())
                 .then(citySetMayor.register())
                 .then(citySetAssistant.register())
                 .then(citySetResident.register())
