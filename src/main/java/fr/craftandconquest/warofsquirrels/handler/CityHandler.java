@@ -130,7 +130,7 @@ public class CityHandler extends Handler<City> {
     }
 
     public void RemoveCitizen(Player player) {
-        player.getCity().removeCitizen(player);
+        player.getCity().removeCitizen(player, false);
         player.setCity(null);
     }
 

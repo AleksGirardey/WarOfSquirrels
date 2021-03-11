@@ -26,7 +26,7 @@ public class CityAdd extends CityAssistantCommandBuilder {
         String argument = context.getArgument(argumentName, String.class);
         Player target = WarOfSquirrels.instance.getPlayerHandler().get(argument);
         StringTextComponent message = new StringTextComponent("");
-        Boolean ret = true;
+        boolean ret = true;
 
         if (target == null) {
             message.appendText("Le joueur " + argument + " n'existe pas.");
@@ -46,6 +46,8 @@ public class CityAdd extends CityAssistantCommandBuilder {
 
     @Override
     protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+        Player target = WarOfSquirrels.instance.getPlayerHandler().get(context.getArgument(argumentName, String.class));
+        player.getCity().addCitizen(target);
         return 0;
     }
 }

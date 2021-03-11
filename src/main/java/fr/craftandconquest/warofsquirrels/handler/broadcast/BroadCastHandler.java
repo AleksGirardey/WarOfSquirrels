@@ -70,7 +70,7 @@ public class BroadCastHandler {
         return channels.get(target).addMember(player);
     }
 
-    public boolean RemovePlayerToTarget(IChannelTarget target, Player player) {
+    public boolean RemovePlayerFromTarget(IChannelTarget target, Player player) {
         return channels.get(target).removeMember(player);
     }
 

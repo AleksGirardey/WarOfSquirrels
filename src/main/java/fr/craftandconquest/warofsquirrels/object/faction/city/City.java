@@ -70,13 +70,38 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         if (citizens.contains(player)) return false;
 
         citizens.add(player);
+        player.setCity(this);
+
+        StringTextComponent messageToTarget = new StringTextComponent("Vous avez rejoint " + displayName + ".");
+        messageToTarget.applyTextStyle(TextFormatting.GREEN);
+        player.getPlayerEntity().sendMessage(messageToTarget);
+
+        StringTextComponent messageToCity = new StringTextComponent(player.getDisplayName() + " à rejoint la ville.");
+        messageToCity.applyTextStyle(TextFormatting.GREEN);
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null, messageToCity, true);
+        WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(this, player);
         return true;
     }
 
-    public boolean removeCitizen(Player player) {
+    public boolean removeCitizen(Player player, boolean isKicked) {
         if (!citizens.contains(player)) return false;
 
-        return citizens.remove(player);
+        citizens.remove(player);
+        player.setCity(null);
+
+        StringTextComponent messageToTarget = new StringTextComponent(isKicked ?
+                "Vous avez été expulsé de " + displayName + "." : "Vous avez quitté " + displayName);
+        messageToTarget.applyTextStyle(TextFormatting.RED);
+        player.getPlayerEntity().sendMessage(messageToTarget);
+
+        StringTextComponent messageToCity = new StringTextComponent(player.getDisplayName() + ( isKicked ?
+                " a été expulsé de la ville." : " a quitté la ville."));
+        messageToCity.applyTextStyle(TextFormatting.RED);
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null, messageToCity, true);
+
+        WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerFromTarget(this, player);
+
+        return true;
     }
 
     public void SetOwner(Player owner) {

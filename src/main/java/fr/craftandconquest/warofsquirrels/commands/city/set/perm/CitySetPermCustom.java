@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
@@ -40,10 +41,7 @@ public class CitySetPermCustom extends CityAssistantCommandBuilder {
         permission.setContainer(context.getArgument(containerArgumentName, Boolean.class));
         permission.setSwitches(context.getArgument(switchArgumentName, Boolean.class));
 
-        if (player.getCity().getCustomPermission().containsKey(target))
-            player.getCity().getCustomPermission().replace(target, permission);
-        else
-            player.getCity().getCustomPermission().put(target, permission);
+        WarOfSquirrels.instance.getCityHandler().SetCustomPermission(target, permission, player.getCity());
         return 0;
     }
 }
