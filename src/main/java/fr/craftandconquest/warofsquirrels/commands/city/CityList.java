@@ -5,6 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.ITextComponent;
@@ -26,7 +27,17 @@ public class CityList extends CommandBuilder {
 
     @Override
     protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        List<String> list = WarOfSquirrels.instance.getCityHandler().getAll();
+        List<City> cityList = WarOfSquirrels.instance.getCityHandler().getAll();
+        StringTextComponent message = new StringTextComponent("");
+
+        for (int i = 0; i < cityList.size(); ++i) {
+            message.appendText(cityList.get(i).displayName);
+            if (i != cityList.size() - 1)
+                message.appendText(", ");
+        }
+
+        message.applyTextStyle(TextFormatting.GREEN);
+        player.getPlayerEntity().sendMessage(message);
         return 0;
     }
 
