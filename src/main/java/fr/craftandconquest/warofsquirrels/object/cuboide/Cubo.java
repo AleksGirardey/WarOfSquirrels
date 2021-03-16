@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,11 @@ public class Cubo {
     public void AddPlayerInList(Player player) {
         inList.add(player);
         inListUuid.add(player.getUuid());
+    }
+
+    public void RemovePlayerInList(Player target) {
+        inList.remove(target);
+        inListUuid.add(target.getUuid());
     }
 
     public void AddPlayerCustomPermission(Player player, Permission permission) {
@@ -93,9 +100,14 @@ public class Cubo {
         }
     }
 
+    public ITextComponent display() {
+        return new StringTextComponent(name + " " + vector);
+    }
+
     @Override
     public String toString() {
         return String.format("[Cubo][New] Cubo set as '%s' with parent '%s' owned by '%s'.",
                 name, parent == null ? "NO_PARENT": parent.name, owner.getDisplayName());
     }
+
 }

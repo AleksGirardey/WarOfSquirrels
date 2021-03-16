@@ -2,13 +2,16 @@ package fr.craftandconquest.warofsquirrels.commands.city;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.commands.city.cubo.*;
+import fr.craftandconquest.warofsquirrels.handler.CuboHandler;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
 public class CityCubo extends CityAssistantCommandBuilder {
     private final CityCuboList cityCuboList = new CityCuboList();
-    private final CityCuboLeave cityCuboLeave = new CityCuboLeave();
+    //private final CityCuboLeave cityCuboLeave = new CityCuboLeave();
     private final CityCuboCreate cityCuboCreate = new CityCuboCreate();
     private final CityCuboDelete cityCuboDelete = new CityCuboDelete();
     private final CityCuboAdd cityCuboAdd = new CityCuboAdd();
@@ -20,7 +23,7 @@ public class CityCubo extends CityAssistantCommandBuilder {
         return Commands.literal("cubo")
                 .executes(this)
                 .then(cityCuboList.register())
-                .then(cityCuboLeave.register())
+                //.then(cityCuboLeave.register())
                 .then(cityCuboCreate.register())
                 .then(cityCuboDelete.register())
                 .then(cityCuboAdd.register())
@@ -30,11 +33,17 @@ public class CityCubo extends CityAssistantCommandBuilder {
 
     @Override
     protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
-        return false;
+        return true;
     }
 
     @Override
     protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+        CuboHandler cuboHandler = WarOfSquirrels.instance.getCuboHandler();
+
+        if (cuboHandler.playerExists(player))
+            cuboHandler.deactivateCuboMode(player);
+        else
+            cuboHandler.activateCuboMode(player);
         return 0;
     }
 }
