@@ -19,7 +19,7 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CityCuboSetInPerm extends CommandBuilder implements IAdminCommand {
+public class CityCuboSetOutPerm extends CommandBuilder implements IAdminCommand {
     private final String cuboNameArgument = "[CuboName]";
     private final String buildArgument = "[Build]";
     private final String containerArgument = "[Container]";
@@ -32,7 +32,7 @@ public class CityCuboSetInPerm extends CommandBuilder implements IAdminCommand {
 
     @Override
     public LiteralArgumentBuilder<CommandSource> register() {
-        return Commands.literal("inperm").then(Commands
+        return Commands.literal("outperm").then(Commands
                 .argument(cuboNameArgument, StringArgumentType.string())
                 .then(Commands.argument(buildArgument, BoolArgumentType.bool())
                         .then(Commands.argument(containerArgument, BoolArgumentType.bool())
@@ -69,7 +69,7 @@ public class CityCuboSetInPerm extends CommandBuilder implements IAdminCommand {
         permission.setContainer(context.getArgument(containerArgument, boolean.class));
         permission.setSwitches(context.getArgument(switchArgument, boolean.class));
 
-        cubo.setPermissionIn(permission);
+        cubo.setPermissionOut(permission);
         WarOfSquirrels.instance.getCuboHandler().Save();
         return 0;
     }

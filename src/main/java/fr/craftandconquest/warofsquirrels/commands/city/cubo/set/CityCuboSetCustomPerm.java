@@ -19,8 +19,9 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CityCuboSetInPerm extends CommandBuilder implements IAdminCommand {
+public class CityCuboSetCustomPerm extends CommandBuilder implements IAdminCommand {
     private final String cuboNameArgument = "[CuboName]";
+    private final String playerNameArgument = "[PlayerName]";
     private final String buildArgument = "[Build]";
     private final String containerArgument = "[Container]";
     private final String switchArgument = "[Switch]";
@@ -32,12 +33,13 @@ public class CityCuboSetInPerm extends CommandBuilder implements IAdminCommand {
 
     @Override
     public LiteralArgumentBuilder<CommandSource> register() {
-        return Commands.literal("inperm").then(Commands
+        return Commands.literal("customperm").then(Commands
                 .argument(cuboNameArgument, StringArgumentType.string())
-                .then(Commands.argument(buildArgument, BoolArgumentType.bool())
-                        .then(Commands.argument(containerArgument, BoolArgumentType.bool())
-                                .then(Commands.argument(switchArgument, BoolArgumentType.bool())
-                                        .executes(this)))));
+                .then(Commands.argument(cuboNameArgument, StringArgumentType.string())
+                    .then(Commands.argument(buildArgument, BoolArgumentType.bool())
+                            .then(Commands.argument(containerArgument, BoolArgumentType.bool())
+                                    .then(Commands.argument(switchArgument, BoolArgumentType.bool())
+                                            .executes(this))))));
     }
 
     @Override
@@ -45,6 +47,10 @@ public class CityCuboSetInPerm extends CommandBuilder implements IAdminCommand {
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(context.getArgument(cuboNameArgument, String.class));
 
         if (cubo == null) return false;
+
+        Player target = WarOfSquirrels.instance.getPlayerHandler().get(context.getArgument(playerNameArgument, String.class));
+
+        if (target == null) return false;
 
         List<Player> list = new ArrayList<>();
 
@@ -56,20 +62,22 @@ public class CityCuboSetInPerm extends CommandBuilder implements IAdminCommand {
             return true;
 
         player.getPlayerEntity()
-                .sendMessage(new StringTextComponent("Vous ne pouvez pas modifier les permissions de ce cubo.").applyTextStyle(TextFormatting.RED));
+                .sendMessage(new StringTextComponent("Vous ne pouvez pas modifier les permissions de ce cubo.")
+                        .applyTextStyle(TextFormatting.RED));
         return true;
     }
 
     @Override
     protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(context.getArgument(cuboNameArgument, String.class));
+        Player target = WarOfSquirrels.instance.getPlayerHandler().get(context.getArgument(playerNameArgument, String.class));
         Permission permission = new Permission();
 
         permission.setBuild(context.getArgument(buildArgument, boolean.class));
         permission.setContainer(context.getArgument(containerArgument, boolean.class));
         permission.setSwitches(context.getArgument(switchArgument, boolean.class));
 
-        cubo.setPermissionIn(permission);
+        cubo.AddPlayerCustomPermission(target, permission);
         WarOfSquirrels.instance.getCuboHandler().Save();
         return 0;
     }
