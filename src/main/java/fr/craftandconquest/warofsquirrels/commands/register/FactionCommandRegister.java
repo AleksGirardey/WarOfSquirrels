@@ -2,7 +2,10 @@ package fr.craftandconquest.warofsquirrels.commands.register;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import fr.craftandconquest.warofsquirrels.commands.faction.FactionClaimCommand;
 import fr.craftandconquest.warofsquirrels.commands.faction.FactionHelpCommand;
+import fr.craftandconquest.warofsquirrels.commands.faction.FactionInfoCommand;
+import fr.craftandconquest.warofsquirrels.commands.faction.FactionListCommand;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;

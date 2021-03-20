@@ -17,11 +17,15 @@ public class FactionInfoCommand extends CommandBuilder {
 
     private final String argumentName = "[Faction]";
 
-    FactionInfoCommand(boolean withArg) {
+    public FactionInfoCommand() {
+        this(false);
+    }
+
+    public FactionInfoCommand(boolean withArg) {
         this.withArg = withArg;
     }
 
-    private boolean withArg;
+    private final boolean withArg;
 
     @Override
     public LiteralArgumentBuilder<CommandSource> register() {

@@ -24,7 +24,7 @@ public class FactionHelpCommand extends CommandBuilder {
         player.getPlayerEntity().sendMessage(new StringTextComponent("--==| faction help |==--\n" +
                 "/faction info <faction>\n" +
                 "/faction list\n" +
-                "/faction create [name] [cityName]\n" +
+                "/faction create [FactionName] [TerritoryName]\n" +
                 "/faction delete\n" +
                 "/faction set ...").applyTextStyle(TextFormatting.GREEN));
         return 0;

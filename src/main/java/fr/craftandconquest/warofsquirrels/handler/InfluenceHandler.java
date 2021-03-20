@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.Influence;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +16,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class InfluenceHandler extends Handler<Influence> {
-    private final Map<Faction, Map<Territory, Influence>> influenceMap;
+    private final Map<City, Map<Territory, Influence>> cityInfluenceMap;
+    private final Map<Faction, Map<Territory, Influence>> factionInfluenceMap;
     private final Map<UUID, Influence> influences;
 
     private static final String DirName = "/WorldData";
@@ -23,7 +25,8 @@ public class InfluenceHandler extends Handler<Influence> {
 
     public InfluenceHandler(Logger logger) {
         super("[WoS][InfluenceHandler]", logger);
-        influenceMap = new HashMap<>();
+        cityInfluenceMap = new HashMap<>();
+        factionInfluenceMap = new HashMap<>();
         influences = new HashMap<>();
 
         if (!Init()) return;
@@ -39,12 +42,28 @@ public class InfluenceHandler extends Handler<Influence> {
 
         influences.put(value.getUuid(), value);
 
-        if (!influenceMap.containsKey(value.getFaction()))
-            influenceMap.put(value.getFaction(), new HashMap<>());
-        if (influenceMap.get(value.getFaction()).containsKey(value.getTerritory()))
+        if (value.getFaction() != null)
+            return AddFactionInfluence(value);
+        return AddCityInfluence(value);
+    }
+
+    private boolean AddCityInfluence(Influence value) {
+        if (!cityInfluenceMap.containsKey(value.getCity()))
+            cityInfluenceMap.put(value.getCity(), new HashMap<>());
+        if (cityInfluenceMap.get(value.getCity()).containsKey(value.getTerritory()))
             return false;
 
-        influenceMap.get(value.getFaction()).put(value.getTerritory(), value);
+        cityInfluenceMap.get(value.getCity()).put(value.getTerritory(), value);
+        return true;
+    }
+
+    private boolean AddFactionInfluence(Influence value) {
+        if (!factionInfluenceMap.containsKey(value.getFaction()))
+            factionInfluenceMap.put(value.getFaction(), new HashMap<>());
+        if (factionInfluenceMap.get(value.getFaction()).containsKey(value.getTerritory()))
+            return false;
+
+        factionInfluenceMap.get(value.getFaction()).put(value.getTerritory(), value);
         return true;
     }
 
@@ -61,7 +80,7 @@ public class InfluenceHandler extends Handler<Influence> {
 
     @Override
     public boolean Delete(Influence value) {
-        influenceMap.get(value.getFaction()).remove(value.getTerritory());
+        factionInfluenceMap.get(value.getFaction()).remove(value.getTerritory());
         influences.remove(value.getUuid());
 
         Save(influences.values());
@@ -93,12 +112,32 @@ public class InfluenceHandler extends Handler<Influence> {
         // Nothing To Do
     }
 
+    public Influence        get(UUID uuid) { return influences.get(uuid); }
+
+    public Influence        get(Faction faction, Territory territory) {
+        return factionInfluenceMap.get(faction).get(territory);
+    }
+
+    public Influence        get(City city, Territory territory) {
+        return cityInfluenceMap.get(city).get(territory);
+    }
+
+    public void ResetOthersInfluence(Territory territory) {
+        cityInfluenceMap.forEach((k, v) -> v.remove(territory));
+        factionInfluenceMap.forEach((k, v) -> {
+            if (k != territory.getFaction()) {
+                if (v.containsKey(territory))
+                    v.get(territory).SubInfluence(v.get(territory).getValue());
+            }
+        });
+    }
+
     public void pushInfluence(Faction faction, Territory territory, int influenceGenerated) {
         Map<Territory, Influence> map = new HashMap<>();
         Influence influence;
 
-        if (influenceMap.containsKey(faction))
-            map = influenceMap.get(faction);
+        if (factionInfluenceMap.containsKey(faction))
+            map = factionInfluenceMap.get(faction);
         if (map.containsKey(territory))
             influence = map.get(territory);
         else

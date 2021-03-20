@@ -129,9 +129,34 @@ public class Config {
         Permission defaultNaturePermission = new Permission(true, true, true, true, true);
 
         return new ConfigData(
-                20, 20, 15, 10,
-                true, 10, 30, 1500, 120,
-                120, 5120, false, 256,
-                400, 5000, 4, initRanks, defaultPermissions, defaultNaturePermission);
+        /* Claiming */
+                4, // minPartySizeToCreateCity;
+                20, // distanceCities;
+                20, // distanceOutpost;
+
+        /* Influence */
+                400, // territoryClaimLimit;
+                10, // baseInfluenceGeneration;
+                40, // baseInfluenceRequired;
+
+        /* Speaking */
+                15, // shoutDistance;
+                10, // sayDistance;
+
+        /* World Config */
+                5120, // mapSize;
+                256, // territorySize;
+                false, // territoriesGenerated;
+                true, // peaceTime;
+                10, // reincarnationTime;
+                15, // invitationTime;
+                1500, // startBalance;
+
+        /* War */
+            120, // preparationPhase;
+            120, // rollbackPhase;
+            1000, // influenceMax;
+
+            initRanks, defaultPermissions, defaultNaturePermission);
     }
 }
