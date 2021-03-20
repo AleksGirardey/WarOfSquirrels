@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
+import fr.craftandconquest.warofsquirrels.commands.register.ITerritoryExtractor;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.handler.CityHandler;
 import fr.craftandconquest.warofsquirrels.object.Player;
@@ -13,6 +14,7 @@ import fr.craftandconquest.warofsquirrels.object.channels.CityChannel;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.war.PartyWar;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
+import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -22,7 +24,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
-public class CityCreate extends CommandBuilder implements IAdminCommand {
+public class CityCreate extends CommandBuilder implements IAdminCommand, ITerritoryExtractor {
     private final String cityNameArgument = "[CityName]";
 
     @Override
@@ -60,7 +62,10 @@ public class CityCreate extends CommandBuilder implements IAdminCommand {
         z = player.getPlayerEntity().getPosition().getZ() / 16;
 
         if (player.getCity() == null) {
-            if (!WarOfSquirrels.instance.getChunkHandler().exists(x, z, DimensionType.OVERWORLD) && Utils.CanPlaceCity(x, z)) {
+            Territory territory = ExtractTerritory(player);
+            if (!WarOfSquirrels.instance.getChunkHandler().exists(x, z, DimensionType.OVERWORLD)
+                    && Utils.CanPlaceCity(x, z)
+                    && territory.getFaction() == null && territory.getFortification() == null) {
                 return true;
             } else
                 message = new StringTextComponent("You can't set a new city here ! Too close from civilization");
@@ -79,6 +84,7 @@ public class CityCreate extends CommandBuilder implements IAdminCommand {
         ChunkHandler chh = WarOfSquirrels.instance.getChunkHandler();
         City city = cih.CreateCity(cityName, cityName.substring(0, 3), player);
         Chunk chunk;
+        Territory territory = ExtractTerritory(player);
 
         player.setCity(city);
         chunk = chh.CreateChunk(player.getPlayerEntity().chunkCoordX, player.getPlayerEntity().chunkCoordZ, city, player.getPlayerEntity().dimension.getId());
@@ -92,8 +98,9 @@ public class CityCreate extends CommandBuilder implements IAdminCommand {
             WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(city, p);
         }
         StringTextComponent message = new StringTextComponent("[BREAKING NEWS] " + cityName + " have been created by " + player.getDisplayName());
-
         message.applyTextStyle(TextFormatting.GOLD);
+
+        territory.SetFortification(city);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
 

@@ -29,7 +29,7 @@ public class Utils {
     }
 
     public static boolean   CanPlaceCity(int posX, int posZ) {
-        int                 value = NearestHomeBlock(posX, posZ);
+        int value = NearestHomeBlock(posX, posZ);
 
         return (value == -1 || value >= WarOfSquirrels.instance.getConfig().getDistanceCities());
     }
