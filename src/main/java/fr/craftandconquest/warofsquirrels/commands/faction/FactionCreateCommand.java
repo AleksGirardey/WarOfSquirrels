@@ -7,6 +7,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityMayorCommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.register.ITerritoryExtractor;
 import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.channels.FactionChannel;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.Influence;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
@@ -54,6 +55,7 @@ public class FactionCreateCommand extends CityMayorCommandBuilder implements ITe
 
         player.getCity().SetFaction(faction);
         territory.SetFaction(faction);
+        territory.setName(context.getArgument(territoryName, String.class));
 
         StringTextComponent message = new StringTextComponent(player.getDisplayName() + " forme la faction '"
                 + name + "' dont la capitale est '" + player.getCity().displayName + "'");
@@ -61,6 +63,10 @@ public class FactionCreateCommand extends CityMayorCommandBuilder implements ITe
         message.applyTextStyle(TextFormatting.BOLD).applyTextStyle(TextFormatting.GOLD);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
+        WarOfSquirrels.instance.getBroadCastHandler().AddTarget(faction, new FactionChannel(faction));
+
+        for (Player p : player.getCity().getCitizens())
+            WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(faction, p);
 
         WarOfSquirrels.instance.getInfluenceHandler().ResetOthersInfluence(territory);
         WarOfSquirrels.instance.getCityHandler().Save();
