@@ -151,4 +151,29 @@ public class InfluenceHandler extends Handler<Influence> {
         Logger.debug(String.format("%s[Influence] Influence généré sur le territoire '%s' : %d (%d)",
                 PrefixLogger, territory.getName(), influenceGenerated, influence.getValue()));
     }
+
+    public void Delete(Faction faction) {
+        Map<Territory, Influence> factionInfluence = factionInfluenceMap.get(faction);
+
+        for (Influence influence : factionInfluence.values())
+            dataArray.remove(influence);
+
+        factionInfluenceMap.remove(faction);
+        Save();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

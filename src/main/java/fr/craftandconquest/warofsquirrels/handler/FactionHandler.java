@@ -6,6 +6,8 @@ import fr.craftandconquest.warofsquirrels.object.faction.Diplomacy;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -84,11 +86,14 @@ public class FactionHandler extends Handler<Faction> {
     public boolean Delete(Faction faction) {
         WarOfSquirrels.instance.spreadPermissionDelete(faction);
 
+        WarOfSquirrels.instance.getInfluenceHandler().Delete(faction);
+        WarOfSquirrels.instance.getTerritoryHandler().Delete(faction);
         for (City city : faction.getCities().values())
-            WarOfSquirrels.instance.getCityHandler().Delete(city);
+            city.SetFaction(null);
 
         factionMap.remove(faction.getFactionUuid());
 
+        Save();
         return true;
     }
 

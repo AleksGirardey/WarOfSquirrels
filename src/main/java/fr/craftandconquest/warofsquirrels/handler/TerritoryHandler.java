@@ -196,6 +196,13 @@ public class TerritoryHandler extends Handler<Territory> {
         return true;
     }
 
+    public void Delete(Faction faction) {
+        for (Territory territory : territoriesByFaction.get(faction)) {
+            territory.SetFaction(null);
+        }
+        Save();
+    }
+
     public void update() {
         for(Territory territory : dataArray)
             territory.SpreadInfluence();

@@ -115,7 +115,8 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
     public void SetFaction(Faction faction) {
         this.faction = faction;
-        this.factionUuid = faction.getFactionUuid();
+        if (faction != null)
+            this.factionUuid = faction.getFactionUuid();
     }
 
     @Override
