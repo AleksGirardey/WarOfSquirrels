@@ -6,7 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
-import fr.craftandconquest.warofsquirrels.commands.register.ITerritoryExtractor;
+import fr.craftandconquest.warofsquirrels.commands.extractor.ITerritoryExtractor;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.handler.CityHandler;
 import fr.craftandconquest.warofsquirrels.object.Player;
@@ -21,7 +21,6 @@ import net.minecraft.command.Commands;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
 public class CityCreate extends CommandBuilder implements IAdminCommand, ITerritoryExtractor {

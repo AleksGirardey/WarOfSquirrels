@@ -146,6 +146,15 @@ public class FactionHandler extends Handler<Faction> {
                 return true;
         return false;
     }
+
+    public void SetCapital(Faction faction, City city) {
+        faction.SetCapital(city);
+        StringTextComponent message = new StringTextComponent("La nouvelle capitale de '" + faction.getDisplayName()
+                + "' est désormais la ville de '" + city.getDisplayName() + "'.");
+        message.applyTextStyle(TextFormatting.GOLD);
+
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
+    }
 //
 //    public void             setNeutral(Faction A, Faction B) {
 //        List<Diplomacy>     list = new ArrayList<>();

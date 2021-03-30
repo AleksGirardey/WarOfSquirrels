@@ -1,4 +1,4 @@
-package fr.craftandconquest.warofsquirrels.commands.register;
+package fr.craftandconquest.warofsquirrels.commands.extractor;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.TerritoryHandler;

@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityMayorCommandBuilder;
-import fr.craftandconquest.warofsquirrels.commands.register.ITerritoryExtractor;
+import fr.craftandconquest.warofsquirrels.commands.extractor.ITerritoryExtractor;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.channels.FactionChannel;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;

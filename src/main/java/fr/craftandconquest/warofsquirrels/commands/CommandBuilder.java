@@ -10,7 +10,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class CommandBuilder implements Command<CommandSource> {
+public abstract class CommandBuilder implements Command<CommandSource>, IAdminCommand {
     public abstract LiteralArgumentBuilder<CommandSource> register();
 
     protected boolean CanDoIt(Player player) { return true; }
@@ -26,7 +26,7 @@ public abstract class CommandBuilder implements Command<CommandSource> {
         PlayerEntity playerEntity = context.getSource().asPlayer();
         Player player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity);
 
-        if (CanDoIt(player) && SpecialCheck(player, context))
+        if (IsAdmin(player) || (CanDoIt(player) && SpecialCheck(player, context)))
             return ExecCommand(player, context);
         player.getPlayerEntity().sendMessage(ErrorMessage());
         return -1;
