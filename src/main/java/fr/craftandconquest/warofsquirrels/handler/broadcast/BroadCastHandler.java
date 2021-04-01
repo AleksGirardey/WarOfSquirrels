@@ -8,7 +8,7 @@ import fr.craftandconquest.warofsquirrels.object.channels.FactionChannel;
 import fr.craftandconquest.warofsquirrels.object.channels.WorldChannel;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
-import fr.craftandconquest.warofsquirrels.object.war.PartyWar;
+import fr.craftandconquest.warofsquirrels.object.war.Party;
 import fr.craftandconquest.warofsquirrels.object.war.War;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -16,7 +16,6 @@ import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,11 +88,11 @@ public class BroadCastHandler {
         return channels.remove(target) != null;
     }
 
-    public void         partyChannel(PartyWar party, String message) {
+    public void         partyChannel(Party party, String message) {
         partyChannel(party, message, null);
     }
 
-    public void         partyChannel(PartyWar party, String message, TextFormatting color) {
+    public void         partyChannel(Party party, String message, TextFormatting color) {
         TextComponent text = new StringTextComponent(message);
         text.applyTextStyle(color == null ? TextFormatting.YELLOW : color);
 

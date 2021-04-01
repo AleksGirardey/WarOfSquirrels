@@ -28,8 +28,4 @@ public class FactionCommandRegister implements ICommandRegister {
                 .then(factionSetCommand.register())
         );
     }
-
-    private int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        return 0;
-    }
 }

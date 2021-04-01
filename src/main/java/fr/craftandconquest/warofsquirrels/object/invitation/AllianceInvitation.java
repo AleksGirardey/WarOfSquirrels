@@ -7,6 +7,10 @@ import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 public class AllianceInvitation extends Invitation {
     private final Faction factionSender;
     private final Permission permission;
@@ -20,7 +24,7 @@ public class AllianceInvitation extends Invitation {
 
     @Override
     public void accept() {
-        StringTextComponent message = new StringTextComponent(factionSender.getDisplayName() + " and " + factionReceiver.getDisplayName() + " are now allies.");
+        StringTextComponent message = new StringTextComponent(factionSender.getDisplayName() + " et " + factionReceiver.getDisplayName() + " sont désormais alliés.");
         message.applyTextStyle(TextFormatting.GOLD);
 
         WarOfSquirrels.instance.getDiplomacyHandler().CreateDiplomacy(factionSender, factionReceiver, true, permission);
@@ -37,8 +41,8 @@ public class AllianceInvitation extends Invitation {
 
     @Override
     public void refuse() {
-        StringTextComponent toSender = new StringTextComponent(factionReceiver.getDisplayName() + " declined your invitation");
-        StringTextComponent toReceiver = new StringTextComponent("The invitation from " + factionSender.getDisplayName() + " have been decline.");
+        StringTextComponent toSender = new StringTextComponent(factionReceiver.getDisplayName() + " a décliné votre invitation");
+        StringTextComponent toReceiver = new StringTextComponent("L'invitation de " + factionSender.getDisplayName() + " a été décliné.");
 
         toSender.applyTextStyle(TextFormatting.RED);
         toReceiver.applyTextStyle(TextFormatting.RED);
@@ -49,10 +53,10 @@ public class AllianceInvitation extends Invitation {
 
     @Override
     public void cancel() {
-        StringTextComponent toSender = new StringTextComponent("The invitation sent to '"
-                + factionReceiver.getDisplayName() + "' has expired.");
-        StringTextComponent toReceiver = new StringTextComponent("The invitation from '"
-                + factionSender.getDisplayName() + "' has expired");
+        StringTextComponent toSender = new StringTextComponent("L'invitation envoyé à '"
+                + factionReceiver.getDisplayName() + "' a expiré.");
+        StringTextComponent toReceiver = new StringTextComponent("L'invitation de '"
+                + factionSender.getDisplayName() + "' a expiré");
 
         toSender.applyTextStyle(TextFormatting.RED);
         toReceiver.applyTextStyle(TextFormatting.RED);

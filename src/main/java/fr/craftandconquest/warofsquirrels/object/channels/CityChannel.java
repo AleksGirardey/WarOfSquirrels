@@ -21,6 +21,7 @@ public class CityChannel extends Channel {
     public ITextComponent transformText(Player sender, ITextComponent text) {
         return new StringTextComponent(String.format("[%s][%s] ",
                 sender.getCity().displayName, Utils.getDisplayNameWithRank(sender)))
+                .appendSibling(text)
                 .applyTextStyle(TextFormatting.DARK_AQUA);
     }
 

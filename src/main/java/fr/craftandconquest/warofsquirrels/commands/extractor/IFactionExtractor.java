@@ -9,18 +9,18 @@ import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
-public interface IFactionExtractor extends IExtractor<Faction> {
+public interface IFactionExtractor {
     String factionNameArgument = "[FactionName]";
 
-    default String getRawArgument(CommandContext<CommandSource> context) {
+    default String getRawFaction(CommandContext<CommandSource> context) {
         return context.getArgument(factionNameArgument, String.class);
     }
 
-    default Faction getArgument(Player player, CommandContext<CommandSource> context) {
-        return WarOfSquirrels.instance.getFactionHandler().get(getRawArgument(context));
+    default Faction getFaction(Player player, CommandContext<CommandSource> context) {
+        return WarOfSquirrels.instance.getFactionHandler().get(getRawFaction(context));
     }
 
-    default RequiredArgumentBuilder<CommandSource, String> getArgumentRegister() {
+    default RequiredArgumentBuilder<CommandSource, String> getFactionRegister() {
         return Commands.argument(factionNameArgument, StringArgumentType.string());
     }
 }

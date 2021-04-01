@@ -1,5 +1,7 @@
 package fr.craftandconquest.warofsquirrels.object.war;
 
+import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
+import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,11 +11,11 @@ import net.minecraft.util.text.TextComponent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PartyWar {
+public class Party implements IChannelTarget {
     @Getter @Setter private Player leader;
     @Getter private final List<Player> players = new ArrayList<>();
 
-    public PartyWar(Player leader) {
+    public Party(Player leader) {
         this.leader = leader;
     }
 
@@ -61,5 +63,10 @@ public class PartyWar {
             if (p.getCity() != null)
                 return false;
         return leader.getCity() == null;
+    }
+
+    @Override
+    public BroadCastTarget getBroadCastTarget() {
+        return BroadCastTarget.PARTY;
     }
 }

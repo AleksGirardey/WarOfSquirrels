@@ -12,7 +12,7 @@ import fr.craftandconquest.warofsquirrels.handler.CityHandler;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.channels.CityChannel;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
-import fr.craftandconquest.warofsquirrels.object.war.PartyWar;
+import fr.craftandconquest.warofsquirrels.object.war.Party;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
@@ -38,7 +38,7 @@ public class CityCreate extends CommandBuilder implements IAdminCommand, ITerrit
     protected boolean CanDoIt(Player player) {
         if (IsAdmin(player)) return true;
 
-        PartyWar party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
+        Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
         int minPartySize = WarOfSquirrels.instance.getConfig().getMinPartySizeToCreateCity();
 
         if (super.CanDoIt(player) && party.getLeader().equals(player)) {

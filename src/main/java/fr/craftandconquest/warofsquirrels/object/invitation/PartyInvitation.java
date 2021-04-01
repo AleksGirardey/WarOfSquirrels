@@ -2,46 +2,46 @@ package fr.craftandconquest.warofsquirrels.object.invitation;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
-import fr.craftandconquest.warofsquirrels.object.war.PartyWar;
+import fr.craftandconquest.warofsquirrels.object.war.Party;
 import lombok.Getter;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 
-public class PartyWarInvitation extends Invitation {
-    @Getter private final PartyWar partyWar;
+public class PartyInvitation extends Invitation {
+    @Getter private final Party party;
 
-    public PartyWarInvitation(Player receiver, Player sender, PartyWar partyWar) {
+    public PartyInvitation(Player receiver, Player sender, Party party) {
         super(receiver, sender, InvitationType.PartyWar);
-        this.partyWar = partyWar;
+        this.party = party;
         WarOfSquirrels.instance.getBroadCastHandler().partyInvitation(sender, receiver);
     }
 
     @Override
     public void accept() {
-        partyWar.AddPlayer(receiver);
+        party.AddPlayer(receiver);
         WarOfSquirrels.instance.getBroadCastHandler()
-                .partyChannel(partyWar, receiver.getDisplayName() + " has been added to the party");
+                .partyChannel(party, receiver.getDisplayName() + " a été ajouté au groupe.");
     }
 
     @Override
     public void refuse() {
-        TextComponent refuseTextParty = new StringTextComponent(receiver.getDisplayName() + " declined to join the party");
-        TextComponent refuseTextPlayer = new StringTextComponent("The invitation from " + sender.getDisplayName() + " have been decline.");
+        TextComponent refuseTextParty = new StringTextComponent(receiver.getDisplayName() + " a refusé de rejoindre le groupe.");
+        TextComponent refuseTextPlayer = new StringTextComponent("L'invitation de " + sender.getDisplayName() + " a été refusé.");
 
         refuseTextParty.applyTextStyle(TextFormatting.RED);
         refuseTextPlayer.applyTextStyle(TextFormatting.RED);
 
-        partyWar.Send(refuseTextParty);
+        party.Send(refuseTextParty);
         receiver.getPlayerEntity().sendMessage(refuseTextPlayer);
     }
 
     @Override
     public void cancel() {
-        TextComponent toSender = new StringTextComponent("Invitation sent to '"
-                + receiver.getDisplayName() + "' has expired");
-        TextComponent toReceiver = new StringTextComponent("Invitation from '"
-                + sender.getDisplayName() + "' has expired");
+        TextComponent toSender = new StringTextComponent("L'invitation envoyé à '"
+                + receiver.getDisplayName() + "' a expiré.");
+        TextComponent toReceiver = new StringTextComponent("L'invitation de '"
+                + sender.getDisplayName() + "' a expiré.");
 
         toSender.applyTextStyle(TextFormatting.RED);
         toReceiver.applyTextStyle(TextFormatting.RED);

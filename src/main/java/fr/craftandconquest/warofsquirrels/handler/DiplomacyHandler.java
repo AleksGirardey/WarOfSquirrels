@@ -103,13 +103,21 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
         return message.toString();
     }
 
-    public Diplomacy CreateDiplomacy(Faction main, Faction target, boolean relation, Permission permission) {
+    public void SetNeutral (Faction main, Faction target) {
+        diplomacyMap.get(main).removeIf(diplomacy -> diplomacy.getTarget() == target);
+        diplomacyMap.get(target).removeIf(diplomacy -> diplomacy.getTarget() == main && diplomacy.isRelation());
+    }
+
+    public void CreateDiplomacy(Faction main, Faction target, boolean relation, Permission permission) {
         Diplomacy diplomacy = new Diplomacy();
 
         diplomacy.SetFaction(main);
         diplomacy.SetTarget(target);
+        diplomacy.setRelation(relation);
+        diplomacy.SetPermission(permission);
 
-        return diplomacy;
+        add(diplomacy);
+        Save();
     }
 
     public Diplomacy get(UUID uuid) {

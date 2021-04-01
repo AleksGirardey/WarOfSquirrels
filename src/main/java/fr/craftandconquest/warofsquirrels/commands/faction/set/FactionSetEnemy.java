@@ -4,33 +4,35 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
-import fr.craftandconquest.warofsquirrels.object.invitation.AllianceInvitation;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
-public class FactionSetAlly extends FactionSetDiplomacy {
-    private final FactionSetAlly withPerm = new FactionSetAlly(true);
+public class FactionSetEnemy extends FactionSetDiplomacy {
+    private final FactionSetEnemy withPerm = new FactionSetEnemy(true);
 
-    public FactionSetAlly() {
+    public FactionSetEnemy() {
         super();
     }
 
-    public FactionSetAlly(boolean hasArgs) {
+    public FactionSetEnemy(boolean hasArgs) {
         super(hasArgs);
     }
 
     @Override
+    protected void NewDiplomacy(Player player, Faction faction, Permission perm) {
+        Faction pFaction = player.getCity().getFaction();
+        Annouce(pFaction, faction, "enemie");
+        WarOfSquirrels.instance.getDiplomacyHandler().CreateDiplomacy(pFaction, faction, false, perm);
+    }
+
+    @Override
     public LiteralArgumentBuilder<CommandSource> register() {
-        return Commands.literal("ally")
+        return Commands
+                .literal("enemy")
                 .then(getFactionRegister()
                         .executes(this)
                         .then(getPermissionRegister()
                                 .executes(withPerm)));
-    }
-
-    @Override
-    protected void NewDiplomacy(Player player, Faction faction, Permission perm) {
-        WarOfSquirrels.instance.getInvitationHandler().CreateInvitation(new AllianceInvitation(player, faction, perm));
     }
 }

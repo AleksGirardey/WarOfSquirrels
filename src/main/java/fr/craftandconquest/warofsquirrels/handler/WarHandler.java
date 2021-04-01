@@ -5,13 +5,11 @@ import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
-import fr.craftandconquest.warofsquirrels.object.war.PartyWar;
+import fr.craftandconquest.warofsquirrels.object.war.Party;
 import fr.craftandconquest.warofsquirrels.object.war.War;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import java.util.ArrayList;
@@ -25,11 +23,11 @@ public class WarHandler {
 
     private void rollback() {}
 
-    public boolean CreateWar(City city, AttackTarget target, PartyWar party) {
+    public boolean CreateWar(City city, AttackTarget target, Party party) {
         return target instanceof City && CreateWar(city, (City) city, party);
     }
 
-    public boolean CreateWar(City attacker, City defender, PartyWar party) {
+    public boolean CreateWar(City attacker, City defender, Party party) {
         if (WarOfSquirrels.instance.getFactionHandler().areEnemies(attacker.getFaction(), defender.getFaction())) {
             int defenders = defender.getOnlinePlayers().size();
 

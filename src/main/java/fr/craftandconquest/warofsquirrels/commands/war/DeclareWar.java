@@ -1,6 +1,5 @@
 package fr.craftandconquest.warofsquirrels.commands.war;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -8,7 +7,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
-import fr.craftandconquest.warofsquirrels.object.war.PartyWar;
+import fr.craftandconquest.warofsquirrels.object.war.Party;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
@@ -28,7 +27,7 @@ public class DeclareWar extends CityAssistantCommandBuilder {
 
     @Override
     protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
-        PartyWar party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
+        Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
         String target = context.getArgument("cityTargeted", String.class);
         AttackTarget attackTarget = WarOfSquirrels.instance.getCityHandler().getCity(target);
 
