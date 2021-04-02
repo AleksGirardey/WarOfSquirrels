@@ -13,11 +13,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
+
+
 public class CityInfo extends CommandBuilder {
     private final String cityNameArgument = "[City]";
 
-    private final CityInfo CMD_NO_ARGS = new CityInfo(false);
-    private final CityInfo CMD_ARGS = new CityInfo(true);
+    private final static CityInfo CMD_NO_ARGS = new CityInfo(false);
+    private final static CityInfo CMD_ARGS = new CityInfo(true);
 
     private final boolean args;
     private String targetName;

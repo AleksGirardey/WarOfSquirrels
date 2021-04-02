@@ -75,7 +75,6 @@ public class WarOfSquirrels {
         chunkHandler = new ChunkHandler(LOGGER);
         cityHandler = new CityHandler(LOGGER);
         territoryHandler = new TerritoryHandler(LOGGER);
-        broadCastHandler = new BroadCastHandler(LOGGER);
         invitationHandler = new InvitationHandler(LOGGER);
         warHandler = new WarHandler();
         partyHandler = new PartyHandler();
@@ -85,10 +84,14 @@ public class WarOfSquirrels {
 //        loanHandler = new LoanHandler(logger);
         factionHandler = new FactionHandler(LOGGER);
         influenceHandler = new InfluenceHandler(LOGGER);
+        broadCastHandler = new BroadCastHandler(LOGGER);
         updateHandler = new UpdateHandler();
 
         //CityCommand.register(event.getCommandDispatcher());
 
+        factionHandler.updateDependencies();
+        playerHandler.updateDependencies();
+        cuboHandler.updateDependencies();
         playerHandler.updateDependencies();
         cuboHandler.UpdateDependencies();
 

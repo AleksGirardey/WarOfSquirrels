@@ -14,8 +14,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 public class CityClaim extends CityAssistantCommandBuilder {
-    private final CityClaim CMD_NO_ARGS = new CityClaim(false);
-    private final CityClaim CMD_ARGS = new CityClaim(true);
+    private final static CityClaim CMD_NO_ARGS = new CityClaim(false);
+    private final static CityClaim CMD_ARGS = new CityClaim(true);
 
     private final String argumentName = "[ChunkName]";
 

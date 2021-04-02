@@ -13,7 +13,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 public class FactionInfoCommand extends CommandBuilder {
-    private final FactionInfoCommand withArgCmd = new FactionInfoCommand(true);
+    private static final FactionInfoCommand withArgCmd = new FactionInfoCommand(true);
 
     private final String argumentName = "[Faction]";
 

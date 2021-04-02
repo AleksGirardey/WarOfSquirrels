@@ -14,8 +14,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 public class CitySetMayor extends CityMayorCommandBuilder implements IAdminCommand {
-    private final CitySetMayor CMD_NO_CITY = new CitySetMayor(false);
-    private final CitySetMayor CMD_CITY = new CitySetMayor(true);
+    private static final CitySetMayor CMD_NO_CITY = new CitySetMayor(false);
+    private static final CitySetMayor CMD_CITY = new CitySetMayor(true);
 
     private CitySetMayor(boolean cityArg) { hasCityArg = cityArg; }
     public CitySetMayor() {};

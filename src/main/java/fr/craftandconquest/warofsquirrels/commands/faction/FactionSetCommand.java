@@ -15,10 +15,10 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 public class FactionSetCommand extends CommandBuilder {
-    private final FactionSetCapital factionSetCapital = new FactionSetCapital();
-    private final FactionSetAlly factionSetAlly = new FactionSetAlly();
-    private final FactionSetEnemy factionSetEnemy = new FactionSetEnemy();
-    private final FactionSetNeutral factionSetNeutral = new FactionSetNeutral();
+    private static final FactionSetCapital factionSetCapital = new FactionSetCapital();
+    private static final FactionSetAlly factionSetAlly = new FactionSetAlly();
+    private static final FactionSetEnemy factionSetEnemy = new FactionSetEnemy();
+    private static final FactionSetNeutral factionSetNeutral = new FactionSetNeutral();
 
     @Override
     public LiteralArgumentBuilder<CommandSource> register() {

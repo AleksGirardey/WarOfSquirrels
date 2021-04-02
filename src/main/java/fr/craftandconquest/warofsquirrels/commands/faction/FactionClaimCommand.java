@@ -16,8 +16,6 @@ import net.minecraft.util.text.TextFormatting;
 
 public class FactionClaimCommand extends FactionCommandAssistant implements ITerritoryExtractor {
     private final String argumentName = "[TerritoryName]";
-    private final FactionClaimCommand argCommand = new FactionClaimCommand();
-
 
     @Override
     public LiteralArgumentBuilder<CommandSource> register() {

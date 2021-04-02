@@ -15,8 +15,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 public class WarInfo extends CommandBuilder {
-    private final WarInfo CMD_NO_ARGS = new WarInfo(false);
-    private final WarInfo CMD_ARGS = new WarInfo(true);
+    private static final WarInfo CMD_NO_ARGS = new WarInfo(false);
+    private static final WarInfo CMD_ARGS = new WarInfo(true);
 
     private final boolean args;
     private String targetName;

@@ -75,7 +75,9 @@ public class Territory {
 
     @Override
     public String toString() {
-        return String.format("[%d;%s] Owned by %s in dimension with id %d",
-                posX, posZ, faction.getDisplayName(), dimensionId);
+        return String.format("[%d;%d] Possédé par %s dans la dimension d'id %d",
+                posX,
+                posZ,
+                faction != null ? faction.getDisplayName() : "personne", dimensionId);
     }
 }

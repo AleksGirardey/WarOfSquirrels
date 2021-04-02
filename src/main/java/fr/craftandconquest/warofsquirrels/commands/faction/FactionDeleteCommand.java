@@ -1,5 +1,6 @@
 package fr.craftandconquest.warofsquirrels.commands.faction;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
@@ -15,8 +16,7 @@ import net.minecraft.util.text.TextFormatting;
 public class FactionDeleteCommand extends FactionCommandMayor implements IAdminCommand {
     private final String argumentName = "[factionName]";
 
-    private final FactionDeleteCommand noArgs = new FactionDeleteCommand();
-    private final FactionDeleteCommand args = new FactionDeleteCommand(true);
+    private static final FactionDeleteCommand args = new FactionDeleteCommand(true);
 
     public FactionDeleteCommand() {
         this(false);
@@ -30,7 +30,10 @@ public class FactionDeleteCommand extends FactionCommandMayor implements IAdminC
 
     @Override
     public LiteralArgumentBuilder<CommandSource> register() {
-        return Commands.literal("delete").executes(this);
+        return Commands
+                .literal("delete")
+                .executes(this)
+                .then(Commands.argument(argumentName, StringArgumentType.string()).executes(args));
     }
 
     @Override

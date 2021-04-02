@@ -9,7 +9,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
 public class FactionSetEnemy extends FactionSetDiplomacy {
-    private final FactionSetEnemy withPerm = new FactionSetEnemy(true);
+    private static final FactionSetEnemy withPerm = new FactionSetEnemy(true);
 
     public FactionSetEnemy() {
         super();

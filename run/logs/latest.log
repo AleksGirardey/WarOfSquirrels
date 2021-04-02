@@ -1,95 +1,103 @@
-[08juil.2020 16:40:07.196] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--gameDir, ., --launchTarget, fmluserdevclient, --fml.mcpVersion, 20200122.131323, --fml.mcVersion, 1.15.2, --fml.forgeGroup, net.minecraftforge, --fml.forgeVersion, 31.1.0, --version, MOD_DEV, --assetIndex, 1.15, --assetsDir, C:\Users\Alexi\.gradle\caches\forge_gradle\assets, --username, Dev, --accessToken, ❄❄❄❄❄❄❄❄, --userProperties, {}]
-[08juil.2020 16:40:07.203] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 5.0.0-milestone.4+67+b1a340b starting: java version 14.0.1 by Oracle Corporation
-[08juil.2020 16:40:07.508] [main/INFO] [net.minecraftforge.fml.loading.FixSSL/CORE]: Added Lets Encrypt root certificates as additional trust
-[08juil.2020 16:40:08.191] [main/INFO] [STDERR/]: [jdk.nashorn.api.scripting.NashornScriptEngine:<init>:143]: Warning: Nashorn engine is planned to be removed from a future JDK release
-[08juil.2020 16:40:08.840] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'fmluserdevclient' with arguments [--version, MOD_DEV, --gameDir, ., --assetsDir, C:\Users\Alexi\.gradle\caches\forge_gradle\assets, --assetIndex, 1.15, --username, Dev, --accessToken, ❄❄❄❄❄❄❄❄, --userProperties, {}]
-[08juil.2020 16:40:11.246] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Setting user: Dev
-[08juil.2020 16:40:20.712] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Backend library: LWJGL version 3.2.2 build 10
-[08juil.2020 16:40:22.544] [Render thread/ERROR] [net.minecraftforge.eventbus.EventBus/EVENTBUS]: Failed to resolve handler for "net.minecraftforge.fml.network.simple.SimpleChannel$$Lambda$2250/0x0000000801416c40@44c54463"
-[08juil.2020 16:40:22.568] [Render thread/INFO] [STDOUT/]: [net.minecraft.util.registry.Bootstrap:printToSYSOUT:109]: ---- Minecraft Crash Report ----
-// Daisy, daisy...
+[02avr.2021 22:06:09.641] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--gameDir, ., --launchTarget, fmluserdevserver, --fml.mcpVersion, 20200122.131323, --fml.mcVersion, 1.15.2, --fml.forgeGroup, net.minecraftforge, --fml.forgeVersion, 31.1.0]
+[02avr.2021 22:06:09.646] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 5.1.0+69+master.79f13f7 starting: java version 1.8.0_281 by Oracle Corporation
+[02avr.2021 22:06:10.482] [main/INFO] [net.minecraftforge.fml.loading.FixSSL/CORE]: Added Lets Encrypt root certificates as additional trust
+[02avr.2021 22:06:11.539] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'fmluserdevserver' with arguments [--gameDir, .]
+[02avr.2021 22:06:27.369] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[02avr.2021 22:06:27.372] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[02avr.2021 22:06:27.374] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+[02avr.2021 22:06:27.376] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[02avr.2021 22:06:27.379] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[02avr.2021 22:06:28.252] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting minecraft server version 1.15.2
+[02avr.2021 22:06:28.634] [modloading-worker-9/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 31.2.0, for MC 1.15.2 with MCP 20200515.085601
+[02avr.2021 22:06:28.634] [modloading-worker-9/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v31.2.0 Initialized
+[02avr.2021 22:06:29.072] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.ExampleMod/]: HELLO from Register Block
+[02avr.2021 22:06:29.295] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json
+[02avr.2021 22:06:29.297] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Loading properties
+[02avr.2021 22:06:29.309] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Default game type: SURVIVAL
+[02avr.2021 22:06:29.311] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Generating keypair
+[02avr.2021 22:06:29.396] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting Minecraft server on *:25565
+[02avr.2021 22:06:29.405] [Server thread/INFO] [net.minecraft.network.NetworkSystem/]: Using default channel type
+[02avr.2021 22:06:29.902] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Found status: OUTDATED Current: 31.1.0 Target: 31.2.0
+[02avr.2021 22:06:29.902] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Starting version check at https://raw.githubusercontent.com/AleksGirardey/WarOfSquirrels/master/updateJSON.json#
+[02avr.2021 22:06:30.729] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Found status: BETA Current: 1.0.0 Target: null
+[02avr.2021 22:06:31.343] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Preparing level "world"
+[02avr.2021 22:06:31.486] [Server thread/INFO] [net.minecraftforge.registries.GameData/REGISTRIES]: Injecting existing registry data into this SERVER instance
+[02avr.2021 22:06:31.683] [Server thread/INFO] [net.minecraft.resources.SimpleReloadableResourceManager/]: Reloading ResourceManager: Default, forge-1.15.2-31.2.0_mapped_snapshot_20190719-1.14.3-recomp.jar, main
+[02avr.2021 22:06:32.899] [Server thread/INFO] [net.minecraft.item.crafting.RecipeManager/]: Loaded 6 recipes
+[02avr.2021 22:06:35.087] [Server thread/INFO] [net.minecraft.advancements.AdvancementList/]: Loaded 825 advancements
+[02avr.2021 22:06:35.628] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Preparing start region for dimension minecraft:overworld
+[02avr.2021 22:06:36.599] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[02avr.2021 22:06:36.599] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[02avr.2021 22:06:36.629] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[02avr.2021 22:06:39.236] [Server-Worker-4/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[02avr.2021 22:06:39.238] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[02avr.2021 22:06:39.240] [Server-Worker-4/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[02avr.2021 22:06:39.241] [Server-Worker-4/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[02avr.2021 22:06:39.243] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[02avr.2021 22:06:39.635] [Server-Worker-6/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[02avr.2021 22:06:40.129] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[02avr.2021 22:06:40.635] [Server-Worker-4/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[02avr.2021 22:06:41.131] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 87%
+[02avr.2021 22:06:41.629] [Server-Worker-4/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 95%
+[02avr.2021 22:06:41.806] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Time elapsed: 6177 ms
+[02avr.2021 22:06:41.807] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Done (10.565s)! For help, type "help"
+[02avr.2021 22:06:41.879] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS] Server Starting . . .
+[02avr.2021 22:06:42.140] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][PlayerHandler] Players generated : 0
+[02avr.2021 22:06:42.147] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][ChunkHandler] Chunks generated : 0
+[02avr.2021 22:06:42.154] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][CityHandler] Cities generated : 0
+[02avr.2021 22:06:42.172] [Server thread/ERROR] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][TerritoryHandler] Couldn't load Json data. (Populate)
+[02avr.2021 22:06:42.177] [Server thread/ERROR] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][Main] Couldn't create mod directory ''
+[02avr.2021 22:06:42.187] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][CuboHandler] Cubo generated : 0
+[02avr.2021 22:06:42.192] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][PlayerHandler] Factions generated : 0
+[02avr.2021 22:06:42.200] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][InfluenceHandler] Influences generated : 0
+[02avr.2021 22:06:42.209] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadCastHandler] 0 channels created
+[02avr.2021 22:06:42.218] [Server thread/ERROR] [net.minecraftforge.eventbus.EventBus/EVENTBUS]: Exception caught during firing event: null
+	Index: 2
+	Listeners:
+		0: NORMAL
+		1: net.minecraftforge.eventbus.EventBus$$Lambda$2674/2009491055@7d92888f
+		2: ASM: fr.craftandconquest.warofsquirrels.WarOfSquirrels@5525744b OnServerStarting(Lnet/minecraftforge/fml/event/server/FMLServerStartingEvent;)V
+java.lang.NullPointerException
+	at com.mojang.brigadier.builder.ArgumentBuilder.then(ArgumentBuilder.java:30)
+	at fr.craftandconquest.warofsquirrels.commands.faction.FactionSetCommand.register(FactionSetCommand.java:30)
+	at fr.craftandconquest.warofsquirrels.commands.register.FactionCommandRegister.register(FactionCommandRegister.java:28)
+	at fr.craftandconquest.warofsquirrels.commands.register.CommandRegisterManager.register(CommandRegisterManager.java:18)
+	at fr.craftandconquest.warofsquirrels.WarOfSquirrels.OnServerStarting(WarOfSquirrels.java:98)
+	at net.minecraftforge.eventbus.ASMEventHandler_1_WarOfSquirrels_OnServerStarting_FMLServerStartingEvent.invoke(.dynamic)
+	at net.minecraftforge.eventbus.ASMEventHandler.invoke(ASMEventHandler.java:80)
+	at net.minecraftforge.eventbus.EventBus.post(EventBus.java:258)
+	at net.minecraftforge.fml.server.ServerLifecycleHooks.handleServerStarting(ServerLifecycleHooks.java:95)
+	at net.minecraft.server.dedicated.DedicatedServer.init(DedicatedServer.java:246)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:637)
+	at java.lang.Thread.run(Thread.java:748)
 
-Time: 08/07/2020 16:40
-Description: Initializing game
-
-java.lang.ExceptionInInitializerError: null
-	at net.minecraftforge.fml.ModLoader.<init>(ModLoader.java:121) ~[forge-1.15.2-31.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {re:classloading}
-	at net.minecraftforge.fml.ModLoader.get(ModLoader.java:146) ~[forge-1.15.2-31.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {re:classloading}
-	at net.minecraftforge.fml.client.ClientModLoader.lambda$begin$2(ClientModLoader.java:97) ~[forge-1.15.2-31.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {re:classloading,pl:runtimedistcleaner:A}
-	at net.minecraftforge.fml.client.ClientModLoader.lambda$createRunnableWithCatch$5(ClientModLoader.java:113) ~[forge-1.15.2-31.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {re:classloading,pl:runtimedistcleaner:A}
-	at net.minecraftforge.fml.client.ClientModLoader.begin(ClientModLoader.java:97) ~[forge-1.15.2-31.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {re:classloading,pl:runtimedistcleaner:A}
-	at net.minecraft.client.Minecraft.<init>(Minecraft.java:393) ~[forge-1.15.2-31.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {re:classloading,pl:accesstransformer:B,pl:runtimedistcleaner:A}
-	at net.minecraft.client.main.Main.main(Main.java:141) ~[forge-1.15.2-31.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {re:classloading,pl:runtimedistcleaner:A}
-	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?] {}
-	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?] {}
-	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?] {}
-	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?] {}
-	at net.minecraftforge.userdev.FMLUserdevClientLaunchProvider.lambda$launchService$0(FMLUserdevClientLaunchProvider.java:55) ~[forge-1.15.2-31.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {}
-	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:37) [modlauncher-5.0.0-milestone.4.jar:?] {}
-	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:54) [modlauncher-5.0.0-milestone.4.jar:?] {}
-	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:72) [modlauncher-5.0.0-milestone.4.jar:?] {}
-	at cpw.mods.modlauncher.Launcher.run(Launcher.java:81) [modlauncher-5.0.0-milestone.4.jar:?] {}
-	at cpw.mods.modlauncher.Launcher.main(Launcher.java:65) [modlauncher-5.0.0-milestone.4.jar:?] {}
-	at net.minecraftforge.userdev.LaunchTesting.main(LaunchTesting.java:102) [forge-1.15.2-31.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {}
-Caused by: java.lang.IllegalStateException: Failed to resolve consumer event type: net.minecraftforge.fml.network.simple.SimpleChannel$$Lambda$2250/0x0000000801416c40@44c54463
-	at net.minecraftforge.eventbus.EventBus.addListener(EventBus.java:194) ~[eventbus-2.0.0-milestone.1-service.jar:?] {}
-	at net.minecraftforge.eventbus.EventBus.addListener(EventBus.java:161) ~[eventbus-2.0.0-milestone.1-service.jar:?] {}
-	at net.minecraftforge.eventbus.EventBus.addListener(EventBus.java:156) ~[eventbus-2.0.0-milestone.1-service.jar:?] {}
-	at net.minecraftforge.eventbus.EventBus.addListener(EventBus.java:151) ~[eventbus-2.0.0-milestone.1-service.jar:?] {}
-	at net.minecraftforge.fml.network.NetworkInstance.addListener(NetworkInstance.java:65) ~[?:?] {re:classloading}
-	at net.minecraftforge.fml.network.simple.SimpleChannel.<init>(SimpleChannel.java:56) ~[?:?] {re:classloading}
-	at net.minecraftforge.fml.network.simple.SimpleChannel.<init>(SimpleChannel.java:49) ~[?:?] {re:classloading}
-	at net.minecraftforge.fml.network.NetworkRegistry$ChannelBuilder.simpleChannel(NetworkRegistry.java:409) ~[?:?] {re:classloading}
-	at net.minecraftforge.fml.network.NetworkInitialization.getHandshakeChannel(NetworkInitialization.java:38) ~[?:?] {re:classloading}
-	at net.minecraftforge.fml.network.FMLNetworkConstants.<clinit>(FMLNetworkConstants.java:48) ~[?:?] {re:classloading}
-	... 18 more
-
-
-A detailed walkthrough of the error, its code path and all known details is as follows:
----------------------------------------------------------------------------------------
-
--- Head --
-Thread: Render thread
-Stacktrace:
-	at net.minecraftforge.fml.ModLoader.<init>(ModLoader.java:121)
-	at net.minecraftforge.fml.ModLoader.get(ModLoader.java:146)
-	at net.minecraftforge.fml.client.ClientModLoader.lambda$begin$2(ClientModLoader.java:97)
-	at net.minecraftforge.fml.client.ClientModLoader.lambda$createRunnableWithCatch$5(ClientModLoader.java:113)
-	at net.minecraftforge.fml.client.ClientModLoader.begin(ClientModLoader.java:97)
-	at net.minecraft.client.Minecraft.<init>(Minecraft.java:393)
-
--- Initialization --
-Details:
-Stacktrace:
-	at net.minecraft.client.main.Main.main(Main.java:141)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
-	at net.minecraftforge.userdev.FMLUserdevClientLaunchProvider.lambda$launchService$0(FMLUserdevClientLaunchProvider.java:55)
-	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:37)
-	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:54)
-	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:72)
-	at cpw.mods.modlauncher.Launcher.run(Launcher.java:81)
-	at cpw.mods.modlauncher.Launcher.main(Launcher.java:65)
-	at net.minecraftforge.userdev.LaunchTesting.main(LaunchTesting.java:102)
-
--- System Details --
-Details:
-	Minecraft Version: 1.15.2
-	Minecraft Version ID: 1.15.2
-	Operating System: Windows 10 (amd64) version 10.0
-	Java Version: 14.0.1, Oracle Corporation
-	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode, sharing), Oracle Corporation
-	Memory: 527622704 bytes (503 MB) / 1318060032 bytes (1257 MB) up to 4282384384 bytes (4084 MB)
-	CPUs: 12
-	JVM Flags: 1 total; -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump
-	Launched Version: MOD_DEV
-	Backend library: LWJGL version 3.2.2 build 10
-	Backend API: GeForce RTX 2070/PCIe/SSE2 GL version 4.6.0 NVIDIA 451.48, NVIDIA Corporation
-	GL Caps: Using framebuffer using OpenGL 3.0
-	Using VBOs: Yes
-	Is Modded: Definitely; Client brand changed to 'forge'
-	Type: Client (map_client.txt)
-	CPU: 12x AMD Ryzen 5 1600X Six-Core Processor 
-[08juil.2020 16:40:22.573] [Render thread/INFO] [STDOUT/]: [net.minecraft.util.registry.Bootstrap:printToSYSOUT:109]: #@!@# Game crashed! Crash report saved to: #@!@# S:\Workspace\Minecraft\WarOfSquirrels\run\.\crash-reports\crash-2020-07-08_16.40.22-client.txt
+[02avr.2021 22:06:42.219] [Server thread/ERROR] [net.minecraft.server.MinecraftServer/]: Encountered an unexpected exception
+java.lang.NullPointerException: null
+	at com.mojang.brigadier.builder.ArgumentBuilder.then(ArgumentBuilder.java:30) ~[brigadier-1.0.17.jar:?]
+	at fr.craftandconquest.warofsquirrels.commands.faction.FactionSetCommand.register(FactionSetCommand.java:30) ~[main/:?]
+	at fr.craftandconquest.warofsquirrels.commands.register.FactionCommandRegister.register(FactionCommandRegister.java:28) ~[main/:?]
+	at fr.craftandconquest.warofsquirrels.commands.register.CommandRegisterManager.register(CommandRegisterManager.java:18) ~[main/:?]
+	at fr.craftandconquest.warofsquirrels.WarOfSquirrels.OnServerStarting(WarOfSquirrels.java:98) ~[main/:?]
+	at net.minecraftforge.eventbus.ASMEventHandler_1_WarOfSquirrels_OnServerStarting_FMLServerStartingEvent.invoke(.dynamic) ~[?:?]
+	at net.minecraftforge.eventbus.ASMEventHandler.invoke(ASMEventHandler.java:80) ~[eventbus-2.2.0-service.jar:?]
+	at net.minecraftforge.eventbus.EventBus.post(EventBus.java:258) ~[eventbus-2.2.0-service.jar:?]
+	at net.minecraftforge.fml.server.ServerLifecycleHooks.handleServerStarting(ServerLifecycleHooks.java:95) ~[?:?]
+	at net.minecraft.server.dedicated.DedicatedServer.init(DedicatedServer.java:246) ~[?:?]
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:637) [?:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_281]
+[02avr.2021 22:06:42.235] [Server thread/ERROR] [net.minecraft.server.MinecraftServer/]: This crash report has been saved to: S:\Workspace\Minecraft\WarOfSquirrels\run\.\crash-reports\crash-2021-04-02_22.06.42-server.txt
+[02avr.2021 22:06:42.235] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Stopping server
+[02avr.2021 22:06:42.236] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving players
+[02avr.2021 22:06:42.237] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving worlds
+[02avr.2021 22:06:42.237] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'world'/minecraft:overworld
+[02avr.2021 22:06:43.889] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (world): All chunks are saved
+[02avr.2021 22:06:43.889] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'world'/minecraft:the_nether
+[02avr.2021 22:06:43.891] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[02avr.2021 22:06:43.891] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'world'/minecraft:the_end
+[02avr.2021 22:06:43.893] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[02avr.2021 22:06:43.915] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (world): All chunks are saved
+[02avr.2021 22:06:43.934] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[02avr.2021 22:06:43.934] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[02avr.2021 22:07:41.808] [Server Watchdog/FATAL] [net.minecraft.server.dedicated.ServerHangWatchdog/]: A single server tick took 60.00 seconds (should be max 0.05)
+[02avr.2021 22:07:41.808] [Server Watchdog/FATAL] [net.minecraft.server.dedicated.ServerHangWatchdog/]: Considering it to be crashed, server will forcibly shutdown.
+[02avr.2021 22:07:41.934] [Server Watchdog/ERROR] [net.minecraft.server.dedicated.ServerHangWatchdog/]: This crash report has been saved to: S:\Workspace\Minecraft\WarOfSquirrels\run\.\crash-reports\crash-2021-04-02_22.07.41-server.txt

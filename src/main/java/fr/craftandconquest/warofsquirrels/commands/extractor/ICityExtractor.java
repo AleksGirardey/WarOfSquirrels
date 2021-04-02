@@ -9,7 +9,7 @@ import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
-public interface ICityExtractor extends IExtractor<City> {
+public interface ICityExtractor {
     String cityNameArgument = "[CityName]";
 
     default String getRawArgument(CommandContext<CommandSource> context) {

@@ -97,6 +97,11 @@ public class CuboHandler extends Handler<Cubo> {
         return false;
     }
 
+    public void updateDependencies() {
+        for (Cubo cubo : dataArray)
+            cubo.UpdateDependencies();
+    }
+
     public Cubo getCubo(String name) {
         return cuboMapFromName.get(name);
     }

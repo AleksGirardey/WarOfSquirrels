@@ -10,7 +10,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
 public class FactionSetAlly extends FactionSetDiplomacy {
-    private final FactionSetAlly withPerm = new FactionSetAlly(true);
+    private static final FactionSetAlly withPerm = new FactionSetAlly(true);
 
     public FactionSetAlly() {
         super();
