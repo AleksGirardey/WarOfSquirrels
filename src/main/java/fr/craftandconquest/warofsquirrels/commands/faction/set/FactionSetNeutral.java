@@ -6,6 +6,7 @@ import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 
 public class FactionSetNeutral extends FactionSetDiplomacy {
     @Override
@@ -17,6 +18,6 @@ public class FactionSetNeutral extends FactionSetDiplomacy {
 
     @Override
     public LiteralArgumentBuilder<CommandSource> register() {
-        return null;
+        return Commands.literal("neutral").then(getFactionRegister().executes(this));
     }
 }

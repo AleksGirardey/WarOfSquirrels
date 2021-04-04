@@ -144,7 +144,9 @@ public class Config {
                 10, // sayDistance;
 
         /* World Config */
-                5120, // mapSize;
+                5120, // mapSize; 320 chunks - 20 * 20 Territories
+                0,
+                0,
                 256, // territorySize;
                 false, // territoriesGenerated;
                 true, // peaceTime;

@@ -115,7 +115,7 @@ public class PlayerHandler extends Handler<Player> {
     }
 
     private void LogPlayerCreation(Player player) {
-        Logger.info(MessageFormat.format("{0} Player '{1}'({2}) created",
+        Logger.info(MessageFormat.format("{0} Player {1}({2}) created",
                 PrefixLogger, player.getDisplayName(), player.getUuid()));
     }
 

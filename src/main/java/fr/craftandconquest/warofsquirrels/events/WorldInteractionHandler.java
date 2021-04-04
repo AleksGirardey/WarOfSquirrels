@@ -24,6 +24,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
@@ -47,6 +49,7 @@ public class WorldInteractionHandler {
         this.logger = logger;
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void PlayerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event) {
         List<BroadCastTarget> targets = new ArrayList<>();
@@ -80,9 +83,12 @@ public class WorldInteractionHandler {
         // Ajouter les canaux de support et d'admin
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void PlayerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event) {
         Player player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer());
+
+        if (player == null) return;
 
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerToWorldAnnounce(player);
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerFromTargets(player);
@@ -91,6 +97,7 @@ public class WorldInteractionHandler {
                 player.getDisplayName()));
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnBlockDestroy(BlockEvent.BreakEvent event) {
         // Deal with sign shop
@@ -127,6 +134,7 @@ public class WorldInteractionHandler {
         }
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnBlockPlace(BlockEvent.EntityPlaceEvent event) {
         if (!(event.getEntity() instanceof PlayerEntity)) {
@@ -156,6 +164,7 @@ public class WorldInteractionHandler {
         }
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnLivingHurtEntity(LivingHurtEvent event) {
         if (event.getEntity() instanceof PlayerEntity) return;
@@ -181,6 +190,7 @@ public class WorldInteractionHandler {
         }
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         Player player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer());
@@ -201,6 +211,7 @@ public class WorldInteractionHandler {
         event.setCanceled(true);
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
         if (event.getItemStack().getItem() == Items.FEATHER) {
@@ -251,6 +262,7 @@ public class WorldInteractionHandler {
                 position, dimensionId, player);
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnCropsTrampled(BlockEvent.FarmlandTrampleEvent event) {
         event.setCanceled(true);
@@ -276,6 +288,7 @@ public class WorldInteractionHandler {
         return state.getBlock() instanceof ContainerBlock || tileEntity instanceof IInventory;
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnLivingSpawnEvent(LivingSpawnEvent event) {
         Entity entity = event.getEntity();

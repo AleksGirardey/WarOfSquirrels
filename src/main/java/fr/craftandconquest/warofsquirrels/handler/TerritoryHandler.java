@@ -79,7 +79,7 @@ public class TerritoryHandler extends Handler<Territory> {
     @Override
     protected boolean Populate() {
         dataArray.iterator().forEachRemaining(this::add);
-        return false;
+        return true;
     }
 
     public boolean add(Territory territory) {
@@ -152,6 +152,7 @@ public class TerritoryHandler extends Handler<Territory> {
         List<Territory> neighbors = new ArrayList<>();
         int max = WarOfSquirrels.instance.getConfig().getMapSize() /
                 WarOfSquirrels.instance.getConfig().getTerritorySize();
+        --max;
         int posX = territory.getPosX();
         int posZ = territory.getPosZ();
         int posXMore = Math.min(posX + 1, max);
@@ -174,6 +175,8 @@ public class TerritoryHandler extends Handler<Territory> {
     public Territory get(UUID uuid) { return territoryMap.get(uuid); }
 
     public Territory get(Vector2 chunkPos, int dimensionId) {
+
+
         int posX = (int) chunkPos.x * 16;
         int posZ = (int) chunkPos.y * 16;
         int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();

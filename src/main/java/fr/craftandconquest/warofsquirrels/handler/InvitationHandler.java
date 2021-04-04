@@ -3,16 +3,18 @@ package fr.craftandconquest.warofsquirrels.handler;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.invitation.Invitation;
-import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class InvitationHandler extends Handler<Invitation> {
+public class InvitationHandler /*extends Handler<Invitation>*/ {
     public InvitationHandler(Logger logger) {
-        super("[WoS][InvitationHandler]", logger);
+        //super("[WoS][InvitationHandler]", logger);
     }
+
+    private List<Invitation> dataArray;
 
     public boolean CreateInvitation(Invitation invitation) {
         Timer timer = new Timer();
@@ -52,43 +54,18 @@ public class InvitationHandler extends Handler<Invitation> {
         return false;
     }
 
-    @Override
+//    @Override
     protected boolean add(Invitation value) {
         dataArray.add(value);
 
         return true;
     }
 
-    @Override
+//    @Override
     public boolean Delete(Invitation value) {
         if (!dataArray.contains(value)) return false;
         dataArray.remove(value);
 
         return true;
-    }
-
-    @Override
-    public void Log() {
-        // Nothing to log
-    }
-
-    @Override
-    public void Save() {
-        // No need to save
-    }
-
-    @Override
-    public String getConfigDir() {
-        return "";
-    }
-
-    @Override
-    protected String getConfigPath() {
-        return "";
-    }
-
-    @Override
-    public void spreadPermissionDelete(IPermission target) {
-        // Nothing to do
     }
 }

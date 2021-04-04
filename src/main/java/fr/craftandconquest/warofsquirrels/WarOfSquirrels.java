@@ -3,6 +3,8 @@ package fr.craftandconquest.warofsquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CityCommand;
 import fr.craftandconquest.warofsquirrels.commands.register.CommandRegisterManager;
 import fr.craftandconquest.warofsquirrels.commands.register.WarCommandRegister;
+import fr.craftandconquest.warofsquirrels.events.PlayersInteractionHandler;
+import fr.craftandconquest.warofsquirrels.events.WorldInteractionHandler;
 import fr.craftandconquest.warofsquirrels.handler.*;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;
@@ -52,8 +54,8 @@ public class WarOfSquirrels {
     public WarOfSquirrels() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 
-        //MinecraftForge.EVENT_BUS.register(new WorldInteractionHandler(LOGGER));
-//        MinecraftForge.EVENT_BUS.register(new PlayersInteractionHandler());
+        MinecraftForge.EVENT_BUS.register(new WorldInteractionHandler(LOGGER));
+        MinecraftForge.EVENT_BUS.register(new PlayersInteractionHandler());
         MinecraftForge.EVENT_BUS.register(this);
 
         instance = this;

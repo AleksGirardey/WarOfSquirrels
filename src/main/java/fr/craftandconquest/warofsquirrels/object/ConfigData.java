@@ -30,6 +30,8 @@ public class ConfigData {
 
     /* World Config */
     @Getter @Setter private int   mapSize;
+    @Getter @Setter private int   mapCenterX;
+    @Getter @Setter private int   mapCenterZ;
     @Getter @Setter private int   territorySize;
     @Getter @Setter private boolean   territoriesGenerated;
     @Getter @Setter private boolean   peaceTime;

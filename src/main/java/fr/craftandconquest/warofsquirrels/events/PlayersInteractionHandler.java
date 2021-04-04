@@ -14,6 +14,8 @@ import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -23,6 +25,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class PlayersInteractionHandler {
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
         PlayerHandler playerHandler = WarOfSquirrels.instance.getPlayerHandler();
@@ -35,6 +38,7 @@ public class PlayersInteractionHandler {
                 (float) event.getPlayer().getPositionVec().z);
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnPlayerReSpawn(PlayerEvent.PlayerRespawnEvent event) {
         Player player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer());
@@ -46,12 +50,14 @@ public class PlayersInteractionHandler {
         event.getPlayer().setSpawnPoint(spawnPoint.position, true, true, spawnPoint.dimension);
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
         WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer())
                 .lastDimension = event.getTo();
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnPlayerMove(LivingEvent.LivingUpdateEvent event) {
         if (event.getEntityLiving() == null || !(event.getEntityLiving() instanceof PlayerEntity)) return;
@@ -88,11 +94,14 @@ public class PlayersInteractionHandler {
         }
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnChunkChange(EntityEvent.EnteringChunk event) {
         if (!(event.getEntity() instanceof PlayerEntity)) return;
 
         Player player = WarOfSquirrels.instance.getPlayerHandler().get((PlayerEntity) event.getEntity());
+
+        if (player == null) return;
 
         player.setLastChunkX(event.getOldChunkX());
         player.setLastChunkZ(event.getOldChunkZ());
@@ -129,6 +138,7 @@ public class PlayersInteractionHandler {
         }
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnPvPDamage(LivingHurtEvent event) {
         if (!(event.getEntity() instanceof PlayerEntity) &&
@@ -140,6 +150,7 @@ public class PlayersInteractionHandler {
             event.setAmount(10000);
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnPvPDeath(LivingDeathEvent event) {
         if (!(event.getEntity() instanceof PlayerEntity) &&
