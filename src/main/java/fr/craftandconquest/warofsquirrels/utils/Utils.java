@@ -1,6 +1,5 @@
 package fr.craftandconquest.warofsquirrels.utils;
 
-import com.sun.org.apache.xml.internal.utils.IntVector;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
@@ -8,7 +7,6 @@ import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.dimension.DimensionType;
 import org.apache.commons.lang3.tuple.Pair;
@@ -20,6 +18,16 @@ public class Utils {
 
     public static Pair<Integer, Integer> WorldToChunkCoordinates(int posX, int posZ) {
         return Pair.of(posX / 16, posZ / 16);
+    }
+
+    public static Pair<Integer, Integer> ChunkToTerritoryCoordinates(int posX, int posZ) {
+        int size = WarOfSquirrels.instance.getConfig().getTerritorySize() / 16;
+        return Pair.of(posX / size, posZ / 16);
+    }
+
+    public static Pair<Integer, Integer> WorldToTerritoryCoordinates(int posX, int posZ) {
+        int size = WarOfSquirrels.instance.getConfig().getTerritorySize();
+        return Pair.of(posX / size, posZ / size);
     }
 
     public static boolean       CanPlaceOutpost(int posX, int posZ) {

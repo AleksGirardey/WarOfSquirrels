@@ -34,6 +34,8 @@ public class WarOfSquirrels {
 
     private final CommandRegisterManager commandRegisterManager;
 
+    @Getter private Boolean isModInit = false;
+
     @Getter private ChunkHandler chunkHandler;
     @Getter private PermissionHandler permissionHandler;
     @Getter private BroadCastHandler broadCastHandler;
@@ -98,6 +100,8 @@ public class WarOfSquirrels {
         cuboHandler.UpdateDependencies();
 
         commandRegisterManager.register(event.getCommandDispatcher());
+
+        isModInit = true;
 
         LOGGER.info("[WoS] Server Started !");
     }

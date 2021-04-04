@@ -231,6 +231,8 @@ public class WorldInteractionHandler {
         Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(
                 pos.getX() / WarOfSquirrels.instance.getConfig().getTerritorySize(),
                 pos.getZ() / WarOfSquirrels.instance.getConfig().getTerritorySize(), dimensionId);
+
+        if (territory == null) return;
         Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(pos.getX() / 16, pos.getZ() / 16, dimensionId);
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(
                 new Vector3(pos.getX(), pos.getY(), pos.getZ()));
@@ -293,7 +295,7 @@ public class WorldInteractionHandler {
     public void OnLivingSpawnEvent(LivingSpawnEvent event) {
         Entity entity = event.getEntity();
 
-        if (!(entity instanceof MobEntity)) return;
+        if (!WarOfSquirrels.instance.getIsModInit() || !(entity instanceof MobEntity)) return;
 
         boolean canSpawn = WarOfSquirrels.instance.getChunkHandler().getChunk(
                 entity.getPosition().getX(),

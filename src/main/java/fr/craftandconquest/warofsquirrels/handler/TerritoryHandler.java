@@ -8,10 +8,14 @@ import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import net.minecraft.world.dimension.DimensionType;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -64,11 +68,14 @@ public class TerritoryHandler extends Handler<Territory> {
 
     private void Generate() {
         ConfigData config = WarOfSquirrels.instance.getConfig();
-        int maxX = config.getMapSize() / config.getTerritorySize();
-        int maxZ = config.getMapSize() / config.getTerritorySize();
+        int halfSize = config.getMapSize() / 2;
+        int maxX = halfSize / config.getTerritorySize();
+        int maxZ = halfSize / config.getTerritorySize();
+        int minX = -maxX;
+        int minZ = -maxZ;
 
-        for (int i = 0; i < maxX; i++) {
-            for (int j = 0; j < maxZ; j++) {
+        for (int i = minX; i < maxX; i++) {
+            for (int j = minZ; j < maxZ; j++) {
                 if (CreateTerritory("Province inconnue", i, j, null, null,
                         WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD).getDimension().getType().getId()) == null)
                     return;
@@ -150,15 +157,15 @@ public class TerritoryHandler extends Handler<Territory> {
 
     public List<Territory> getNeighbors(Territory territory) {
         List<Territory> neighbors = new ArrayList<>();
-        int max = WarOfSquirrels.instance.getConfig().getMapSize() /
-                WarOfSquirrels.instance.getConfig().getTerritorySize();
+        int halfSize = WarOfSquirrels.instance.getConfig().getMapSize() / 2;
+        int max = halfSize / WarOfSquirrels.instance.getConfig().getTerritorySize();
         --max;
         int posX = territory.getPosX();
         int posZ = territory.getPosZ();
         int posXMore = Math.min(posX + 1, max);
-        int posXLess = Math.max(posX - 1, 0);
+        int posXLess = Math.max(posX - 1, -max);
         int posZMore = Math.min(posZ + 1, max);
-        int posZLess = Math.max(posZ - 1, 0);
+        int posZLess = Math.max(posZ - 1, -max);
 
         if (territories[posX][posZMore] != territory)
             neighbors.add(territories[posX][posZMore]);
@@ -175,16 +182,17 @@ public class TerritoryHandler extends Handler<Territory> {
     public Territory get(UUID uuid) { return territoryMap.get(uuid); }
 
     public Territory get(Vector2 chunkPos, int dimensionId) {
+        Pair<Integer, Integer> pos = Utils.ChunkToTerritoryCoordinates((int) chunkPos.x, (int) chunkPos.y);
 
-
-        int posX = (int) chunkPos.x * 16;
-        int posZ = (int) chunkPos.y * 16;
-        int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
-
-        return get(posX / territorySize, posZ / territorySize, dimensionId);
+        return get(pos.getKey(), pos.getValue(), dimensionId);
     }
 
+    @CheckForNull
     public Territory get(int posX, int posZ, int dimensionId) {
+        int halfSize = WarOfSquirrels.instance.getConfig().getMapSize() / 2;
+        int size = halfSize / WarOfSquirrels.instance.getConfig().getTerritorySize();
+        if (posX < -size || posX >= size || posZ < -size || posZ >= size) return null;
+
         Territory territory = territories[posX][posZ];
 
         return territory.getDimensionId() == dimensionId ? territory : null;
