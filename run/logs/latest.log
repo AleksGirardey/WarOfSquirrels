@@ -1,142 +1,135 @@
-[04avr.2021 17:26:36.794] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--gameDir, ., --launchTarget, fmluserdevserver, --fml.mcpVersion, 20200122.131323, --fml.mcVersion, 1.15.2, --fml.forgeGroup, net.minecraftforge, --fml.forgeVersion, 31.1.0]
-[04avr.2021 17:26:36.802] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 5.1.0+69+master.79f13f7 starting: java version 1.8.0_191 by Oracle Corporation
-[04avr.2021 17:26:37.803] [main/INFO] [net.minecraftforge.fml.loading.FixSSL/CORE]: Added Lets Encrypt root certificates as additional trust
-[04avr.2021 17:26:40.302] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'fmluserdevserver' with arguments [--gameDir, .]
-[04avr.2021 17:27:10.910] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
-[04avr.2021 17:27:10.910] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
-[04avr.2021 17:27:10.910] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
-[04avr.2021 17:27:10.910] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
-[04avr.2021 17:27:10.918] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
-[04avr.2021 17:27:12.450] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting minecraft server version 1.15.2
-[04avr.2021 17:27:14.808] [modloading-worker-1/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 31.2.0, for MC 1.15.2 with MCP 20200515.085601
-[04avr.2021 17:27:14.809] [modloading-worker-1/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v31.2.0 Initialized
-[04avr.2021 17:27:19.167] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.ExampleMod/]: HELLO from Register Block
-[04avr.2021 17:27:20.161] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json
-[04avr.2021 17:27:20.243] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Loading properties
-[04avr.2021 17:27:21.398] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Default game type: SURVIVAL
-[04avr.2021 17:27:21.398] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Generating keypair
-[04avr.2021 17:27:21.766] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting Minecraft server on *:25565
-[04avr.2021 17:27:21.822] [Server thread/INFO] [net.minecraft.network.NetworkSystem/]: Using default channel type
-[04avr.2021 17:27:22.109] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Found status: OUTDATED Current: 31.1.0 Target: 31.2.0
-[04avr.2021 17:27:22.110] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Starting version check at https://raw.githubusercontent.com/AleksGirardey/WarOfSquirrels/master/updateJSON.json#
-[04avr.2021 17:27:22.491] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Found status: BETA Current: 1.0.0 Target: null
-[04avr.2021 17:27:23.609] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
-[04avr.2021 17:27:23.610] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: The server will make no attempt to authenticate usernames. Beware.
-[04avr.2021 17:27:23.611] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
-[04avr.2021 17:27:23.611] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: To change this, set "online-mode" to "true" in the server.properties file.
-[04avr.2021 17:27:25.361] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Preparing level "world"
-[04avr.2021 17:27:25.499] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Found new data pack vanilla, loading it automatically
-[04avr.2021 17:27:25.502] [Server thread/INFO] [net.minecraft.resources.SimpleReloadableResourceManager/]: Reloading ResourceManager: Default, forge-1.15.2-31.2.0_mapped_snapshot_20190719-1.14.3-recomp.jar, main
-[04avr.2021 17:27:28.157] [Server thread/INFO] [net.minecraft.item.crafting.RecipeManager/]: Loaded 6 recipes
-[04avr.2021 17:27:31.792] [Server thread/INFO] [net.minecraft.advancements.AdvancementList/]: Loaded 825 advancements
-[04avr.2021 17:27:42.896] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Preparing start region for dimension minecraft:overworld
-[04avr.2021 17:27:43.043] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
-[04avr.2021 17:27:43.423] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
-[04avr.2021 17:27:43.898] [Server-Worker-2/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
-[04avr.2021 17:27:44.443] [Server-Worker-2/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
-[04avr.2021 17:27:44.897] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
-[04avr.2021 17:27:45.409] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
-[04avr.2021 17:27:45.931] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 1%
-[04avr.2021 17:27:46.405] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 1%
-[04avr.2021 17:27:46.898] [Server-Worker-2/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 2%
-[04avr.2021 17:27:49.252] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 2%
-[04avr.2021 17:27:49.258] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 2%
-[04avr.2021 17:27:49.259] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 2%
-[04avr.2021 17:27:49.259] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 2%
-[04avr.2021 17:27:49.404] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 3%
-[04avr.2021 17:27:49.897] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 4%
-[04avr.2021 17:27:50.401] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 7%
-[04avr.2021 17:27:50.929] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 7%
-[04avr.2021 17:27:51.397] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 9%
-[04avr.2021 17:27:51.898] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 10%
-[04avr.2021 17:27:52.404] [Server-Worker-2/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 10%
-[04avr.2021 17:27:53.143] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 15%
-[04avr.2021 17:27:53.407] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 15%
-[04avr.2021 17:27:53.928] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 15%
-[04avr.2021 17:27:54.415] [Server-Worker-2/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 15%
-[04avr.2021 17:27:54.897] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 22%
-[04avr.2021 17:27:55.420] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 22%
-[04avr.2021 17:27:55.897] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 22%
-[04avr.2021 17:27:56.401] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 22%
-[04avr.2021 17:27:56.897] [Server-Worker-2/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 29%
-[04avr.2021 17:27:57.397] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 29%
-[04avr.2021 17:27:57.898] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 29%
-[04avr.2021 17:27:58.397] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 34%
-[04avr.2021 17:27:58.901] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 35%
-[04avr.2021 17:27:59.397] [Server-Worker-2/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 35%
-[04avr.2021 17:27:59.897] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 35%
-[04avr.2021 17:28:00.402] [Server-Worker-2/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 42%
-[04avr.2021 17:28:00.903] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 43%
-[04avr.2021 17:28:01.399] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 43%
-[04avr.2021 17:28:02.697] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 43%
-[04avr.2021 17:28:02.700] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 43%
-[04avr.2021 17:28:02.898] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 43%
-[04avr.2021 17:28:03.396] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 46%
-[04avr.2021 17:28:03.900] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 55%
-[04avr.2021 17:28:04.614] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 55%
-[04avr.2021 17:28:05.010] [Server-Worker-2/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 61%
-[04avr.2021 17:28:06.191] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 63%
-[04avr.2021 17:28:06.191] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 63%
-[04avr.2021 17:28:06.555] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 72%
-[04avr.2021 17:28:07.294] [Server-Worker-2/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 74%
-[04avr.2021 17:28:07.534] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 78%
-[04avr.2021 17:28:08.870] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 82%
-[04avr.2021 17:28:08.871] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 82%
-[04avr.2021 17:28:08.929] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 88%
-[04avr.2021 17:28:09.552] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 89%
-[04avr.2021 17:28:09.907] [Server-Worker-3/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 96%
-[04avr.2021 17:28:10.237] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Time elapsed: 27341 ms
-[04avr.2021 17:28:10.241] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Done (45.301s)! For help, type "help"
-[04avr.2021 17:28:10.361] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS] Server Starting . . .
-[04avr.2021 17:28:11.192] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][PlayerHandler] Players generated : 0
-[04avr.2021 17:28:11.206] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][ChunkHandler] Chunks generated : 0
-[04avr.2021 17:28:11.220] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][CityHandler] Cities generated : 0
-[04avr.2021 17:28:11.232] [Server thread/ERROR] [net.minecraftforge.eventbus.EventBus/EVENTBUS]: Exception caught during firing event: -10
-	Index: 2
-	Listeners:
-		0: NORMAL
-		1: net.minecraftforge.eventbus.EventBus$$Lambda$2643/296732759@40926c77
-		2: ASM: fr.craftandconquest.warofsquirrels.WarOfSquirrels@9af5617 OnServerStarting(Lnet/minecraftforge/fml/event/server/FMLServerStartingEvent;)V
-java.lang.ArrayIndexOutOfBoundsException: -10
-	at fr.craftandconquest.warofsquirrels.handler.TerritoryHandler.add(TerritoryHandler.java:102)
-	at fr.craftandconquest.warofsquirrels.handler.TerritoryHandler.CreateTerritory(TerritoryHandler.java:114)
-	at fr.craftandconquest.warofsquirrels.handler.TerritoryHandler.Generate(TerritoryHandler.java:79)
-	at fr.craftandconquest.warofsquirrels.handler.TerritoryHandler.Load(TerritoryHandler.java:60)
-	at fr.craftandconquest.warofsquirrels.handler.TerritoryHandler.<init>(TerritoryHandler.java:42)
-	at fr.craftandconquest.warofsquirrels.WarOfSquirrels.OnServerStarting(WarOfSquirrels.java:81)
-	at net.minecraftforge.eventbus.ASMEventHandler_19_WarOfSquirrels_OnServerStarting_FMLServerStartingEvent.invoke(.dynamic)
-	at net.minecraftforge.eventbus.ASMEventHandler.invoke(ASMEventHandler.java:80)
-	at net.minecraftforge.eventbus.EventBus.post(EventBus.java:258)
-	at net.minecraftforge.fml.server.ServerLifecycleHooks.handleServerStarting(ServerLifecycleHooks.java:95)
-	at net.minecraft.server.dedicated.DedicatedServer.init(DedicatedServer.java:246)
-	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:637)
-	at java.lang.Thread.run(Thread.java:748)
-
-[04avr.2021 17:28:11.239] [Server thread/ERROR] [net.minecraft.server.MinecraftServer/]: Encountered an unexpected exception
-java.lang.ArrayIndexOutOfBoundsException: -10
-	at fr.craftandconquest.warofsquirrels.handler.TerritoryHandler.add(TerritoryHandler.java:102) ~[main/:?]
-	at fr.craftandconquest.warofsquirrels.handler.TerritoryHandler.CreateTerritory(TerritoryHandler.java:114) ~[main/:?]
-	at fr.craftandconquest.warofsquirrels.handler.TerritoryHandler.Generate(TerritoryHandler.java:79) ~[main/:?]
-	at fr.craftandconquest.warofsquirrels.handler.TerritoryHandler.Load(TerritoryHandler.java:60) ~[main/:?]
-	at fr.craftandconquest.warofsquirrels.handler.TerritoryHandler.<init>(TerritoryHandler.java:42) ~[main/:?]
-	at fr.craftandconquest.warofsquirrels.WarOfSquirrels.OnServerStarting(WarOfSquirrels.java:81) ~[main/:?]
-	at net.minecraftforge.eventbus.ASMEventHandler_19_WarOfSquirrels_OnServerStarting_FMLServerStartingEvent.invoke(.dynamic) ~[?:?]
-	at net.minecraftforge.eventbus.ASMEventHandler.invoke(ASMEventHandler.java:80) ~[eventbus-2.2.0-service.jar:?]
-	at net.minecraftforge.eventbus.EventBus.post(EventBus.java:258) ~[eventbus-2.2.0-service.jar:?]
-	at net.minecraftforge.fml.server.ServerLifecycleHooks.handleServerStarting(ServerLifecycleHooks.java:95) ~[?:?]
-	at net.minecraft.server.dedicated.DedicatedServer.init(DedicatedServer.java:246) ~[?:?]
-	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:637) [?:?]
-	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_191]
-[04avr.2021 17:28:11.267] [Server thread/ERROR] [net.minecraft.server.MinecraftServer/]: This crash report has been saved to: C:\Workspace\WarOfSquirrels\run\.\crash-reports\crash-2021-04-04_17.28.11-server.txt
-[04avr.2021 17:28:11.273] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Stopping server
-[04avr.2021 17:28:11.277] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving players
-[04avr.2021 17:28:11.278] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving worlds
-[04avr.2021 17:28:11.278] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'world'/minecraft:the_nether
-[04avr.2021 17:28:11.321] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
-[04avr.2021 17:28:11.322] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'world'/minecraft:the_end
-[04avr.2021 17:28:11.328] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
-[04avr.2021 17:28:11.329] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'world'/minecraft:overworld
-[04avr.2021 17:28:14.114] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (world): All chunks are saved
-[04avr.2021 17:28:14.311] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
-[04avr.2021 17:28:14.324] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
-[04avr.2021 17:28:14.328] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (world): All chunks are saved
+[04avr.2021 22:02:54.505] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [nogui, --gameDir, ., --launchTarget, fmluserdevserver, --fml.mcpVersion, 20200122.131323, --fml.mcVersion, 1.15.2, --fml.forgeGroup, net.minecraftforge, --fml.forgeVersion, 31.1.0]
+[04avr.2021 22:02:54.509] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 5.1.0+69+master.79f13f7 starting: java version 1.8.0_281 by Oracle Corporation
+[04avr.2021 22:02:55.210] [main/INFO] [net.minecraftforge.fml.loading.FixSSL/CORE]: Added Lets Encrypt root certificates as additional trust
+[04avr.2021 22:02:56.195] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'fmluserdevserver' with arguments [--gameDir, ., nogui]
+[04avr.2021 22:03:10.772] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[04avr.2021 22:03:10.774] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[04avr.2021 22:03:10.776] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+[04avr.2021 22:03:10.777] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[04avr.2021 22:03:10.778] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[04avr.2021 22:03:11.076] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting minecraft server version 1.15.2
+[04avr.2021 22:03:11.545] [modloading-worker-9/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 31.2.0, for MC 1.15.2 with MCP 20200515.085601
+[04avr.2021 22:03:11.546] [modloading-worker-9/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v31.2.0 Initialized
+[04avr.2021 22:03:11.957] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.ExampleMod/]: HELLO from Register Block
+[04avr.2021 22:03:12.158] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json
+[04avr.2021 22:03:12.160] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Loading properties
+[04avr.2021 22:03:12.167] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Default game type: SURVIVAL
+[04avr.2021 22:03:12.167] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Generating keypair
+[04avr.2021 22:03:12.248] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting Minecraft server on *:25565
+[04avr.2021 22:03:12.253] [Server thread/INFO] [net.minecraft.network.NetworkSystem/]: Using default channel type
+[04avr.2021 22:03:12.727] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Found status: OUTDATED Current: 31.1.0 Target: 31.2.0
+[04avr.2021 22:03:12.727] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Starting version check at https://raw.githubusercontent.com/AleksGirardey/WarOfSquirrels/master/updateJSON.json#
+[04avr.2021 22:03:13.450] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+[04avr.2021 22:03:13.450] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: The server will make no attempt to authenticate usernames. Beware.
+[04avr.2021 22:03:13.450] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+[04avr.2021 22:03:13.450] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: To change this, set "online-mode" to "true" in the server.properties file.
+[04avr.2021 22:03:13.453] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Found status: BETA Current: 1.0.0 Target: null
+[04avr.2021 22:03:13.984] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Preparing level "world"
+[04avr.2021 22:03:14.108] [Server thread/INFO] [net.minecraftforge.registries.GameData/REGISTRIES]: Injecting existing registry data into this SERVER instance
+[04avr.2021 22:03:14.350] [Server thread/INFO] [net.minecraft.resources.SimpleReloadableResourceManager/]: Reloading ResourceManager: Default, forge-1.15.2-31.2.0_mapped_snapshot_20190719-1.14.3-recomp.jar, main
+[04avr.2021 22:03:15.565] [Server thread/INFO] [net.minecraft.item.crafting.RecipeManager/]: Loaded 6 recipes
+[04avr.2021 22:03:17.656] [Server thread/INFO] [net.minecraft.advancements.AdvancementList/]: Loaded 825 advancements
+[04avr.2021 22:03:18.209] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Preparing start region for dimension minecraft:overworld
+[04avr.2021 22:03:18.968] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[04avr.2021 22:03:18.968] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[04avr.2021 22:03:19.235] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 11%
+[04avr.2021 22:03:20.894] [Server-Worker-4/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[04avr.2021 22:03:20.895] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[04avr.2021 22:03:20.895] [Server-Worker-1/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[04avr.2021 22:03:21.212] [Server-Worker-8/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 91%
+[04avr.2021 22:03:21.713] [Server-Worker-8/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 91%
+[04avr.2021 22:03:22.212] [Server-Worker-8/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 96%
+[04avr.2021 22:03:22.402] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Time elapsed: 4192 ms
+[04avr.2021 22:03:22.403] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Done (8.504s)! For help, type "help"
+[04avr.2021 22:03:22.462] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS] Server Starting . . .
+[04avr.2021 22:03:22.713] [Server thread/ERROR] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][PlayerHandler] Couldnt load Json data.'./WarOfSquirrels/WorldData/PlayerHandler.json' (File creation)
+[04avr.2021 22:03:22.720] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][ChunkHandler] Chunks generated : 0
+[04avr.2021 22:03:22.724] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][CityHandler] Cities generated : 0
+[04avr.2021 22:03:22.751] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][TerritoryHandler] Territories generated : 400
+[04avr.2021 22:03:22.762] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][CuboHandler] Cubo generated : 0
+[04avr.2021 22:03:22.766] [[04avr.2021 22:03:40.359] [Render thread/INFO] [net.minecraft.client.gui.screen.ConnectingScreen/]: Connecting to localhost, 25565
+[04avr.2021 22:03:41.998] [Render thread/INFO] [net.minecraftforge.registries.GameData/REGISTRIES]: Injecting existing registry data into this CLIENT instance
+[04avr.2021 22:03:42.158] [Netty Client IO #2/INFO] [net.minecraftforge.fml.network.NetworkHooks/]: Connected to a modded server.
+[04avr.2021 22:03:42.293] [Netty Client IO #2/ERROR] [net.minecraft.command.arguments.ArgumentTypes/]: Could not deserialize minecraft:
+[04avr.2021 22:03:42.294] [Netty Client IO #2/ERROR] [net.minecraft.command.arguments.ArgumentTypes/]: Could not deserialize minecraft:
+[04avr.2021 22:03:42.846] [Render thread/INFO] [net.minecraft.advancements.AdvancementList/]: Loaded 0 advancements
+[04avr.2021 22:03:43.770] [Render thread/INFO] [net.minecraft.client.gui.NewChatGui/]: [CHAT] 
+/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[04avr.2021 22:03:29.788] [Timer-0/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:03:29.790] [Timer-0/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6991'
+[04avr.2021 22:03:36.781] [Timer-1/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:03:36.783] [Timer-1/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6984'
+[04avr.2021 22:03:42.222] [Server thread/INFO] [net.minecraftforge.common.AdvancementLoadFix/]: Using new advancement loading for net.minecraft.advancements.PlayerAdvancements@50fc4d3d
+[04avr.2021 22:03:42.239] [Server thread/INFO] [net.minecraft.server.management.PlayerList/]: Dev[/127.0.0.1:56029] logged in with entity id 226 at (-151.68641140124626, 72.0, 248.74050800150843)
+[04avr.2021 22:03:42.270] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Dev joined the game
+[04avr.2021 22:03:42.276] [Netty Server IO #1/ERROR] [net.minecraft.command.arguments.ArgumentTypes/]: Could not serialize net.minecraftforge.server.command.ModIdArgument@5e6ba3ee (class net.minecraftforge.server.command.ModIdArgument) - will not be sent to client!
+[04avr.2021 22:03:42.277] [Netty Server IO #1/ERROR] [net.minecraft.command.arguments.ArgumentTypes/]: Could not serialize net.minecraftforge.server.command.EnumArgument@5709b6ed (class net.minecraftforge.server.command.EnumArgument) - will not be sent to client!
+[04avr.2021 22:03:42.366] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][PlayerHandler] Player Dev(380df991-f603-344c-a090-369bad2a924a) created
+[04avr.2021 22:03:42.367] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][WorldInteraction][PlayerLoggedIn] Player Dev added to 1 channels
+[04avr.2021 22:03:43.768] [Timer-2/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:03:43.769] [Timer-2/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6977'
+[04avr.2021 22:03:46.003] [Server thread/INFO] [net.minecraft.network.play.ServerPlayNetHandler/]: Dev lost connection: Disconnected
+[04avr.2021 22:03:46.004] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Dev left the game
+[04avr.2021 22:03:46.004] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][WorldInteraction][PlayerLoggedOut] Player Dev removed from all channels
+[04avr.2021 22:03:50.746] [Timer-3/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:03:50.746] [Timer-3/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6970'
+[04avr.2021 22:03:57.718] [Timer-4/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:03:57.718] [Timer-4/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6963'
+[04avr.2021 22:04:04.682] [Timer-5/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:04:04.682] [Timer-5/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6956'
+[04avr.2021 22:04:11.639] [Timer-6/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:04:11.639] [Timer-6/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6949'
+[04avr.2021 22:04:18.588] [Timer-7/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:04:18.588] [Timer-7/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6942'
+[04avr.2021 22:04:25.531] [Timer-8/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:04:25.531] [Timer-8/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6935'
+[04avr.2021 22:04:32.466] [Timer-9/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:04:32.466] [Timer-9/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6928'
+[04avr.2021 22:04:39.394] [Timer-10/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:04:39.394] [Timer-10/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6921'
+[04avr.2021 22:04:46.317] [Timer-11/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:04:46.317] [Timer-11/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6914'
+[04avr.2021 22:04:53.232] [Timer-12/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:04:53.232] [Timer-12/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6907'
+[04avr.2021 22:05:00.140] [Timer-13/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:05:00.140] [Timer-13/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6900'
+[04avr.2021 22:05:07.042] [Timer-14/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:05:07.042] [Timer-14/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6893'
+[04avr.2021 22:05:13.935] [Timer-15/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:05:13.935] [Timer-15/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6887'
+[04avr.2021 22:05:20.823] [Timer-16/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:05:20.823] [Timer-16/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6880'
+[04avr.2021 22:05:27.703] [Timer-17/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:05:27.703] [Timer-17/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6873'
+[04avr.2021 22:05:34.576] [Timer-18/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:05:34.576] [Timer-18/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6866'
+[04avr.2021 22:05:41.443] [Timer-19/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:05:41.443] [Timer-19/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6859'
+[04avr.2021 22:05:48.303] [Timer-20/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:05:48.303] [Timer-20/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6852'
+[04avr.2021 22:05:55.155] [Timer-21/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:05:55.155] [Timer-21/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6845'
+[04avr.2021 22:06:02.001] [Timer-22/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:06:02.001] [Timer-22/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6838'
+[04avr.2021 22:06:08.839] [Timer-23/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:06:08.839] [Timer-23/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6832'
+[04avr.2021 22:06:15.672] [Timer-24/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:06:15.672] [Timer-24/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6825'
+[04avr.2021 22:06:22.497] [Timer-25/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:06:22.497] [Timer-25/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6818'
+[04avr.2021 22:06:29.316] [Timer-26/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:06:29.316] [Timer-26/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6811'
+[04avr.2021 22:06:36.127] [Timer-27/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:06:36.127] [Timer-27/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6804'
+[04avr.2021 22:06:42.932] [Timer-28/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:06:42.932] [Timer-28/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6798'
+[04avr.2021 22:06:49.730] [Timer-29/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:06:49.730] [Timer-29/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6791'
+[04avr.2021 22:06:56.521] [Timer-30/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:06:56.521] [Timer-30/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6784'
+[04avr.2021 22:07:03.306] [Timer-31/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:07:03.306] [Timer-31/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6777'
+[04avr.2021 22:07:10.085] [Timer-32/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:07:10.085] [Timer-32/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6770'
+[04avr.2021 22:07:16.855] [Timer-33/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadcastHandler] World Announce : A new day begin..
+[04avr.2021 22:07:16.855] [Timer-33/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][UpdateHandler] Delay '6764'

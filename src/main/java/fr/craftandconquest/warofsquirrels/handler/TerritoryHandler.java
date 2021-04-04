@@ -15,7 +15,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -74,8 +73,8 @@ public class TerritoryHandler extends Handler<Territory> {
         int minX = -maxX;
         int minZ = -maxZ;
 
-        for (int i = minX; i < maxX; i++) {
-            for (int j = minZ; j < maxZ; j++) {
+        for (int i = minX; i < maxX; ++i) { // -10 inc to 10 exc
+            for (int j = minZ; j < maxZ; ++j) { // -10 inc to 10 exc
                 if (CreateTerritory("Province inconnue", i, j, null, null,
                         WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD).getDimension().getType().getId()) == null)
                     return;
@@ -98,8 +97,12 @@ public class TerritoryHandler extends Handler<Territory> {
             dataArray.add(territory);
         }
 
+        int offset = (WarOfSquirrels.instance.getConfig().getMapSize() / 2) / WarOfSquirrels.instance.getConfig().getTerritorySize();
+        int posX = territory.getPosX() + offset;
+        int posZ = territory.getPosZ() + offset;
+
         territoryMap.put(territory.getUuid(), territory);
-        territories[territory.getPosX()][territory.getPosZ()] = territory;
+        territories[posX][posZ] = territory;
         if (!territoriesByFaction.containsKey(territory.getFaction()))
             territoriesByFaction.put(territory.getFaction(), new ArrayList<>());
         territoriesByFaction.get(territory.getFaction()).add(territory);
@@ -123,7 +126,12 @@ public class TerritoryHandler extends Handler<Territory> {
     @Override
     public boolean Delete(Territory territory) {
         territoryMap.remove(territory.getUuid());
-        territories[territory.getPosX()][territory.getPosZ()] = null;
+
+        int offset = (WarOfSquirrels.instance.getConfig().getMapSize() / 2) / WarOfSquirrels.instance.getConfig().getTerritorySize();
+        int posX = territory.getPosX() + offset;
+        int posZ = territory.getPosZ() + offset;
+
+        territories[posX][posZ] = null;
 
         Save(territoryMap.values());
 
@@ -167,14 +175,16 @@ public class TerritoryHandler extends Handler<Territory> {
         int posZMore = Math.min(posZ + 1, max);
         int posZLess = Math.max(posZ - 1, -max);
 
-        if (territories[posX][posZMore] != territory)
-            neighbors.add(territories[posX][posZMore]);
-        if (territories[posX][posZLess] != territory)
-            neighbors.add(territories[posX][posZLess]);
-        if (territories[posXMore][posZ] != territory)
-            neighbors.add(territories[posXMore][posZ]);
-        if (territories[posXLess][posZ] != territory)
-            neighbors.add(territories[posXLess][posZ]);
+        int dimensionId = territory.getDimensionId();
+
+        if (get(posX, posZMore, dimensionId) != territory)
+            neighbors.add(get(posX, posZMore, dimensionId));
+        if (get(posX, posZLess, dimensionId) != territory)
+            neighbors.add(get(posX, posZLess, dimensionId));
+        if (get(posXMore, posZ, dimensionId) != territory)
+            neighbors.add(get(posXMore, posZ, dimensionId));
+        if (get(posXLess, posZ, dimensionId) != territory)
+            neighbors.add(get(posXLess, posZ, dimensionId));
 
         return neighbors;
     }
@@ -193,13 +203,18 @@ public class TerritoryHandler extends Handler<Territory> {
         int size = halfSize / WarOfSquirrels.instance.getConfig().getTerritorySize();
         if (posX < -size || posX >= size || posZ < -size || posZ >= size) return null;
 
+        posX = posX + size;
+        posZ = posZ + size;
+
         Territory territory = territories[posX][posZ];
 
         return territory.getDimensionId() == dimensionId ? territory : null;
     }
 
     public boolean claim(int posX, int posZ, Faction faction, IFortification fortification, int dimensionId) {
-        Territory territory = territories[posX][posZ];
+        Territory territory = get(posX, posZ, dimensionId);
+
+        if (territory == null) return false;
 
         territory.SetFaction(faction);
         territory.SetFortification(fortification);

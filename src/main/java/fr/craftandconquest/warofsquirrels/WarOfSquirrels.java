@@ -89,7 +89,7 @@ public class WarOfSquirrels {
         factionHandler = new FactionHandler(LOGGER);
         influenceHandler = new InfluenceHandler(LOGGER);
         broadCastHandler = new BroadCastHandler(LOGGER);
-        updateHandler = new UpdateHandler();
+        updateHandler = new UpdateHandler(LOGGER);
 
         //CityCommand.register(event.getCommandDispatcher());
 

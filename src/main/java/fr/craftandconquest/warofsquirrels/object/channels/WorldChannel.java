@@ -13,12 +13,16 @@ public class WorldChannel extends Channel {
 
     @Override
     protected ITextComponent transformText(Player sender, ITextComponent text) {
-        return new StringTextComponent(String.format("[ANNOUNCE] %s", sender.getDisplayName()))
-                .applyTextStyle(TextFormatting.RED);
+        return new StringTextComponent("[ANNOUNCE] ")
+                .appendText(sender.getDisplayName())
+                .appendSibling(text)
+                .applyTextStyle(TextFormatting.GOLD);
     }
 
     @Override
     protected ITextComponent transformTextAnnounce(ITextComponent text) {
-        return new StringTextComponent("");
+        return new StringTextComponent("[ANNOUNCE] ")
+                .appendSibling(text)
+                .applyTextStyle(TextFormatting.GOLD);
     }
 }

@@ -14,6 +14,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
@@ -54,6 +55,7 @@ public class BroadCastHandler {
     }
 
     public void BroadCastWorldAnnounce(ITextComponent message) {
+        LOGGER.info("[WoS][BroadcastHandler] World Announce : " + message.getString());
         worldChannel.SendAnnounce(message);
     }
 
