@@ -41,13 +41,12 @@ public class CityCreate extends CommandBuilder implements IAdminCommand, ITerrit
         Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
         int minPartySize = WarOfSquirrels.instance.getConfig().getMinPartySizeToCreateCity();
 
-        if (super.CanDoIt(player) && party.getLeader().equals(player)) {
-            if (party.size() >= minPartySize && party.createCityCheck())
-                return true;
-            player.getPlayerEntity().sendMessage(new StringTextComponent("Your party must contain " + (minPartySize - 1)
-                    + " wanderers in order to create a city").applyTextStyle(TextFormatting.RED));
+        if (super.CanDoIt(player) && party != null && party.getLeader().equals(player)) {
+            if (party.size() >= minPartySize && party.createCityCheck()) return true;
         }
-        player.getPlayerEntity().sendMessage(new StringTextComponent("You need to create a party to create a city"));
+        player.getPlayerEntity().sendMessage(
+                new StringTextComponent("You need to be in a party of at least " + minPartySize + " wanderers to create a new city").applyTextStyle(TextFormatting.RED)
+        );
         return false;
     }
 

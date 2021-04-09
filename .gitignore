@@ -5,3 +5,7 @@ target
 *.iml
 run/
 build/
+run/usercache.json
+*.bin
+*.lock
+*.log
