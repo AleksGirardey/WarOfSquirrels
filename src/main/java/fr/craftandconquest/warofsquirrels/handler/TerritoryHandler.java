@@ -10,6 +10,10 @@ import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeContainer;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.dimension.DimensionType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
@@ -116,6 +120,21 @@ public class TerritoryHandler extends Handler<Territory> {
 
         if (!add(territory))
             return null;
+
+//        int chunkPerTerritory = (WarOfSquirrels.instance.getConfig().getTerritorySize() / 16);
+//        int chunkXOffset = posX * chunkPerTerritory;
+//        int chunkZOffset = posZ * chunkPerTerritory;
+//
+//        for (int chunkX = chunkXOffset; chunkX < chunkXOffset + chunkPerTerritory; ++chunkX) {
+//            for (int chunkZ = chunkZOffset; chunkZ < chunkZOffset + chunkPerTerritory; ++chunkZ) {
+//                if (chunkX == 0 && chunkZ == 0) {
+//                    BiomeContainer biomes = WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD).getChunk(chunkX, chunkZ).func_225549_i_();
+//                    if (biomes != null) {
+//                        for (int biome : biomes.func_227055_a_()) { }
+//                    }
+//                }
+//            }
+//        }
 
         Save(territoryMap.values());
         LogTerritoryCreation(territory);

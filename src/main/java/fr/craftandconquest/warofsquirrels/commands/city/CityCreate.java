@@ -4,9 +4,9 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
 import fr.craftandconquest.warofsquirrels.commands.extractor.ITerritoryExtractor;
+import fr.craftandconquest.warofsquirrels.commands.party.PartyCommandLeader;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.handler.CityHandler;
 import fr.craftandconquest.warofsquirrels.object.Player;
@@ -23,7 +23,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.dimension.DimensionType;
 
-public class CityCreate extends CommandBuilder implements IAdminCommand, ITerritoryExtractor {
+public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITerritoryExtractor {
     private final String cityNameArgument = "[CityName]";
 
     @Override
@@ -41,9 +41,8 @@ public class CityCreate extends CommandBuilder implements IAdminCommand, ITerrit
         Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
         int minPartySize = WarOfSquirrels.instance.getConfig().getMinPartySizeToCreateCity();
 
-        if (super.CanDoIt(player) && party != null && party.getLeader().equals(player)) {
-            if (party.size() >= minPartySize && party.createCityCheck()) return true;
-        }
+        if (super.CanDoIt(player) && party.size() >= minPartySize && party.createCityCheck()) return true;
+
         player.getPlayerEntity().sendMessage(
                 new StringTextComponent("You need to be in a party of at least " + minPartySize + " wanderers to create a new city").applyTextStyle(TextFormatting.RED)
         );

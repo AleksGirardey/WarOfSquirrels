@@ -51,12 +51,11 @@ public class Player implements IPermission {
         city = WarOfSquirrels.instance.getCityHandler().getCity(cityUuid);
     }
 
-    @Override
+    @Override @JsonIgnore
     public PermissionTarget getPermissionTarget() {
         return PermissionTarget.PLAYER;
     }
 
-    public boolean isOnline() {
-        return (WarOfSquirrels.server.getPlayerList().getPlayerByUUID(uuid) != null);
-    }
+    @JsonIgnore
+    public boolean isOnline() { return (WarOfSquirrels.server.getPlayerList().getPlayerByUUID(uuid) != null); }
 }

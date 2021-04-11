@@ -23,6 +23,9 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class PlayersInteractionHandler {
 
     @OnlyIn(Dist.DEDICATED_SERVER)
@@ -141,8 +144,10 @@ public class PlayersInteractionHandler {
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnPvPDamage(LivingHurtEvent event) {
-        if (!(event.getEntity() instanceof PlayerEntity) &&
-                !(event.getSource().getTrueSource() instanceof PlayerEntity)) return;
+        if (!(event.getEntity() instanceof PlayerEntity) || !(event.getSource().getTrueSource() instanceof PlayerEntity)) return;
+
+        if (event.getSource().getTrueSource() != null)
+            Logger.getGlobal().log(Level.INFO, "[Damage] " + event.getSource().getTrueSource().toString());
 
         Player target = WarOfSquirrels.instance.getPlayerHandler().get((PlayerEntity) event.getEntity());
 
@@ -153,7 +158,7 @@ public class PlayersInteractionHandler {
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnPvPDeath(LivingDeathEvent event) {
-        if (!(event.getEntity() instanceof PlayerEntity) &&
+        if (!(event.getEntity() instanceof PlayerEntity) ||
                 !(event.getSource().getTrueSource() instanceof PlayerEntity)) return;
 
         Player target = WarOfSquirrels.instance.getPlayerHandler().get((PlayerEntity) event.getEntity());

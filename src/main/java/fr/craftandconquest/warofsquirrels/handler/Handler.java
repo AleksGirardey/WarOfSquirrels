@@ -94,7 +94,7 @@ public abstract class Handler<T> {
                 }
             }
         } catch (IOException e) {
-            Logger.error(errorMessage + "'" + getConfigPath() + "' (File creation)");
+            Logger.error(errorMessage + "'" + getConfigPath() + "' (File creation) - " + e.getMessage());
             return false;
         }
         return true;

@@ -9,8 +9,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,10 +36,8 @@ public class UpdateHandler {
 
     public void Create() {
         long delay = DelayBeforeMidnight();
-
         delay *= 1000;
 
-        LOGGER.info("[WoS][UpdateHandler] Delay '" + delay + "'");
         currentUpdateTimer = new Timer();
         currentUpdateTimer.schedule(new TimerTask() {
             @Override
