@@ -121,21 +121,6 @@ public class TerritoryHandler extends Handler<Territory> {
         if (!add(territory))
             return null;
 
-//        int chunkPerTerritory = (WarOfSquirrels.instance.getConfig().getTerritorySize() / 16);
-//        int chunkXOffset = posX * chunkPerTerritory;
-//        int chunkZOffset = posZ * chunkPerTerritory;
-//
-//        for (int chunkX = chunkXOffset; chunkX < chunkXOffset + chunkPerTerritory; ++chunkX) {
-//            for (int chunkZ = chunkZOffset; chunkZ < chunkZOffset + chunkPerTerritory; ++chunkZ) {
-//                if (chunkX == 0 && chunkZ == 0) {
-//                    BiomeContainer biomes = WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD).getChunk(chunkX, chunkZ).func_225549_i_();
-//                    if (biomes != null) {
-//                        for (int biome : biomes.func_227055_a_()) { }
-//                    }
-//                }
-//            }
-//        }
-
         Save(territoryMap.values());
         LogTerritoryCreation(territory);
 

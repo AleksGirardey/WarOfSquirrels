@@ -48,6 +48,7 @@ public class UpdateHandler {
     }
 
     public long DelayBeforeMidnight() {
+        //TODO: Modifier la detection du prochain reset (00:00) pour ne pas déclencher plusieurs fois l'update lors du passage à minuit
         LocalDateTime localNow = LocalDateTime.now();
         ZonedDateTime zonedNow = ZonedDateTime.of(localNow, ZoneId.systemDefault());
         ZonedDateTime zonedNext = zonedNow.withHour(0).withMinute(0).withSecond(0);

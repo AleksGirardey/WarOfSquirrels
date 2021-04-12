@@ -5,7 +5,7 @@ import net.minecraftforge.server.permission.PermissionAPI;
 
 public interface IAdminCommand {
     default boolean IsAdmin(Player player) {
-        return (player.isAdminMode() ||
-                PermissionAPI.hasPermission(player.getPlayerEntity(), "minecraft.command.op"));
+        return (player.isAdminMode() || player.getPlayerEntity().hasPermissionLevel(2));
+//                PermissionAPI.hasPermission(player.getPlayerEntity(), "minecraft.command.op"));
     }
 }

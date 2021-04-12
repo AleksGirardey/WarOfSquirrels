@@ -9,7 +9,7 @@ public class CommandRegisterManager {
     private final PartyCommandRegister partyCommandRegister = new PartyCommandRegister();
     private final WarCommandRegister warCommandRegister = new WarCommandRegister();
 //    private final ShopCommandRegister shopCommandRegister = new ShopCommandRegister();
-//    private final AdminCommandRegister adminCommandRegister = new AdminCommandRegister();
+    private final AdminCommandRegister adminCommandRegister = new AdminCommandRegister();
 //    private final ChatCommandRegister chatCommandRegister = new ChatCommandRegister();
 
     public void register(CommandDispatcher<CommandSource> dispatcher) {
@@ -17,5 +17,6 @@ public class CommandRegisterManager {
         warCommandRegister.register(dispatcher);
         factionCommandRegister.register(dispatcher);
         partyCommandRegister.register(dispatcher);
+        adminCommandRegister.register(dispatcher);
     }
 }
