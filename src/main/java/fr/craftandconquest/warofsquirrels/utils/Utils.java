@@ -17,7 +17,7 @@ import java.util.List;
 public class Utils {
 
     public static Pair<Integer, Integer> WorldToChunkCoordinates(int posX, int posZ) {
-        return Pair.of(posX / 16, posZ / 16);
+        return Pair.of(Math.floorDiv(posX, 16), Math.floorDiv(posZ, 16));
     }
 
     public static Pair<Integer, Integer> ChunkToTerritoryCoordinates(int posX, int posZ) {

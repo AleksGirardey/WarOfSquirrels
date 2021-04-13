@@ -4,12 +4,17 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeContainer;
 import net.minecraft.world.dimension.DimensionType;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AdminChunkInfoCommand extends AdminCommandBuilder {
     @Override
@@ -23,19 +28,28 @@ public class AdminChunkInfoCommand extends AdminCommandBuilder {
     @Override
     protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
 //        int chunkPerTerritory = (WarOfSquirrels.instance.getConfig().getTerritorySize() / 16);
-        int chunkX = player.getPlayerEntity().getPosition().getX() / 16;
-        int chunkZ = player.getPlayerEntity().getPosition().getZ() / 16;
+        Pair<Integer, Integer> chunkPos = Utils.WorldToChunkCoordinates(player.getPlayerEntity().getPosition().getX(), player.getPlayerEntity().getPosition().getZ());
+//        int chunkX = player.getPlayerEntity().getPosition().getX() / 16;
+//        int chunkZ = player.getPlayerEntity().getPosition().getZ() / 16;
 
-        BiomeContainer biomes = WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD).getChunk(chunkX, chunkZ).func_225549_i_();
+        BiomeContainer biomes = WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD).getChunk(chunkPos.getLeft(), chunkPos.getRight()).func_225549_i_();
         Biome[] biomesAsArray = new Biome[Biome.BIOMES.size()];
 
         biomesAsArray = Biome.BIOMES.toArray(biomesAsArray);
 
+        List<Integer> values = new ArrayList<>();
         int i = 0;
         if (biomes != null) {
             for (int biomeId : biomes.func_227055_a_()) {
-                if (biomeId < biomesAsArray.length)
-                    player.getPlayerEntity().sendMessage(new StringTextComponent("[" + i + "] " + biomesAsArray[biomeId].getDisplayName()));
+                if (values.contains(biomeId)) continue;
+                values.add(biomeId);
+            }
+
+            player.getPlayerEntity().sendMessage(new StringTextComponent(" === [" + chunkPos.getLeft() + ";" + chunkPos.getRight() + "] === "));
+
+            for (int biomeId : values) {
+                player.getPlayerEntity().sendMessage(new StringTextComponent("[" + i + "] " + biomeId));
+                ++i;
             }
         }
 
