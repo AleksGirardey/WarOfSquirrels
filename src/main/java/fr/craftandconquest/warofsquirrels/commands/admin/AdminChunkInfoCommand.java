@@ -45,10 +45,12 @@ public class AdminChunkInfoCommand extends AdminCommandBuilder {
                 values.add(biomeId);
             }
 
-            player.getPlayerEntity().sendMessage(new StringTextComponent(" === [" + chunkPos.getLeft() + ";" + chunkPos.getRight() + "] === "));
+            player.getPlayerEntity()
+                    .sendMessage(new StringTextComponent(" === [" + chunkPos.getLeft() + ";" + chunkPos.getRight() + "] === "));
 
             for (int biomeId : values) {
-                player.getPlayerEntity().sendMessage(new StringTextComponent("[" + i + "] " + biomeId));
+                player.getPlayerEntity()
+                        .sendMessage(new StringTextComponent("[" + i + "] " + Utils.BiomeFromId(biomeId).getTranslationKey()));
                 ++i;
             }
         }

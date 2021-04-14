@@ -6,13 +6,20 @@ import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Utils {
 
@@ -40,6 +47,11 @@ public class Utils {
         int value = NearestHomeBlock(posX, posZ);
 
         return (value == -1 || value >= WarOfSquirrels.instance.getConfig().getDistanceCities());
+    }
+
+    public static Biome BiomeFromId(int biomeId) {
+        Map<Integer, Biome> map = WarOfSquirrels.instance.getBiomeMap();
+        return map.get(biomeId);
     }
 
     public static ReSpawnPoint NearestSpawnPoint(PlayerEntity playerEntity) {

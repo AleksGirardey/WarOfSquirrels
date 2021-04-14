@@ -12,14 +12,21 @@ import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.utils.Config;
 import lombok.Getter;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Mod(WarOfSquirrels.warOfSquirrelsModId)
 public class WarOfSquirrels {
@@ -51,6 +58,8 @@ public class WarOfSquirrels {
     @Getter private CuboHandler cuboHandler;
     @Getter private UpdateHandler updateHandler;
 
+    @Getter private Map<Integer, Biome> biomeMap;
+
     public Config config;
 
     public WarOfSquirrels() {
@@ -72,6 +81,8 @@ public class WarOfSquirrels {
         LOGGER.info("[WoS] Server Starting . . .");
 
         server = event.getServer();
+
+        PopulateBiomeMap();
 
         config = new Config("[WoS][Config]", LOGGER);
         permissionHandler = new PermissionHandler();
@@ -114,5 +125,13 @@ public class WarOfSquirrels {
         chunkHandler.spreadPermissionDelete(target);
         cityHandler.spreadPermissionDelete(target);
         cuboHandler.spreadPermissionDelete(target);
+    }
+
+    private void PopulateBiomeMap() {
+        biomeMap = new HashMap<>();
+
+        for (Biome biome : Biome.BIOMES) {
+            biomeMap.put(Registry.BIOME.getId(biome), biome);
+        }
     }
 }
