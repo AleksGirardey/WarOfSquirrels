@@ -6,12 +6,21 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.InfluenceHandler;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeContainer;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -25,7 +34,9 @@ public class Territory {
     @JsonProperty @Getter private UUID factionUuid;
     @JsonProperty @Getter private UUID fortificationUuid;
     @JsonProperty @Getter @Setter private int dimensionId;
+    @JsonProperty @Getter @Setter private String biome;
 
+    @JsonIgnore @Getter private Map<Integer, Pair<String, Integer>> biomeMap;
     @JsonIgnore @Getter private Faction faction;
     @JsonIgnore @Getter private IFortification fortification;
 
@@ -37,6 +48,8 @@ public class Territory {
         SetFaction(faction);
         SetFortification(fortification);
         this.dimensionId = dimensionId;
+
+        //SetBiomeMap();
     }
 
     public void SetFortification(IFortification fortification) {
@@ -73,11 +86,50 @@ public class Territory {
         }
     }
 
+    private void SetBiomeMap() {
+        biomeMap = new HashMap<>();
+        int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
+        int posXMin = posX * territorySize;
+        int posXMax = posXMin + territorySize;
+        int posZMin = posX * territorySize;
+        int posZMax = posXMin + territorySize;
+
+        ForgeRegistry<Biome> registry = (ForgeRegistry<Biome>) ForgeRegistries.BIOMES;
+
+        for (int x = posXMin; x < posXMax;) {
+            for (int z = posZMin; z < posZMax;) {
+                Pair<Integer, Integer> chunkPos = Utils.WorldToChunkCoordinates(x, z);
+                BiomeContainer biomes = WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD)
+                        .getChunk(chunkPos.getKey(), chunkPos.getValue())
+                        .func_225549_i_();
+                if (biomes != null) {
+                    for (int biomeId : biomes.func_227055_a_()) {
+                        if (!biomeMap.containsKey(biomeId))
+                            biomeMap.put(biomeId, new Pair<>(registry.getValue(biomeId).getTranslationKey(), 0));
+                        biomeMap.get(biomeId).setValue(biomeMap.get(biomeId).getValue() + 1);
+                    }
+                }
+                z += 16;
+            }
+            x += 16;
+        }
+
+        String mainBiome = "NONE";
+        int count = 0;
+
+        for (Pair<String, Integer> pair : biomeMap.values()) {
+            if (pair.getValue() > count)
+                mainBiome = pair.getKey();
+        }
+
+        biome = mainBiome;
+    }
+
     @Override
     public String toString() {
-        return String.format("[%d;%d] Possédé par %s dans la dimension d'id %d",
+        return String.format("[%d;%d] Possédé par %s dans la dimension d'id %d de type %s",
                 posX,
                 posZ,
-                faction != null ? faction.getDisplayName() : "personne", dimensionId);
+                faction != null ? faction.getDisplayName() : "personne", dimensionId, biome);
     }
 }

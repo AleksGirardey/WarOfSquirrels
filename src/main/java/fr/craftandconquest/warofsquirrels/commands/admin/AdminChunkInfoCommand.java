@@ -5,13 +5,15 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.Player;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.Pair;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeContainer;
 import net.minecraft.world.dimension.DimensionType;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +34,12 @@ public class AdminChunkInfoCommand extends AdminCommandBuilder {
 //        int chunkX = player.getPlayerEntity().getPosition().getX() / 16;
 //        int chunkZ = player.getPlayerEntity().getPosition().getZ() / 16;
 
-        BiomeContainer biomes = WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD).getChunk(chunkPos.getLeft(), chunkPos.getRight()).func_225549_i_();
+        BiomeContainer biomes = WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD).getChunk(chunkPos.getKey(), chunkPos.getValue()).func_225549_i_();
         Biome[] biomesAsArray = new Biome[Biome.BIOMES.size()];
 
         biomesAsArray = Biome.BIOMES.toArray(biomesAsArray);
+
+        ForgeRegistry<Biome> registry = (ForgeRegistry<Biome>) ForgeRegistries.BIOMES;
 
         List<Integer> values = new ArrayList<>();
         int i = 0;
@@ -46,11 +50,11 @@ public class AdminChunkInfoCommand extends AdminCommandBuilder {
             }
 
             player.getPlayerEntity()
-                    .sendMessage(new StringTextComponent(" === [" + chunkPos.getLeft() + ";" + chunkPos.getRight() + "] === "));
+                    .sendMessage(new StringTextComponent(" === [" + chunkPos.getKey() + ";" + chunkPos.getValue() + "] === "));
 
             for (int biomeId : values) {
                 player.getPlayerEntity()
-                        .sendMessage(new StringTextComponent("[" + i + "] " + Utils.BiomeFromId(biomeId).getTranslationKey()));
+                        .sendMessage(new StringTextComponent("[" + i + "] " + registry.getValue(biomeId).getTranslationKey()));
                 ++i;
             }
         }
