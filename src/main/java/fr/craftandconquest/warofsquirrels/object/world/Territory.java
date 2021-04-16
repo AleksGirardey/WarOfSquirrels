@@ -91,8 +91,8 @@ public class Territory {
         int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
         int posXMin = posX * territorySize;
         int posXMax = posXMin + territorySize;
-        int posZMin = posX * territorySize;
-        int posZMax = posXMin + territorySize;
+        int posZMin = posZ * territorySize;
+        int posZMax = posZMin + territorySize;
 
         ForgeRegistry<Biome> registry = (ForgeRegistry<Biome>) ForgeRegistries.BIOMES;
 
