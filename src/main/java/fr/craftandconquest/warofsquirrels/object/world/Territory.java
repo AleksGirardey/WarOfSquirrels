@@ -48,7 +48,7 @@ public class Territory {
         SetFaction(faction);
         SetFortification(fortification);
         this.dimensionId = dimensionId;
-
+        this.biome = "NONE";
         //SetBiomeMap();
     }
 
