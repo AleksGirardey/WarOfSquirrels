@@ -35,8 +35,8 @@ public class Territory {
     @JsonProperty @Getter private UUID fortificationUuid;
     @JsonProperty @Getter @Setter private int dimensionId;
     @JsonProperty @Getter @Setter private String biome;
+    @JsonProperty @Getter private Map<Integer, Integer> biomeMap;
 
-    @JsonIgnore @Getter private Map<Integer, Pair<String, Integer>> biomeMap;
     @JsonIgnore @Getter private Faction faction;
     @JsonIgnore @Getter private IFortification fortification;
 
@@ -49,6 +49,7 @@ public class Territory {
         SetFortification(fortification);
         this.dimensionId = dimensionId;
         this.biome = "NONE";
+        biomeMap = new HashMap<>();
         //SetBiomeMap();
     }
 
@@ -86,44 +87,44 @@ public class Territory {
         }
     }
 
-    private void SetBiomeMap() {
-        biomeMap = new HashMap<>();
-        int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
-        int posXMin = posX * territorySize;
-        int posXMax = posXMin + territorySize;
-        int posZMin = posZ * territorySize;
-        int posZMax = posZMin + territorySize;
-
-        ForgeRegistry<Biome> registry = (ForgeRegistry<Biome>) ForgeRegistries.BIOMES;
-
-        for (int x = posXMin; x < posXMax;) {
-            for (int z = posZMin; z < posZMax;) {
-                Pair<Integer, Integer> chunkPos = Utils.WorldToChunkCoordinates(x, z);
-                BiomeContainer biomes = WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD)
-                        .getChunk(chunkPos.getKey(), chunkPos.getValue())
-                        .func_225549_i_();
-                if (biomes != null) {
-                    for (int biomeId : biomes.func_227055_a_()) {
-                        if (!biomeMap.containsKey(biomeId))
-                            biomeMap.put(biomeId, new Pair<>(registry.getValue(biomeId).getTranslationKey(), 0));
-                        biomeMap.get(biomeId).setValue(biomeMap.get(biomeId).getValue() + 1);
-                    }
-                }
-                z += 16;
-            }
-            x += 16;
-        }
-
-        String mainBiome = "NONE";
-        int count = 0;
-
-        for (Pair<String, Integer> pair : biomeMap.values()) {
-            if (pair.getValue() > count)
-                mainBiome = pair.getKey();
-        }
-
-        biome = mainBiome;
-    }
+//    private void SetBiomeMap() {
+//        biomeMap = new HashMap<>();
+//        int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
+//        int posXMin = posX * territorySize;
+//        int posXMax = posXMin + territorySize;
+//        int posZMin = posZ * territorySize;
+//        int posZMax = posZMin + territorySize;
+//
+//        ForgeRegistry<Biome> registry = (ForgeRegistry<Biome>) ForgeRegistries.BIOMES;
+//
+//        for (int x = posXMin; x < posXMax;) {
+//            for (int z = posZMin; z < posZMax;) {
+//                Pair<Integer, Integer> chunkPos = Utils.WorldToChunkCoordinates(x, z);
+//                BiomeContainer biomes = WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD)
+//                        .getChunk(chunkPos.getKey(), chunkPos.getValue())
+//                        .func_225549_i_();
+//                if (biomes != null) {
+//                    for (int biomeId : biomes.func_227055_a_()) {
+//                        if (!biomeMap.containsKey(biomeId))
+//                            biomeMap.put(biomeId, new Pair<>(registry.getValue(biomeId).getTranslationKey(), 0));
+//                        biomeMap.get(biomeId).setValue(biomeMap.get(biomeId).getValue() + 1);
+//                    }
+//                }
+//                z += 16;
+//            }
+//            x += 16;
+//        }
+//
+//        String mainBiome = "NONE";
+//        int count = 0;
+//
+//        for (Pair<String, Integer> pair : biomeMap.values()) {
+//            if (pair.getValue() > count)
+//                mainBiome = pair.getKey();
+//        }
+//
+//        biome = mainBiome;
+//    }
 
     @Override
     public String toString() {

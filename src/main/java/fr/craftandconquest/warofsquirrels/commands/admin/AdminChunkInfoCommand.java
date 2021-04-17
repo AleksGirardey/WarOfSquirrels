@@ -71,45 +71,45 @@ public class AdminChunkInfoCommand extends AdminCommandBuilder {
 //                }
 //            }
 //        }
-        Pair<Integer, Integer> territoryPos = Utils.ChunkToTerritoryCoordinates(chunkPos.getKey(), chunkPos.getValue());
-        int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
-
-        int posXMin = territoryPos.getKey() * territorySize;
-        int posXMax = posXMin + territorySize;
-        int posZMin = territoryPos.getValue() * territorySize;
-        int posZMax = posZMin + territorySize;
-
-        World world = WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD);
-
-        Map<Integer, Integer> biomeMap = new HashMap<>();
-
-        BiomeManager bm = world.func_225523_d_();
-
-        for (int x = posXMin; x < posXMax; x += 16) {
-            for (int z = posZMin; z < posZMax; z += 16) {
-                Pair<Integer, Integer> chunkPosition = Utils.WorldToChunkCoordinates(x, z);
-                BiomeContainer biomeContainer = world
-                        .getChunk(chunkPosition.getKey(), chunkPosition.getValue())
-                        .func_225549_i_();
-                if (biomeContainer != null) {
-                    int[] biomes = biomeContainer.func_227055_a_();
-                    for (int biomeId : biomes) {
-                        if (!biomeMap.containsKey(biomeId))
-                            biomeMap.put(biomeId, 0);
-                        biomeMap.compute(biomeId, (k, v) -> (v == null) ? 1 : v+1);
-                    }
-                }
-            }
-        }
-
-        ForgeRegistry<Biome> registry = (ForgeRegistry<Biome>) ForgeRegistries.BIOMES;
-
-        player.getPlayerEntity()
-                .sendMessage(new StringTextComponent(" === [" + chunkPos.getKey() + ";" + chunkPos.getValue() + "] === "));
-
-        biomeMap.forEach((k, v) ->
-                player.getPlayerEntity().sendMessage(new StringTextComponent(
-                registry.getValue(k).getTranslationKey() + " - " + v)));
+//        Pair<Integer, Integer> territoryPos = Utils.ChunkToTerritoryCoordinates(chunkPos.getKey(), chunkPos.getValue());
+//        int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
+//
+//        int posXMin = territoryPos.getKey() * territorySize;
+//        int posXMax = posXMin + territorySize;
+//        int posZMin = territoryPos.getValue() * territorySize;
+//        int posZMax = posZMin + territorySize;
+//
+//        World world = WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD);
+//
+//        Map<Integer, Integer> biomeMap = new HashMap<>();
+//
+//        BiomeManager bm = world.func_225523_d_();
+//
+//        for (int x = posXMin; x < posXMax; x += 16) {
+//            for (int z = posZMin; z < posZMax; z += 16) {
+//                Pair<Integer, Integer> chunkPosition = Utils.WorldToChunkCoordinates(x, z);
+//                BiomeContainer biomeContainer = world
+//                        .getChunk(chunkPosition.getKey(), chunkPosition.getValue())
+//                        .func_225549_i_();
+//                if (biomeContainer != null) {
+//                    int[] biomes = biomeContainer.func_227055_a_();
+//                    for (int biomeId : biomes) {
+//                        if (!biomeMap.containsKey(biomeId))
+//                            biomeMap.put(biomeId, 0);
+//                        biomeMap.compute(biomeId, (k, v) -> (v == null) ? 1 : v+1);
+//                    }
+//                }
+//            }
+//        }
+//
+//        ForgeRegistry<Biome> registry = (ForgeRegistry<Biome>) ForgeRegistries.BIOMES;
+//
+//        player.getPlayerEntity()
+//                .sendMessage(new StringTextComponent(" === [" + chunkPos.getKey() + ";" + chunkPos.getValue() + "] === "));
+//
+//        biomeMap.forEach((k, v) ->
+//                player.getPlayerEntity().sendMessage(new StringTextComponent(
+//                registry.getValue(k).getTranslationKey() + " - " + v)));
 
         return 0;
     }
