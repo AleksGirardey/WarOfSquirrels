@@ -15,8 +15,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class UpdateHandler {
     private Timer currentDailyUpdateTimer;
@@ -31,8 +30,8 @@ public class UpdateHandler {
     public UpdateHandler(Logger logger) {
         LOGGER = logger;
         this.CreateDailyUpdate();
-        if (!WarOfSquirrels.instance.config.getConfiguration().isTerritoriesGenerated())
-            this.CreateBiomeUpdate();
+//        if (!WarOfSquirrels.instance.config.getConfiguration().isTerritoriesGenerated())
+//            this.CreateBiomeUpdate();
     }
 
     public void DailyUpdate() {
@@ -71,9 +70,22 @@ public class UpdateHandler {
 
         if (container == null || territory == null) return;
 
+        Map<Integer, Integer> biomeMap = new HashMap<>();
+
         for (int biomeId : container.func_227055_a_()) {
-            territory.getBiomeMap().compute(biomeId, (k, v) -> (v == null) ? 1 : v + 1);
+            biomeMap.compute(biomeId, (k, v) -> (v == null) ? 1 : v + 1);
         }
+        int biomeIndex = -1;
+        int count = 0;
+
+        for (int key : biomeMap.keySet()) {
+            if (biomeMap.get(key) >= count) {
+                biomeIndex = key;
+                count = biomeMap.get(key);
+            }
+        }
+
+        territory.getBiomeMap().compute(biomeIndex, (k, v) -> (v == null) ? 1 : v + 1);
     }
 
     public void CreateBiomeUpdate() {

@@ -50,7 +50,6 @@ public class Territory {
         this.dimensionId = dimensionId;
         this.biome = "NONE";
         biomeMap = new HashMap<>();
-        //SetBiomeMap();
     }
 
     public void SetFortification(IFortification fortification) {
