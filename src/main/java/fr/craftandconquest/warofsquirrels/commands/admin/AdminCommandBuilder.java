@@ -9,7 +9,7 @@ import net.minecraftforge.server.permission.PermissionAPI;
 public abstract class AdminCommandBuilder extends CommandBuilder {
     @Override
     protected boolean CanDoIt(Player player) {
-        return super.CanDoIt(player) && (player.isAdminMode() || player.getPlayerEntity().hasPermissionLevel(2));
+        return super.CanDoIt(player) && (IsAdmin(player) || player.getPlayerEntity().hasPermissionLevel(2));
 //                PermissionAPI.hasPermission(player.getPlayerEntity(), "minecraft.command.op"));
     }
 
