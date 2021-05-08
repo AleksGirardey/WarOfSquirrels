@@ -100,8 +100,6 @@ public class WarOfSquirrels {
         broadCastHandler = new BroadCastHandler(LOGGER);
         updateHandler = new UpdateHandler(LOGGER);
 
-        //CityCommand.register(event.getCommandDispatcher());
-
         factionHandler.updateDependencies();
         playerHandler.updateDependencies();
         cuboHandler.updateDependencies();
