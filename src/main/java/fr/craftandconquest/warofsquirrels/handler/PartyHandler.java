@@ -53,11 +53,17 @@ public class PartyHandler {
     }
 
     public Party getPartyFromLeader(Player player) {
-        return parties.stream().filter(party -> party.getLeader()== player).findFirst().orElse(null);
+        return parties.stream()
+                .filter(party -> party.getLeader() == player)
+                .findFirst()
+                .orElse(null);
     }
 
     public Party getFromPlayer(Player player) {
-        return parties.stream().filter(party -> party.getPlayers().contains(player)).findFirst().orElse(null);
+        return parties.stream()
+                .filter(party -> (party.getPlayers().contains(player) || party.getLeader() == player))
+                .findFirst()
+                .orElse(null);
     }
 
     public void DisplayInfo(Player player) {
@@ -65,6 +71,6 @@ public class PartyHandler {
 
         player.getPlayerEntity().sendMessage(new StringTextComponent("=== Groupe[" + party.size() + "] ==="));
         player.getPlayerEntity().sendMessage(new StringTextComponent("Chef : " + party.getLeader()));
-        player.getPlayerEntity().sendMessage(new StringTextComponent("Joueurs : " + party.toList()));
+        player.getPlayerEntity().sendMessage(new StringTextComponent("Joueur(s) : " + party.toList()));
     }
 }

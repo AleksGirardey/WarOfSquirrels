@@ -33,7 +33,7 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
 
     @Override
     protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        player.setAdminMode(player.isAdminMode());
+        player.setAdminMode(!player.isAdminMode());
 
         StringTextComponent message;
 

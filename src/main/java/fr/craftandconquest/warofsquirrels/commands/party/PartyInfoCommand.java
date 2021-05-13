@@ -7,6 +7,7 @@ import fr.craftandconquest.warofsquirrels.object.Player;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public class PartyInfoCommand extends PartyCommandBuilder {
     @Override
@@ -24,5 +25,5 @@ public class PartyInfoCommand extends PartyCommandBuilder {
     protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) { return true; }
 
     @Override
-    protected ITextComponent ErrorMessage() { return null; }
+    protected ITextComponent ErrorMessage() { return new StringTextComponent("You cannot perform this command"); }
 }

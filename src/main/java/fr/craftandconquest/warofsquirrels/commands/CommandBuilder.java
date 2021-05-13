@@ -11,6 +11,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class CommandBuilder implements Command<CommandSource>, IAdminCommand {
+
+    protected String errorTarget = "Not Specified";
+
     public abstract LiteralArgumentBuilder<CommandSource> register();
 
     protected boolean CanDoIt(Player player) { return true; }
@@ -28,7 +31,7 @@ public abstract class CommandBuilder implements Command<CommandSource>, IAdminCo
 
         if (IsAdmin(player) || (CanDoIt(player) && SpecialCheck(player, context)))
             return ExecCommand(player, context);
-        player.getPlayerEntity().sendMessage(ErrorMessage());
+        player.getPlayerEntity().sendMessage(ErrorMessage().appendText(" : " + errorTarget));
         return -1;
     }
 }
