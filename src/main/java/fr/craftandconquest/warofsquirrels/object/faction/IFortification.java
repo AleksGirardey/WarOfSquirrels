@@ -1,5 +1,7 @@
 package fr.craftandconquest.warofsquirrels.object.faction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.UUID;
 
 public interface IFortification {
@@ -8,15 +10,15 @@ public interface IFortification {
         BASTION
     }
 
-    UUID getUniqueId();
+    @JsonIgnore UUID getUniqueId();
 
-    Faction getFaction();
+    @JsonIgnore Faction getFaction();
 
-    default int getSelfInfluenceGenerated() {
+    @JsonIgnore default int getSelfInfluenceGenerated() {
         return 100;
     }
 
-    default int getInfluenceGenerated() {
+    @JsonIgnore default int getInfluenceGenerated() {
         return 100;
     }
 }

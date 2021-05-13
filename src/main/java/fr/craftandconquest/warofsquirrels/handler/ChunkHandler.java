@@ -79,6 +79,7 @@ public class ChunkHandler extends Handler<Chunk> {
             chunksMap.remove(chunk);
         }
         cityMap.remove(city);
+        Save();
         return true;
     }
 

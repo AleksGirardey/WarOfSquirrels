@@ -1,8 +1,6 @@
 package fr.craftandconquest.warofsquirrels;
 
-import fr.craftandconquest.warofsquirrels.commands.CityCommand;
 import fr.craftandconquest.warofsquirrels.commands.register.CommandRegisterManager;
-import fr.craftandconquest.warofsquirrels.commands.register.WarCommandRegister;
 import fr.craftandconquest.warofsquirrels.events.PlayersInteractionHandler;
 import fr.craftandconquest.warofsquirrels.events.WorldInteractionHandler;
 import fr.craftandconquest.warofsquirrels.handler.*;
@@ -12,23 +10,14 @@ import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.utils.Config;
 import lombok.Getter;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Mod(WarOfSquirrels.warOfSquirrelsModId)
 public class WarOfSquirrels {
@@ -105,6 +94,7 @@ public class WarOfSquirrels {
         cuboHandler.updateDependencies();
         playerHandler.updateDependencies();
         cuboHandler.UpdateDependencies();
+        cityHandler.updateDependencies();
 
         commandRegisterManager.register(event.getCommandDispatcher());
 

@@ -58,6 +58,11 @@ public class Faction implements IPermission, IChannelTarget {
     }
 
     @Override
+    public UUID getUuid() {
+        return factionUuid;
+    }
+
+    @Override
     public PermissionTarget getPermissionTarget() {
         return PermissionTarget.FACTION;
     }

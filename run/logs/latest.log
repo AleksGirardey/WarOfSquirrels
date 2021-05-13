@@ -1,50 +1,92 @@
-[13mai2021 16:21:09.997] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [nogui, --gameDir, ., --launchTarget, fmluserdevserver, --fml.mcpVersion, 20200122.131323, --fml.mcVersion, 1.15.2, --fml.forgeGroup, net.minecraftforge, --fml.forgeVersion, 31.1.0]
-[13mai2021 16:21:10.001] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 5.1.0+69+master.79f13f7 starting: java version 1.8.0_281 by Oracle Corporation
-[13mai2021 16:21:10.679] [main/INFO] [net.minecraftforge.fml.loading.FixSSL/CORE]: Added Lets Encrypt root certificates as additional trust
-[13mai2021 16:21:11.658] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'fmluserdevserver' with arguments [--gameDir, ., nogui]
-[13mai2021 16:21:25.602] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
-[13mai2021 16:21:25.604] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
-[13mai2021 16:21:25.605] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
-[13mai2021 16:21:25.607] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
-[13mai2021 16:21:25.608] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
-[13mai2021 16:21:25.837] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting minecraft server version 1.15.2
-[13mai2021 16:21:26.321] [modloading-worker-9/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 31.2.0, for MC 1.15.2 with MCP 20200515.085601
-[13mai2021 16:21:26.321] [modloading-worker-9/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v31.2.0 Initialized
-[13mai2021 16:21:26.731] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.ExampleMod/]: HELLO from Register Block
-[13mai2021 16:21:26.933] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json
-[13mai2021 16:21:26.936] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Loading properties
-[13mai2021 16:21:26.947] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Default game type: SURVIVAL
-[13mai2021 16:21:26.947] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Generating keypair
-[13mai2021 16:21:27.059] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting Minecraft server on *:25565
-[13mai2021 16:21:27.065] [Server thread/INFO] [net.minecraft.network.NetworkSystem/]: Using default channel type
-[13mai2021 16:21:28.281] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
-[13mai2021 16:21:28.281] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: The server will make no attempt to authenticate usernames. Beware.
-[13mai2021 16:21:28.282] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
-[13mai2021 16:21:28.282] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: To change this, set "online-mode" to "true" in the server.properties file.
-[13mai2021 16:21:28.646] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Found status: OUTDATED Current: 31.1.0 Target: 31.2.0
-[13mai2021 16:21:28.647] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Starting version check at https://raw.githubusercontent.com/AleksGirardey/WarOfSquirrels/master/updateJSON.json#
-[13mai2021 16:21:28.716] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Found status: BETA Current: 1.0.0 Target: null
-[13mai2021 16:21:28.805] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Preparing level "world"
-[13mai2021 16:21:28.927] [Server thread/INFO] [net.minecraftforge.registries.GameData/REGISTRIES]: Injecting existing registry data into this SERVER instance
-[13mai2021 16:21:29.149] [Server thread/INFO] [net.minecraft.resources.SimpleReloadableResourceManager/]: Reloading ResourceManager: Default, forge-1.15.2-31.2.0_mapped_snapshot_20190719-1.14.3-recomp.jar, main
-[13mai2021 16:21:30.390] [Server thread/INFO] [net.minecraft.item.crafting.RecipeManager/]: Loaded 6 recipes
-[13mai2021 16:21:32.585] [Server thread/INFO] [net.minecraft.advancements.AdvancementList/]: Loaded 825 advancements
-[13mai2021 16:21:33.140] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Preparing start region for dimension minecraft:overworld
-[13mai2021 16:21:33.958] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
-[13mai2021 16:21:33.958] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
-[13mai2021 16:21:34.297] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 22%
-[13mai2021 16:21:34.526] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Time elapsed: 1385 ms
-[13mai2021 16:21:34.527] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Done (5.805s)! For help, type "help"
-[13mai2021 16:21:34.598] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS] Server Starting . . .
-[13mai2021 16:21:34.871] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][PlayerHandler] Players generated : 1
-[13mai2021 16:21:34.884] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][ChunkHandler] Chunks generated : 1
-[13mai2021 16:21:34.898] [Server thread/ERROR] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][CityHandler] Couldnt load Json data.'./WarOfSquirrels/WorldData/CityHandler.json' (File creation) - Cannot find a (Map) Key deserializer for type [simple type, class fr.craftandconquest.warofsquirrels.object.permission.IPermission]
- at [Source: (File); line: 1, column: 1]
-[13mai2021 16:21:34.916] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][TerritoryHandler] Territories generated : 36
-[13mai2021 16:21:34.928] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][CuboHandler] Cubo generated : 0
-[13mai2021 16:21:34.931] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][PlayerHandler] Factions generated : 0
-[13mai2021 16:21:34.937] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][InfluenceHandler] Influences generated : 0
-[13mai2021 16:21:34.940] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadCastHandler] 0 channels created
-[13mai2021 16:21:34.957] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS] Server Started ! 
-[13mai2021 16:21:35.237] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
-[13mai2021 16:21:35.238] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[13mai2021 17:21:48.326] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [nogui, --gameDir, ., --launchTarget, fmluserdevserver, --fml.mcpVersion, 20200122.131323, --fml.mcVersion, 1.15.2, --fml.forgeGroup, net.minecraftforge, --fml.forgeVersion, 31.1.0]
+[13mai2021 17:21:48.330] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 5.1.0+69+master.79f13f7 starting: java version 1.8.0_281 by Oracle Corporation
+[13mai2021 17:21:49.014] [main/INFO] [net.minecraftforge.fml.loading.FixSSL/CORE]: Added Lets Encrypt root certificates as additional trust
+[13mai2021 17:21:50.025] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'fmluserdevserver' with arguments [--gameDir, ., nogui]
+[13mai2021 17:22:04.488] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[13mai2021 17:22:04.490] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[13mai2021 17:22:04.492] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+[13mai2021 17:22:04.493] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[13mai2021 17:22:04.495] [main/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[13mai2021 17:22:04.868] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting minecraft server version 1.15.2
+[13mai2021 17:22:05.225] [modloading-worker-9/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 31.2.0, for MC 1.15.2 with MCP 20200515.085601
+[13mai2021 17:22:05.225] [modloading-worker-9/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v31.2.0 Initialized
+[13mai2021 17:22:05.695] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.ExampleMod/]: HELLO from Register Block
+[13mai2021 17:22:05.913] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json
+[13mai2021 17:22:05.918] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Loading properties
+[13mai2021 17:22:05.926] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Default game type: SURVIVAL
+[13mai2021 17:22:05.926] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Generating keypair
+[13mai2021 17:22:06.020] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting Minecraft server on *:25565
+[13mai2021 17:22:06.026] [Server thread/INFO] [net.minecraft.network.NetworkSystem/]: Using default channel type
+[13mai2021 17:22:07.270] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+[13mai2021 17:22:07.270] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: The server will make no attempt to authenticate usernames. Beware.
+[13mai2021 17:22:07.270] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+[13mai2021 17:22:07.270] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: To change this, set "online-mode" to "true" in the server.properties file.
+[13mai2021 17:22:07.568] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Found status: OUTDATED Current: 31.1.0 Target: 31.2.0
+[13mai2021 17:22:07.568] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Starting version check at https://raw.githubusercontent.com/AleksGirardey/WarOfSquirrels/master/updateJSON.json#
+[13mai2021 17:22:07.678] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [wos] Found status: BETA Current: 1.0.0 Target: null
+[13mai2021 17:22:07.805] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Preparing level "world"
+[13mai2021 17:22:07.952] [Server thread/INFO] [net.minecraftforge.registries.GameData/REGISTRIES]: Injecting existing registry data into this SERVER instance
+[13mai2021 17:22:08.199] [Server thread/INFO] [net.minecraft.resources.SimpleReloadableResourceManager/]: Reloading ResourceManager: Default, forge-1.15.2-31.2.0_mapped_snapshot_20190719-1.14.3-recomp.jar, main
+[13mai2021 17:22:09.340] [Server thread/INFO] [net.minecraft.item.crafting.RecipeManager/]: Loaded 6 recipes
+[13mai2021 17:22:11.417] [Server thread/INFO] [net.minecraft.advancements.AdvancementList/]: Loaded 825 advancements
+[13mai2021 17:22:11.972] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Preparing start region for dimension minecraft:overworld
+[13mai2021 17:22:12.726] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[13mai2021 17:22:12.727] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[13mai2021 17:22:13.037] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 15%
+[13mai2021 17:22:13.230] [Server thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Time elapsed: 1257 ms
+[13mai2021 17:22:13.231] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Done (5.509s)! For help, type "help"
+[13mai2021 17:22:13.292] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS] Server Starting . . .
+[13mai2021 17:22:13.586] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][PlayerHandler] Players generated : 1
+[13mai2021 17:22:13.602] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][ChunkHandler] Chunks generated : 1
+[13mai2021 17:22:13.628] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][CityHandler] Cities generated : 1
+[13mai2021 17:22:13.640] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][TerritoryHandler] Territories generated : 36
+[13mai2021 17:22:13.650] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][CuboHandler] Cubo generated : 0
+[13mai2021 17:22:13.654] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][PlayerHandler] Factions generated : 0
+[13mai2021 17:22:13.659] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][InfluenceHandler] Influences generated : 0
+[13mai2021 17:22:13.661] [Server thread/INFO] [fr.craftandconquest.warofsquirrels.WarOfSquirrels/]: [WoS][BroadCastHandler] 1 channels created
+[13mai2021 17:22:13.675] [Server thread/ERROR] [net.minecraftforge.eventbus.EventBus/EVENTBUS]: Exception caught during firing event: null
+	Index: 2
+	Listeners:
+		0: NORMAL
+		1: net.minecraftforge.eventbus.EventBus$$Lambda$2667/1010837850@c330079
+		2: ASM: fr.craftandconquest.warofsquirrels.WarOfSquirrels@29e8c403 OnServerStarting(Lnet/minecraftforge/fml/event/server/FMLServerStartingEvent;)V
+java.lang.NullPointerException
+	at fr.craftandconquest.warofsquirrels.object.faction.city.City.updateDependencies(City.java:189)
+	at fr.craftandconquest.warofsquirrels.handler.CityHandler.updateDependencies(CityHandler.java:198)
+	at fr.craftandconquest.warofsquirrels.WarOfSquirrels.OnServerStarting(WarOfSquirrels.java:97)
+	at net.minecraftforge.eventbus.ASMEventHandler_19_WarOfSquirrels_OnServerStarting_FMLServerStartingEvent.invoke(.dynamic)
+	at net.minecraftforge.eventbus.ASMEventHandler.invoke(ASMEventHandler.java:80)
+	at net.minecraftforge.eventbus.EventBus.post(EventBus.java:258)
+	at net.minecraftforge.fml.server.ServerLifecycleHooks.handleServerStarting(ServerLifecycleHooks.java:95)
+	at net.minecraft.server.dedicated.DedicatedServer.init(DedicatedServer.java:246)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:637)
+	at java.lang.Thread.run(Thread.java:748)
+
+[13mai2021 17:22:13.676] [Server thread/ERROR] [net.minecraft.server.MinecraftServer/]: Encountered an unexpected exception
+java.lang.NullPointerException: null
+	at fr.craftandconquest.warofsquirrels.object.faction.city.City.updateDependencies(City.java:189) ~[main/:?]
+	at fr.craftandconquest.warofsquirrels.handler.CityHandler.updateDependencies(CityHandler.java:198) ~[main/:?]
+	at fr.craftandconquest.warofsquirrels.WarOfSquirrels.OnServerStarting(WarOfSquirrels.java:97) ~[main/:?]
+	at net.minecraftforge.eventbus.ASMEventHandler_19_WarOfSquirrels_OnServerStarting_FMLServerStartingEvent.invoke(.dynamic) ~[?:?]
+	at net.minecraftforge.eventbus.ASMEventHandler.invoke(ASMEventHandler.java:80) ~[eventbus-2.2.0-service.jar:?]
+	at net.minecraftforge.eventbus.EventBus.post(EventBus.java:258) ~[eventbus-2.2.0-service.jar:?]
+	at net.minecraftforge.fml.server.ServerLifecycleHooks.handleServerStarting(ServerLifecycleHooks.java:95) ~[?:?]
+	at net.minecraft.server.dedicated.DedicatedServer.init(DedicatedServer.java:246) ~[?:?]
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:637) [?:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_281]
+[13mai2021 17:22:13.688] [Server thread/ERROR] [net.minecraft.server.MinecraftServer/]: This crash report has been saved to: S:\Workspace\Minecraft\WarOfSquirrels\run\.\crash-reports\crash-2021-05-13_17.22.13-server.txt
+[13mai2021 17:22:13.689] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Stopping server
+[13mai2021 17:22:13.690] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving players
+[13mai2021 17:22:13.690] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving worlds
+[13mai2021 17:22:13.690] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'world'/minecraft:the_end
+[13mai2021 17:22:13.699] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[13mai2021 17:22:13.699] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'world'/minecraft:overworld
+[13mai2021 17:22:14.273] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (world): All chunks are saved
+[13mai2021 17:22:14.273] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'world'/minecraft:the_nether
+[13mai2021 17:22:14.275] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[13mai2021 17:22:14.294] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[13mai2021 17:22:14.296] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (world): All chunks are saved
+[13mai2021 17:22:14.317] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[13mai2021 17:23:13.232] [Server Watchdog/FATAL] [net.minecraft.server.dedicated.ServerHangWatchdog/]: A single server tick took 60.00 seconds (should be max 0.05)
+[13mai2021 17:23:13.233] [Server Watchdog/FATAL] [net.minecraft.server.dedicated.ServerHangWatchdog/]: Considering it to be crashed, server will forcibly shutdown.
+[13mai2021 17:23:13.467] [Server Watchdog/ERROR] [net.minecraft.server.dedicated.ServerHangWatchdog/]: This crash report has been saved to: S:\Workspace\Minecraft\WarOfSquirrels\run\.\crash-reports\crash-2021-05-13_17.23.13-server.txt
