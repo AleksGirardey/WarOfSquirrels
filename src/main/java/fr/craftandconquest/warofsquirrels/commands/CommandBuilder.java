@@ -31,7 +31,10 @@ public abstract class CommandBuilder implements Command<CommandSource>, IAdminCo
 
         if (IsAdmin(player) || (CanDoIt(player) && SpecialCheck(player, context)))
             return ExecCommand(player, context);
-        player.getPlayerEntity().sendMessage(ErrorMessage().appendText(" : " + errorTarget));
+
+        if(ErrorMessage() != null){
+            player.getPlayerEntity().sendMessage(ErrorMessage().appendText(" : " + errorTarget));
+        }
         return -1;
     }
 }
