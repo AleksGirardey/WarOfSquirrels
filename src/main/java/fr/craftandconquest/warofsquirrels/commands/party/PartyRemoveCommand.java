@@ -15,7 +15,10 @@ import net.minecraft.util.text.TextFormatting;
 public class PartyRemoveCommand extends PartyCommandLeader implements IPlayerExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSource> register() {
-        return Commands.literal("remove").then(getPlayerRegister().executes(this));
+        return Commands
+                .literal("remove")
+                .then(getPlayerRegister()
+                        .executes(this));
     }
 
     @Override
@@ -28,6 +31,8 @@ public class PartyRemoveCommand extends PartyCommandLeader implements IPlayerExt
             message.appendText("Le joueur '" + getRawPlayer(context) + "' n'existe pas.");
         else if (!party.contains(player))
             message.appendText("Le joueur n'appartient pas à votre groupe.");
+        else if (target == player)
+            message.appendText("Vous ne pouvez pas vous exclure de votre propre groupe.");
         else
             return true;
 

@@ -15,12 +15,14 @@ public class PartyChannel extends Channel {
     @Override
     protected ITextComponent transformText(Player sender, ITextComponent text) {
         return new StringTextComponent(String.format("[Groupe][%s] ", sender.getDisplayName()))
+                .appendSibling(text)
                 .applyTextStyle(TextFormatting.GRAY);
     }
 
     @Override
     protected ITextComponent transformTextAnnounce(ITextComponent text) {
-        return new StringTextComponent(String.format("[Groupe] %s", text))
+        return new StringTextComponent("[Groupe] ")
+                .appendSibling(text)
                 .applyTextStyle(TextFormatting.GOLD);
     }
 }
