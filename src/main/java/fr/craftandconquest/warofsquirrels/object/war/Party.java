@@ -48,6 +48,14 @@ public class Party implements IChannelTarget {
         return players;
     }
 
+    public void setLeader(Player newLeader) {
+        if(this.getPlayers().contains(newLeader)){
+            Player oldLeader = this.leader;
+            this.leader = newLeader;
+            this.getPlayers().add(oldLeader);
+        }
+    }
+
     public void Send(TextComponent text) {
         leader.getPlayerEntity().sendMessage(text);
     }
@@ -63,6 +71,10 @@ public class Party implements IChannelTarget {
             if (p.getCity() != null)
                 return false;
         return leader.getCity() == null;
+    }
+
+    public boolean isPlayerInParty(Player player){
+        return this.getPlayers().contains(player) || this.getLeader() == player;
     }
 
     @Override

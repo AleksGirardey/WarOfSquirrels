@@ -24,17 +24,7 @@ public class PartyDeleteCommand extends PartyCommandLeader {
 
     @Override
     protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        StringTextComponent message = new StringTextComponent("Votre groupe a été dissout.");
-        message.applyTextStyle(TextFormatting.GOLD);
-        Party party = WarOfSquirrels.instance.getPartyHandler().getPartyFromLeader(player);
-
-        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(party, null, message, true);
-        WarOfSquirrels.instance.getPartyHandler().RemoveParty(party);
+        WarOfSquirrels.instance.getPartyHandler().DeleteParty(player);
         return 0;
-    }
-
-    @Override
-    protected ITextComponent ErrorMessage() {
-        return new StringTextComponent("You can't perform this command").applyTextStyle(TextFormatting.RED);
     }
 }

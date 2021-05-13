@@ -31,7 +31,4 @@ public class PartyHelpCommand extends CommandBuilder {
 
     @Override
     protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) { return true; }
-
-    @Override
-    protected ITextComponent ErrorMessage() { return null; }
 }

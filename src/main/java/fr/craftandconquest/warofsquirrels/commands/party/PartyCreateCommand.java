@@ -37,9 +37,4 @@ public class PartyCreateCommand extends CommandBuilder {
         player.getPlayerEntity().sendMessage(message);
         return 0;
     }
-
-    @Override
-    protected ITextComponent ErrorMessage() {
-        return new StringTextComponent("You cannot perform this command").applyTextStyle(TextFormatting.RED);
-    }
 }

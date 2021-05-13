@@ -60,9 +60,4 @@ public class PartyRemoveCommand extends PartyCommandLeader implements IPlayerExt
         target.getPlayerEntity().sendMessage(messageToTarget);
         return 0;
     }
-
-    @Override
-    protected ITextComponent ErrorMessage() {
-        return null;
-    }
 }

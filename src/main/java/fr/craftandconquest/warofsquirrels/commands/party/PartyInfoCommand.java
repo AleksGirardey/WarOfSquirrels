@@ -23,7 +23,4 @@ public class PartyInfoCommand extends PartyCommandBuilder {
 
     @Override
     protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) { return true; }
-
-    @Override
-    protected ITextComponent ErrorMessage() { return new StringTextComponent("You cannot perform this command"); }
 }

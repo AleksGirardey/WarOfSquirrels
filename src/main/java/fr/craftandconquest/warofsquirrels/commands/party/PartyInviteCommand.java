@@ -55,8 +55,4 @@ public class PartyInviteCommand extends PartyCommandLeader implements IPlayerExt
         return 0;
     }
 
-    @Override
-    protected ITextComponent ErrorMessage() {
-        return null;
-    }
 }

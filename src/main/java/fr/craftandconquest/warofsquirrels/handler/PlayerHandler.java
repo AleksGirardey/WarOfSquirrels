@@ -166,6 +166,12 @@ public class PlayerHandler extends Handler<Player> {
     }
 
     public Player get(String displayName) {
-        return playersByName.get(displayName);
+
+        for (String playerName : playersByName.keySet()) {
+            if(playerName.toLowerCase().equals(displayName.toLowerCase())){
+                return playersByName.get(playerName);
+            }
+        }
+        return null;
     }
 }

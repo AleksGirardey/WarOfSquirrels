@@ -12,6 +12,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 public class PartyLeaveCommand extends PartyCommandBuilder {
+
     @Override
     public LiteralArgumentBuilder<CommandSource> register() {
         return Commands.literal("leave").executes(this);
@@ -19,30 +20,12 @@ public class PartyLeaveCommand extends PartyCommandBuilder {
 
     @Override
     protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
-        Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
-
-        return player != party.getLeader();
+        return true;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
-
-        StringTextComponent messageToParty = new StringTextComponent(player.getDisplayName() + " a quitté le groupe.");
-        StringTextComponent messageToPlayer = new StringTextComponent("Vous avez quitté votre groupe.");
-
-        messageToParty.applyTextStyle(TextFormatting.GOLD);
-        messageToPlayer.applyTextStyle(TextFormatting.GOLD);
-
-        party.remove(player);
-        WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerFromTarget(party, player);
-        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(party, null, messageToParty, true);
-        player.getPlayerEntity().sendMessage(messageToPlayer);
+    protected int ExecCommand(Player player, CommandContext<CommandSource> context) throws Exception {
+        WarOfSquirrels.instance.getPartyHandler().RemoveFromParty(player);
         return 0;
-    }
-
-    @Override
-    protected ITextComponent ErrorMessage() {
-        return new StringTextComponent("Vous ne pouvez pas quitter un groupe dont vous êtes le chef.");
     }
 }
