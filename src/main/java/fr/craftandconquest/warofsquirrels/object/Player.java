@@ -58,4 +58,9 @@ public class Player implements IPermission {
 
     @JsonIgnore
     public boolean isOnline() { return (WarOfSquirrels.server.getPlayerList().getPlayerByUUID(uuid) != null); }
+
+    @Override
+    public String toString() {
+        return getDisplayName();
+    }
 }

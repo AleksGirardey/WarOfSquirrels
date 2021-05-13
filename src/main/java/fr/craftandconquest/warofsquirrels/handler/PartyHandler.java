@@ -71,6 +71,6 @@ public class PartyHandler {
 
         player.getPlayerEntity().sendMessage(new StringTextComponent("=== Groupe[" + party.size() + "] ==="));
         player.getPlayerEntity().sendMessage(new StringTextComponent("Chef : " + party.getLeader()));
-        player.getPlayerEntity().sendMessage(new StringTextComponent("Joueur(s) : " + party.toList()));
+        player.getPlayerEntity().sendMessage(new StringTextComponent("Joueur(s) : " + party.getPlayers()));
     }
 }

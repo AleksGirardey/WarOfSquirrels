@@ -27,7 +27,8 @@ public class CityChannel extends Channel {
 
     @Override
     protected ITextComponent transformTextAnnounce(ITextComponent text) {
-        return new StringTextComponent(String.format("[%s] %s", city.displayName, text))
+        return new StringTextComponent(String.format("[%s] ", city.displayName))
+                .appendSibling(text)
                 .applyTextStyle(TextFormatting.GOLD);
     }
 }

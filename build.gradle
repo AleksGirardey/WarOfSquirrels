@@ -16,6 +16,7 @@ apply plugin: 'maven-publish'
 version = '1.0'
 group = 'fr.craftandconquest.warofsquirrels' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'wos'
+compileJava.options.encoding = 'UTF-8'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
