@@ -22,15 +22,25 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
 public class City implements IPermission, IFortification, IChannelTarget, AttackTarget {
+    @AllArgsConstructor
+    public static class CityCustomPermission {
+        public UUID targetUuid;
+        public CityCustomPermissionType type;
+        public Permission permission;
+    }
+
+    public enum CityCustomPermissionType {
+        Faction,
+        City,
+        Player,
+    }
+
     @JsonProperty @Getter @Setter private UUID cityUuid;
     @Getter @Setter public String displayName;
     public String tag;
@@ -40,10 +50,11 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     @JsonProperty @Getter @Setter private UUID factionUuid;
     @Getter private CityRank   rank;
 
-    @Getter @Setter private Map<IPermission, Permission> customPermission;
+    @JsonIgnore @Getter @Setter private Map<IPermission, Permission> customPermission = new HashMap<>();
     @Getter @Setter private Map<PermissionRelation, Permission> defaultPermission;
+    @Getter @Setter private List<CityCustomPermission> customPermissionList = new ArrayList<>();
 
-    private int         balance;
+    @JsonIgnore private int balance;
 
     @JsonIgnore @Getter private Player owner;
     @JsonIgnore @Getter private final List<Player> citizens = new ArrayList<>();
@@ -52,21 +63,21 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         return citizens.stream().filter(Player::getAssistant).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public List<Player> getResidents() {
+    @JsonIgnore public List<Player> getResidents() {
         return citizens.stream()
                 .filter(Player::getResident)
                 .filter(player -> !player.getAssistant())
                 .collect(Collectors.toList());
     }
 
-    public List<Player> getRecruits() {
+    @JsonIgnore public List<Player> getRecruits() {
         return citizens.stream()
                 .filter(player -> !player.getResident())
                 .filter(player -> !player.getAssistant())
                 .collect(Collectors.toList());
     }
 
-    public boolean addCitizen(Player player) {
+    @JsonIgnore public boolean addCitizen(Player player) {
         if (citizens.contains(player)) return false;
 
         citizens.add(player);
@@ -120,6 +131,11 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     }
 
     @Override
+    public UUID getUuid() {
+        return cityUuid;
+    }
+
+    @Override
     public PermissionTarget getPermissionTarget() {
         return PermissionTarget.CITY;
     }
@@ -139,7 +155,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         return cityUuid;
     }
 
-    public List<Player> getOnlinePlayers() {
+    @JsonIgnore public List<Player> getOnlinePlayers() {
         List<Player> onlinePlayers = new ArrayList<>();
         MinecraftServer server = WarOfSquirrels.server;
 
@@ -173,5 +189,28 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         message.appendText("Permissions: " + defaultPermission.toString());
 
         message.applyTextStyle(TextFormatting.BLUE);
+        player.getPlayerEntity().sendMessage(message);
+    }
+
+    public void updateDependencies() {
+        for (CityCustomPermission permission : customPermissionList) {
+            IPermission target = null;
+
+            switch (permission.type) {
+                case Faction:
+                    target = WarOfSquirrels.instance.getFactionHandler().get(permission.targetUuid);
+                    break;
+                case City:
+                    target = WarOfSquirrels.instance.getCityHandler().getCity(permission.targetUuid);
+                    break;
+                case Player:
+                    target = WarOfSquirrels.instance.getPlayerHandler().get(permission.targetUuid);
+                    break;
+            }
+
+            if (target == null) continue;
+
+            customPermission.put(target, permission.permission);
+        }
     }
 }

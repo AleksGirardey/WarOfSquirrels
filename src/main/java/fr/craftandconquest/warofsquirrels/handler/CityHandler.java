@@ -176,6 +176,9 @@ public class CityHandler extends Handler<City> {
             city.getCustomPermission().replace(target, permission);
         else
             city.getCustomPermission().put(target, permission);
+
+        city.getCustomPermissionList().add(new City.CityCustomPermission(target.getUuid(), City.CityCustomPermissionType.City, permission));
+
         Save(dataArray);
     }
 
@@ -191,5 +194,11 @@ public class CityHandler extends Handler<City> {
             cities.add(city.getDisplayName());
 
         return cities;
+    }
+
+    public void updateDependencies() {
+        for (City city : cityMap.values())
+            city.updateDependencies();
+        Save();
     }
 }
