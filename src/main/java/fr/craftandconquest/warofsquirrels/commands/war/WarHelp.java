@@ -3,42 +3,51 @@ package fr.craftandconquest.warofsquirrels.commands.war;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.player.Player;
 
 public class WarHelp extends CommandBuilder {
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        PlayerEntity entity = player.getPlayerEntity();
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        Player entity = player.getPlayerEntity();
 
-        entity.sendMessage(new StringTextComponent("---=== /war ===---"));
-        entity.sendMessage(new StringTextComponent("- war attack"));
-        entity.sendMessage(new StringTextComponent("- war info"));
-        entity.sendMessage(new StringTextComponent("- war join"));
-        entity.sendMessage(new StringTextComponent("- war leave"));
-        entity.sendMessage(new StringTextComponent("- war list"));
-        entity.sendMessage(new StringTextComponent("- war target"));
+        MutableComponent message = ChatText.Colored("""
+                ---=== /war ===---
+                - war attack
+                - war info
+                - war join
+                - war leave
+                - war list
+                - war target""", ChatFormatting.BLUE);
+
+        entity.sendMessage(message, Util.NIL_UUID);
 
         return 0;
     }
 
-    /** No Implementations needed **/
+    /**
+     * No Implementations needed
+     *
+     * @return
+     **/
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return null;
     }
 
     @Override
-    protected ITextComponent ErrorMessage() {
+    protected MutableComponent ErrorMessage() {
         return null;
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         return true;
     }
 }

@@ -2,8 +2,8 @@ package fr.craftandconquest.warofsquirrels.commands.register;
 
 import com.mojang.brigadier.CommandDispatcher;
 import fr.craftandconquest.warofsquirrels.commands.city.*;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class CityCommandRegister implements ICommandRegister {
     private final CityHelp cityHelp = new CityHelp();
@@ -20,9 +20,10 @@ public class CityCommandRegister implements ICommandRegister {
     private final CityCubo cityCubo = new CityCubo();
 
     @Override
-    public void register(CommandDispatcher<CommandSource> dispatcher) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands
                 .literal("city")
+                .then(cityHelp.register())
                 .then(cityInfo.register())
                 .then(cityCreate.register())
                 .then(cityDelete.register())

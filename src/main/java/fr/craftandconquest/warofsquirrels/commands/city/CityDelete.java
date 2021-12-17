@@ -4,31 +4,32 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CityDelete extends CityMayorCommandBuilder implements IAdminCommand {
     @Override
-    protected boolean CanDoIt(Player player) {
+    protected boolean CanDoIt(FullPlayer player) {
         return super.CanDoIt(player) || IsAdmin(player);
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("delete").executes(this);
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (player.getCity().getFaction() != null) {
             if (player.getCity().getFaction().getCapital().equals(player.getCity())) {
                 player.getPlayerEntity()
-                        .sendMessage(new StringTextComponent("You cannot delete your faction capital.")
-                                .applyTextStyle(TextFormatting.RED));
+                        .sendMessage(ChatText.Error("You cannot delete your faction capital."), Util.NIL_UUID);
                 return false;
             }
         }
@@ -36,11 +37,11 @@ public class CityDelete extends CityMayorCommandBuilder implements IAdminCommand
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         City city = player.getCity();
 
-        StringTextComponent message = new StringTextComponent("[BREAKING NEWS] " + city.getDisplayName() + " has fallen !");
-        message.applyTextStyle(TextFormatting.GOLD);
+        MutableComponent message = ChatText.Colored("[BREAKING NEWS] " + city.getDisplayName() + " has fallen !",
+                ChatFormatting.GOLD);
         WarOfSquirrels.instance.getCityHandler().Delete(city);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);

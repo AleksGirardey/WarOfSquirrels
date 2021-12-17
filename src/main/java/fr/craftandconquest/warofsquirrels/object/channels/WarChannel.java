@@ -1,9 +1,10 @@
 package fr.craftandconquest.warofsquirrels.object.channels;
 
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.war.War;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 
 public class WarChannel extends Channel {
     private final War war;
@@ -15,12 +16,12 @@ public class WarChannel extends Channel {
     }
 
     @Override
-    protected ITextComponent transformText(Player sender, ITextComponent text) {
+    protected MutableComponent transformText(FullPlayer sender, MutableComponent text) {
         return transformTextAnnounce(text);
     }
 
     @Override
-    protected ITextComponent transformTextAnnounce(ITextComponent text) {
-        return new StringTextComponent(String.format("[%s] %s", war.getTag(), text));
+    protected MutableComponent transformTextAnnounce(MutableComponent text) {
+        return ChatText.Colored(String.format("[%s] %s", war.getTag(), text), ChatFormatting.DARK_GREEN);
     }
 }

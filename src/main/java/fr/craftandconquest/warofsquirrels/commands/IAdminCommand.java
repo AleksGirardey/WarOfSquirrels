@@ -1,10 +1,9 @@
 package fr.craftandconquest.warofsquirrels.commands;
 
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraftforge.server.permission.PermissionAPI;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 
 public interface IAdminCommand {
-    default boolean IsAdmin(Player player) {
+    default boolean IsAdmin(FullPlayer player) {
         return (player.isAdminMode()); //|| player.getPlayerEntity().hasPermissionLevel(2));
 //                PermissionAPI.hasPermission(player.getPlayerEntity(), "minecraft.command.op"));
     }

@@ -9,25 +9,28 @@ import fr.craftandconquest.warofsquirrels.commands.extractor.ITerritoryExtractor
 import fr.craftandconquest.warofsquirrels.commands.party.PartyCommandLeader;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.handler.CityHandler;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.channels.CityChannel;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.war.Party;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.level.dimension.LevelStem;
+
+import java.text.MessageFormat;
 
 public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITerritoryExtractor {
     private final String cityNameArgument = "[CityName]";
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("create")
                 .then(Commands
                         .argument(cityNameArgument, StringArgumentType.string())
@@ -35,7 +38,7 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
     }
 
     @Override
-    protected boolean CanDoIt(Player player) {
+    protected boolean CanDoIt(FullPlayer player) {
         if (IsAdmin(player)) return true;
 
         Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
@@ -44,38 +47,35 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
         if (super.CanDoIt(player) && party.size() >= minPartySize && party.createCityCheck()) return true;
 
         player.getPlayerEntity().sendMessage(
-                new StringTextComponent("You need to be in a party of at least " + minPartySize + " wanderers to create a new city").applyTextStyle(TextFormatting.RED)
-        );
+                ChatText.Error("You need to be in a party of at least " + minPartySize + " wanderers to create a new city"), Util.NIL_UUID);
         return false;
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
-//        String cityName = context.getArgument(cityNameArgument, String.class);
-        StringTextComponent message;
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        MutableComponent message;
         int x, z;
 
-        x = player.getPlayerEntity().getPosition().getX() / 16;
-        z = player.getPlayerEntity().getPosition().getZ() / 16;
+        x = player.getPlayerEntity().chunkPosition().x;
+        z = player.getPlayerEntity().chunkPosition().z;
 
         if (player.getCity() == null) {
             Territory territory = ExtractTerritory(player);
-            if (!WarOfSquirrels.instance.getChunkHandler().exists(x, z, DimensionType.OVERWORLD)
+            if (!WarOfSquirrels.instance.getChunkHandler().exists(x, z, player.getPlayerEntity().getCommandSenderWorld().dimension())
                     && Utils.CanPlaceCity(x, z)
                     && territory.getFaction() == null && territory.getFortification() == null) {
                 return true;
             } else
-                message = new StringTextComponent("You can't set a new city here ! Too close from civilization");
+                message = ChatText.Error("You can't set a new city here ! Too close from civilization");
         } else
-            message = new StringTextComponent("Leave your city first !");
+            message = ChatText.Error("Leave your city first !");
 
-        message.applyTextStyle(TextFormatting.RED);
-        player.getPlayerEntity().sendMessage(message);
+        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
         return false;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         String cityName = context.getArgument(cityNameArgument, String.class);
         CityHandler cih = WarOfSquirrels.instance.getCityHandler();
         ChunkHandler chh = WarOfSquirrels.instance.getChunkHandler();
@@ -84,28 +84,33 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
         Territory territory = ExtractTerritory(player);
 
         player.setCity(city);
-        chunk = chh.CreateChunk(player.getPlayerEntity().chunkCoordX, player.getPlayerEntity().chunkCoordZ, city, player.getPlayerEntity().dimension.getId());
+        chunk = chh.CreateChunk(player.getPlayerEntity().chunkPosition().x, player.getPlayerEntity().chunkPosition().z, city,
+                player.getPlayerEntity().getCommandSenderWorld().dimension());
+        chunk.setHomeBlock(true);
+        chunk.setRespawn(player.getPlayerEntity().getOnPos().above());
         chh.add(chunk);
         WarOfSquirrels.instance.getBroadCastHandler().AddTarget(city, new CityChannel(city));
         WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(city, player);
 
-        for (Player p : WarOfSquirrels.instance.getPartyHandler().getPartyFromLeader(player).toList()) {
+        for (FullPlayer p : WarOfSquirrels.instance.getPartyHandler().getPartyFromLeader(player).toList()) {
             p.setCity(city);
             city.addCitizen(p);
             WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(city, p);
         }
-        StringTextComponent message = new StringTextComponent("[BREAKING NEWS] " + cityName + " have been created by " + player.getDisplayName());
-        message.applyTextStyle(TextFormatting.GOLD);
+        MutableComponent message = ChatText.Colored("[BREAKING NEWS] " + cityName + " have been created by " + player.getDisplayName(),
+                ChatFormatting.GOLD);
 
         territory.SetFortification(city);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
 
+        player.getPlayerEntity().sendMessage(chunk.creationLogText(), Util.NIL_UUID);
+
         return 0;
     }
 
     @Override
-    protected ITextComponent ErrorMessage() {
-        return new StringTextComponent("You cannot create a city.").applyTextStyle(TextFormatting.RED);
+    protected MutableComponent ErrorMessage() {
+        return ChatText.Error("You cannot create a city.");
     }
 }

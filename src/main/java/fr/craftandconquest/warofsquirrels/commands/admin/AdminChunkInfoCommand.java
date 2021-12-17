@@ -2,39 +2,27 @@ package fr.craftandconquest.warofsquirrels.commands.admin;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.utils.Pair;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeContainer;
-import net.minecraft.world.biome.BiomeManager;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistry;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class AdminChunkInfoCommand extends AdminCommandBuilder {
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("ci").executes(this);
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) { return true; }
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        return true;
+    }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
 //        int chunkPerTerritory = (WarOfSquirrels.instance.getConfig().getTerritorySize() / 16);
-        Pair<Integer, Integer> chunkPos = Utils.WorldToChunkCoordinates(player.getPlayerEntity().getPosition().getX(), player.getPlayerEntity().getPosition().getZ());
+//        Pair<Integer, Integer> chunkPos = Utils.WorldToChunkCoordinates(player.getPlayerEntity().getPosition().getX(), player.getPlayerEntity().getPosition().getZ());
 //        int chunkX = player.getPlayerEntity().getPosition().getX() / 16;
 //        int chunkZ = player.getPlayerEntity().getPosition().getZ() / 16;
 

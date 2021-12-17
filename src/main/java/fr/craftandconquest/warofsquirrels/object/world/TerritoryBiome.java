@@ -14,10 +14,12 @@ public abstract class TerritoryBiome {
         Swamp,
     }
 
-    @Getter private EBiomeType mainBiome;
-    @Getter private EBiomeType[] specialBiomes;
+    @Getter
+    private EBiomeType mainBiome;
+    @Getter
+    private EBiomeType[] specialBiomes;
 
     protected TerritoryBiome(Map<Integer, Integer> biomeMap) {
-        
+
     }
 }

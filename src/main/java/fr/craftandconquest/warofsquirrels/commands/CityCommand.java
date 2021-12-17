@@ -6,18 +6,18 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.player.Player;
 
-public class CityCommand implements Command<CommandSource> {
+public class CityCommand implements Command<CommandSourceStack> {
 
     private static final CityCommand CMD = new CityCommand();
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("city")
                 .then(Commands
                         .argument("cityName", StringArgumentType.string())
@@ -25,9 +25,9 @@ public class CityCommand implements Command<CommandSource> {
     }
 
     @Override
-    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        PlayerEntity playerEntity = context.getSource().asPlayer();
-        Player player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity);
+    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Player playerEntity = context.getSource().getPlayerOrException();
+        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
         String cityName = context.getArgument("cityName", String.class);
 
         City city = WarOfSquirrels.instance.getCityHandler().CreateCity(
@@ -39,15 +39,15 @@ public class CityCommand implements Command<CommandSource> {
         WarOfSquirrels.instance.getPlayerHandler().Save();
 
         Chunk chunk = WarOfSquirrels.instance.getChunkHandler().CreateChunk(
-                playerEntity.chunkCoordX,
-                playerEntity.chunkCoordZ,
+                playerEntity.chunkPosition().x,
+                playerEntity.chunkPosition().z,
                 city,
-                playerEntity.dimension.getId());
+                playerEntity.getCommandSenderWorld().dimension());
 
         chunk.setHomeBlock(true);
-        chunk.setRespawnX(playerEntity.getPosition().getX());
-        chunk.setRespawnY(playerEntity.getPosition().getY());
-        chunk.setRespawnZ(playerEntity.getPosition().getZ());
+        chunk.setRespawnX(playerEntity.getBlockX());
+        chunk.setRespawnY(playerEntity.getBlockY());
+        chunk.setRespawnZ(playerEntity.getBlockZ());
 
         WarOfSquirrels.instance.getChunkHandler().Save();
 

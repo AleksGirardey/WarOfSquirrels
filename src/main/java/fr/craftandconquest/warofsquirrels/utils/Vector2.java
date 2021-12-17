@@ -28,6 +28,6 @@ public class Vector2 {
     public static double distance(Vector2 a, Vector2 b) {
         float v0 = b.x - a.x;
         float v1 = b.y - a.y;
-        return Math.sqrt(v0*v0 + v1*v1);
+        return Math.sqrt(v0 * v0 + v1 * v1);
     }
 }

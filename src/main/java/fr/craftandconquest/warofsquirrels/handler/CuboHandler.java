@@ -2,15 +2,17 @@ package fr.craftandconquest.warofsquirrels.handler;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.cuboide.VectorCubo;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.network.chat.MutableComponent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
 
@@ -19,26 +21,26 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CuboHandler extends Handler<Cubo> {
-    private final Map<Player, Pair<Vector3, Vector3>>   points = new HashMap<>();
-    private final Map<UUID, Cubo>                       cuboMap = new HashMap<>();
-    private final Map<String, Cubo>                     cuboMapFromName = new HashMap<>();
+    private final Map<FullPlayer, Pair<Vector3, Vector3>> points = new HashMap<>();
+    private final Map<UUID, Cubo> cuboMap = new HashMap<>();
+    private final Map<String, Cubo> cuboMapFromName = new HashMap<>();
 
     protected static String DirName = "/WorldData";
-    protected static String JsonName = "CuboHandler.json";
+    protected static String JsonName = "/CuboHandler.json";
 
     public CuboHandler(Logger logger) {
         super("[WoS][CuboHandler]", logger);
 
         if (!Init()) return;
-        if (!Load(new TypeReference<List<Cubo>>() {})) return;
+        if (!Load(new TypeReference<List<Cubo>>() {
+        })) return;
 
         Log();
     }
 
-    public Cubo CreateCubo(Player player, String name) {
+    public Cubo CreateCubo(FullPlayer player, String name) {
         if (!points.containsKey(player)) {
-            player.getPlayerEntity().sendMessage(new StringTextComponent("You need to activate the cubo mode first")
-                    .applyTextStyle(TextFormatting.RED));
+            player.getPlayerEntity().sendMessage(ChatText.Error("You need to activate the cubo mode first"), Util.NIL_UUID);
             return null;
         }
 
@@ -60,8 +62,7 @@ public class CuboHandler extends Handler<Cubo> {
         cubo.setVector(vectorCubo);
 
         if (add(cubo)) {
-            player.getPlayerEntity().sendMessage(new StringTextComponent("Cubo created : " + cubo)
-                    .applyTextStyle(TextFormatting.GOLD));
+            player.getPlayerEntity().sendMessage(ChatText.Colored("Cubo created : " + cubo, ChatFormatting.GOLD), Util.NIL_UUID);
             Logger.info(MessageFormat.format("{0}[New] %s created a cubo : %s",
                     PrefixLogger, player.getDisplayName(), cubo));
             return cubo;
@@ -111,7 +112,7 @@ public class CuboHandler extends Handler<Cubo> {
     }
 
     public List<Cubo> getCubo(City city) {
-        List<Cubo>              result = new ArrayList<Cubo>();
+        List<Cubo> result = new ArrayList<Cubo>();
 
         for (Cubo c : dataArray) {
             if (c.getOwner().getCity() == city)
@@ -121,14 +122,14 @@ public class CuboHandler extends Handler<Cubo> {
         return result;
     }
 
-    public List<Cubo> getCubo(Player player) {
+    public List<Cubo> getCubo(FullPlayer player) {
         return dataArray.stream().filter(cubo -> {
             return cubo.getOwner().equals(player) /*|| cubo.getLoan().getLoaner().equals(player)*/;
         }).collect(Collectors.toList());
     }
 
     public Cubo getCubo(Vector3 block) {
-        Cubo            last = null;
+        Cubo last = null;
 
         for (Cubo c : dataArray) {
             if (c.getVector().contains(block)) {
@@ -137,11 +138,11 @@ public class CuboHandler extends Handler<Cubo> {
                 }
             }
         }
-        return  last;
+        return last;
     }
 
     public Cubo getParent(VectorCubo vector) {
-        Cubo            last = null;
+        Cubo last = null;
 
         for (Cubo c : dataArray) {
             if (c.getVector().contains(vector.getA()) &&
@@ -154,36 +155,34 @@ public class CuboHandler extends Handler<Cubo> {
         return last;
     }
 
-    public void activateCuboMode(Player player) {
+    public void activateCuboMode(FullPlayer player) {
         points.computeIfAbsent(player, CuboHandler::newCubo);
     }
 
-    public Pair<Vector3, Vector3> getPoints(Player player) {
+    public Pair<Vector3, Vector3> getPoints(FullPlayer player) {
         return points.get(player);
     }
 
-    private static Pair<Vector3, Vector3> newCubo(Player player) {
-        player.getPlayerEntity().sendMessage(new StringTextComponent(
-                "-=== CuboVector mode [ON] ===-"));
+    private static Pair<Vector3, Vector3> newCubo(FullPlayer player) {
+        player.getPlayerEntity().sendMessage(ChatText.Success(
+                "-=== CuboVector mode [ON] ===-"), Util.NIL_UUID);
         return (Pair.of(null, null));
     }
 
-    public void deactivateCuboMode(Player player) {
+    public void deactivateCuboMode(FullPlayer player) {
         if (points.get(player) != null) {
             points.remove(player);
-            player.getPlayerEntity().sendMessage(new StringTextComponent(
-                    "-=== CuboVector mode [OFF] ===-"));
+            player.getPlayerEntity().sendMessage(ChatText.Success(
+                    "-=== CuboVector mode [OFF] ===-"), Util.NIL_UUID);
         }
     }
 
-    public boolean playerExists(Player player) {
+    public boolean playerExists(FullPlayer player) {
         return points.containsKey(player);
     }
 
-    public void set(Player player, Vector3 block, boolean aOrB) {
-        StringTextComponent message = new StringTextComponent("");
-
-        message.applyTextStyle(TextFormatting.LIGHT_PURPLE);
+    public void set(FullPlayer player, Vector3 block, boolean aOrB) {
+        MutableComponent message = ChatText.Colored("", ChatFormatting.LIGHT_PURPLE);
 
         Vector3 left;
         Vector3 right;
@@ -191,17 +190,17 @@ public class CuboHandler extends Handler<Cubo> {
         if (aOrB) {
             left = block;
             right = points.get(player).getRight();
-            message.appendText("Block A");
+            message.append("Block A");
         } else {
             left = points.get(player).getLeft();
             right = block;
-            message.appendText("Block B");
+            message.append("Block B");
         }
 
         points.replace(player, Pair.of(left, right));
 
-        message.appendText(" set at the position [" + block.x + ";" + block.y + ";" + block.z + "]");
-        player.getPlayerEntity().sendMessage(message);
+        message.append(" set at the position [" + block.x + ";" + block.y + ";" + block.z + "]");
+        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
     }
 
     public void deleteCity(City city) {
@@ -216,9 +215,9 @@ public class CuboHandler extends Handler<Cubo> {
         Save();
     }
 
-    public List<String>     getStringFromPlayer(Player player) {
-        List<String>        names = new ArrayList<>();
-        List<Cubo>          cubos = getCubo(player);
+    public List<String> getStringFromPlayer(FullPlayer player) {
+        List<String> names = new ArrayList<>();
+        List<Cubo> cubos = getCubo(player);
 
         for (Cubo c : cubos) {
             names.add(c.getName());

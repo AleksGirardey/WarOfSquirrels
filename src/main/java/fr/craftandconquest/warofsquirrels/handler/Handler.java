@@ -3,6 +3,7 @@ package fr.craftandconquest.warofsquirrels.handler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
+import fr.craftandconquest.warofsquirrels.utils.OnSaveListener;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -15,7 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class Handler<T> {
+public abstract class Handler<T> implements OnSaveListener {
     protected String PrefixLogger;
 
     protected Logger Logger;
@@ -24,10 +25,10 @@ public abstract class Handler<T> {
 
     protected File configFile;
 
-    protected Handler( String prefix, Logger logger) {
+    protected Handler(String prefix, Logger logger) {
         PrefixLogger = prefix;
         Logger = logger;
-        dataArray = Collections.emptyList();
+        dataArray = new ArrayList<>();
         if (!Setup()) System.exit(-1);
     }
 
@@ -57,19 +58,18 @@ public abstract class Handler<T> {
         return true;
     }
 
+    @Override
     public void Save() {
-        Save(dataArray);
-    }
-
-    protected void Save(Collection<T> data) {
-        dataArray = new ArrayList<>(data);
         ObjectMapper mapper = new ObjectMapper();
 
         try {
             mapper.writeValue(configFile, dataArray);
         } catch (IOException e) {
             Logger.error(MessageFormat.format("{0} Couldn't save data to Json", PrefixLogger));
+            return;
         }
+
+        Logger.info(MessageFormat.format("{0} Saved {1} entries !", PrefixLogger, dataArray.size()));
     }
 
     protected boolean Populate() {
@@ -79,7 +79,9 @@ public abstract class Handler<T> {
 
     protected abstract boolean add(T value);
 
-    public List<T> getAll() { return dataArray; }
+    public List<T> getAll() {
+        return dataArray;
+    }
 
     protected boolean Load(TypeReference<List<T>> typeReference) {
         String errorMessage = MessageFormat.format("{0} Couldn't load Json data.", PrefixLogger);
@@ -109,4 +111,7 @@ public abstract class Handler<T> {
     protected abstract String getConfigPath();
 
     public abstract void spreadPermissionDelete(IPermission target);
+
+    @Override
+    public String Name() { return PrefixLogger; }
 }

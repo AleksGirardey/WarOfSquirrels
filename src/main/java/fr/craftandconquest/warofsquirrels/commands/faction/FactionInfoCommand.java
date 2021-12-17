@@ -5,12 +5,14 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 public class FactionInfoCommand extends CommandBuilder {
     private static final FactionInfoCommand withArgCmd = new FactionInfoCommand(true);
@@ -28,7 +30,7 @@ public class FactionInfoCommand extends CommandBuilder {
     private final boolean withArg;
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("info")
                 .executes(this)
                 .then(Commands.argument(argumentName, StringArgumentType.string())
@@ -36,7 +38,7 @@ public class FactionInfoCommand extends CommandBuilder {
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Faction faction;
 
         if (withArg) {
@@ -49,7 +51,7 @@ public class FactionInfoCommand extends CommandBuilder {
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Faction faction;
 
         if (withArg) {
@@ -58,12 +60,12 @@ public class FactionInfoCommand extends CommandBuilder {
             faction = player.getCity().getFaction();
         }
 
-        player.getPlayerEntity().sendMessage(new StringTextComponent(faction.toString()));
+        player.getPlayerEntity().sendMessage(ChatText.Colored(faction.toString(), ChatFormatting.WHITE), Util.NIL_UUID);
         return 0;
     }
 
     @Override
-    protected ITextComponent ErrorMessage() {
+    protected MutableComponent ErrorMessage() {
         return null;
     }
 }

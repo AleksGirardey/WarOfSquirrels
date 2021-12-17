@@ -2,9 +2,9 @@ package fr.craftandconquest.warofsquirrels.commands.register;
 
 import com.mojang.brigadier.CommandDispatcher;
 import fr.craftandconquest.warofsquirrels.commands.war.*;
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 
-import static net.minecraft.command.Commands.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class WarCommandRegister implements ICommandRegister {
     private final WarHelp warHelpCommand = new WarHelp();
@@ -15,11 +15,13 @@ public class WarCommandRegister implements ICommandRegister {
     private final WarList warListCommand = new WarList();
     private final WarSetTarget warSetTargetCommand = new WarSetTarget();
 
-    /** Admin Commands **/
+    /**
+     * Admin Commands
+     **/
     private final ForceWin forceWinCommand = new ForceWin();
     private final WarPeaceTime warWorldAtPeaceCommand = new WarPeaceTime();
 
-    public void register(CommandDispatcher<CommandSource> dispatcher) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 literal("war")
                         .then(declareWarCommand.register())

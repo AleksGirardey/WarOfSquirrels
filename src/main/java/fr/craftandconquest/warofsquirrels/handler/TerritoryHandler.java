@@ -11,7 +11,9 @@ import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Pair;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.LevelStem;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.CheckForNull;
@@ -38,7 +40,8 @@ public class TerritoryHandler extends Handler<Territory> {
         territoriesByFaction = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<List<Territory>>() {})) return;
+        if (!Load(new TypeReference<List<Territory>>() {
+        })) return;
 
         Log();
     }
@@ -75,8 +78,7 @@ public class TerritoryHandler extends Handler<Territory> {
 
         for (int i = minX; i < maxX; ++i) { // -10 inc to 10 exc
             for (int j = minZ; j < maxZ; ++j) { // -10 inc to 10 exc
-                if (CreateTerritory("Province inconnue", i, j, null, null,
-                        WarOfSquirrels.server.getWorld(DimensionType.OVERWORLD).getDimension().getType().getId()) == null)
+                if (CreateTerritory("Province inconnue", i, j, null, null) == null)
                     return;
             }
         }
@@ -111,13 +113,13 @@ public class TerritoryHandler extends Handler<Territory> {
     }
 
     public Territory CreateTerritory(String territoryName, int posX, int posZ,
-                                     Faction faction, IFortification fortification, int dimensionId) {
-        Territory territory = new Territory(territoryName, posX, posZ, faction, fortification, dimensionId);
+                                     Faction faction, IFortification fortification) {
+        Territory territory = new Territory(territoryName, posX, posZ, faction, fortification);
 
         if (!add(territory))
             return null;
 
-        Save(territoryMap.values());
+        Save();
         LogTerritoryCreation(territory);
 
         return territory;
@@ -133,7 +135,7 @@ public class TerritoryHandler extends Handler<Territory> {
 
         territories[posX][posZ] = null;
 
-        Save(territoryMap.values());
+        Save();
 
         return true;
     }
@@ -175,30 +177,30 @@ public class TerritoryHandler extends Handler<Territory> {
         int posZMore = Math.min(posZ + 1, max);
         int posZLess = Math.max(posZ - 1, -max);
 
-        int dimensionId = territory.getDimensionId();
-
-        if (get(posX, posZMore, dimensionId) != territory)
-            neighbors.add(get(posX, posZMore, dimensionId));
-        if (get(posX, posZLess, dimensionId) != territory)
-            neighbors.add(get(posX, posZLess, dimensionId));
-        if (get(posXMore, posZ, dimensionId) != territory)
-            neighbors.add(get(posXMore, posZ, dimensionId));
-        if (get(posXLess, posZ, dimensionId) != territory)
-            neighbors.add(get(posXLess, posZ, dimensionId));
+        if (get(posX, posZMore) != territory)
+            neighbors.add(get(posX, posZMore));
+        if (get(posX, posZLess) != territory)
+            neighbors.add(get(posX, posZLess));
+        if (get(posXMore, posZ) != territory)
+            neighbors.add(get(posXMore, posZ));
+        if (get(posXLess, posZ) != territory)
+            neighbors.add(get(posXLess, posZ));
 
         return neighbors;
     }
 
-    public Territory get(UUID uuid) { return territoryMap.get(uuid); }
+    public Territory get(UUID uuid) {
+        return territoryMap.get(uuid);
+    }
 
-    public Territory get(Vector2 chunkPos, int dimensionId) {
+    public Territory get(Vector2 chunkPos) {
         Pair<Integer, Integer> pos = Utils.ChunkToTerritoryCoordinates((int) chunkPos.x, (int) chunkPos.y);
 
-        return get(pos.getKey(), pos.getValue(), dimensionId);
+        return get(pos.getKey(), pos.getValue());
     }
 
     @CheckForNull
-    public Territory get(int posX, int posZ, int dimensionId) {
+    public Territory get(int posX, int posZ) {
         int halfSize = WarOfSquirrels.instance.getConfig().getMapSize() / 2;
         int size = halfSize / WarOfSquirrels.instance.getConfig().getTerritorySize();
         if (posX < -size || posX >= size || posZ < -size || posZ >= size) return null;
@@ -206,13 +208,11 @@ public class TerritoryHandler extends Handler<Territory> {
         posX = posX + size;
         posZ = posZ + size;
 
-        Territory territory = territories[posX][posZ];
-
-        return territory.getDimensionId() == dimensionId ? territory : null;
+        return territories[posX][posZ];
     }
 
-    public boolean claim(int posX, int posZ, Faction faction, IFortification fortification, int dimensionId) {
-        Territory territory = get(posX, posZ, dimensionId);
+    public boolean claim(int posX, int posZ, Faction faction, IFortification fortification) {
+        Territory territory = get(posX, posZ);
 
         if (territory == null) return false;
 
@@ -230,7 +230,7 @@ public class TerritoryHandler extends Handler<Territory> {
     }
 
     public void update() {
-        for(Territory territory : dataArray)
+        for (Territory territory : dataArray)
             territory.SpreadInfluence();
     }
 }

@@ -5,18 +5,19 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.admin.AdminChunkInfoCommand;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 public class AdminCommandRegister extends CommandBuilder implements ICommandRegister {
     private final AdminChunkInfoCommand adminChunkInfoCommand = new AdminChunkInfoCommand();
 
     @Override
-    public void register(CommandDispatcher<CommandSource> dispatcher) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("admin")
                 .then(adminChunkInfoCommand.register())
                 .executes(this)
@@ -24,32 +25,33 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() { return null; }
-
-    @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
-        return player.getPlayerEntity().hasPermissionLevel(2);
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
+        return null;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        return player.getPlayerEntity().hasPermissions(2);
+    }
+
+    @Override
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         player.setAdminMode(!player.isAdminMode());
 
-        StringTextComponent message;
+        MutableComponent message;
 
         if (player.isAdminMode())
-            message = new StringTextComponent("Admin mode activé.");
+            message = ChatText.Colored("Admin mode activé.", ChatFormatting.GOLD);
         else
-            message = new StringTextComponent("Admin mode désactivé");
-        message.applyTextStyle(TextFormatting.GOLD);
+            message = ChatText.Colored("Admin mode désactivé", ChatFormatting.GOLD);
 
-        player.getPlayerEntity().sendMessage(message);
+        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
 
         return 0;
     }
 
     @Override
-    protected ITextComponent ErrorMessage() {
+    protected MutableComponent ErrorMessage() {
         return null;
     }
 }

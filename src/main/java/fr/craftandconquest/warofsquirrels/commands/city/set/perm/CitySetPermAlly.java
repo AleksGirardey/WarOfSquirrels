@@ -1,23 +1,23 @@
 package fr.craftandconquest.warofsquirrels.commands.city.set.perm;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class CitySetPermAlly extends CityAssistantCommandBuilder {
     private final String buildArgumentName = "[build]";
     private final String containerArgumentName = "[container]";
     private final String switchArgumentName = "[switch]";
+
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("ally")
                 .then(Commands.argument(buildArgumentName, BoolArgumentType.bool())
                         .then(Commands.argument(containerArgumentName, BoolArgumentType.bool())
@@ -26,12 +26,12 @@ public class CitySetPermAlly extends CityAssistantCommandBuilder {
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         return true;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Permission permission = new Permission();
 
         permission.setBuild(context.getArgument(buildArgumentName, Boolean.class));

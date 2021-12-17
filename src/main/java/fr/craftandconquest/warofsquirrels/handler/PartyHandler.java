@@ -1,10 +1,12 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.channels.PartyChannel;
 import fr.craftandconquest.warofsquirrels.object.war.Party;
-import net.minecraft.util.text.StringTextComponent;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +14,10 @@ import java.util.List;
 public class PartyHandler {
     private final List<Party> parties = new ArrayList<>();
 
-    public PartyHandler() {}
+    public PartyHandler() {
+    }
 
-    public void CreateParty(Player leader) {
+    public void CreateParty(FullPlayer leader) {
         Party party = new Party(leader);
 
         AddParty(party);
@@ -26,7 +29,7 @@ public class PartyHandler {
         parties.add(party);
     }
 
-    public boolean Contains(Player player) {
+    public boolean Contains(FullPlayer player) {
         for (Party party : parties) {
             if (party.toList().contains(player))
                 return true;
@@ -34,7 +37,7 @@ public class PartyHandler {
         return false;
     }
 
-    public boolean IsLeader(Player player) {
+    public boolean IsLeader(FullPlayer player) {
         for (Party party : parties) {
             if (party.getLeader().equals(player))
                 return true;
@@ -42,7 +45,7 @@ public class PartyHandler {
         return false;
     }
 
-    public void RemoveParty(Player player) {
+    public void RemoveParty(FullPlayer player) {
         Party party = getPartyFromLeader(player);
         RemoveParty(party);
     }
@@ -52,25 +55,25 @@ public class PartyHandler {
         WarOfSquirrels.instance.getBroadCastHandler().DeleteTarget(party);
     }
 
-    public Party getPartyFromLeader(Player player) {
+    public Party getPartyFromLeader(FullPlayer player) {
         return parties.stream()
                 .filter(party -> party.getLeader() == player)
                 .findFirst()
                 .orElse(null);
     }
 
-    public Party getFromPlayer(Player player) {
+    public Party getFromPlayer(FullPlayer player) {
         return parties.stream()
                 .filter(party -> (party.getPlayers().contains(player) || party.getLeader() == player))
                 .findFirst()
                 .orElse(null);
     }
 
-    public void DisplayInfo(Player player) {
+    public void DisplayInfo(FullPlayer player) {
         Party party = getFromPlayer(player);
 
-        player.getPlayerEntity().sendMessage(new StringTextComponent("=== Groupe[" + party.size() + "] ==="));
-        player.getPlayerEntity().sendMessage(new StringTextComponent("Chef : " + party.getLeader()));
-        player.getPlayerEntity().sendMessage(new StringTextComponent("Joueur(s) : " + party.getPlayers()));
+        player.getPlayerEntity().sendMessage(ChatText.Colored("=== Groupe[" + party.size() + "] ===", ChatFormatting.BLUE), Util.NIL_UUID);
+        player.getPlayerEntity().sendMessage(ChatText.Colored("Chef : " + party.getLeader(), ChatFormatting.BLUE), Util.NIL_UUID);
+        player.getPlayerEntity().sendMessage(ChatText.Colored("Joueur(s) : " + party.getPlayers(), ChatFormatting.BLUE), Util.NIL_UUID);
     }
 }

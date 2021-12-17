@@ -3,10 +3,10 @@ package fr.craftandconquest.warofsquirrels.commands.extractor;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public interface IPermissionExtractor {
     String buildArgumentName = "[Build]";
@@ -15,7 +15,7 @@ public interface IPermissionExtractor {
     String farmArgumentName = "[Farm]";
     String interactArgumentName = "[Interact]";
 
-    default Permission getPermission(Player player, CommandContext<CommandSource> context) {
+    default Permission getPermission(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Permission perm = new Permission();
         perm.setBuild(context.getArgument(buildArgumentName, boolean.class));
         perm.setContainer(context.getArgument(containerArgumentName, boolean.class));
@@ -26,7 +26,7 @@ public interface IPermissionExtractor {
         return perm;
     }
 
-    default RequiredArgumentBuilder<CommandSource, Boolean> getPermissionRegister() {
+    default RequiredArgumentBuilder<CommandSourceStack, Boolean> getPermissionRegister() {
         return Commands.argument(buildArgumentName, BoolArgumentType.bool())
                 .then(Commands.argument(containerArgumentName, BoolArgumentType.bool())
                         .then(Commands.argument(switchArgumentName, BoolArgumentType.bool())

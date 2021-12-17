@@ -6,19 +6,20 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CityCuboAdd extends CommandBuilder implements IAdminCommand {
     private final String cuboNameArgument = "[Cubo]";
     private final String playerNameArgument = "[Player]";
+
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("add").then(
                 Commands.argument(cuboNameArgument, StringArgumentType.string()).then(
                         Commands.argument(playerNameArgument, StringArgumentType.string())
@@ -26,18 +27,17 @@ public class CityCuboAdd extends CommandBuilder implements IAdminCommand {
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         String cuboName = context.getArgument(cuboNameArgument, String.class);
         String playerName = context.getArgument(playerNameArgument, String.class);
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(cuboName);
-        Player target = WarOfSquirrels.instance.getPlayerHandler().get(playerName);
+        FullPlayer target = WarOfSquirrels.instance.getPlayerHandler().get(playerName);
 
-        StringTextComponent message = new StringTextComponent("");
+        MutableComponent message;
 
         if (cubo == null || target == null) {
-            message.appendText("Les arguments '" + cuboName + "' et '" + playerName + "' ne sont pas valides.");
-            message.applyTextStyle(TextFormatting.RED);
-            player.getPlayerEntity().sendMessage(message);
+            player.getPlayerEntity().sendMessage(
+                    ChatText.Error("Les arguments '" + cuboName + "' et '" + playerName + "' ne sont pas valides."), Util.NIL_UUID);
             return false;
         }
 
@@ -46,18 +46,16 @@ public class CityCuboAdd extends CommandBuilder implements IAdminCommand {
                 || (cubo.getCity() == player.getCity()
                 && (cubo.getCity().getOwner() == player || player.getAssistant()))) return true;
 
-        message.appendText("Vous ne pouvez pas ajouter quelqu'un à ce cubo.");
-        message.applyTextStyle(TextFormatting.RED);
-        player.getPlayerEntity().sendMessage(message);
+        player.getPlayerEntity().sendMessage(ChatText.Error("Vous ne pouvez pas ajouter quelqu'un à ce cubo."), Util.NIL_UUID);
         return false;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         String cuboName = context.getArgument(cuboNameArgument, String.class);
         String playerName = context.getArgument(playerNameArgument, String.class);
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(cuboName);
-        Player target = WarOfSquirrels.instance.getPlayerHandler().get(playerName);
+        FullPlayer target = WarOfSquirrels.instance.getPlayerHandler().get(playerName);
 
         cubo.AddPlayerInList(target);
         WarOfSquirrels.instance.getCuboHandler().Save();
@@ -65,7 +63,7 @@ public class CityCuboAdd extends CommandBuilder implements IAdminCommand {
     }
 
     @Override
-    protected ITextComponent ErrorMessage() {
+    protected MutableComponent ErrorMessage() {
         return null;
     }
 }

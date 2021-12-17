@@ -12,7 +12,6 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import lombok.SneakyThrows;
 
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -20,16 +19,25 @@ import java.util.concurrent.CompletableFuture;
 public class CityArgumentType implements ArgumentType<City> {
     private final CityType type;
 
-    private CityArgumentType(final CityType type) { this.type = type; }
+    private CityArgumentType(final CityType type) {
+        this.type = type;
+    }
 
-    public static CityArgumentType cityAtWar() { return new CityArgumentType(CityType.AT_WAR); }
-    public static CityArgumentType city() { return new CityArgumentType(CityType.NORMAL); }
+    public static CityArgumentType cityAtWar() {
+        return new CityArgumentType(CityType.AT_WAR);
+    }
+
+    public static CityArgumentType city() {
+        return new CityArgumentType(CityType.NORMAL);
+    }
 
     public static String getString(final CommandContext<?> context, final String name) {
         return context.getArgument(name, String.class);
     }
 
-    public CityType getType() { return type; }
+    public CityType getType() {
+        return type;
+    }
 
     @Override
     public City parse(StringReader reader) throws CommandSyntaxException {
@@ -66,9 +74,13 @@ public class CityArgumentType implements ArgumentType<City> {
 
         private final Callable<Collection<String>> examples;
 
-        CityType(Callable<Collection<String>> function) { this.examples = function; }
+        CityType(Callable<Collection<String>> function) {
+            this.examples = function;
+        }
 
         @SneakyThrows
-        public Collection<String> getExamples() { return examples.call(); }
+        public Collection<String> getExamples() {
+            return examples.call();
+        }
     }
 }

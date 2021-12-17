@@ -14,15 +14,33 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Diplomacy {
-    @JsonProperty @Getter @Setter private UUID uuid;
-    @JsonProperty @Getter private UUID factionUuid;
-    @JsonProperty @Getter private UUID targetUuid;
-    @JsonProperty @Getter @Setter private boolean relation;
-    @JsonProperty @Getter private UUID permissionUuid;
+    @JsonProperty
+    @Getter
+    @Setter
+    private UUID uuid;
+    @JsonProperty
+    @Getter
+    private UUID factionUuid;
+    @JsonProperty
+    @Getter
+    private UUID targetUuid;
+    @JsonProperty
+    @Getter
+    @Setter
+    private boolean relation;
+    @JsonProperty
+    @Getter
+    private UUID permissionUuid;
 
-    @JsonIgnore @Getter private Faction faction;
-    @JsonIgnore @Getter private Faction target;
-    @JsonIgnore @Getter private Permission permission;
+    @JsonIgnore
+    @Getter
+    private Faction faction;
+    @JsonIgnore
+    @Getter
+    private Faction target;
+    @JsonIgnore
+    @Getter
+    private Permission permission;
 
     public void SetFaction(Faction faction) {
         this.faction = faction;

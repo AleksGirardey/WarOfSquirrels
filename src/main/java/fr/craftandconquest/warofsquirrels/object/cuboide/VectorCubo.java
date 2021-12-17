@@ -6,8 +6,12 @@ import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import lombok.Getter;
 
 public class VectorCubo {
-    @JsonProperty("FirstPoint") @Getter private final Vector3        A;
-    @JsonProperty("SecondPoint") @Getter private final Vector3        B;
+    @JsonProperty("FirstPoint")
+    @Getter
+    private final Vector3 A;
+    @JsonProperty("SecondPoint")
+    @Getter
+    private final Vector3 B;
 
     public VectorCubo(Vector3 A, Vector3 B) {
         this.A = A;
@@ -15,8 +19,8 @@ public class VectorCubo {
         WarOfSquirrels.LOGGER.warn("Created CuboVector A[" + A.x + ";" + A.y + ";" + A.z + "] B[" + B.x + ";" + B.y + ";" + B.z + "]");
     }
 
-    public boolean      contains(Vector3 block) {
-        float   x = block.x,
+    public boolean contains(Vector3 block) {
+        float x = block.x,
                 y = block.y,
                 z = block.z;
 

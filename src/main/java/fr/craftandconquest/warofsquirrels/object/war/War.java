@@ -4,19 +4,25 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.channels.WarChannel;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.scoreboard.*;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.Score;
+import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import net.minecraftforge.event.world.BlockEvent;
 
 import java.util.*;
@@ -34,31 +40,62 @@ public class War implements IChannelTarget {
         Rollback
     }
 
-    @Getter @Setter private String tag;
-    @Getter @Setter private City cityAttacker;
-    @Getter @Setter private City cityDefender;
-    @Getter @Setter private List<Player> attackers;
-    @Getter @Setter private List<Player> defenders;
-    @Getter @Setter private Timer timer;
-    @Getter @Setter private WarState state;
-    @Getter @Setter private int attackersLimit;
-    @Getter @Setter private long timeStart;
-    @Getter @Setter private Player target;
-    @Getter @Setter private boolean targetDead = false;
-    @Getter @Setter private Score attackersPoints;
-    @Getter @Setter private Score defendersPoints;
+    @Getter
+    @Setter
+    private String tag;
+    @Getter
+    @Setter
+    private City cityAttacker;
+    @Getter
+    @Setter
+    private City cityDefender;
+    @Getter
+    @Setter
+    private List<FullPlayer> attackers;
+    @Getter
+    @Setter
+    private List<FullPlayer> defenders;
+    @Getter
+    @Setter
+    private Timer timer;
+    @Getter
+    @Setter
+    private WarState state;
+    @Getter
+    @Setter
+    private int attackersLimit;
+    @Getter
+    @Setter
+    private long timeStart;
+    @Getter
+    @Setter
+    private FullPlayer target;
+    @Getter
+    @Setter
+    private boolean targetDead = false;
+    @Getter
+    @Setter
+    private Score attackersPoints;
+    @Getter
+    @Setter
+    private Score defendersPoints;
 
-    @Getter @Setter private int lastAnnounceCapture = 0;
-    @Getter @Setter private float captureSpeed;
+    @Getter
+    @Setter
+    private int lastAnnounceCapture = 0;
+    @Getter
+    @Setter
+    private float captureSpeed;
 
     private final List<Chunk> capturedChunk = new ArrayList<>();
     private final Map<Chunk, Float> chunkBeingCaptured = new HashMap<>();
 
     private Scoreboard scoreboard;
-    private ScorePlayerTeam attackerTeam;
-    private ScorePlayerTeam defenderTeam;
+    private PlayerTeam attackerTeam;
+    private PlayerTeam defenderTeam;
+    private Objective timerObjective;
 
-    public War(City attacker, City defender, List<Player> attackersParty) {
+    public War(City attacker, City defender, List<FullPlayer> attackersParty) {
         cityAttacker = attacker;
         cityDefender = defender;
         target = null;
@@ -72,10 +109,10 @@ public class War implements IChannelTarget {
         state = WarState.Preparation;
         tag = SetTag();
 
-        ITextComponent worldAnnounce = new StringTextComponent("The war horns roar. ");
-        ITextComponent attackerName = new StringTextComponent(attacker.displayName).applyTextStyle(TextFormatting.RED);
-        ITextComponent defenderName = new StringTextComponent(defender.displayName).applyTextStyle(TextFormatting.RED);
-        worldAnnounce.appendSibling(attackerName).appendText(" is attacking ").appendSibling(defenderName);
+        MutableComponent worldAnnounce = new TextComponent("The war horns roar. ");
+        MutableComponent attackerName = ChatText.Colored(attacker.displayName, ChatFormatting.BLUE);
+        MutableComponent defenderName = ChatText.Colored(defender.displayName, ChatFormatting.RED);
+        worldAnnounce.append(attackerName).append(" is attacking ").append(defenderName);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(worldAnnounce);
 
         SetTarget();
@@ -85,35 +122,42 @@ public class War implements IChannelTarget {
     public void SetScoreboard() {
         scoreboard = new Scoreboard();
 
-        ScoreObjective attackersObjective = scoreboard.addObjective(
+        timerObjective = scoreboard.addObjective(
+                "timerObjective",
+                ObjectiveCriteria.DUMMY,
+                ChatText.Colored("Time left", ChatFormatting.GOLD),
+                ObjectiveCriteria.RenderType.INTEGER);
+        scoreboard.setDisplayObjective(Scoreboard.DISPLAY_SLOT_SIDEBAR, timerObjective);
+
+        Objective attackersObjective = scoreboard.addObjective(
                 "attackersObjective",
-                ScoreCriteria.DUMMY,
-                new StringTextComponent(cityAttacker.displayName).applyTextStyle(TextFormatting.RED),
-                ScoreCriteria.RenderType.INTEGER);
-        scoreboard.setObjectiveInDisplaySlot(1, attackersObjective);
+                ObjectiveCriteria.DUMMY,
+                ChatText.Colored(cityAttacker.displayName, ChatFormatting.BLUE),
+                ObjectiveCriteria.RenderType.INTEGER);
+        scoreboard.setDisplayObjective(Scoreboard.DISPLAY_SLOT_SIDEBAR, attackersObjective);
 
-        attackersPoints = scoreboard.getOrCreateScore("attackersPoints", attackersObjective);
-        attackersPoints.setScorePoints(0);
+        attackersPoints = scoreboard.getOrCreatePlayerScore("attackersPoints", attackersObjective);
+        attackersPoints.setScore(0);
 
-        ScoreObjective defendersObjective = scoreboard.addObjective(
+        Objective defendersObjective = scoreboard.addObjective(
                 "defendersObjective",
-                ScoreCriteria.DUMMY,
-                new StringTextComponent(cityDefender.displayName).applyTextStyle(TextFormatting.RED),
-                ScoreCriteria.RenderType.INTEGER);
-        scoreboard.setObjectiveInDisplaySlot(1, defendersObjective);
+                ObjectiveCriteria.DUMMY,
+                ChatText.Colored(cityDefender.displayName, ChatFormatting.RED),
+                ObjectiveCriteria.RenderType.INTEGER);
+        scoreboard.setDisplayObjective(Scoreboard.DISPLAY_SLOT_SIDEBAR, defendersObjective);
 
-        defendersPoints = scoreboard.getOrCreateScore("defendersPoints", defendersObjective);
-        defendersPoints.setScorePoints(0);
+        defendersPoints = scoreboard.getOrCreatePlayerScore("defendersPoints", defendersObjective);
+        defendersPoints.setScore(0);
 
-        attackerTeam = scoreboard.createTeam(cityAttacker.displayName);
-        defenderTeam = scoreboard.createTeam(cityDefender.displayName);
+        attackerTeam = scoreboard.addPlayerTeam(cityAttacker.displayName);
+        defenderTeam = scoreboard.addPlayerTeam(cityDefender.displayName);
 
         attackerTeam.setAllowFriendlyFire(false);
         defenderTeam.setAllowFriendlyFire(false);
     }
 
     private void SetTarget() {
-        for (Player defender : defenders) {
+        for (FullPlayer defender : defenders) {
             if (defender.getCity().getOwner() == defender) {
                 target = defender;
                 return;
@@ -130,28 +174,28 @@ public class War implements IChannelTarget {
                 cityDefender.displayName.substring(0, 3);
     }
 
-    public boolean AddAttacker(Player player) {
+    public boolean AddAttacker(FullPlayer player) {
         if (attackers.size() == attackersLimit) {
-            player.getPlayerEntity().sendMessage(new StringTextComponent("You can't join this war, wait for defenders to join"));
+            player.getPlayerEntity().sendMessage(ChatText.Error("You can't join this war, wait for defenders to join"), Util.NIL_UUID);
             return false;
         }
         attackers.add(player);
         scoreboard.addPlayerToTeam(player.getDisplayName(), attackerTeam);
         WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(this, player);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null,
-                new StringTextComponent(player.getDisplayName() + " join as attacker ! ["
-                        + attackers.size() + "/" + attackersLimit + "]"), true);
+                ChatText.Colored(player.getDisplayName() + " join as attacker ! ["
+                        + attackers.size() + "/" + attackersLimit + "]", ChatFormatting.GOLD), true);
         return true;
     }
 
-    public boolean AddDefender(Player player) {
+    public boolean AddDefender(FullPlayer player) {
         defenders.add(player);
         ++attackersLimit;
         scoreboard.addPlayerToTeam(player.getDisplayName(), defenderTeam);
         WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(this, player);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null,
-                new StringTextComponent(player.getDisplayName() + " join as defender ! ["
-                        + defenders.size() + "]"), true);
+                ChatText.Colored(player.getDisplayName() + " join as defender ! ["
+                        + defenders.size() + "]", ChatFormatting.GOLD), true);
         return true;
     }
 
@@ -160,20 +204,20 @@ public class War implements IChannelTarget {
     }
 
     public void AddDefenderPoints(int points) {
-        this.defendersPoints.increaseScore(points);
+        this.defendersPoints.add(points);
     }
 
     public void AddDefenderKillPoints() {
-        this.defendersPoints.increaseScore(166 / (3 * attackers.size()));
+        this.defendersPoints.add(166 / (3 * attackers.size()));
     }
 
     public void AddAttackerKillPoints() {
-        this.attackersPoints.increaseScore(166 / (3 * defenders.size()));
+        this.attackersPoints.add(166 / (3 * defenders.size()));
     }
 
     public void AddAttackerTargetKillPoints() {
         if (!targetDead) {
-            this.attackersPoints.increaseScore(650);
+            this.attackersPoints.add(650);
             targetDead = true;
         } else {
             AddAttackerKillPoints();
@@ -181,11 +225,11 @@ public class War implements IChannelTarget {
     }
 
     public void ForceWinAttacker() {
-        this.attackersPoints.setScorePoints(1000);
+        this.attackersPoints.add(1000);
     }
 
     public void ForceWinDefender() {
-        this.defendersPoints.setScorePoints(1000);
+        this.defendersPoints.add(1000);
     }
 
     public int AddAttackerCapturePoints() {
@@ -195,8 +239,8 @@ public class War implements IChannelTarget {
         int result = Math.round(max <= 15 ? 1000f / used : 67 * ((float) max / (float) used));
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null,
-                new StringTextComponent("Chunk captured for a total of " + result + " points."), true);
-        attackersPoints.increaseScore(result);
+                ChatText.Colored("Chunk captured for a total of " + result + " points.", ChatFormatting.GOLD), true);
+        attackersPoints.add(result);
         return result;
     }
 
@@ -237,7 +281,7 @@ public class War implements IChannelTarget {
             public void run() {
                 Rollback();
             }
-        }, WarOfSquirrels.instance.getConfig().getRollbackPhase() * 1000);
+        }, WarOfSquirrels.instance.getConfig().getRollbackPhase() * 1000L);
     }
 
     public void Rollback() {
@@ -246,17 +290,17 @@ public class War implements IChannelTarget {
 
     protected boolean CheckWin() {
         BroadCastHandler broadCastHandler = WarOfSquirrels.instance.getBroadCastHandler();
-        StringTextComponent text;
-        if (defendersPoints.getScorePoints() >= 1000)
-            text = new StringTextComponent(cityAttacker.displayName
+        MutableComponent text;
+        if (defendersPoints.getScore() >= 1000)
+            text = ChatText.Colored(cityAttacker.displayName
                     + " failed to win his attack against "
                     + cityDefender.displayName
-                    + "(" + attackersPoints.getScorePoints() + " - " + defendersPoints.getScorePoints());
-        else if (attackersPoints.getScorePoints() >= 1000)
-            text = new StringTextComponent(cityAttacker.displayName
+                    + "(" + attackersPoints.getScore() + " - " + defendersPoints.getScore(), ChatFormatting.GOLD);
+        else if (attackersPoints.getScore() >= 1000)
+            text = ChatText.Colored(cityAttacker.displayName
                     + " won his attack against "
                     + cityDefender.displayName
-                    + "(" + attackersPoints.getScorePoints() + " - " + defendersPoints.getScorePoints());
+                    + "(" + attackersPoints.getScore() + " - " + defendersPoints.getScore(), ChatFormatting.GOLD);
         else
             return false;
         broadCastHandler.BroadCastWorldAnnounce(text);
@@ -264,7 +308,7 @@ public class War implements IChannelTarget {
         return true;
     }
 
-    public boolean contains(Player player) {
+    public boolean contains(FullPlayer player) {
         return (attackers.contains(player) || defenders.contains(player));
     }
 
@@ -273,12 +317,12 @@ public class War implements IChannelTarget {
     }
 
     private String TimeLeft() {
-        long            time = System.currentTimeMillis();
-        long            timeLeft, delta;
-        double          elapsedSeconds;
-        int             minutes, seconds;
+        long time = System.currentTimeMillis();
+        long timeLeft, delta;
+        double elapsedSeconds;
+        int minutes, seconds;
 
-        String          res = "";
+        String res = "";
 
         delta = time - timeStart;
         if (state == WarState.Preparation)
@@ -299,11 +343,11 @@ public class War implements IChannelTarget {
     }
 
     public void ForceAttackerWin() {
-        attackersPoints.setScorePoints(1000);
+        attackersPoints.setScore(1000);
     }
 
     public void ForceDefenderWin() {
-        defendersPoints.setScorePoints(1000);
+        defendersPoints.setScore(1000);
     }
 
     public String GetPhase() {
@@ -315,14 +359,14 @@ public class War implements IChannelTarget {
             return "Rollback";
     }
 
-    public List<Player> GetProtagonists() {
-        List<Player> list = new ArrayList<>(defenders);
+    public List<FullPlayer> GetProtagonists() {
+        List<FullPlayer> list = new ArrayList<>(defenders);
 
         list.addAll(attackers);
         return list;
     }
 
-    public boolean RemovePlayer(Player player) {
+    public boolean RemovePlayer(FullPlayer player) {
         City city = player.getCity();
 
         if (attackers.contains(player))
@@ -333,45 +377,59 @@ public class War implements IChannelTarget {
         } else
             return false;
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null,
-                new StringTextComponent(player.getDisplayName()
-                        + " left the battlefield [" + attackers.size() + "/" + attackersLimit + "]"),
+                ChatText.Colored(player.getDisplayName()
+                        + " left the battlefield [" + attackers.size() + "/" + attackersLimit + "]", ChatFormatting.GOLD),
                 true);
         return true;
     }
 
-    public boolean          isTarget(Player victim) { return target.equals(victim); }
-    public boolean          isAttacker(Player player) { return attackers.contains(player); }
-    public boolean          isDefender(Player player) { return defenders.contains(player); }
-    public List<String>     getAttackersAsString() {
-        List<String>        list = new ArrayList<>();
+    public boolean isTarget(FullPlayer victim) {
+        return target.equals(victim);
+    }
+
+    public boolean isAttacker(FullPlayer player) {
+        return attackers.contains(player);
+    }
+
+    public boolean isDefender(FullPlayer player) {
+        return defenders.contains(player);
+    }
+
+    public List<String> getAttackersAsString() {
+        List<String> list = new ArrayList<>();
 
         attackers.forEach(a -> list.add(a.getDisplayName()));
         return list;
     }
-    public List<String>     getDefendersAsString() {
-        List<String>        list = new ArrayList<>();
+
+    public List<String> getDefendersAsString() {
+        List<String> list = new ArrayList<>();
 
         defenders.forEach(d -> list.add(d.getDisplayName()));
         return list;
     }
 
-    public void     displayInfo(Player player) {
-        player.getPlayerEntity().sendMessage(new StringTextComponent("===| " + this.tag + " |==="));
-        player.getPlayerEntity().sendMessage(new StringTextComponent("Attackers [" + cityAttacker.displayName + "] : " + Utils.getStringFromPlayerList(attackers)).applyTextStyle(TextFormatting.RED));
-        player.getPlayerEntity().sendMessage(new StringTextComponent("Defenders [" + cityDefender.displayName + "] : " + Utils.getStringFromPlayerList(defenders)).applyTextStyle(TextFormatting.BLUE));
-        player.getPlayerEntity().sendMessage(new StringTextComponent("\nTarget : " + this.target.getDisplayName()).applyTextStyle(TextFormatting.GOLD));
-        player.getPlayerEntity().sendMessage(new StringTextComponent("Phase : " + this.GetPhase() + " (time left : " + this.TimeLeft() + ")"));
-        player.getPlayerEntity().sendMessage(new StringTextComponent("\n===[" + cityAttacker.tag + "] "
-                + attackersPoints.getScorePoints() + " - " + defendersPoints.getScorePoints() + " [" + cityDefender.tag + "]===").applyTextStyle(TextFormatting.BOLD));
+    public void displayInfo(FullPlayer player) {
+        MutableComponent message = new TextComponent("===| " + this.tag + " |===");
+
+        message.append(ChatText.Colored("Attackers [" + cityAttacker.displayName + "] : " + Utils.getStringFromPlayerList(attackers), ChatFormatting.BLUE));
+        message.append(ChatText.Colored("\nDefenders [" + cityDefender.displayName + "] : " + Utils.getStringFromPlayerList(defenders), ChatFormatting.RED));
+        message.append(ChatText.Colored("\nTarget : " + this.target.getDisplayName(), ChatFormatting.GOLD));
+        message.append(ChatText.Colored("\nPhase : " + this.GetPhase() + " (time left : " + this.TimeLeft() + ")", ChatFormatting.WHITE));
+        message.append(ChatText.Colored("\n===[" + cityAttacker.tag + "] "
+                + attackersPoints.getScore() + " - " + defendersPoints.getScore() + " [" + cityDefender.tag + "]===", ChatFormatting.WHITE).withStyle(ChatFormatting.BOLD));
+
+        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
+
         chunkBeingCaptured.forEach((chunk, f) -> {
             float val = Capture(chunk);
 
             if (val > 0f)
-                player.getPlayerEntity().sendMessage(new StringTextComponent("["
+                player.getPlayerEntity().sendMessage(ChatText.Success("["
                         + (chunk.posX * 16) + ";"
                         + (chunk.posZ * 16) + "] "
                         + Utils.toTime((int) (chunkBeingCaptured.get(chunk) / val))
-                        + " secondes."));
+                        + " secondes."), Util.NIL_UUID);
 
         });
     }
@@ -384,22 +442,22 @@ public class War implements IChannelTarget {
     }
 
     private float Capture(Chunk chunk) {
-        World world;
+        Level world;
         int att = 0, def = 0, x, z;
         float ret;
         Chunk c;
-        List<Player> list = new ArrayList<>();
+        List<FullPlayer> list = new ArrayList<>();
 
         list.addAll(attackers);
         list.addAll(defenders);
 
-        for (Player player : list) {
+        for (FullPlayer player : list) {
             if (player.isOnline()) {
-                world = player.getPlayerEntity().getEntityWorld();
+                world = player.getPlayerEntity().getCommandSenderWorld();
                 x = (int) player.lastPosition.x;
                 z = (int) player.lastPosition.z;
 
-                c = WarOfSquirrels.instance.getChunkHandler().getChunk(x, z, player.lastDimension.getId());
+                c = WarOfSquirrels.instance.getChunkHandler().getChunk(x, z, player.lastDimension);
                 if (c != null && c == chunk && inCaptureRange((int) player.lastPosition.y, c.getCity())) {
                     if (isAttacker(player))
                         att++;
@@ -416,19 +474,19 @@ public class War implements IChannelTarget {
     private boolean inCaptureRange(int y, City city) {
         int ySpawn = WarOfSquirrels.instance.getChunkHandler().getHomeBlock(city).getRespawnY();
 
-        return y <=  ySpawn + 20 && y <= ySpawn - 20;
+        return y <= ySpawn + 20 && y <= ySpawn - 20;
     }
 
     protected void UpdateCapture() {
-        List<Chunk>         updated = new ArrayList<>();
-        World               world;
-        float               v;
+        List<Chunk> updated = new ArrayList<>();
+        Level world;
+        float v;
 
-        for (Player att : attackers) {
+        for (FullPlayer att : attackers) {
             if (att.isOnline()) {
-                world = att.getPlayerEntity().getEntityWorld();
+                world = att.getPlayerEntity().getCommandSenderWorld();
                 Chunk chunk = WarOfSquirrels.instance.getChunkHandler()
-                        .getChunk(att.getLastChunkX(), att.getLastChunkZ(), att.lastDimension.getId());
+                        .getChunk(att.getLastChunkX(), att.getLastChunkZ(), att.lastDimension);
 
                 if (chunk != null && chunk.getCity() == cityDefender
                         && !updated.contains(chunk) && !capturedChunk.contains(chunk)
@@ -443,7 +501,7 @@ public class War implements IChannelTarget {
                     }
                     if (this.lastAnnounceCapture == 0)
                         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null,
-                                new StringTextComponent("[Capture][" + (chunk.posX * 16)
+                                ChatText.Success("[Capture][" + (chunk.posX * 16)
                                         + ";" + (chunk.posZ * 16) + "] Time before capture "
                                         + Utils.toTime((int) (chunkBeingCaptured.get(chunk) / (v - chunkBeingCaptured.get(chunk)))) + " seconds."),
                                 true);
@@ -458,5 +516,11 @@ public class War implements IChannelTarget {
         if (this.lastAnnounceCapture == 0)
             this.lastAnnounceCapture = 30;
         this.lastAnnounceCapture -= 1;
+    }
+
+    public void UpdateTimer(int secondsLeft) {
+        String secondsAsTime = Utils.toTime(secondsLeft);
+
+        timerObjective.setDisplayName(ChatText.Colored("Time left : " + secondsAsTime, ChatFormatting.GOLD));
     }
 }

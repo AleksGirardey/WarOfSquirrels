@@ -1,5 +1,6 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Diplomacy;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
@@ -20,6 +21,12 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
 
     public DiplomacyHandler(Logger logger) {
         super("[WoS][DiplomacyHandler]", logger);
+
+        if (!Init()) return;
+        if (!Load(new TypeReference<List<Diplomacy>>() {
+        })) return;
+
+        Log();
     }
 
     @Override
@@ -66,7 +73,7 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
         for (Diplomacy diplomacy : toBeRemoved)
             Delete(diplomacy, false);
 
-        diplomacyMap.remove(faction);
+        diplomacyMap.keySet().removeIf(f -> f.equals(faction));
         Save();
 
         return true;
@@ -103,7 +110,7 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
         return message.toString();
     }
 
-    public void SetNeutral (Faction main, Faction target) {
+    public void SetNeutral(Faction main, Faction target) {
         diplomacyMap.get(main).removeIf(diplomacy -> diplomacy.getTarget() == target);
         diplomacyMap.get(target).removeIf(diplomacy -> diplomacy.getTarget() == main && diplomacy.isRelation());
     }

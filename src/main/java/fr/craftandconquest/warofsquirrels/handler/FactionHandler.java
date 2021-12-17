@@ -3,11 +3,12 @@ package fr.craftandconquest.warofsquirrels.handler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Diplomacy;
-import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -21,11 +22,12 @@ public class FactionHandler extends Handler<Faction> {
     protected static String JsonName = "/FactionHandler.json";
 
     public FactionHandler(Logger logger) {
-        super("[WoS][PlayerHandler]", logger);
+        super("[WoS][FactionHandler]", logger);
         factionMap = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<List<Faction>>() {})) return;
+        if (!Load(new TypeReference<List<Faction>>() {
+        })) return;
 
         Log();
     }
@@ -37,7 +39,7 @@ public class FactionHandler extends Handler<Faction> {
     @Override
     protected boolean Populate() {
         dataArray.iterator().forEachRemaining(this::add);
-        return false;
+        return true;
     }
 
     public boolean add(Faction faction) {
@@ -59,7 +61,7 @@ public class FactionHandler extends Handler<Faction> {
 
         if (!add(faction)) return null;
 
-        Save(factionMap.values());
+        Save();
         LogFactionCreation(faction);
 
         return faction;
@@ -70,7 +72,7 @@ public class FactionHandler extends Handler<Faction> {
     }
 
     public Faction get(String name) {
-        for(Faction faction : factionMap.values()) {
+        for (Faction faction : factionMap.values()) {
             if (faction.getDisplayName().equals(name))
                 return faction;
         }
@@ -118,19 +120,22 @@ public class FactionHandler extends Handler<Faction> {
         // Nothing To Do
     }
 
-    private void LogFactionCreation(Faction faction) { Logger.info(PrefixLogger + faction + " created"); }
+    private void LogFactionCreation(Faction faction) {
+        Logger.info(PrefixLogger + faction + " created");
+    }
 
 
-    public List<Diplomacy>      getDiplomacy(Faction faction, boolean relation) {
-        List<Diplomacy>         res = new ArrayList<>(),
+    public List<Diplomacy> getDiplomacy(Faction faction, boolean relation) {
+        List<Diplomacy> res = new ArrayList<>(),
                 diplo = WarOfSquirrels.instance.getDiplomacyHandler().get(faction);
 
-        if (diplo != null) res.addAll(diplo.stream().filter(d -> d.isRelation() == relation).collect(Collectors.toList()));
+        if (diplo != null)
+            res.addAll(diplo.stream().filter(d -> d.isRelation() == relation).collect(Collectors.toList()));
         return res;
     }
 
-    public boolean          areAllies(Faction A, Faction B) {
-        List<Diplomacy>     diploA = getDiplomacy(A, true);
+    public boolean areAllies(Faction A, Faction B) {
+        List<Diplomacy> diploA = getDiplomacy(A, true);
 
         for (Diplomacy d : diploA)
             if (d.getTarget() == B)
@@ -138,8 +143,8 @@ public class FactionHandler extends Handler<Faction> {
         return false;
     }
 
-    public boolean          areEnemies(Faction A, Faction B) {
-        List<Diplomacy>     diploA = getDiplomacy(A, false);
+    public boolean areEnemies(Faction A, Faction B) {
+        List<Diplomacy> diploA = getDiplomacy(A, false);
 
         for (Diplomacy d : diploA)
             if (d.getTarget() == B)
@@ -149,9 +154,8 @@ public class FactionHandler extends Handler<Faction> {
 
     public void SetCapital(Faction faction, City city) {
         faction.SetCapital(city);
-        StringTextComponent message = new StringTextComponent("La nouvelle capitale de '" + faction.getDisplayName()
-                + "' est désormais la ville de '" + city.getDisplayName() + "'.");
-        message.applyTextStyle(TextFormatting.GOLD);
+        MutableComponent message = ChatText.Colored("La nouvelle capitale de '" + faction.getDisplayName()
+                + "' est désormais la ville de '" + city.getDisplayName() + "'.", ChatFormatting.GOLD);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
     }

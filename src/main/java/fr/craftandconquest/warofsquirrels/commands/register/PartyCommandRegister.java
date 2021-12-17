@@ -2,8 +2,8 @@ package fr.craftandconquest.warofsquirrels.commands.register;
 
 import com.mojang.brigadier.CommandDispatcher;
 import fr.craftandconquest.warofsquirrels.commands.party.*;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class PartyCommandRegister implements ICommandRegister {
     private final PartyHelpCommand partyHelpCommand = new PartyHelpCommand();
@@ -15,7 +15,7 @@ public class PartyCommandRegister implements ICommandRegister {
     private final PartyLeaveCommand partyLeaveCommand = new PartyLeaveCommand();
 
     @Override
-    public void register(CommandDispatcher<CommandSource> dispatcher) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("party")
                 .executes(partyHelpCommand)
                 .then(partyHelpCommand.register())

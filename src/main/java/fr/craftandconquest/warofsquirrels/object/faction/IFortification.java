@@ -10,15 +10,19 @@ public interface IFortification {
         BASTION
     }
 
-    @JsonIgnore UUID getUniqueId();
+    @JsonIgnore
+    UUID getUniqueId();
 
-    @JsonIgnore Faction getFaction();
+    @JsonIgnore
+    Faction getFaction();
 
-    @JsonIgnore default int getSelfInfluenceGenerated() {
+    @JsonIgnore
+    default int getSelfInfluenceGenerated() {
         return 100;
     }
 
-    @JsonIgnore default int getInfluenceGenerated() {
+    @JsonIgnore
+    default int getInfluenceGenerated() {
         return 100;
     }
 }

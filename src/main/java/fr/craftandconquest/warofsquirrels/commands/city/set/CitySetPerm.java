@@ -4,11 +4,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.city.set.perm.*;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class CitySetPerm extends CityAssistantCommandBuilder {
     private final CitySetPermAlly citySetPermAlly = new CitySetPermAlly();
@@ -20,7 +20,7 @@ public class CitySetPerm extends CityAssistantCommandBuilder {
     private final CitySetPermCustom citySetPermCustom = new CitySetPermCustom();
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("perm")
                 .executes(this)
                 .then(citySetPermAlly.register())
@@ -33,21 +33,20 @@ public class CitySetPerm extends CityAssistantCommandBuilder {
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         return true;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        player.getPlayerEntity().sendMessage(new StringTextComponent(
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        player.getPlayerEntity().sendMessage(ChatText.Success(
                 "--==| city set perm |==--\n"
                         + "/city set perm ally [build] [container] [switch]"
                         + "/city set perm enemy [build] [container] [switch]"
                         + "/city set perm faction [build] [container] [switch]"
                         + "/city set perm outside [build] [container] [switch]"
                         + "/city set perm recruit [build] [container] [switch]"
-                        + "/city set perm resident [build] [container] [switch]")
-                .applyTextStyle(TextFormatting.GREEN));
+                        + "/city set perm resident [build] [container] [switch]"), Util.NIL_UUID);
         return 0;
     }
 }

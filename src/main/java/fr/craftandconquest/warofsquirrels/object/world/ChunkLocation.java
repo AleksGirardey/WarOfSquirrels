@@ -1,13 +1,17 @@
 package fr.craftandconquest.warofsquirrels.object.world;
 
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+
 import java.text.MessageFormat;
 
 public class ChunkLocation {
     public int PosX;
     public int PosZ;
-    public int DimensionId;
+    public ResourceKey<Level> DimensionId;
 
-    public ChunkLocation(int posX, int posZ, int dimensionId) {
+    public ChunkLocation(int posX, int posZ, ResourceKey<Level> dimensionId) {
         this.PosX = posX;
         this.PosZ = posZ;
         this.DimensionId = dimensionId;
@@ -15,20 +19,21 @@ public class ChunkLocation {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ChunkLocation) {
-            ChunkLocation chunkLocation = (ChunkLocation) obj;
-
-            return this.PosX == chunkLocation.PosX
-                    && this.PosZ == chunkLocation.PosZ
-                    && this.DimensionId == chunkLocation.DimensionId;
-        } else if (obj instanceof Chunk) {
-            Chunk chunk = (Chunk) obj;
-
-            return this.PosX == chunk.posX
-                    && this.PosZ == chunk.posZ
-                    && this.DimensionId == chunk.getDimensionId();
+        if (obj == null) {
+            WarOfSquirrels.LOGGER.error("[WoS][ERROR] Cannot equals ChunkLocation : NULL");
+            return false;
         }
-        return super.equals(obj);
+
+        if (obj.getClass() != this.getClass()) {
+            WarOfSquirrels.LOGGER.error("[WoS][ERROR] Cannot equals ChunkLocation : Wrong type");
+            return false;
+        }
+
+        final ChunkLocation chunkLocation = (ChunkLocation) obj;
+
+        return this.PosX == chunkLocation.PosX
+                && this.PosZ == chunkLocation.PosZ
+                && this.DimensionId.equals(chunkLocation.DimensionId);
     }
 
     public boolean equalsPosition(ChunkLocation chunkLocation) {

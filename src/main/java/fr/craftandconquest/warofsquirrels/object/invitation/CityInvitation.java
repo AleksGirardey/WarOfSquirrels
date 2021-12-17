@@ -1,16 +1,18 @@
 package fr.craftandconquest.warofsquirrels.object.invitation;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import lombok.Getter;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.Util;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CityInvitation extends Invitation {
-    @Getter private final City city;
+    @Getter
+    private final City city;
 
-    public CityInvitation(Player receiver, Player sender, City city) {
+    public CityInvitation(FullPlayer receiver, FullPlayer sender, City city) {
         super(receiver, sender, InvitationType.City);
         this.city = city;
         WarOfSquirrels.instance.getBroadCastHandler().cityInvitation(receiver, sender, city);
@@ -24,24 +26,21 @@ public class CityInvitation extends Invitation {
 
     @Override
     public void refuse() {
-        StringTextComponent toSender = new StringTextComponent(receiver.getDisplayName() + " declined your invitation.");
-        StringTextComponent toReceiver = new StringTextComponent("The invitation from " + sender.getDisplayName() + " have been decline.");
+        MutableComponent toSender = ChatText.Error(receiver.getDisplayName() + " declined your invitation.");
+        MutableComponent toReceiver = ChatText.Error("The invitation from " + sender.getDisplayName() + " have been decline.");
 
-        toSender.applyTextStyle(TextFormatting.RED);
-        toReceiver.applyTextStyle(TextFormatting.RED);
-        sender.getPlayerEntity().sendMessage(toSender);
-        receiver.getPlayerEntity().sendMessage(toReceiver);
+        sender.getPlayerEntity().sendMessage(toSender, Util.NIL_UUID);
+        receiver.getPlayerEntity().sendMessage(toReceiver, Util.NIL_UUID);
     }
 
     @Override
     public void cancel() {
-        StringTextComponent toSender = new StringTextComponent("The invitation sent to '"
+        MutableComponent toSender = ChatText.Error("The invitation sent to '"
                 + receiver.getDisplayName() + "' has expired.");
-        StringTextComponent toReceiver = new StringTextComponent("The invitation from '"
+        MutableComponent toReceiver = ChatText.Error("The invitation from '"
                 + sender.getDisplayName() + "' has expired.");
 
-        toSender.applyTextStyle(TextFormatting.RED);
-        toReceiver.applyTextStyle(TextFormatting.RED);
-        sender.getPlayerEntity().sendMessage(toSender);
-        receiver.getPlayerEntity().sendMessage(toReceiver); }
+        sender.getPlayerEntity().sendMessage(toSender, Util.NIL_UUID);
+        receiver.getPlayerEntity().sendMessage(toReceiver, Util.NIL_UUID);
+    }
 }

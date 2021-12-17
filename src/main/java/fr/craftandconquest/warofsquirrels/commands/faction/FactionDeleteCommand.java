@@ -5,13 +5,13 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 public class FactionDeleteCommand extends FactionCommandMayor implements IAdminCommand {
     private final String argumentName = "[factionName]";
@@ -29,7 +29,7 @@ public class FactionDeleteCommand extends FactionCommandMayor implements IAdminC
     private final boolean withArgs;
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands
                 .literal("delete")
                 .executes(this)
@@ -37,14 +37,14 @@ public class FactionDeleteCommand extends FactionCommandMayor implements IAdminC
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (withArgs) return IsAdmin(player);
 
         return true;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Faction faction;
 
         if (withArgs)
@@ -53,15 +53,14 @@ public class FactionDeleteCommand extends FactionCommandMayor implements IAdminC
             faction = player.getCity().getFaction();
 
         WarOfSquirrels.instance.getFactionHandler().Delete(faction);
-        StringTextComponent message = new StringTextComponent("La faction '" + faction.getDisplayName() + "' a été dissoute libérant de son emprise ses territoires et ses villes.");
-        message.applyTextStyle(TextFormatting.GOLD);
-
-        WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(ChatText.Colored(
+                "La faction '" + faction.getDisplayName() + "' a été dissoute libérant de son emprise ses territoires et ses villes.",
+                ChatFormatting.GOLD));
         return 0;
     }
 
     @Override
-    protected ITextComponent ErrorMessage() {
-        return new StringTextComponent("Vous ne pouvez pas utiliser cette commande").applyTextStyle(TextFormatting.RED);
+    protected MutableComponent ErrorMessage() {
+        return ChatText.Error("Vous ne pouvez pas utiliser cette commande");
     }
 }

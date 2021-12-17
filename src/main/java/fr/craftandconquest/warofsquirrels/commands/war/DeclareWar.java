@@ -5,19 +5,20 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
 import fr.craftandconquest.warofsquirrels.object.war.Party;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class DeclareWar extends CityAssistantCommandBuilder {
     private static final DeclareWar CMD = new DeclareWar();
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands
                 .literal("attack")
                 .then(Commands
@@ -26,7 +27,7 @@ public class DeclareWar extends CityAssistantCommandBuilder {
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
         String target = context.getArgument("cityTargeted", String.class);
         AttackTarget attackTarget = WarOfSquirrels.instance.getCityHandler().getCity(target);
@@ -36,29 +37,29 @@ public class DeclareWar extends CityAssistantCommandBuilder {
 //        }
 
         if (party == null) {
-            player.getPlayerEntity().sendMessage(new StringTextComponent("You need a party to attack. /party create")
-                    .applyTextStyle(TextFormatting.RED).applyTextStyle(TextFormatting.BOLD));
+            player.getPlayerEntity().sendMessage(ChatText.Error("You need a party to attack. /party create")
+                    .withStyle(ChatFormatting.BOLD), Util.NIL_UUID);
             return false;
         }
 
-        for (Player p : party.toList()) {
+        for (FullPlayer p : party.toList()) {
             if (p.getCity() != party.getLeader().getCity()
                     && (!WarOfSquirrels.instance.getFactionHandler().areEnemies(p.getCity().getFaction(), attackTarget.getFaction())
                     || !WarOfSquirrels.instance.getFactionHandler().areAllies(p.getCity().getFaction(), party.getLeader().getCity().getFaction()))) {
-                player.getPlayerEntity().sendMessage(new StringTextComponent("Your party member '" + p.getDisplayName() + "' can't participate to this war.")
-                        .applyTextStyle(TextFormatting.RED).applyTextStyle(TextFormatting.BOLD));
+                player.getPlayerEntity().sendMessage(ChatText.Error("Your party member '" + p.getDisplayName() + "' can't participate to this war.")
+                        .withStyle(ChatFormatting.BOLD), Util.NIL_UUID);
                 return false;
             }
         }
 
         if (WarOfSquirrels.instance.getConfig().isPeaceTime())
-            player.getPlayerEntity().sendMessage(new StringTextComponent("You cannot declare war in time of peace !!")
-                    .applyTextStyle(TextFormatting.DARK_RED).applyTextStyle(TextFormatting.BOLD));
+            player.getPlayerEntity().sendMessage(ChatText.Error("You cannot declare war in time of peace !!")
+                    .withStyle(ChatFormatting.BOLD), Util.NIL_UUID);
         return (!WarOfSquirrels.instance.getConfig().isPeaceTime());
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         return 0;
     }
 }

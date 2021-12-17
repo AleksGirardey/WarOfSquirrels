@@ -3,11 +3,11 @@ package fr.craftandconquest.warofsquirrels.commands.city;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.city.set.*;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class CitySet extends CityAssistantCommandBuilder {
     private final CitySetSpawn citySetSpawn = new CitySetSpawn();
@@ -19,7 +19,7 @@ public class CitySet extends CityAssistantCommandBuilder {
     private final CitySetPerm citySetPerm = new CitySetPerm();
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("set")
                 .executes(this)
                 .then(citySetSpawn.register())
@@ -32,18 +32,18 @@ public class CitySet extends CityAssistantCommandBuilder {
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         return true;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        player.getPlayerEntity().sendMessage(new StringTextComponent(
-                "--==| city set help |==--\n"
-                        + "/city set spawn"
-                        + "/city set mayor [player]"
-                        + "/city set assistant [player]")
-                .applyTextStyle(TextFormatting.GREEN));
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        player.getPlayerEntity().sendMessage(ChatText.Success(
+                """
+                        --==| city set help |==--
+                        /city set spawn
+                        /city set mayor [player]
+                        /city set assistant [player]"""), Util.NIL_UUID);
         return 0;
     }
 }

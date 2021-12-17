@@ -2,24 +2,28 @@ package fr.craftandconquest.warofsquirrels.object.war;
 
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.Util;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Party implements IChannelTarget {
-    @Getter @Setter private Player leader;
-    @Getter private final List<Player> players = new ArrayList<>();
+    @Getter
+    @Setter
+    private FullPlayer leader;
+    @Getter
+    private final List<FullPlayer> players = new ArrayList<>();
 
-    public Party(Player leader) {
+    public Party(FullPlayer leader) {
         this.leader = leader;
     }
 
-    public void AddPlayer(Player player) {
+    public void AddPlayer(FullPlayer player) {
         players.add(player);
     }
 
@@ -28,7 +32,7 @@ public class Party implements IChannelTarget {
         StringBuilder list = new StringBuilder();
         int i = 0;
 
-        for(Player player : players) {
+        for (FullPlayer player : players) {
             list.append(player.getDisplayName());
             if (i != players.size())
                 list.append(", ");
@@ -38,28 +42,34 @@ public class Party implements IChannelTarget {
         return list.toString();
     }
 
-    public int size() { return players.size() + 1; }
+    public int size() {
+        return players.size() + 1;
+    }
 
-    public void remove(Player player) { players.remove(player); }
+    public void remove(FullPlayer player) {
+        players.remove(player);
+    }
 
-    public List<Player> toList() {
-        List<Player> players = new ArrayList<>(getPlayers());
+    public List<FullPlayer> toList() {
+        List<FullPlayer> players = new ArrayList<>(getPlayers());
         players.add(leader);
         return players;
     }
 
-    public void Send(TextComponent text) {
-        leader.getPlayerEntity().sendMessage(text);
+    public void Send(MutableComponent text) {
+        leader.getPlayerEntity().sendMessage(text, Util.NIL_UUID);
     }
 
     public void Send(String text) {
-        Send(new StringTextComponent(text));
+        Send(new TextComponent(text));
     }
 
-    public boolean contains(Player player) { return players.contains(player) || leader == player; }
+    public boolean contains(FullPlayer player) {
+        return players.contains(player) || leader == player;
+    }
 
-    public boolean  createCityCheck() {
-        for (Player p : players)
+    public boolean createCityCheck() {
+        for (FullPlayer p : players)
             if (p.getCity() != null)
                 return false;
         return leader.getCity() == null;

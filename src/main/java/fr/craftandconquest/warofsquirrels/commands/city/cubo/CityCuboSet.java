@@ -7,12 +7,12 @@ import fr.craftandconquest.warofsquirrels.commands.city.cubo.set.CityCuboSetCust
 import fr.craftandconquest.warofsquirrels.commands.city.cubo.set.CityCuboSetInPerm;
 import fr.craftandconquest.warofsquirrels.commands.city.cubo.set.CityCuboSetOutPerm;
 import fr.craftandconquest.warofsquirrels.commands.city.cubo.set.CityCuboSetOwner;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CityCuboSet extends CommandBuilder {
     private final CityCuboSetInPerm cityCuboSetInPerm = new CityCuboSetInPerm();
@@ -21,7 +21,7 @@ public class CityCuboSet extends CommandBuilder {
     private final CityCuboSetOwner cityCuboSetOwner = new CityCuboSetOwner();
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("set")
                 .executes(this)
                 .then(cityCuboSetInPerm.register())
@@ -31,23 +31,24 @@ public class CityCuboSet extends CommandBuilder {
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         return true;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        player.getPlayerEntity().sendMessage(new StringTextComponent("=== Cubo set ===\n" +
-                "... set owner : Défini le propriétaire du cubo\n" +
-                "... set inperm : Défini les permissions des joueurs dans la liste\n" +
-                "... set outperm : Défini les permissions des joueurs hors de la liste\n" +
-                "... set customperm : Défini des permissions spécifiques pour un joueur, une ville ou une faction\n")
-                .applyTextStyle(TextFormatting.GREEN));
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        player.getPlayerEntity().sendMessage(ChatText.Success("""
+                === Cubo set ===
+                ... set owner : Défini le propriétaire du cubo
+                ... set inperm : Défini les permissions des joueurs dans la liste
+                ... set outperm : Défini les permissions des joueurs hors de la liste
+                ... set customperm : Défini des permissions spécifiques pour un joueur, une ville ou une faction
+                """), Util.NIL_UUID);
         return 0;
     }
 
     @Override
-    protected ITextComponent ErrorMessage() {
+    protected MutableComponent ErrorMessage() {
         return null;
     }
 }

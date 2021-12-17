@@ -4,51 +4,65 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.level.ChunkPos;
 
 public class CitySetSpawn extends CityAssistantCommandBuilder {
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("spawn").executes(this);
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(
-                player.getPlayerEntity().chunkCoordX,
-                player.getPlayerEntity().chunkCoordZ,
-                player.getPlayerEntity().dimension.getId());
+                player.getPlayerEntity().chunkPosition().x,
+                player.getPlayerEntity().chunkPosition().z,
+                player.getPlayerEntity().getCommandSenderWorld().dimension());
 
-        if (chunk == null || chunk.getCity() != player.getCity() || !chunk.getHomeBlock() || !chunk.getOutpost()) {
-            StringTextComponent message = new StringTextComponent("You cannot set your spawn on this chunk.");
-            message.applyTextStyle(TextFormatting.RED);
-            player.getPlayerEntity().sendMessage(message);
-            return false;
+//        WarOfSquirrels.LOGGER.info("[WoS][Debug] " + (chunk == null ? "NULL":"CHUNK") + " - " + (!chunk.getCity().equals(player.getCity()) ? "NONE":"EQUAL") + " - " + (chunk.getHomeBlock() ? "HB" : "NONE") + " - " + (chunk.getOutpost() ? "Outpost" : "NONE"));
+
+        if (chunk != null && chunk.getCity().equals(player.getCity()) && (chunk.getHomeBlock() || chunk.getOutpost())) {
+            return true;
         }
+        player.getPlayerEntity().sendMessage(ChatText.Error("You cannot set your spawn on this chunk."), Util.NIL_UUID);
         return true;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        int                     x, y, z;
-        Chunk                   chunk;
+    protected boolean CanDoIt(FullPlayer player) {
+        if (player.getAssistant()) return super.CanDoIt(player);
+        else {
+            WarOfSquirrels.LOGGER.info("[WoS][Debug] CanDoIt override");
+            if (player.getCity() == null) return false;
+            return player.getCity().getOwner().equals(player);
+        }
+    }
 
-        x = player.getPlayerEntity().getPosition().getX();
-        y = player.getPlayerEntity().getPosition().getY();
-        z = player.getPlayerEntity().getPosition().getZ();
+    @Override
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        int x, y, z;
+        Chunk chunk;
 
-        chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(x / 16, z / 16, player.getPlayerEntity().dimension.getId());
+        x = player.getPlayerEntity().getBlockX();
+        y = player.getPlayerEntity().getBlockY();
+        z = player.getPlayerEntity().getBlockZ();
+
+        ChunkPos chunkPos = Utils.WorldToChunkPos(x, z);
+
+        chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(chunkPos.x, chunkPos.z, player.getPlayerEntity().getCommandSenderWorld().dimension());
         chunk.setRespawnX(x);
         chunk.setRespawnY(y);
         chunk.setRespawnZ(z);
 
-        StringTextComponent message = new StringTextComponent(chunk.toString() + " has now a spawn point at [" + x + ";" + y + ";" + z + "]");
-        message.applyTextStyle(TextFormatting.GREEN);
+        MutableComponent message = ChatText.Success(chunk + " has now a spawn point at [" + x + ";" + y + ";" + z + "]");
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(player.getCity(), null, message, true);
 

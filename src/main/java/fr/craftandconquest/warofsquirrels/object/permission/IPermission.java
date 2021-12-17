@@ -6,8 +6,11 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import java.util.UUID;
 
 public interface IPermission {
-    @JsonIgnore UUID getUuid();
-    @JsonIgnore PermissionTarget getPermissionTarget();
+    @JsonIgnore
+    UUID getUuid();
+
+    @JsonIgnore
+    PermissionTarget getPermissionTarget();
 
     static IPermission getPermissionFromName(String entityName) {
         if (WarOfSquirrels.instance.getPlayerHandler().get(entityName) != null)

@@ -6,14 +6,28 @@ import lombok.Setter;
 import java.util.UUID;
 
 public class Permission {
-    @Getter @Setter public UUID uuid;
-    @Getter @Setter public String name;
+    @Getter
+    @Setter
+    public UUID uuid;
+    @Getter
+    @Setter
+    public String name;
 
-    @Getter @Setter public boolean build;
-    @Getter @Setter public boolean container;
-    @Getter @Setter public boolean switches;
-    @Getter @Setter public boolean farm;
-    @Getter @Setter public boolean interact;
+    @Getter
+    @Setter
+    public boolean build;
+    @Getter
+    @Setter
+    public boolean container;
+    @Getter
+    @Setter
+    public boolean switches;
+    @Getter
+    @Setter
+    public boolean farm;
+    @Getter
+    @Setter
+    public boolean interact;
 
     public Permission() {
         uuid = UUID.randomUUID();
@@ -39,8 +53,8 @@ public class Permission {
     }
 
     @Override
-    public String       toString() {
-        String          res = "";
+    public String toString() {
+        String res = "";
 
         res += "[" + (this.build ? "B" : "-") + ";";
         res += (this.container ? "C" : "-") + ";";

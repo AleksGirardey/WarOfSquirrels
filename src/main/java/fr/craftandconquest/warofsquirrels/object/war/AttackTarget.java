@@ -4,5 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 
 public interface AttackTarget {
-    @JsonIgnore Faction getFaction();
+    @JsonIgnore
+    Faction getFaction();
 }

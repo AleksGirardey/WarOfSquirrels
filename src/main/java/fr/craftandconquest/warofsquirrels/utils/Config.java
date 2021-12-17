@@ -33,9 +33,11 @@ public class Config {
 
     private final Logger Logger;
 
-    @Getter @Setter private ConfigData configuration;
+    @Getter
+    @Setter
+    private ConfigData configuration;
 
-    public  Config(String prefix, Logger logger) {
+    public Config(String prefix, Logger logger) {
         PrefixLogger = prefix;
         Logger = logger;
         Setup();
@@ -52,7 +54,7 @@ public class Config {
         }
     }
 
-    private boolean Init()  {
+    private boolean Init() {
         String errorMessage = MessageFormat.format("{0} Couldn't create Json config at '{1}'",
                 PrefixLogger, getConfigPath());
         configFile = new File(getConfigPath());
@@ -129,21 +131,21 @@ public class Config {
         Permission defaultNaturePermission = new Permission(true, true, true, true, true);
 
         return new ConfigData(
-        /* Claiming */
+                /* Claiming */
                 4, // minPartySizeToCreateCity;
                 20, // distanceCities;
                 20, // distanceOutpost;
 
-        /* Influence */
+                /* Influence */
                 400, // territoryClaimLimit;
                 10, // baseInfluenceGeneration;
                 40, // baseInfluenceRequired;
 
-        /* Speaking */
+                /* Speaking */
                 15, // shoutDistance;
                 10, // sayDistance;
 
-        /* World Config */
+                /* World Config */
                 4608, // mapSize;
                 0,
                 0,
@@ -154,11 +156,11 @@ public class Config {
                 15, // invitationTime;
                 1500, // startBalance;
 
-        /* War */
-            120, // preparationPhase;
-            120, // rollbackPhase;
-            1000, // influenceMax;
+                /* War */
+                120, // preparationPhase;
+                120, // rollbackPhase;
+                1000, // influenceMax;
 
-            initRanks, defaultPermissions, defaultNaturePermission);
+                initRanks, defaultPermissions, defaultNaturePermission);
     }
 }

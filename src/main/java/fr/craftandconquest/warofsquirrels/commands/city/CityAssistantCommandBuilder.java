@@ -1,20 +1,19 @@
 package fr.craftandconquest.warofsquirrels.commands.city;
 
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 
-public abstract class CityAssistantCommandBuilder extends CityMayorCommandBuilder {
+public abstract class CityAssistantCommandBuilder extends CityCommandBuilder {
     @Override
-    protected ITextComponent ErrorMessage() {
-        return new StringTextComponent("You need to be at least assistant in your city to perform this command")
-                .applyTextStyle(TextFormatting.RED)
-                .applyTextStyle(TextFormatting.BOLD);
+    protected MutableComponent ErrorMessage() {
+        return ChatText.Error("You need to be at least assistant in your city to perform this command")
+                .withStyle(ChatFormatting.BOLD);
     }
 
     @Override
-    protected boolean CanDoIt(Player player) {
-        return super.CanDoIt(player) || player.getAssistant();
+    protected boolean CanDoIt(FullPlayer player) {
+        return super.CanDoIt(player) && player.getAssistant();
     }
 }

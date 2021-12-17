@@ -5,20 +5,20 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.extractor.ITerritoryExtractor;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Influence;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 public class FactionClaimCommand extends FactionCommandAssistant implements ITerritoryExtractor {
     private final String argumentName = "[TerritoryName]";
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands
                 .literal("claim")
                 .then(Commands
@@ -27,7 +27,7 @@ public class FactionClaimCommand extends FactionCommandAssistant implements ITer
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Territory territory = ExtractTerritory(player);
         Influence influence = WarOfSquirrels.instance.getInfluenceHandler().get(player.getCity().getFaction(), territory);
 
@@ -35,7 +35,7 @@ public class FactionClaimCommand extends FactionCommandAssistant implements ITer
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Territory territory = ExtractTerritory(player);
 
         territory.SetFaction(player.getCity().getFaction());
@@ -46,11 +46,9 @@ public class FactionClaimCommand extends FactionCommandAssistant implements ITer
         int posZ = territory.getPosZ();
         int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
 
-        StringTextComponent message = new StringTextComponent("La faction '" + territory.getFaction().getDisplayName() + "'"
+        MutableComponent message = ChatText.Colored("La faction '" + territory.getFaction().getDisplayName() + "'"
                 + " a revendiqué l'appartenance du territoire maintenant appellé '" + territory.getName() + "' situé en ["
-                + posX + ";" + posZ + "](~" + posX * territorySize + ";" + "~" + posZ * territorySize + ")");
-
-        message.applyTextStyle(TextFormatting.GOLD);
+                + posX + ";" + posZ + "](~" + posX * territorySize + ";" + "~" + posZ * territorySize + ")", ChatFormatting.GOLD);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
         WarOfSquirrels.instance.getInfluenceHandler().ResetOthersInfluence(territory);
@@ -59,5 +57,7 @@ public class FactionClaimCommand extends FactionCommandAssistant implements ITer
     }
 
     @Override
-    protected ITextComponent ErrorMessage() { return null; }
+    protected MutableComponent ErrorMessage() {
+        return null;
+    }
 }

@@ -6,18 +6,19 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
 import fr.craftandconquest.warofsquirrels.commands.city.CityCommandBuilder;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CityCuboDelete extends CityCommandBuilder implements IAdminCommand {
     private final String argumentName = "[CuboName]";
+
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands
                 .literal("delete")
                 .then(Commands
@@ -26,7 +27,7 @@ public class CityCuboDelete extends CityCommandBuilder implements IAdminCommand 
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(context.getArgument(argumentName, String.class));
 
         if (cubo != null && IsAdmin(player) || (player.getCity().getOwner() == player || player.getAssistant()))
@@ -36,20 +37,18 @@ public class CityCuboDelete extends CityCommandBuilder implements IAdminCommand 
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         String cuboName = context.getArgument(argumentName, String.class);
 
         if (WarOfSquirrels.instance.getCuboHandler().Delete(cuboName)) {
-            StringTextComponent message = new StringTextComponent("Le cubo " + cuboName + " est maintenant détruit.");
-            message.applyTextStyle(TextFormatting.GREEN);
-            player.getPlayerEntity().sendMessage(message);
+            player.getPlayerEntity().sendMessage(ChatText.Success("Le cubo " + cuboName + " est maintenant détruit."), Util.NIL_UUID);
         }
 
         return 0;
     }
 
     @Override
-    protected ITextComponent ErrorMessage() {
+    protected MutableComponent ErrorMessage() {
         return null;
     }
 }

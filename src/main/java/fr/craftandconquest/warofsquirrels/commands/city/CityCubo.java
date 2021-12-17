@@ -5,9 +5,9 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.cubo.*;
 import fr.craftandconquest.warofsquirrels.handler.CuboHandler;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class CityCubo extends CityAssistantCommandBuilder {
     private final CityCuboList cityCuboList = new CityCuboList();
@@ -19,7 +19,7 @@ public class CityCubo extends CityAssistantCommandBuilder {
     private final CityCuboSet cityCuboSet = new CityCuboSet();
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("cubo")
                 .executes(this)
                 .then(cityCuboList.register())
@@ -32,12 +32,12 @@ public class CityCubo extends CityAssistantCommandBuilder {
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         return true;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         CuboHandler cuboHandler = WarOfSquirrels.instance.getCuboHandler();
 
         if (cuboHandler.playerExists(player))

@@ -1,6 +1,6 @@
 {
     "pack": {
-        "description": "WoS",
-        "pack_format": 4
+        "description": "examplemod resources",
+        "pack_format": 7
     }
 }

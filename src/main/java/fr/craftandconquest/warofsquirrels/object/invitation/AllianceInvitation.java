@@ -1,21 +1,18 @@
 package fr.craftandconquest.warofsquirrels.object.invitation;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 
 public class AllianceInvitation extends Invitation {
     private final Faction factionSender;
     private final Permission permission;
 
-    public AllianceInvitation(Player sender, Faction faction, Permission permission) {
+    public AllianceInvitation(FullPlayer sender, Faction faction, Permission permission) {
         super(sender, InvitationType.Alliance, faction);
         this.factionSender = sender.getCity().getFaction();
         this.permission = permission;
@@ -24,8 +21,7 @@ public class AllianceInvitation extends Invitation {
 
     @Override
     public void accept() {
-        StringTextComponent message = new StringTextComponent(factionSender.getDisplayName() + " et " + factionReceiver.getDisplayName() + " sont désormais alliés.");
-        message.applyTextStyle(TextFormatting.GOLD);
+        MutableComponent message = ChatText.Colored(factionSender.getDisplayName() + " et " + factionReceiver.getDisplayName() + " sont désormais alliés.", ChatFormatting.GOLD);
 
         WarOfSquirrels.instance.getDiplomacyHandler().CreateDiplomacy(factionSender, factionReceiver, true, permission);
         WarOfSquirrels.instance.getDiplomacyHandler().CreateDiplomacy(factionReceiver, factionSender, true, null);
@@ -33,7 +29,7 @@ public class AllianceInvitation extends Invitation {
     }
 
     @Override
-    public boolean      concern(Player player) {
+    public boolean concern(FullPlayer player) {
         return (player.getCity().getFaction() == factionReceiver
                 && (player.getCity().getOwner() == player
                 || player.getAssistant()));
@@ -41,11 +37,8 @@ public class AllianceInvitation extends Invitation {
 
     @Override
     public void refuse() {
-        StringTextComponent toSender = new StringTextComponent(factionReceiver.getDisplayName() + " a décliné votre invitation");
-        StringTextComponent toReceiver = new StringTextComponent("L'invitation de " + factionSender.getDisplayName() + " a été décliné.");
-
-        toSender.applyTextStyle(TextFormatting.RED);
-        toReceiver.applyTextStyle(TextFormatting.RED);
+        MutableComponent toSender = ChatText.Error(factionReceiver.getDisplayName() + " a décliné votre invitation");
+        MutableComponent toReceiver = ChatText.Error("L'invitation de " + factionSender.getDisplayName() + " a été décliné.");
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(factionSender, null, toSender, true);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(factionReceiver, null, toReceiver, true);
@@ -53,13 +46,10 @@ public class AllianceInvitation extends Invitation {
 
     @Override
     public void cancel() {
-        StringTextComponent toSender = new StringTextComponent("L'invitation envoyé à '"
+        MutableComponent toSender = ChatText.Error("L'invitation envoyé à '"
                 + factionReceiver.getDisplayName() + "' a expiré.");
-        StringTextComponent toReceiver = new StringTextComponent("L'invitation de '"
+        MutableComponent toReceiver = ChatText.Error("L'invitation de '"
                 + factionSender.getDisplayName() + "' a expiré");
-
-        toSender.applyTextStyle(TextFormatting.RED);
-        toReceiver.applyTextStyle(TextFormatting.RED);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(factionSender, null, toSender, true);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(factionReceiver, null, toReceiver, true);

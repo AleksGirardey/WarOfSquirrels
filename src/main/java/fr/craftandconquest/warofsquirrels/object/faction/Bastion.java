@@ -8,11 +8,21 @@ import lombok.Setter;
 import java.util.UUID;
 
 public class Bastion implements IFortification {
-    @JsonProperty @Getter @Setter private UUID bastionUuid;
-    @JsonProperty @Getter @Setter private String name;
-    @JsonProperty @Getter private UUID factionUuid;
+    @JsonProperty
+    @Getter
+    @Setter
+    private UUID bastionUuid;
+    @JsonProperty
+    @Getter
+    @Setter
+    private String name;
+    @JsonProperty
+    @Getter
+    private UUID factionUuid;
 
-    @JsonIgnore @Getter private Faction faction;
+    @JsonIgnore
+    @Getter
+    private Faction faction;
 
     public void SetFaction(Faction faction) {
         this.faction = faction;
@@ -21,5 +31,7 @@ public class Bastion implements IFortification {
     }
 
     @Override
-    public UUID getUniqueId() { return bastionUuid; }
+    public UUID getUniqueId() {
+        return bastionUuid;
+    }
 }

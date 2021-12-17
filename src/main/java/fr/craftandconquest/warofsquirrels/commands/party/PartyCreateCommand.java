@@ -4,42 +4,37 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 public class PartyCreateCommand extends CommandBuilder {
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("create").executes(this);
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player) == null) return true;
 
-        StringTextComponent message = new StringTextComponent("Vous appartenez déjà à un groupe.");
-        message.applyTextStyle(TextFormatting.RED);
-
-        player.getPlayerEntity().sendMessage(message);
+        player.getPlayerEntity().sendMessage(ChatText.Error("Vous appartenez déjà à un groupe."), Util.NIL_UUID);
         return false;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         WarOfSquirrels.instance.getPartyHandler().CreateParty(player);
-        StringTextComponent message = new StringTextComponent("Vous appartenez désormais à un groupe.");
-        message.applyTextStyle(TextFormatting.GOLD);
 
-        player.getPlayerEntity().sendMessage(message);
+        player.getPlayerEntity().sendMessage(ChatText.Success("Vous appartenez désormais à un groupe."), Util.NIL_UUID);
         return 0;
     }
 
     @Override
-    protected ITextComponent ErrorMessage() {
-        return new StringTextComponent("You cannot perform this command").applyTextStyle(TextFormatting.RED);
+    protected MutableComponent ErrorMessage() {
+        return ChatText.Error("You cannot perform this command");
     }
 }

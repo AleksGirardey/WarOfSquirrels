@@ -5,14 +5,14 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
 import fr.craftandconquest.warofsquirrels.object.war.War;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 public class WarInfo extends CommandBuilder {
     private static final WarInfo CMD_NO_ARGS = new WarInfo(false);
@@ -21,14 +21,16 @@ public class WarInfo extends CommandBuilder {
     private final boolean args;
     private String targetName;
 
-    public WarInfo(){ args = false; }
+    public WarInfo() {
+        args = false;
+    }
 
-    private WarInfo(boolean hasArgs){
+    private WarInfo(boolean hasArgs) {
         args = hasArgs;
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("info")
                 .executes(CMD_NO_ARGS)
                 .then(Commands
@@ -37,7 +39,7 @@ public class WarInfo extends CommandBuilder {
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         War war;
         String targetName;
 
@@ -46,8 +48,9 @@ public class WarInfo extends CommandBuilder {
             AttackTarget target = WarOfSquirrels.instance.getCityHandler().getCity(targetName);
 
             if (target == null) {
-    //            target = WarOfSquirrels.instance.getBastionHandler().getBastion(targetName);
-                if (target == null) return false;
+                //            target = WarOfSquirrels.instance.getBastionHandler().getBastion(targetName);
+//                if (target == null)
+                return false;
             }
             war = WarOfSquirrels.instance.getWarHandler().getWar(target);
         } else {
@@ -60,7 +63,7 @@ public class WarInfo extends CommandBuilder {
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         String targetName = context.getArgument("cityTargetName", String.class);
         AttackTarget target = WarOfSquirrels.instance.getCityHandler().getCity(targetName);
 
@@ -75,9 +78,8 @@ public class WarInfo extends CommandBuilder {
     }
 
     @Override
-    protected ITextComponent ErrorMessage() {
-        return new StringTextComponent( "The target '" + targetName + "' is not participating to a war")
-                .applyTextStyle(TextFormatting.RED)
-                .applyTextStyle(TextFormatting.BOLD);
+    protected MutableComponent ErrorMessage() {
+        return ChatText.Error("The target '" + targetName + "' is not participating to a war")
+                .withStyle(ChatFormatting.BOLD);
     }
 }

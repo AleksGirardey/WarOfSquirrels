@@ -2,14 +2,13 @@ package fr.craftandconquest.warofsquirrels.handler;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
-import it.unimi.dsi.fastutil.objects.ReferenceLists;
-import net.minecraft.util.text.StringTextComponent;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -26,7 +25,8 @@ public class CityHandler extends Handler<City> {
         cityMap = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<List<City>>() {})) return;
+        if (!Load(new TypeReference<List<City>>() {
+        })) return;
 
         Log();
     }
@@ -45,7 +45,7 @@ public class CityHandler extends Handler<City> {
         return true;
     }
 
-    public City CreateCity(String name, String tag, Player owner) {
+    public City CreateCity(String name, String tag, FullPlayer owner) {
         City city = new City();
 
         city.setCityUuid(UUID.randomUUID());
@@ -63,7 +63,6 @@ public class CityHandler extends Handler<City> {
         if (!add(city))
             return null;
 
-        Save(cityMap.values());
         LogCityCreation(city);
         return city;
     }
@@ -99,7 +98,9 @@ public class CityHandler extends Handler<City> {
         return null;
     }
 
-    public City getCity(UUID uuid) { return cityMap.get(uuid); }
+    public City getCity(UUID uuid) {
+        return cityMap.get(uuid);
+    }
 
 //    public List<City> getAll() { return dataArray; }
 
@@ -109,27 +110,26 @@ public class CityHandler extends Handler<City> {
 
         if (!WarOfSquirrels.instance.getChunkHandler().deleteCity(city)) return false;
 
-        for (Player player : city.getCitizens()) {
+        for (FullPlayer player : city.getCitizens()) {
             player.setAssistant(false);
             player.setCity(null);
         }
 
         cityMap.remove(city.getCityUuid());
         city.getOwner().setCity(null);
-
-        Save(cityMap.values());
+        dataArray.remove(city);
 
         return true;
     }
 
-    public void NewCitizen(Player player, City city) {
+    public void NewCitizen(FullPlayer player, City city) {
         player.setCity(city);
         assert city.addCitizen(player);
         WarOfSquirrels.instance.getPlayerHandler().Save();
-        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(city, null, new StringTextComponent(player.getDisplayName() + " has join the city."), true);
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(city, null, ChatText.Success(player.getDisplayName() + " has join the city."), true);
     }
 
-    public void RemoveCitizen(Player player) {
+    public void RemoveCitizen(FullPlayer player) {
         player.getCity().removeCitizen(player, false);
         player.setCity(null);
     }
@@ -149,10 +149,10 @@ public class CityHandler extends Handler<City> {
         return cities;
     }
 
-    public List<Player> getAssistants(City city) {
-        List<Player> res = new ArrayList<>();
+    public List<FullPlayer> getAssistants(City city) {
+        List<FullPlayer> res = new ArrayList<>();
 
-        for (Player player : city.getCitizens()) {
+        for (FullPlayer player : city.getCitizens()) {
             if (player.getAssistant())
                 res.add(player);
         }
@@ -161,10 +161,10 @@ public class CityHandler extends Handler<City> {
     }
 
     public List<String> getAssistants(UUID uuid) {
-        List<Player> assistants = getAssistants(cityMap.get(uuid));
+        List<FullPlayer> assistants = getAssistants(cityMap.get(uuid));
         List<String> res = new ArrayList<>();
 
-        for (Player player : assistants) {
+        for (FullPlayer player : assistants) {
             res.add(player.getDisplayName());
         }
 
@@ -179,12 +179,12 @@ public class CityHandler extends Handler<City> {
 
         city.getCustomPermissionList().add(new City.CityCustomPermission(target.getUuid(), City.CityCustomPermissionType.City, permission));
 
-        Save(dataArray);
+        Save();
     }
 
     public void SetDefaultPermission(PermissionRelation relation, Permission permission, City city) {
         city.getDefaultPermission().replace(relation, permission);
-        Save(dataArray);
+        Save();
     }
 
     public Collection<String> getAllAsCollection() {

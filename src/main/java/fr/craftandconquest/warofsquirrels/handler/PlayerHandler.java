@@ -2,39 +2,38 @@ package fr.craftandconquest.warofsquirrels.handler;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
 import java.util.*;
 
-public class PlayerHandler extends Handler<Player> {
+public class PlayerHandler extends Handler<FullPlayer> {
 
     private static final String DirName = "/WorldData";
     private static final String JsonName = "/PlayerHandler.json";
 
-    private final Map<String, Player> playersByName;
-    private final Map<PlayerEntity, Player> playersByEntity;
+    private final Map<String, FullPlayer> playersByName;
 
-    private final Map<Player, Timer> reincarnation;
+    private final Map<FullPlayer, Timer> reincarnation;
 
     public PlayerHandler(Logger logger) {
         super("[WoS][PlayerHandler]", logger);
         playersByName = new HashMap<>();
-        playersByEntity = new HashMap<>();
         reincarnation = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<List<Player>>() {})) return;
+        if (!Load(new TypeReference<List<FullPlayer>>() {
+        })) return;
 
         Log();
     }
 
     public void updateDependencies() {
-        for (Player player : dataArray)
+        for (FullPlayer player : dataArray)
             player.updateDependencies();
     }
 
@@ -44,38 +43,36 @@ public class PlayerHandler extends Handler<Player> {
         return true;
     }
 
-    public boolean add(Player player) {
+    public boolean add(FullPlayer player) {
         if (!dataArray.contains(player)) {
             playersByName.put(player.getDisplayName(), player);
-            playersByEntity.put(player.getPlayerEntity(), player);
         }
         return true;
     }
 
-    public Player CreatePlayer(PlayerEntity playerEntity) {
-        Player player = new Player();
+    public FullPlayer CreatePlayer(Player playerEntity) {
+        FullPlayer player = new FullPlayer();
 
-        player.setPlayerEntity(playerEntity);
-        player.setUuid(playerEntity.getUniqueID());
+        player.setUuid(playerEntity.getUUID());
         player.setDisplayName(playerEntity.getDisplayName().getString());
         player.setAssistant(false);
         player.setBalance(WarOfSquirrels.instance.config.getConfiguration().getStartBalance());
         player.lastPosition = new Vector3(
-                (int) playerEntity.getPositionVec().x,
-                (int) playerEntity.getPositionVec().y,
-                (int) playerEntity.getPositionVec().z);
-        player.lastDimension = playerEntity.dimension;
+                (int) playerEntity.getOnPos().getX(),
+                (int) playerEntity.getOnPos().getY(),
+                (int) playerEntity.getOnPos().getZ());
+        player.lastDimension = playerEntity.getCommandSenderWorld().dimension();
 
-        if (!add(player)) return null;
+        playersByName.put(player.getDisplayName(), player);
+        dataArray.add(player);
 
-        Save(playersByName.values());
         LogPlayerCreation(player);
 
         return player;
     }
 
     @Override
-    public boolean Delete(Player player) {
+    public boolean Delete(FullPlayer player) {
         if (player.getCity() != null)
             if (!player.getCity().removeCitizen(player, false))
                 return false;
@@ -87,9 +84,7 @@ public class PlayerHandler extends Handler<Player> {
         }
         reincarnation.remove(player);
         playersByName.remove(player.getDisplayName());
-        playersByEntity.remove(player.getPlayerEntity());
 
-        Save(playersByName.values());
         return true;
     }
 
@@ -114,18 +109,20 @@ public class PlayerHandler extends Handler<Player> {
         // Nothing to do;
     }
 
-    private void LogPlayerCreation(Player player) {
+    private void LogPlayerCreation(FullPlayer player) {
         Logger.info(MessageFormat.format("{0} Player {1}({2}) created",
                 PrefixLogger, player.getDisplayName(), player.getUuid()));
     }
 
-    public Player get(PlayerEntity playerEntity) {
-        return playersByEntity.get(playerEntity);
+    public boolean exists(UUID playerUuid) {
+        return exists(playerUuid, false);
     }
 
-    public boolean exists(PlayerEntity player) { return playersByEntity.containsKey(player); }
+    public boolean exists(UUID playerUuid, boolean log) {
+        return get(playerUuid, log) != null;
+    }
 
-    public Timer newReincarnation(Player player) {
+    public Timer newReincarnation(FullPlayer player) {
         Timer timer = new Timer();
 
         timer.schedule(new TimerTask() {
@@ -138,11 +135,11 @@ public class PlayerHandler extends Handler<Player> {
         return timer;
     }
 
-    public boolean isInReincarnation(Player player) {
+    public boolean isInReincarnation(FullPlayer player) {
         return reincarnation.containsKey(player);
     }
 
-    public void SetReincarnation(Player player) {
+    public void SetReincarnation(FullPlayer player) {
         if (reincarnation.containsKey(player)) {
             reincarnation.get(player).cancel();
             reincarnation.remove(player);
@@ -151,21 +148,25 @@ public class PlayerHandler extends Handler<Player> {
         reincarnation.put(player, newReincarnation(player));
     }
 
-    public void CancelReincarnation(Player player) {
+    public void CancelReincarnation(FullPlayer player) {
         player.setReincarnation(false);
         reincarnation.remove(player);
     }
 
-    public Player get(UUID uuid) {
-        for (Player player : dataArray) {
-            if (player.getUuid() == uuid)
+    public FullPlayer get(UUID uuid) {
+        return get(uuid, false);
+    }
+
+    public FullPlayer get(UUID uuid, boolean log) {
+        for (FullPlayer player : dataArray) {
+            if (player.getUuid().equals(uuid))
                 return player;
         }
 
         return null;
     }
 
-    public Player get(String displayName) {
+    public FullPlayer get(String displayName) {
         return playersByName.get(displayName);
     }
 }

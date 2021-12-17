@@ -21,7 +21,7 @@ public class InfluenceHandler extends Handler<Influence> {
     private final Map<UUID, Influence> influences;
 
     private static final String DirName = "/WorldData";
-    private static final String JsonName = "InfluenceHandler.json";
+    private static final String JsonName = "/InfluenceHandler.json";
 
     public InfluenceHandler(Logger logger) {
         super("[WoS][InfluenceHandler]", logger);
@@ -30,7 +30,8 @@ public class InfluenceHandler extends Handler<Influence> {
         influences = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<List<Influence>>() {})) return;
+        if (!Load(new TypeReference<List<Influence>>() {
+        })) return;
 
         Log();
     }
@@ -73,17 +74,17 @@ public class InfluenceHandler extends Handler<Influence> {
         if (!add(influence))
             return null;
 
-        Save(influences.values());
+        Save();
         LogInfluenceCreation(influence);
         return influence;
     }
 
     @Override
     public boolean Delete(Influence value) {
-        factionInfluenceMap.get(value.getFaction()).remove(value.getTerritory());
+        factionInfluenceMap.get(value.getFaction()).keySet().removeIf(t -> t.equals(value.getTerritory()));
         influences.remove(value.getUuid());
 
-        Save(influences.values());
+        Save();
         return true;
     }
 
@@ -112,18 +113,20 @@ public class InfluenceHandler extends Handler<Influence> {
         // Nothing To Do
     }
 
-    public Influence        get(UUID uuid) { return influences.get(uuid); }
+    public Influence get(UUID uuid) {
+        return influences.get(uuid);
+    }
 
-    public Influence        get(Faction faction, Territory territory) {
+    public Influence get(Faction faction, Territory territory) {
         return factionInfluenceMap.get(faction).get(territory);
     }
 
-    public Influence        get(City city, Territory territory) {
+    public Influence get(City city, Territory territory) {
         return cityInfluenceMap.get(city).get(territory);
     }
 
     public void ResetOthersInfluence(Territory territory) {
-        cityInfluenceMap.forEach((k, v) -> v.remove(territory));
+        cityInfluenceMap.forEach((k, v) -> v.keySet().removeIf(t -> t.equals(territory)));
         factionInfluenceMap.forEach((k, v) -> {
             if (k != territory.getFaction()) {
                 if (v.containsKey(territory))
@@ -158,7 +161,7 @@ public class InfluenceHandler extends Handler<Influence> {
         for (Influence influence : factionInfluence.values())
             dataArray.remove(influence);
 
-        factionInfluenceMap.remove(faction);
+        factionInfluenceMap.keySet().removeIf(f -> f.equals(faction));
         Save();
     }
 }

@@ -1,10 +1,10 @@
 package fr.craftandconquest.warofsquirrels.object.channels;
 
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 
 public class PartyChannel extends Channel {
 
@@ -13,16 +13,12 @@ public class PartyChannel extends Channel {
     }
 
     @Override
-    protected ITextComponent transformText(Player sender, ITextComponent text) {
-        return new StringTextComponent(String.format("[Groupe][%s] ", sender.getDisplayName()))
-                .appendSibling(text)
-                .applyTextStyle(TextFormatting.GRAY);
+    protected MutableComponent transformText(FullPlayer sender, MutableComponent text) {
+        return ChatText.Colored(String.format("[Groupe][%s] ", sender.getDisplayName()), ChatFormatting.GRAY);
     }
 
     @Override
-    protected ITextComponent transformTextAnnounce(ITextComponent text) {
-        return new StringTextComponent("[Groupe] ")
-                .appendSibling(text)
-                .applyTextStyle(TextFormatting.GOLD);
+    protected MutableComponent transformTextAnnounce(MutableComponent text) {
+        return ChatText.Colored("[Groupe] ", ChatFormatting.GOLD).append(text);
     }
 }

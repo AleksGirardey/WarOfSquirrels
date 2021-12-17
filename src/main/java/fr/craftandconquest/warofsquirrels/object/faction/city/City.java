@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
@@ -13,14 +13,17 @@ import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,81 +44,104 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         Player,
     }
 
-    @JsonProperty @Getter @Setter private UUID cityUuid;
-    @Getter @Setter public String displayName;
+    @JsonProperty
+    @Getter
+    @Setter
+    private UUID cityUuid;
+    @Getter
+    @Setter
+    public String displayName;
     public String tag;
     public UUID ownerUUID;
 
-    @JsonIgnore @Getter private Faction faction;
-    @JsonProperty @Getter @Setter private UUID factionUuid;
-    @Getter private CityRank   rank;
+    @JsonIgnore
+    @Getter
+    private Faction faction = null;
+    @JsonProperty
+    @Getter
+    @Setter
+    private UUID factionUuid;
+    @Getter
+    private CityRank rank;
 
-    @JsonIgnore @Getter @Setter private Map<IPermission, Permission> customPermission = new HashMap<>();
-    @Getter @Setter private Map<PermissionRelation, Permission> defaultPermission;
-    @Getter @Setter private List<CityCustomPermission> customPermissionList = new ArrayList<>();
+    @JsonIgnore
+    @Getter
+    @Setter
+    private Map<IPermission, Permission> customPermission = new HashMap<>();
+    @Getter
+    @Setter
+    private Map<PermissionRelation, Permission> defaultPermission;
+    @Getter
+    @Setter
+    private List<CityCustomPermission> customPermissionList = new ArrayList<>();
 
-    @JsonIgnore private int balance;
+    @JsonIgnore
+    private int balance;
 
-    @JsonIgnore @Getter private Player owner;
-    @JsonIgnore @Getter private final List<Player> citizens = new ArrayList<>();
+    @JsonIgnore
+    @Getter
+    private FullPlayer owner;
+    @JsonIgnore
+    @Getter
+    private final List<FullPlayer> citizens = new ArrayList<>();
 
-    public List<Player> getAssistants() {
-        return citizens.stream().filter(Player::getAssistant).collect(Collectors.toCollection(ArrayList::new));
+    public List<FullPlayer> getAssistants() {
+        return citizens.stream().filter(FullPlayer::getAssistant).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    @JsonIgnore public List<Player> getResidents() {
+    @JsonIgnore
+    public List<FullPlayer> getResidents() {
         return citizens.stream()
-                .filter(Player::getResident)
+                .filter(FullPlayer::getResident)
                 .filter(player -> !player.getAssistant())
                 .collect(Collectors.toList());
     }
 
-    @JsonIgnore public List<Player> getRecruits() {
+    @JsonIgnore
+    public List<FullPlayer> getRecruits() {
         return citizens.stream()
                 .filter(player -> !player.getResident())
                 .filter(player -> !player.getAssistant())
                 .collect(Collectors.toList());
     }
 
-    @JsonIgnore public boolean addCitizen(Player player) {
+    @JsonIgnore
+    public boolean addCitizen(FullPlayer player) {
         if (citizens.contains(player)) return false;
 
         citizens.add(player);
         player.setCity(this);
 
-        StringTextComponent messageToTarget = new StringTextComponent("Vous avez rejoint " + displayName + ".");
-        messageToTarget.applyTextStyle(TextFormatting.GREEN);
-        player.getPlayerEntity().sendMessage(messageToTarget);
+        MutableComponent messageToTarget = new TextComponent("Vous avez rejoint " + displayName + ".")
+                .withStyle(ChatFormatting.GREEN);
+        player.getPlayerEntity().sendMessage(messageToTarget, Util.NIL_UUID);
 
-        StringTextComponent messageToCity = new StringTextComponent(player.getDisplayName() + " à rejoint la ville.");
-        messageToCity.applyTextStyle(TextFormatting.GREEN);
+        MutableComponent messageToCity = new TextComponent(player.getDisplayName() + " à rejoint la ville.")
+                .withStyle(ChatFormatting.GREEN);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null, messageToCity, true);
         WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(this, player);
         return true;
     }
 
-    public boolean removeCitizen(Player player, boolean isKicked) {
+    public boolean removeCitizen(FullPlayer player, boolean isKicked) {
         if (!citizens.contains(player)) return false;
 
         citizens.remove(player);
         player.setCity(null);
 
-        StringTextComponent messageToTarget = new StringTextComponent(isKicked ?
-                "Vous avez été expulsé de " + displayName + "." : "Vous avez quitté " + displayName);
-        messageToTarget.applyTextStyle(TextFormatting.RED);
-        player.getPlayerEntity().sendMessage(messageToTarget);
+        player.getPlayerEntity().sendMessage(ChatText.Error(isKicked ?
+                "Vous avez été expulsé de " + displayName + "." : "Vous avez quitté " + displayName), Util.NIL_UUID);
 
-        StringTextComponent messageToCity = new StringTextComponent(player.getDisplayName() + ( isKicked ?
+        MutableComponent messageToCity = ChatText.Error(player.getDisplayName() + (isKicked ?
                 " a été expulsé de la ville." : " a quitté la ville."));
-        messageToCity.applyTextStyle(TextFormatting.RED);
-        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null, messageToCity, true);
 
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null, messageToCity, true);
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerFromTarget(this, player);
 
         return true;
     }
 
-    public void SetOwner(Player owner) {
+    public void SetOwner(FullPlayer owner) {
         ownerUUID = owner != null ? owner.getUuid() : null;
         this.owner = owner;
     }
@@ -155,58 +181,61 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         return cityUuid;
     }
 
-    @JsonIgnore public List<Player> getOnlinePlayers() {
-        List<Player> onlinePlayers = new ArrayList<>();
+    @JsonIgnore
+    public List<FullPlayer> getOnlinePlayers() {
+        List<FullPlayer> onlinePlayers = new ArrayList<>();
         MinecraftServer server = WarOfSquirrels.server;
 
-        if (server.getPlayerList().getPlayerByUUID(owner.getUuid()) != null)
+        if (server.getPlayerList().getPlayer(owner.getUuid()) != null)
             onlinePlayers.add(owner);
 
-        for (Player player : citizens) {
-            if (server.getPlayerList().getPlayerByUUID(player.getUuid()) != null)
+        for (FullPlayer player : citizens) {
+            if (server.getPlayerList().getPlayer(player.getUuid()) != null)
                 onlinePlayers.add(player);
         }
 
         return onlinePlayers;
     }
 
-    public void displayInfo(Player player) {
-        StringTextComponent message = new StringTextComponent("");
+    public void displayInfo(FullPlayer player) {
+        MutableComponent message = new TextComponent("");
 
-        WarOfSquirrels.instance.getChunkHandler().getSize(this);
+        int size = WarOfSquirrels.instance.getChunkHandler().getSize(this);
 
-        message.appendText("---===| " + rank.getName() + " " + displayName + " [" + citizens.size() + "] |===---\n");
-        message.appendText("Faction: " + faction.getDisplayName() + "\n");
-        message.appendText("Mayor: " + owner.getDisplayName() + "\n");
-        message.appendText("Assistant(s): " + Utils.getStringFromPlayerList(getAssistants()) + "\n");
-        message.appendText("Resident(s): " + Utils.getStringFromPlayerList(getCitizens()) + "\n");
-        message.appendText("Recruit(s): " + Utils.getStringFromPlayerList(getRecruits()) + "\n");
-        message.appendText("Tag: " + tag + "\n");
-        message.appendText("Chunks [" +
-                WarOfSquirrels.instance.getChunkHandler().getSize(this) + "/" +
-                rank.chunkMax + "]\n");
-        message.appendText("Outpost [" + WarOfSquirrels.instance.getChunkHandler().getOutpostSize(this) + "]\n");
-        message.appendText("Permissions: " + defaultPermission.toString());
+        message.append("---===| " + rank.getName() + " " + displayName + " [" + citizens.size() + "] |===---\n");
+        message.append("Faction: " + (faction == null ? "----" : faction.getDisplayName()) + "\n");
+        message.append("Mayor: " + owner.getDisplayName() + "\n");
+        message.append("Assistant(s): " + Utils.getStringFromPlayerList(getAssistants()) + "\n");
+        message.append("Resident(s): " + Utils.getStringFromPlayerList(getCitizens()) + "\n");
+        message.append("Recruit(s): " + Utils.getStringFromPlayerList(getRecruits()) + "\n");
+        message.append("Tag: " + tag + "\n");
+        message.append("Chunks [" + size + "/" + rank.chunkMax + "]\n");
+        message.append("Outpost [" + WarOfSquirrels.instance.getChunkHandler().getOutpostSize(this) + "]\n");
+        message.append("Permissions:\n" + displayPermissions());
 
-        message.applyTextStyle(TextFormatting.BLUE);
-        player.getPlayerEntity().sendMessage(message);
+        message.withStyle(ChatFormatting.BLUE);
+        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
+    }
+
+    public String displayPermissions() {
+        StringBuilder permissionsAsString = new StringBuilder();
+
+        defaultPermission.forEach((k, v) ->
+                permissionsAsString.append("    ").append(k.toString()).append(" ").append(v.toString()).append("\n"));
+
+        return permissionsAsString.toString();
     }
 
     public void updateDependencies() {
-        for (CityCustomPermission permission : customPermissionList) {
-            IPermission target = null;
+        SetOwner(WarOfSquirrels.instance.getPlayerHandler().get(ownerUUID));
+        SetFaction(WarOfSquirrels.instance.getFactionHandler().get(factionUuid));
 
-            switch (permission.type) {
-                case Faction:
-                    target = WarOfSquirrels.instance.getFactionHandler().get(permission.targetUuid);
-                    break;
-                case City:
-                    target = WarOfSquirrels.instance.getCityHandler().getCity(permission.targetUuid);
-                    break;
-                case Player:
-                    target = WarOfSquirrels.instance.getPlayerHandler().get(permission.targetUuid);
-                    break;
-            }
+        for (CityCustomPermission permission : customPermissionList) {
+            IPermission target = switch (permission.type) {
+                case Faction -> WarOfSquirrels.instance.getFactionHandler().get(permission.targetUuid);
+                case City -> WarOfSquirrels.instance.getCityHandler().getCity(permission.targetUuid);
+                case Player -> WarOfSquirrels.instance.getPlayerHandler().get(permission.targetUuid);
+            };
 
             if (target == null) continue;
 

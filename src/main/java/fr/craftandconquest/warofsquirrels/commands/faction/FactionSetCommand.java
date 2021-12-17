@@ -3,16 +3,17 @@ package fr.craftandconquest.warofsquirrels.commands.faction;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
-import fr.craftandconquest.warofsquirrels.commands.faction.set.FactionSetNeutral;
 import fr.craftandconquest.warofsquirrels.commands.faction.set.FactionSetAlly;
 import fr.craftandconquest.warofsquirrels.commands.faction.set.FactionSetCapital;
 import fr.craftandconquest.warofsquirrels.commands.faction.set.FactionSetEnemy;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.commands.faction.set.FactionSetNeutral;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 public class FactionSetCommand extends CommandBuilder {
     private static final FactionSetCapital factionSetCapital = new FactionSetCapital();
@@ -21,7 +22,7 @@ public class FactionSetCommand extends CommandBuilder {
     private static final FactionSetNeutral factionSetNeutral = new FactionSetNeutral();
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("set")
                 .executes(this)
                 .then(factionSetCapital.register())
@@ -31,20 +32,23 @@ public class FactionSetCommand extends CommandBuilder {
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) { return true; }
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        return true;
+    }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        StringTextComponent msg = new StringTextComponent("--==| faction set help |==--\n" +
-        "/faction set ally [faction] <build> <container> <switch>\n" +
-                "/faction set enemy [faction] <build> <container> <switch>\n" +
-                "/faction set neutral [faction]\n");
-        msg.applyTextStyle(TextFormatting.GOLD);
-
-        player.getPlayerEntity().sendMessage(msg);
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        player.getPlayerEntity().sendMessage(ChatText.Colored("""
+                --==| faction set help |==--
+                /faction set ally [faction] <build> <container> <switch>
+                /faction set enemy [faction] <build> <container> <switch>
+                /faction set neutral [faction]
+                """, ChatFormatting.GOLD), Util.NIL_UUID);
         return 0;
     }
 
     @Override
-    protected ITextComponent ErrorMessage() { return null; }
+    protected MutableComponent ErrorMessage() {
+        return null;
+    }
 }

@@ -6,19 +6,21 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
 import fr.craftandconquest.warofsquirrels.commands.city.CityMayorCommandBuilder;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CitySetAssistant extends CityMayorCommandBuilder implements IAdminCommand {
-    public CitySetAssistant() {};
+    public CitySetAssistant() {
+    }
 
     private final String argumentName = "[PlayerName]";
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("assistant")
                 .then(Commands
                         .argument(argumentName, StringArgumentType.string())
@@ -26,34 +28,33 @@ public class CitySetAssistant extends CityMayorCommandBuilder implements IAdminC
     }
 
     @Override
-    protected boolean CanDoIt(Player player) {
+    protected boolean CanDoIt(FullPlayer player) {
         return super.CanDoIt(player) || IsAdmin(player);
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (IsAdmin(player)) return true;
 
-        Player argument =  GetPlayerFromArguments(context);
+        FullPlayer argument = GetPlayerFromArguments(context);
 
         return argument.getCity() == player.getCity() && player.getCity().getOwner() != argument;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        Player newAssistant = GetPlayerFromArguments(context);
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        FullPlayer newAssistant = GetPlayerFromArguments(context);
 
         newAssistant.setAssistant(true);
 
-        StringTextComponent message = new StringTextComponent(newAssistant.getDisplayName() + " is now assistant in " + player.getCity().getDisplayName() + ".");
-        message.applyTextStyle(TextFormatting.GOLD);
+        MutableComponent message = ChatText.Colored(newAssistant.getDisplayName() + " is now assistant in " + player.getCity().getDisplayName() + ".", ChatFormatting.GOLD);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(newAssistant.getCity(), null, message, true);
 
         return 0;
     }
 
-    private Player GetPlayerFromArguments(CommandContext<CommandSource> context) {
+    private FullPlayer GetPlayerFromArguments(CommandContext<CommandSourceStack> context) {
         return WarOfSquirrels.instance.getPlayerHandler().get(context.getArgument(argumentName, String.class));
     }
 }

@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Vector3 {
     // Members
-    @JsonProperty public float x;
-    @JsonProperty public float y;
-    @JsonProperty public float z;
+    @JsonProperty
+    public float x;
+    @JsonProperty
+    public float y;
+    @JsonProperty
+    public float z;
 
     // Constructors
     public Vector3() {
@@ -34,6 +37,6 @@ public class Vector3 {
         float v0 = b.x - a.x;
         float v1 = b.y - a.y;
         float v2 = b.z - a.z;
-        return Math.sqrt(v0*v0 + v1*v1 + v2*v2);
+        return Math.sqrt(v0 * v0 + v1 * v1 + v2 * v2);
     }
 }

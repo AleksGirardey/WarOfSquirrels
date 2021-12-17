@@ -3,35 +3,41 @@ package fr.craftandconquest.warofsquirrels.commands.party;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 public class PartyHelpCommand extends CommandBuilder {
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("help").executes(this);
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
-        player.getPlayerEntity().sendMessage(new StringTextComponent(
-                "--==| party help |==--\n" +
-                        "/party info\n" +
-                        "/party create\n" +
-                        "/party delete\n" +
-                        "/party invite [PlayerName]\n" +
-                        "/party remove [PlayerName]\n" +
-                        "/party leave\n").applyTextStyle(TextFormatting.GREEN));
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        player.getPlayerEntity().sendMessage(ChatText.Success(
+                """
+                        --==| party help |==--
+                        /party info
+                        /party create
+                        /party delete
+                        /party invite [PlayerName]
+                        /party remove [PlayerName]
+                        /party leave
+                        """), Util.NIL_UUID);
         return 0;
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) { return true; }
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        return true;
+    }
 
     @Override
-    protected ITextComponent ErrorMessage() { return null; }
+    protected MutableComponent ErrorMessage() {
+        return null;
+    }
 }

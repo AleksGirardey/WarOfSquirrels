@@ -13,15 +13,32 @@ import java.util.UUID;
 
 @AllArgsConstructor
 public class Influence {
-    @JsonProperty @Getter @Setter private UUID uuid;
-    @JsonProperty @Getter private UUID factionUuid;
-    @JsonProperty @Getter private UUID cityUuid;
-    @JsonProperty @Getter private UUID territoryUuid;
-    @JsonProperty @Getter int value;
+    @JsonProperty
+    @Getter
+    @Setter
+    private UUID uuid;
+    @JsonProperty
+    @Getter
+    private UUID factionUuid;
+    @JsonProperty
+    @Getter
+    private UUID cityUuid;
+    @JsonProperty
+    @Getter
+    private UUID territoryUuid;
+    @JsonProperty
+    @Getter
+    int value;
 
-    @JsonIgnore @Getter private City city;
-    @JsonIgnore @Getter private Faction faction;
-    @JsonIgnore @Getter private Territory territory;
+    @JsonIgnore
+    @Getter
+    private City city;
+    @JsonIgnore
+    @Getter
+    private Faction faction;
+    @JsonIgnore
+    @Getter
+    private Territory territory;
 
     public Influence() {
         this.uuid = UUID.randomUUID();

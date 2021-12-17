@@ -1,15 +1,19 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
 import fr.craftandconquest.warofsquirrels.object.war.Party;
 import fr.craftandconquest.warofsquirrels.object.war.War;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
+import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.Util;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import java.util.ArrayList;
@@ -19,9 +23,11 @@ public class WarHandler {
 
     private final List<War> wars = new ArrayList<>();
 
-    public WarHandler() {}
+    public WarHandler() {
+    }
 
-    private void rollback() {}
+    private void rollback() {
+    }
 
     public boolean CreateWar(City city, AttackTarget target, Party party) {
         return target instanceof City && CreateWar(city, (City) city, party);
@@ -47,7 +53,7 @@ public class WarHandler {
         return false;
     }
 
-    public War getWar(Player player) {
+    public War getWar(FullPlayer player) {
         for (War war : wars) {
             if (war.contains(player))
                 return war;
@@ -67,7 +73,7 @@ public class WarHandler {
         return null;
     }
 
-    public boolean Contains(Player player) {
+    public boolean Contains(FullPlayer player) {
         return getWar(player) != null;
     }
 
@@ -81,22 +87,22 @@ public class WarHandler {
         return war != null && war.getCityDefender() == city;
     }
 
-    public boolean AbleTo(Player player, Chunk chunk) {
+    public boolean AbleTo(FullPlayer player, Chunk chunk) {
         return AbleTo(player, chunk.getCity()) && !chunk.getHomeBlock() && !chunk.getOutpost();
     }
 
-    public boolean AbleTo(Player player, City city) {
+    public boolean AbleTo(FullPlayer player, City city) {
         return ContainsDefender(city)
                 && Contains(player)
                 && getWar(city).getState().equals(War.WarState.War);
     }
 
-    public boolean AbleTo(Player player, Cubo cubo) {
+    public boolean AbleTo(FullPlayer player, Cubo cubo) {
         return AbleTo(player, cubo.getOwner().getCity());
     }
 
-    public List<String>     getCitiesList() {
-        List<String>        list = new ArrayList<>();
+    public List<String> getCitiesList() {
+        List<String> list = new ArrayList<>();
 
         for (War war : wars) {
             list.add(war.getCityAttacker().displayName);
@@ -109,23 +115,23 @@ public class WarHandler {
         wars.remove(war);
     }
 
-    public void DisplayList(Player player) {
+    public void DisplayList(FullPlayer player) {
         if (WarOfSquirrels.instance.getConfig().isPeaceTime()) {
-            player.getPlayerEntity().sendMessage(new StringTextComponent("---=== Time is at peace ===---"));
+            player.getPlayerEntity().sendMessage(ChatText.Success("---=== Time is at peace ===---"), Util.NIL_UUID);
             return;
         }
 
         if (!wars.isEmpty()) {
-            player.getPlayerEntity().sendMessage(new StringTextComponent("---=== Battles [" + wars.size() + "] ===---"));
+            player.getPlayerEntity().sendMessage(ChatText.Success("---=== Battles [" + wars.size() + "] ===---"), Util.NIL_UUID);
 
             for (War war : wars)
-                player.getPlayerEntity().sendMessage(new StringTextComponent(war.getCityAttacker().getDisplayName() + " [" + war.getAttackersPoints().getScorePoints() + "] vs. "
-                        + war.getCityDefender().getDisplayName() + " [" + war.getDefendersPoints().getScorePoints() + "]"));
+                player.getPlayerEntity().sendMessage(ChatText.Success(war.getCityAttacker().getDisplayName() + " [" + war.getAttackersPoints().getScore() + "] vs. "
+                        + war.getCityDefender().getDisplayName() + " [" + war.getDefendersPoints().getScore() + "]"), Util.NIL_UUID);
         } else
-            player.getPlayerEntity().sendMessage(new StringTextComponent("There is no battles at this moment."));
+            player.getPlayerEntity().sendMessage(ChatText.Success("There is no battles at this moment."), Util.NIL_UUID);
     }
 
-    public void AddPoints(Player killer, Player victim) {
+    public void AddPoints(FullPlayer killer, FullPlayer victim) {
         War war = getWar(killer);
 
         if (!war.getState().equals(War.WarState.War)) return;
@@ -140,10 +146,14 @@ public class WarHandler {
         }
     }
 
-    public boolean IsConcerned(Vector2 position, int dimensionId) {
-        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(
-                (int) position.x / 16, (int) position.y / 16, dimensionId);
-
+//    public boolean IsConcerned(Vector2 position, ResourceKey<Level> dimensionId) {
+//        return IsConcerned(new ChunkLocation((int) position.x / 16, (int) position.y / 16, dimensionId));
+//    }
+//
+//    public boolean IsConcerned(ChunkLocation chunkLocation) {
+//
+//    }
+    public boolean IsConcerned(Chunk chunk) {
         if (chunk == null) return false;
 
         War war = getWar(chunk.getCity());

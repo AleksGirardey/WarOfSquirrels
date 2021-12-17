@@ -1,10 +1,12 @@
 package fr.craftandconquest.warofsquirrels.utils;
+
 import lombok.AllArgsConstructor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 
 @AllArgsConstructor
 public class ReSpawnPoint {
-    public DimensionType dimension;
+    public ResourceKey<Level> dimension;
     public BlockPos position;
 }

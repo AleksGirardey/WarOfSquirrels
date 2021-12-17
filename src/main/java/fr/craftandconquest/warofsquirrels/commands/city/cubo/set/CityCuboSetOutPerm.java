@@ -7,14 +7,14 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +26,12 @@ public class CityCuboSetOutPerm extends CommandBuilder implements IAdminCommand 
     private final String switchArgument = "[Switch]";
 
     @Override
-    protected boolean CanDoIt(Player player) {
+    protected boolean CanDoIt(FullPlayer player) {
         return IsAdmin(player) || super.CanDoIt(player);
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("outperm").then(Commands
                 .argument(cuboNameArgument, StringArgumentType.string())
                 .then(Commands.argument(buildArgument, BoolArgumentType.bool())
@@ -41,12 +41,12 @@ public class CityCuboSetOutPerm extends CommandBuilder implements IAdminCommand 
     }
 
     @Override
-    protected boolean SpecialCheck(Player player, CommandContext<CommandSource> context) {
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(context.getArgument(cuboNameArgument, String.class));
 
         if (cubo == null) return false;
 
-        List<Player> list = new ArrayList<>();
+        List<FullPlayer> list = new ArrayList<>();
 
         list.add(cubo.getOwner());
         list.add(cubo.getCity().getOwner());
@@ -56,12 +56,12 @@ public class CityCuboSetOutPerm extends CommandBuilder implements IAdminCommand 
             return true;
 
         player.getPlayerEntity()
-                .sendMessage(new StringTextComponent("Vous ne pouvez pas modifier les permissions de ce cubo.").applyTextStyle(TextFormatting.RED));
+                .sendMessage(ChatText.Error("Vous ne pouvez pas modifier les permissions de ce cubo."), Util.NIL_UUID);
         return true;
     }
 
     @Override
-    protected int ExecCommand(Player player, CommandContext<CommandSource> context) {
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(context.getArgument(cuboNameArgument, String.class));
         Permission permission = new Permission();
 
@@ -75,7 +75,7 @@ public class CityCuboSetOutPerm extends CommandBuilder implements IAdminCommand 
     }
 
     @Override
-    protected ITextComponent ErrorMessage() {
-        return new StringTextComponent("Vous ne pouvez pas utiliser cette commande.").applyTextStyle(TextFormatting.RED);
+    protected MutableComponent ErrorMessage() {
+        return ChatText.Error("Vous ne pouvez pas utiliser cette commande.");
     }
 }

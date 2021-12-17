@@ -1,7 +1,7 @@
 package fr.craftandconquest.warofsquirrels.handler.broadcast;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.channels.Channel;
 import fr.craftandconquest.warofsquirrels.object.channels.CityChannel;
 import fr.craftandconquest.warofsquirrels.object.channels.FactionChannel;
@@ -10,11 +10,11 @@ import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.war.Party;
 import fr.craftandconquest.warofsquirrels.object.war.War;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TextFormatting;
-import org.apache.logging.log4j.Level;
+import lombok.Getter;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
@@ -25,6 +25,7 @@ public class BroadCastHandler {
 
     private final Logger LOGGER;
 
+    @Getter
     private final WorldChannel worldChannel = new WorldChannel();
 //    private final SupportChannel supportChannel;
 
@@ -41,41 +42,42 @@ public class BroadCastHandler {
         LOGGER.info(String.format("[WoS][BroadCastHandler] %d channels created", channels.size()));
     }
 
-    public void BroadCastMessage(IChannelTarget target, Player sender, ITextComponent message, boolean isAnnounce) {
+    public void BroadCastMessage(IChannelTarget target, FullPlayer sender, MutableComponent message, boolean isAnnounce) {
         if (channels.containsKey(target)) {
             if (isAnnounce) channels.get(target).SendAnnounce(message);
             else if (sender != null) channels.get(target).SendMessage(sender, message);
             else
-                LOGGER.warn("[WoS][BroadCastHandler] Couldn't send message :" +
-                        "\n\tTarget : {}" +
-                        "\n\tSender : NULL" +
-                        "\n\tMessage : {}" +
-                        "\n\tAnnounce : false", target, message);
+                LOGGER.warn("""
+                        [WoS][BroadCastHandler] Couldn't send message :
+                        \tTarget : {}
+                        \tSender : NULL
+                        \tMessage : {}
+                        \tAnnounce : false""", target, message);
         }
     }
 
-    public void BroadCastWorldAnnounce(ITextComponent message) {
+    public void BroadCastWorldAnnounce(MutableComponent message) {
         LOGGER.info("[WoS][BroadcastHandler] World Announce : " + message.getString());
         worldChannel.SendAnnounce(message);
     }
 
-    public boolean AddPlayerToWorldAnnounce(Player player) {
+    public boolean AddPlayerToWorldAnnounce(FullPlayer player) {
         return worldChannel.addMember(player);
     }
 
-    public boolean RemovePlayerToWorldAnnounce(Player player) {
+    public boolean RemovePlayerToWorldAnnounce(FullPlayer player) {
         return worldChannel.removeMember(player);
     }
 
-    public boolean AddPlayerToTarget(IChannelTarget target, Player player) {
+    public boolean AddPlayerToTarget(IChannelTarget target, FullPlayer player) {
         return channels.get(target).addMember(player);
     }
 
-    public boolean RemovePlayerFromTarget(IChannelTarget target, Player player) {
+    public boolean RemovePlayerFromTarget(IChannelTarget target, FullPlayer player) {
         return channels.get(target).removeMember(player);
     }
 
-    public boolean RemovePlayerFromTargets(Player player) {
+    public boolean RemovePlayerFromTargets(FullPlayer player) {
         channels.forEach(((target, channel) -> channel.removeMember(player)));
         return true;
     }
@@ -90,64 +92,61 @@ public class BroadCastHandler {
         return channels.remove(target) != null;
     }
 
-    public void         partyChannel(Party party, String message) {
+    public void partyChannel(Party party, String message) {
         partyChannel(party, message, null);
     }
 
-    public void         partyChannel(Party party, String message, TextFormatting color) {
-        TextComponent text = new StringTextComponent(message);
-        text.applyTextStyle(color == null ? TextFormatting.YELLOW : color);
+    public void partyChannel(Party party, String message, ChatFormatting color) {
+        MutableComponent text = new TextComponent(message)
+                .withStyle(color == null ? ChatFormatting.YELLOW : color);
 
-        for (Player p : party.toList())
-            p.getPlayerEntity().sendMessage(text);
+        for (FullPlayer p : party.toList())
+            p.getPlayerEntity().sendMessage(text, Util.NIL_UUID);
     }
 
-    public void         partyInvitation(Player sender, Player receiver) {
+    public void partyInvitation(FullPlayer sender, FullPlayer receiver) {
         String partyMessage = receiver.getDisplayName() + " has been invited to your party.";
-        TextComponent receiverMessage = new StringTextComponent(sender.getDisplayName()
-                + " invited you to join his party. Type /accept or /refuse to respond.");
-        receiverMessage.applyTextStyle(TextFormatting.YELLOW);
+        MutableComponent receiverMessage = new TextComponent(sender.getDisplayName()
+                + " invited you to join his party. Type /accept or /refuse to respond.")
+                .withStyle(ChatFormatting.YELLOW);
 
-        partyChannel(WarOfSquirrels.instance.getPartyHandler().getFromPlayer(sender), partyMessage, TextFormatting.YELLOW);
-        receiver.getPlayerEntity().sendMessage(receiverMessage);
+        partyChannel(WarOfSquirrels.instance.getPartyHandler().getFromPlayer(sender), partyMessage, ChatFormatting.YELLOW);
+        receiver.getPlayerEntity().sendMessage(receiverMessage, Util.NIL_UUID);
     }
 
-    public void cityInvitation(Player receiver, Player sender, City city) {
+    public void cityInvitation(FullPlayer receiver, FullPlayer sender, City city) {
         String invitationMessage = sender.getDisplayName() +
                 " invited you to join " +
                 city.displayName +
                 ". Use /accept or /refuse to respond.";
         String cityMessage = receiver.getDisplayName() + " has been invited to join your city.";
-        receiver.getPlayerEntity().sendMessage(new StringTextComponent(invitationMessage));
-        BroadCastMessage(sender.getCity(), sender, new StringTextComponent(cityMessage), true);
+        receiver.getPlayerEntity().sendMessage(new TextComponent(invitationMessage), Util.NIL_UUID);
+        BroadCastMessage(sender.getCity(), sender, new TextComponent(cityMessage), true);
     }
 
 
     //ToDo: Ajouter le message aux assistants de Faction (maire de toutes les villes)
     public void allianceInvitation(Faction factionSender, Faction factionReceiver) {
-        Player          factionLeader = factionReceiver.getCapital().getOwner();
-        List<Player>    assistants = factionReceiver.getCapital().getAssistants();
-        StringTextComponent toSender = new StringTextComponent(factionReceiver.getDisplayName() + " has been invited to be your ally.");
-        StringTextComponent toReceiver = new StringTextComponent("The faction " + factionSender.getDisplayName() + " want to be your ally. Use /accept or /refuse to respond.");
+        FullPlayer factionLeader = factionReceiver.getCapital().getOwner();
+        List<FullPlayer> assistants = factionReceiver.getCapital().getAssistants();
+        MutableComponent toSender = new TextComponent(factionReceiver.getDisplayName() + " has been invited to be your ally.").withStyle(ChatFormatting.GOLD);
+        MutableComponent toReceiver = new TextComponent("The faction " + factionSender.getDisplayName() + " want to be your ally. Use /accept or /refuse to respond.").withStyle(ChatFormatting.GOLD);
 
-        toReceiver.applyTextStyle(TextFormatting.GOLD);
-        toSender.applyTextStyle(TextFormatting.GOLD);
-
-        factionLeader.getPlayerEntity().sendMessage(toReceiver);
-        for (Player player : assistants) player.getPlayerEntity().sendMessage(toReceiver);
+        factionLeader.getPlayerEntity().sendMessage(toReceiver, Util.NIL_UUID);
+        for (FullPlayer player : assistants) player.getPlayerEntity().sendMessage(toReceiver, Util.NIL_UUID);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(factionSender, null, toSender, true);
     }
 
     public void WarAnnounce(War war, War.WarState state) {
-        StringTextComponent text = new StringTextComponent("");
+        MutableComponent text = new TextComponent("");
 
         if (state == War.WarState.Preparation)
-            text.appendText(war.getCityAttacker().displayName + " attacks " + war.getCityDefender() + "prepare yourself for the fight. You have 2 minutes before the hostilities starts !");
+            text.append(war.getCityAttacker().displayName + " attacks " + war.getCityDefender() + "prepare yourself for the fight. You have 2 minutes before the hostilities starts !");
         else if (state == War.WarState.War)
-            text.appendText("Let the battle... BEGIN !");
+            text.append("Let the battle... BEGIN !");
         else
-            text.appendText("Caren you have 1 min to evacuate the city before the place got rollback");
+            text.append("Caren you have 1 min to evacuate the city before the place got rollback");
         BroadCastMessage(war, null, text, true);
     }
 }

@@ -1,11 +1,9 @@
 package fr.craftandconquest.warofsquirrels.commands.register;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.faction.*;
-import fr.craftandconquest.warofsquirrels.object.Player;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class FactionCommandRegister implements ICommandRegister {
     private final FactionHelpCommand factionHelpCommand = new FactionHelpCommand();
@@ -17,7 +15,7 @@ public class FactionCommandRegister implements ICommandRegister {
     private final FactionSetCommand factionSetCommand = new FactionSetCommand();
 
     @Override
-    public void register(CommandDispatcher<CommandSource> dispatcher) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("faction")
                 .executes(factionHelpCommand)
                 .then(factionInfoCommand.register())

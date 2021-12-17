@@ -21,11 +21,23 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Faction implements IPermission, IChannelTarget {
 
-    @JsonProperty @Getter private UUID factionUuid;
-    @JsonProperty @Getter @Setter private UUID capitalUuid;
-    @JsonProperty @Getter @Setter private String displayName;
-    @JsonIgnore @Getter private City capital;
-    @JsonIgnore @Getter private Map<String, City> cities;
+    @JsonProperty
+    @Getter
+    private UUID factionUuid;
+    @JsonProperty
+    @Getter
+    @Setter
+    private UUID capitalUuid;
+    @JsonProperty
+    @Getter
+    @Setter
+    private String displayName;
+    @JsonIgnore
+    @Getter
+    private City capital;
+    @JsonIgnore
+    @Getter
+    private Map<String, City> cities;
 
     public Faction(String displayName, City capital) {
         this.factionUuid = UUID.randomUUID();
@@ -42,7 +54,7 @@ public class Faction implements IPermission, IChannelTarget {
     private void Populate() {
         List<City> cities = WarOfSquirrels.instance.getCityHandler().getCities(this);
 
-        for(City city : cities) {
+        for (City city : cities) {
             this.cities.put(city.displayName, city);
         }
     }

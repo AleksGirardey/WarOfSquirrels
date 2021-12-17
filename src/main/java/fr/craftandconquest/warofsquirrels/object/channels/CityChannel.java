@@ -1,11 +1,11 @@
 package fr.craftandconquest.warofsquirrels.object.channels;
 
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CityChannel extends Channel {
 
@@ -18,17 +18,15 @@ public class CityChannel extends Channel {
     }
 
     @Override
-    public ITextComponent transformText(Player sender, ITextComponent text) {
-        return new StringTextComponent(String.format("[%s][%s] ",
-                sender.getCity().displayName, Utils.getDisplayNameWithRank(sender)))
-                .appendSibling(text)
-                .applyTextStyle(TextFormatting.DARK_AQUA);
+    public MutableComponent transformText(FullPlayer sender, MutableComponent text) {
+        return ChatText.Colored(String.format("[%s][%s] ",
+                        sender.getCity().displayName, Utils.getDisplayNameWithRank(sender)), ChatFormatting.DARK_AQUA)
+                .append(text);
     }
 
     @Override
-    protected ITextComponent transformTextAnnounce(ITextComponent text) {
-        return new StringTextComponent(String.format("[%s] ", city.displayName))
-                .appendSibling(text)
-                .applyTextStyle(TextFormatting.GOLD);
+    protected MutableComponent transformTextAnnounce(MutableComponent text) {
+        return ChatText.Colored(String.format("[%s] ", city.displayName), ChatFormatting.GOLD)
+                .append(text);
     }
 }

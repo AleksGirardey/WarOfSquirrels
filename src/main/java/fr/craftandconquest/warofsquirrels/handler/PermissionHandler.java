@@ -1,16 +1,24 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.Player;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import fr.craftandconquest.warofsquirrels.object.war.War;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
+import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
+import fr.craftandconquest.warofsquirrels.utils.OnSaveListener;
+import fr.craftandconquest.warofsquirrels.utils.Pair;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,67 +47,72 @@ public class PermissionHandler {
     }
 
     public boolean hasRightsTo(Rights rights, Object... objects) {
+        ResourceKey<Level> dimension = Chunk.IdToDimension((int) objects[1]);
         switch (rights) {
             case SET_HOMEBLOCK:
-                return hasRightsToSetHomeBlock((Player) objects[0], (Chunk) objects[1]);
+                return hasRightsToSetHomeBlock((FullPlayer) objects[0], (Chunk) objects[1]);
             case PLACE_IN_WAR:
-                return hasRightsToPlaceInWar((Vector3) objects[0], (int) objects[1], (Player) objects[2], (Block) objects[3]);
+                return hasRightsToPlaceInWar((Vector3) objects[0], dimension, (FullPlayer) objects[2], (Block) objects[3]);
             case DESTROY_IN_WAR:
-                return hasRightsToDestroyInWar((Vector3) objects[0], (int) objects[1], (Player) objects[2], (Block) objects[3]);
+                return hasRightsToDestroyInWar((Vector3) objects[0], dimension, (FullPlayer) objects[2], (Block) objects[3]);
             case BUILD:
-                return hasRightsToBuild((Vector3) objects[0], (int) objects[1], (Player) objects[2]);
+                return hasRightsToBuild((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
             case CONTAINER:
-                return hasRightsToContainer((Vector3) objects[0], (int) objects[1], (Player) objects[2]);
+                return hasRightsToContainer((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
             case SWITCH:
-                return hasRightsToSwitch((Vector3) objects[0], (int) objects[1], (Player) objects[2]);
+                return hasRightsToSwitch((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
             case FARM:
-                return hasRightsToFarm((Vector3) objects[0], (int) objects[1], (Player) objects[2]);
+                return hasRightsToFarm((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
             case INTERACT:
-                return hasRightsToInteract((Vector3) objects[0], (int) objects[1], (Player) objects[2]);
+                return hasRightsToInteract((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
             default:
                 return false;
         }
     }
 
-    private boolean hasRightsToBuild(Vector3 position, int dimensionId, Player player) {
+    private boolean hasRightsToBuild(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player) {
         return getPermissionToCheck(position, dimensionId, player).build;
     }
 
-    private boolean hasRightsToContainer(Vector3 position, int dimensionId, Player player) {
+    private boolean hasRightsToContainer(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player) {
         return getPermissionToCheck(position, dimensionId, player).container;
     }
 
-    private boolean hasRightsToSwitch(Vector3 position, int dimensionId, Player player) {
+    private boolean hasRightsToSwitch(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player) {
         return getPermissionToCheck(position, dimensionId, player).switches;
     }
 
-    private boolean hasRightsToFarm(Vector3 position, int dimensionId, Player player) {
+    private boolean hasRightsToFarm(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player) {
         return getPermissionToCheck(position, dimensionId, player).farm;
     }
 
-    private boolean hasRightsToInteract(Vector3 position, int dimensionId, Player player) {
+    private boolean hasRightsToInteract(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player) {
         return getPermissionToCheck(position, dimensionId, player).interact;
     }
 
-    private boolean hasRightsToSetHomeBlock(Player player, Chunk chunk) {
+    private boolean hasRightsToSetHomeBlock(FullPlayer player, Chunk chunk) {
         return false;
     }
 
-    private boolean hasRightsToPlaceInWar(Vector3 position, int dimensionId, Player player, Block block) {
+    private boolean hasRightsToPlaceInWar(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player, Block block) {
         if (authorizedPlacedItems.contains(block))
             return getPermissionToCheck(position, dimensionId, player).build;
         return false;
     }
 
-    private boolean hasRightsToDestroyInWar(Vector3 position, int dimensionId, Player player, Block block) {
+    private boolean hasRightsToDestroyInWar(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player, Block block) {
         if (authorizedDestroyedItems.contains(block))
             return getPermissionToCheck(position, dimensionId, player).build;
         return false;
     }
 
-    private Permission getPermissionToCheck(Vector3 position, int dimensionId, Player player) {
-        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk((int) position.x, (int) position.z, dimensionId);
-        Permission          permission;
+    private Permission getPermissionToCheck(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player) {
+        Pair<Integer, Integer> chunkLocation = Utils.WorldToChunkCoordinates((int) position.x, (int) position.z);
+        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(chunkLocation.getKey(), chunkLocation.getValue(), dimensionId);
+
+        Permission permission;
+
+        WarOfSquirrels.LOGGER.info(MessageFormat.format("[WoS][Debug] Looking for permission on chunk [{0};{1}] ({2})", chunkLocation.getKey(), chunkLocation.getValue(), (chunk == null ? "NULL" : "CHUNK")));
 
         // If the block isn't in a claimed chunk, default nature permissions apply
         if (chunk == null) {
@@ -108,13 +121,16 @@ public class PermissionHandler {
 
         // The chunk is claimed, we need to know how the player is related to the chunk (Citizen, ally, enemy, outsider)
         if (player.getCity() != null) {
+            WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city");
             /*
              ** Player belongs to a city, we need to set if the chunk belongs to his city
              */
             if (player.getCity() == chunk.getCity()) {
+                WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city and it's equal to city chunk");
                 // Verification dans un premier temps si le chunk et le joueur est en guerre
 
                 if (WarOfSquirrels.instance.getWarHandler().Contains(chunk.getCity())) {
+                    WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city and it's equal to city chunk but the chunk is at war");
                     War war = WarOfSquirrels.instance.getWarHandler().getWar(chunk.getCity());
 
                     if (war.getCityDefender() == chunk.getCity() && war.contains(player)) {
@@ -125,9 +141,11 @@ public class PermissionHandler {
                 /*
                  ** The city chunk is the same as the player chunk, we have to define his status in the city
                  */
-                if (player.getAssistant() || player.getCity().getOwner() == player)
+                if (player.getAssistant() || player.getCity().getOwner().equals(player)) {
+                    WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city and it's equal to city chunk but the player is assistant or mayor");
                     return new Permission(true, true, true, true, true);
-                else {
+                } else {
+                    WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city and it's equal to city chunk looking for resident or recruit player");
                     permission = player.getCity().getCustomPermission().getOrDefault(player, (player.getResident() ?
                             player.getCity().getDefaultPermission().get(PermissionRelation.RESIDENT) :
                             player.getCity().getDefaultPermission().get(PermissionRelation.RECRUIT)));
@@ -138,10 +156,11 @@ public class PermissionHandler {
                      */
                     Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(position);
                     if (cubo != null) {
+                        WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city and it's equal to city chunk but their is a cuboid on it");
                         /*
                          ** On vérifie si le joueur est dans la liste ou l'owner
                          */
-                        List<Player> inList = cubo.getInList();
+                        List<FullPlayer> inList = cubo.getInList();
                         if (inList.contains(player) || cubo.getOwner() == player)
                             permission = cubo.getPermissionIn();
                         else
@@ -153,6 +172,9 @@ public class PermissionHandler {
                  ** Le joueur n'appartient pas à la ville il faut donc verifié si il est
                  ** allié, enemi, ou de la même faction
                  */
+
+                WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city but it's different from the chunk city");
+
                 boolean isAlly = WarOfSquirrels.instance.getDiplomacyHandler()
                         .getAllies(chunk.getCity().getFaction()).contains(player.getCity().getFaction());
                 boolean isEnemy = WarOfSquirrels.instance.getDiplomacyHandler()
@@ -171,6 +193,7 @@ public class PermissionHandler {
                                                 PermissionRelation.FACTION : PermissionRelation.OUTSIDER)))));
 
                 if (WarOfSquirrels.instance.getWarHandler().Contains(chunk.getCity())) {
+                    WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city but it's different from the chunk city and the chunk is at war");
                     War war = WarOfSquirrels.instance.getWarHandler().getWar(chunk.getCity());
 
                     if (war.contains(player)) {
@@ -183,9 +206,11 @@ public class PermissionHandler {
                     }
                 }
             }
-        } else  // else Outsider
+        } else { // else Outsider
+            WarOfSquirrels.LOGGER.info("[WoS][Debug] Player has no city");
             permission = chunk.getCity().getCustomPermission().getOrDefault(player,
                     chunk.getCity().getDefaultPermission().get(PermissionRelation.OUTSIDER));
+        }
 
         return permission;
     }
