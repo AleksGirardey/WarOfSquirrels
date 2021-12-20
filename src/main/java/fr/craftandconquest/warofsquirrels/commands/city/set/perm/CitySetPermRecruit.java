@@ -1,44 +1,15 @@
 package fr.craftandconquest.warofsquirrels.commands.city.set.perm;
 
-import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
-import fr.craftandconquest.warofsquirrels.object.FullPlayer;
-import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
 
-public class CitySetPermRecruit extends CityAssistantCommandBuilder {
-    private final String buildArgumentName = "[build]";
-    private final String containerArgumentName = "[container]";
-    private final String switchArgumentName = "[switch]";
-
+public class CitySetPermRecruit extends CitySetPerm {
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("recruit")
-                .then(Commands.argument(buildArgumentName, BoolArgumentType.bool())
-                        .then(Commands.argument(containerArgumentName, BoolArgumentType.bool())
-                                .then(Commands.argument(switchArgumentName, BoolArgumentType.bool())
-                                        .executes(this))));
+    protected String getGroupTarget() {
+        return "recruit";
     }
 
     @Override
-    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        return true;
-    }
-
-    @Override
-    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        Permission permission = new Permission();
-
-        permission.setBuild(context.getArgument(buildArgumentName, Boolean.class));
-        permission.setContainer(context.getArgument(containerArgumentName, Boolean.class));
-        permission.setSwitches(context.getArgument(switchArgumentName, Boolean.class));
-
-        WarOfSquirrels.instance.getCityHandler().SetDefaultPermission(PermissionRelation.RECRUIT, permission, player.getCity());
-        return 0;
+    protected PermissionRelation getPermissionRelation() {
+        return PermissionRelation.RECRUIT;
     }
 }

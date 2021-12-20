@@ -3,6 +3,7 @@ package fr.craftandconquest.warofsquirrels.commands.city.set;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.city.set.perm.*;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
@@ -10,7 +11,7 @@ import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-public class CitySetPerm extends CityAssistantCommandBuilder {
+public class CitySetPerm extends CityMayorOrAssistantCommandBuilder {
     private final CitySetPermAlly citySetPermAlly = new CitySetPermAlly();
     private final CitySetPermEnemy citySetPermEnemy = new CitySetPermEnemy();
     private final CitySetPermFaction citySetPermFaction = new CitySetPermFaction();

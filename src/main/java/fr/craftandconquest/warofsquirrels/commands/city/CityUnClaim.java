@@ -13,7 +13,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
-public class CityUnClaim extends CityAssistantCommandBuilder {
+public class CityUnClaim extends CityMayorOrAssistantCommandBuilder {
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {

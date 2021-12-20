@@ -12,6 +12,9 @@ public interface IPermission {
     @JsonIgnore
     PermissionTarget getPermissionTarget();
 
+    @JsonIgnore
+    String getPermissionDisplayName();
+
     static IPermission getPermissionFromName(String entityName) {
         if (WarOfSquirrels.instance.getPlayerHandler().get(entityName) != null)
             return WarOfSquirrels.instance.getPlayerHandler().get(entityName);

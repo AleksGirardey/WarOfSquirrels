@@ -80,6 +80,11 @@ public class Faction implements IPermission, IChannelTarget {
     }
 
     @Override
+    public String getPermissionDisplayName() {
+        return "F:" + getDisplayName();
+    }
+
+    @Override
     public String toString() {
         return String.format("[%s] %s", displayName, capital.displayName);
     }

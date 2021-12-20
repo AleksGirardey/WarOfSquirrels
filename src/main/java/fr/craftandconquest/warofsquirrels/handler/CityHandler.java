@@ -9,6 +9,8 @@ import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -183,6 +185,9 @@ public class CityHandler extends Handler<City> {
     }
 
     public void SetDefaultPermission(PermissionRelation relation, Permission permission, City city) {
+        MutableComponent message = new TextComponent("Permission " + relation + " is now set to " + permission);
+
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(city, null, message, true);
         city.getDefaultPermission().replace(relation, permission);
         Save();
     }

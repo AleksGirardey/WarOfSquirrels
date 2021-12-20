@@ -9,7 +9,7 @@ import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-public class CitySet extends CityAssistantCommandBuilder {
+public class CitySet extends CityMayorOrAssistantCommandBuilder {
     private final CitySetSpawn citySetSpawn = new CitySetSpawn();
     private final CitySetHomeBlock citySetHomeBlock = new CitySetHomeBlock();
     private final CitySetMayor citySetMayor = new CitySetMayor();
@@ -22,6 +22,7 @@ public class CitySet extends CityAssistantCommandBuilder {
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("set")
                 .executes(this)
+                .then(Commands.literal("help").executes(this))
                 .then(citySetSpawn.register())
                 .then(citySetHomeBlock.register())
                 .then(citySetMayor.register())

@@ -59,7 +59,8 @@ public class Permission {
         res += "[" + (this.build ? "B" : "-") + ";";
         res += (this.container ? "C" : "-") + ";";
         res += (this.switches ? "S" : "-") + ";";
-        res += (this.farm ? "F" : "-") + "]";
+        res += (this.farm ? "F" : "-") + ";";
+        res += (this.interact ? "I" : "-") + "]";
 
         return res;
     }

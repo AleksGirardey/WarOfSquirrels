@@ -26,7 +26,7 @@ public class PartyInviteCommand extends PartyCommandLeader implements IPlayerExt
         MutableComponent message;
 
         if (target == null)
-            message = ChatText.Error("Le joueur '" + getRawPlayer(context) + "' n'existe pas ou n'est pas connecté.");
+            message = ChatText.Error("Le joueur '" + getRawPlayer(context).getDisplayName() + "' n'existe pas ou n'est pas connecté.");
         else if (WarOfSquirrels.instance.getPartyHandler().getFromPlayer(target) != null)
             message = ChatText.Error("Le joueur appartient déjà à un groupe.");
         else

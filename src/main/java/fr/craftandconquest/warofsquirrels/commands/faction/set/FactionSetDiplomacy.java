@@ -45,7 +45,7 @@ public abstract class FactionSetDiplomacy extends FactionCommandAssistant implem
         Permission permission;
 
         if (hasArgs)
-            permission = getPermission(player, context);
+            permission = getPermission(context);
         else
             permission = new Permission(false, false, false, false, false);
 

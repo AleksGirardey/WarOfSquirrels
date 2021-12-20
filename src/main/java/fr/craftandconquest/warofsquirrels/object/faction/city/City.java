@@ -167,6 +167,11 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     }
 
     @Override
+    public String getPermissionDisplayName() {
+        return "C:" + getDisplayName();
+    }
+
+    @Override
     public BroadCastTarget getBroadCastTarget() {
         return BroadCastTarget.CITY;
     }
@@ -220,8 +225,15 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     public String displayPermissions() {
         StringBuilder permissionsAsString = new StringBuilder();
 
+        permissionsAsString.append("=== Default Permission [Build|Container|Switch|Farm|Interact] ===\n");
+
         defaultPermission.forEach((k, v) ->
                 permissionsAsString.append("    ").append(k.toString()).append(" ").append(v.toString()).append("\n"));
+
+        permissionsAsString.append("=== Custom Permission [Build|Container|Switch|Farm|Interact] ===\n");
+
+        customPermission.forEach((k, v) ->
+                permissionsAsString.append("    ").append(k.getPermissionDisplayName()).append(" ").append(v.toString()).append("\n"));
 
         return permissionsAsString.toString();
     }

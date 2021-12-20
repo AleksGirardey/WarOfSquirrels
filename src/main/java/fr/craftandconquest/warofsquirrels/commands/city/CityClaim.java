@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 
 import java.text.MessageFormat;
 
-public class CityClaim extends CityAssistantCommandBuilder {
+public class CityClaim extends CityMayorOrAssistantCommandBuilder {
     private final static CityClaim CMD_NO_ARGS = new CityClaim(false);
     private final static CityClaim CMD_ARGS = new CityClaim(true);
 

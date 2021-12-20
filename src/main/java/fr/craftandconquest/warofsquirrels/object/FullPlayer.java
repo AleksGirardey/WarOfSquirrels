@@ -99,6 +99,11 @@ public class FullPlayer implements IPermission {
         return PermissionTarget.PLAYER;
     }
 
+    @Override
+    public String getPermissionDisplayName() {
+        return "P:" + getDisplayName();
+    }
+
     @JsonIgnore
     public boolean isOnline() {
         return (WarOfSquirrels.server.getPlayerList().getPlayer(uuid) != null);

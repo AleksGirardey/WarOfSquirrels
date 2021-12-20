@@ -4,13 +4,14 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-public class CitySetHomeBlock extends CityAssistantCommandBuilder {
+public class CitySetHomeBlock extends CityMayorOrAssistantCommandBuilder {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("homeblock")

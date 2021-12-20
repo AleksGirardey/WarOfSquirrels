@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
@@ -14,7 +15,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.ChunkPos;
 
-public class CitySetSpawn extends CityAssistantCommandBuilder {
+public class CitySetSpawn extends CityMayorOrAssistantCommandBuilder {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("spawn").executes(this);
@@ -40,7 +41,6 @@ public class CitySetSpawn extends CityAssistantCommandBuilder {
     protected boolean CanDoIt(FullPlayer player) {
         if (player.getAssistant()) return super.CanDoIt(player);
         else {
-            WarOfSquirrels.LOGGER.info("[WoS][Debug] CanDoIt override");
             if (player.getCity() == null) return false;
             return player.getCity().getOwner().equals(player);
         }

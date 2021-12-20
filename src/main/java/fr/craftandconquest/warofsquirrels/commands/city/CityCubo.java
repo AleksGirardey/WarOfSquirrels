@@ -9,7 +9,7 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-public class CityCubo extends CityAssistantCommandBuilder {
+public class CityCubo extends CityMayorOrAssistantCommandBuilder {
     private final CityCuboList cityCuboList = new CityCuboList();
     //private final CityCuboLeave cityCuboLeave = new CityCuboLeave();
     private final CityCuboCreate cityCuboCreate = new CityCuboCreate();

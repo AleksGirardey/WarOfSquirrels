@@ -25,7 +25,7 @@ public class FactionSetAlly extends FactionSetDiplomacy {
         return Commands.literal("ally")
                 .then(getFactionRegister()
                         .executes(this)
-                        .then(getPermissionRegister()
+                        .then(getPermissionRegister(this)
                                 .executes(withPerm)));
     }
 

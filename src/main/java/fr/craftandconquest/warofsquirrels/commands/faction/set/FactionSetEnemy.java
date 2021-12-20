@@ -32,7 +32,7 @@ public class FactionSetEnemy extends FactionSetDiplomacy {
                 .literal("enemy")
                 .then(getFactionRegister()
                         .executes(this)
-                        .then(getPermissionRegister()
+                        .then(getPermissionRegister(this)
                                 .executes(withPerm)));
     }
 }
