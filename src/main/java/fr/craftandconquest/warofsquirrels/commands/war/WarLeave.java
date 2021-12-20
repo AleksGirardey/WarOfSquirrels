@@ -1,28 +1,44 @@
 package fr.craftandconquest.warofsquirrels.commands.war;
 
-import fr.craftandconquest.warofsquirrels.commands.city.CityCommand;
-import fr.craftandconquest.warofsquirrels.objects.Core;
-import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
-import fr.craftandconquest.warofsquirrels.objects.war.War;
-import fr.craftandconquest.warofsquirrels.commands.city.CityCommand;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.commands.city.CityCommandBuilder;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.war.War;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
-public class                    WarLeave extends CityCommand {
+public class WarLeave extends CityCommandBuilder {
     @Override
-    protected boolean           SpecialCheck(DBPlayer player, CommandContext context) {
-        return Core.getWarHandler().Contains(player);
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
+        return Commands.literal("leave").executes(this);
     }
 
     @Override
-    protected CommandResult     ExecCommand(DBPlayer player, CommandContext context) {
-        War war = Core.getWarHandler().getWar(player);
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        War war = WarOfSquirrels.instance.getWarHandler().getWar(player);
 
-        if (war.removePlayer(player))
-            return CommandResult.success();
-        player.sendMessage(Text.of(TextColors.RED, "Vous ne pouvez pas quitter la guerre en cours.", TextColors.RESET));
-        return CommandResult.empty();
+        return war != null && war.contains(player);
+    }
+
+    @Override
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        War war = WarOfSquirrels.instance.getWarHandler().getWar(player);
+
+        if (war.RemovePlayer(player))
+            return 1;
+        player.getPlayerEntity().sendMessage(ChatText.Error("You cannot leave the war.").withStyle(ChatFormatting.BOLD), Util.NIL_UUID);
+
+        return 0;
+    }
+
+    @Override
+    protected MutableComponent ErrorMessage() {
+        return ChatText.Error("You cannot leave the war.").withStyle(ChatFormatting.BOLD);
     }
 }

@@ -1,27 +1,22 @@
 package fr.craftandconquest.warofsquirrels.commands.chat;
 
-import fr.craftandconquest.warofsquirrels.objects.Core;
-import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
+import com.mojang.brigadier.context.CommandContext;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
 
-public class                ChatCity implements CommandExecutor {
+public class ChatCity extends ChatCommand {
     @Override
-    public CommandResult    execute(CommandSource commandSource, CommandContext commandContext) throws CommandException {
-        DBPlayer player = Core.getPlayerHandler().get((Player) commandSource);
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        if (player.getCity() != null) return true;
 
-        if (player.getCity() != null) {
-            player.getUser().getPlayer().get().setMessageChannel(Core.getInfoCityMap().get(player.getCity()).getChannel());
-            player.sendMessage(Text.builder("Channel de ville verrouillé").color(TextColors.DARK_GREEN).build());
-            return CommandResult.success();
-        }
-        player.sendMessage(Text.builder("Impossible de verrouillé le channel.").color(TextColors.RED).build());
-        return CommandResult.empty();
+        player.getPlayerEntity().sendMessage(ChatText.Error("You do not belong to a city."), Util.NIL_UUID);
+        return false;
+    }
+
+    @Override
+    public String commandName() {
+        return "city";
     }
 }

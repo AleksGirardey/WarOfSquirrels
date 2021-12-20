@@ -1,23 +1,31 @@
 package fr.craftandconquest.warofsquirrels.commands;
 
-import fr.craftandconquest.warofsquirrels.objects.Core;
-import fr.craftandconquest.warofsquirrels.objects.dbobject.DBPlayer;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.entity.living.player.Player;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
-public class                RefuseCommand implements CommandExecutor {
-    public CommandResult    execute(CommandSource commandSource, CommandContext commandContext) throws CommandException {
-        if (commandSource instanceof Player) {
-            DBPlayer player = Core.getPlayerHandler().get((Player) commandSource);
+public class RefuseCommand extends CommandBuilder {
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
+        return Commands.literal("refuse").executes(this);
+    }
 
-            if (Core.getInvitationHandler().handleInvitation(player, false))
-                return CommandResult.success();
-        }
+    @Override
+    protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        return true;
+    }
 
-        return CommandResult.empty();
+    @Override
+    protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
+        return WarOfSquirrels.instance.getInvitationHandler().HandleInvitation(player, false) ? 1 : 0;
+    }
+
+    @Override
+    protected MutableComponent ErrorMessage() {
+        return null;
     }
 }
