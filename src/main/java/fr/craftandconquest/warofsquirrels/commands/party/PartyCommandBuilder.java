@@ -11,11 +11,11 @@ public abstract class PartyCommandBuilder extends CommandBuilder {
             return false;
         }
         if (player == null) {
-            errorTarget = "Are you a ghost ?";
+            errorMessage = "Are you a ghost ?";
             return false;
         }
         if (WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player) == null) {
-            errorTarget = "You do not belong to a party.";
+            errorMessage = "You do not belong to a party.";
             return false;
         }
 

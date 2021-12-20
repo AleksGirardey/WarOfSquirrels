@@ -6,13 +6,14 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import lombok.SneakyThrows;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.MutableComponent;
 
 public abstract class CommandBuilder implements Command<CommandSourceStack>, IAdminCommand {
 
-    protected String errorTarget = "Not Specified";
+    protected String errorMessage = "";
 
     public abstract LiteralArgumentBuilder<CommandSourceStack> register();
 
@@ -26,6 +27,7 @@ public abstract class CommandBuilder implements Command<CommandSourceStack>, IAd
 
     protected abstract MutableComponent ErrorMessage();
 
+    @SneakyThrows
     @Override
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         net.minecraft.world.entity.player.Player playerEntity = context.getSource().getPlayerOrException();
