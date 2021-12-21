@@ -38,10 +38,8 @@ public class CityCuboRemove extends CommandBuilder implements IAdminCommand {
             return false;
         }
 
-        if (IsAdmin(player)
-                || cubo.getOwner() == player
-                || (cubo.getCity() == player.getCity()
-                && (cubo.getCity().getOwner() == player || player.getAssistant()))) return true;
+        if ((cubo.getCity().getOwner().equals(player) || (player.getAssistant() && player.getCity().equals(cubo.getCity())) || IsAdmin(player))) return true;
+        if (cubo.getOwner().equals(player)) return true;
 
         player.getPlayerEntity().sendMessage(ChatText.Error("Vous ne pouvez pas enlever quelqu'un de ce cubo."), Util.NIL_UUID);
         return false;

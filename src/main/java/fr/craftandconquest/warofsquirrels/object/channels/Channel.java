@@ -42,7 +42,6 @@ public abstract class Channel {
     protected abstract MutableComponent transformTextAnnounce(MutableComponent text);
 
     public void SendAnnounce(MutableComponent message) {
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Announce done to " + receivers.size());
         for (FullPlayer player : receivers) {
             player.getPlayerEntity().sendMessage(transformTextAnnounce(message), Util.NIL_UUID);
         }

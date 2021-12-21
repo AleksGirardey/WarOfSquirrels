@@ -149,23 +149,6 @@ public class PermissionHandler {
                     permission = player.getCity().getCustomPermission().getOrDefault(player, (player.getResident() ?
                             player.getCity().getDefaultPermission().get(PermissionRelation.RESIDENT) :
                             player.getCity().getDefaultPermission().get(PermissionRelation.RECRUIT)));
-
-                    /*
-                     ** Le joueur n'a aucun rang qui outre-passe les droits d'un eventuel
-                     ** cubo, on verifie donc si le block appartient à un cubo
-                     */
-                    Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(position);
-                    if (cubo != null) {
-                        WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city and it's equal to city chunk but their is a cuboid on it");
-                        /*
-                         ** On vérifie si le joueur est dans la liste ou l'owner
-                         */
-                        List<FullPlayer> inList = cubo.getInList();
-                        if (inList.contains(player) || cubo.getOwner() == player)
-                            permission = cubo.getPermissionIn();
-                        else
-                            permission = cubo.getPermissionOut();
-                    }
                 }
             } else {
                 /*
@@ -210,6 +193,25 @@ public class PermissionHandler {
             WarOfSquirrels.LOGGER.info("[WoS][Debug] Player has no city");
             permission = chunk.getCity().getCustomPermission().getOrDefault(player,
                     chunk.getCity().getDefaultPermission().get(PermissionRelation.OUTSIDER));
+        }
+
+        /*
+         ** Le joueur n'a aucun rang qui outre-passe les droits d'un eventuel
+         ** cubo, on verifie donc si le block appartient à un cubo
+         */
+        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(position);
+        if (cubo != null) {
+            WarOfSquirrels.LOGGER.info("[WoS][Debug] Player bumped into a cuboide");
+            /*
+             ** On vérifie si le joueur est dans la liste ou l'owner
+             */
+            List<FullPlayer> inList = cubo.getInList();
+            if (inList.contains(player) || cubo.getOwner().equals(player))
+                permission = cubo.getPermissionIn();
+            else if (cubo.getCustomPermission(player) != null)
+                permission = cubo.getCustomPermission(player);
+            else
+                permission = cubo.getPermissionOut();
         }
 
         return permission;

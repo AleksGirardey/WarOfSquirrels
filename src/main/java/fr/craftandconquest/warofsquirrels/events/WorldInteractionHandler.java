@@ -152,8 +152,6 @@ public class WorldInteractionHandler {
 
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
 
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Trying to place a block");
-
         if (player.isAdminMode()) return;
 
         PermissionHandler.Rights rights = (WarOfSquirrels.instance.getWarHandler().Contains(player) ?
@@ -214,13 +212,14 @@ public class WorldInteractionHandler {
                     player,
                     new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
                     false);
+            return;
         } else if (IsContainer(event.getWorld(), event.getPos(), null, null)) {
             if (OnPlayerContainer(event.getPlayer(), event.getPos(), lastDimensionId))
                 return;
         } else if (HandlePlayerRightClick(event.getPlayer(), event.getPos(), lastDimensionId))
             return;
 
-        event.getPlayer().sendMessage(ChatText.Error("You have not the permission to interact with this block"), Util.NIL_UUID);
+        event.getPlayer().sendMessage(ChatText.Error("You do not have the permission to interact with this block"), Util.NIL_UUID);
         event.setCanceled(true);
     }
 

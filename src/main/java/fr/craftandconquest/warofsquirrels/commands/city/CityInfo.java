@@ -62,11 +62,9 @@ public class CityInfo extends CommandBuilder {
         if (args) {
             targetName = context.getArgument(cityNameArgument, String.class);
             city = WarOfSquirrels.instance.getCityHandler().getCity(targetName);
-            WarOfSquirrels.LOGGER.info("[WoS][Debug] City Info with args");
         }
         else {
             city = player.getCity();
-            WarOfSquirrels.LOGGER.info("[WoS][Debug] City Info without args");
         }
 
         city.displayInfo(player);

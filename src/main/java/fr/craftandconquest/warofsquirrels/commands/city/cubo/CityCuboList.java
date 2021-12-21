@@ -8,6 +8,7 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
@@ -31,7 +32,9 @@ public class CityCuboList extends CityCommandBuilder {
 
         MutableComponent message = ChatText.Colored("=== Liste de vos cubo(s) [" + cubos.size() + "] ===\n", ChatFormatting.BLUE);
 
-        cubos.forEach(c -> message.append("- " + c.display() + "\n"));
+        cubos.forEach(c -> message.append("- ").append(c.display()).append("\n"));
+
+        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
         return 0;
     }
 

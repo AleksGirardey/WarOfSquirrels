@@ -76,7 +76,6 @@ public class Utils {
         }
 
         if (spawnPoint == null) {
-            WarOfSquirrels.LOGGER.info("[WoS][Debug] 5. SP was NULL");
             Chunk homeBlock = WarOfSquirrels.instance.getChunkHandler().getHomeBlock(player.getCity());
             spawnPoint = new Vec3(homeBlock.getRespawnX(), homeBlock.getRespawnY(), homeBlock.getRespawnZ());
             dimension = homeBlock.getDimension();

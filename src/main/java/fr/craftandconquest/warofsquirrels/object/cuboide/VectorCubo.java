@@ -3,15 +3,21 @@ package fr.craftandconquest.warofsquirrels.object.cuboide;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@NoArgsConstructor
 public class VectorCubo {
     @JsonProperty("FirstPoint")
     @Getter
-    private final Vector3 A;
+    @Setter
+    private Vector3 A;
     @JsonProperty("SecondPoint")
     @Getter
-    private final Vector3 B;
+    @Setter
+    private Vector3 B;
 
     public VectorCubo(Vector3 A, Vector3 B) {
         this.A = A;

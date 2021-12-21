@@ -15,10 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.network.chat.MutableComponent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,10 +29,16 @@ public class Cubo {
     @Setter
     private String name;
     @JsonProperty
+    @Getter
+    @Setter
     private UUID cityUuid;
     @JsonProperty
+    @Getter
+    @Setter
     private UUID parentUuid;
     @JsonProperty
+    @Getter
+    @Setter
     private UUID ownerUuid;
     @JsonProperty
     @Getter
@@ -48,10 +51,10 @@ public class Cubo {
     //@JsonProperty private UUID permissionInUuid;
     //@JsonProperty private UUID permissionOutUuid;
     @JsonProperty
-    private List<UUID> inListUuid;
+    private List<UUID> inListUuid = new ArrayList<>();
     //    @JsonProperty private UUID loanUuid;
     @JsonProperty
-    private Map<UUID, Permission> customInListUuid;
+    private Map<UUID, Permission> customInListUuid = new HashMap<>();
     @JsonProperty
     @Getter
     @Setter
@@ -72,9 +75,9 @@ public class Cubo {
     private FullPlayer owner;
     @JsonIgnore
     @Getter
-    private List<FullPlayer> inList;
+    private List<FullPlayer> inList = new ArrayList<>();
     @JsonIgnore
-    private Map<FullPlayer, Permission> customInList;
+    private Map<FullPlayer, Permission> customInList = new HashMap<>();
 //    @JsonIgnore @Getter private Loan loan;
 
     public void AddPlayerInList(FullPlayer player) {
@@ -101,8 +104,12 @@ public class Cubo {
         this.owner = playerHandler.get(ownerUuid);
         this.inList = new ArrayList<>();
 
+        if (inListUuid == null) inListUuid = new ArrayList<>();
+
         for (UUID uuid : inListUuid)
             inList.add(playerHandler.get(uuid));
+
+        if (customInListUuid == null) customInListUuid = new HashMap<>();
 
         customInListUuid.forEach((k, v) -> customInList.put(playerHandler.get(k), v));
     }
@@ -110,19 +117,16 @@ public class Cubo {
     public void setCity(City city) {
         this.city = city;
         this.cityUuid = city.getUniqueId();
-        WarOfSquirrels.instance.getCuboHandler().Save();
     }
 
     public void setParent(Cubo parent) {
         this.parent = parent;
         this.parentUuid = parent.getUuid();
-        WarOfSquirrels.instance.getCuboHandler().Save();
     }
 
     public void setOwner(FullPlayer owner) {
         this.owner = owner;
         this.ownerUuid = owner.getUuid();
-        WarOfSquirrels.instance.getCuboHandler().Save();
     }
 
     public void SpreadPermissionDelete(IPermission target) {
@@ -130,6 +134,10 @@ public class Cubo {
             customInList.remove(target);
             customInListUuid.remove(((FullPlayer) target).getUuid());
         }
+    }
+
+    public Permission getCustomPermission(FullPlayer player) {
+        return customInList.getOrDefault(player, null);
     }
 
     public MutableComponent display() {

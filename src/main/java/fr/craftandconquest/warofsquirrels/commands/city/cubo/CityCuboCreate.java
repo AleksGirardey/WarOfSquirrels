@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.handler.CuboHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
@@ -16,7 +17,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class CityCuboCreate extends CityAssistantCommandBuilder {
+public class CityCuboCreate extends CityMayorOrAssistantCommandBuilder {
     private final String argumentName = "[CuboName]";
 
     @Override
@@ -52,6 +53,7 @@ public class CityCuboCreate extends CityAssistantCommandBuilder {
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         WarOfSquirrels.instance.getCuboHandler().CreateCubo(player, context.getArgument(argumentName, String.class));
+        WarOfSquirrels.instance.getCuboHandler().Save();
         return 0;
     }
 }

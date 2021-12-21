@@ -48,7 +48,11 @@ public class CuboHandler extends Handler<Cubo> {
         VectorCubo vectorCubo = new VectorCubo(cuboPoints.getKey(), cuboPoints.getValue());
         Cubo cubo, parent = getParent(vectorCubo);
 
+        City city = player.getCity();
+
         cubo = new Cubo();
+        cubo.setUuid(UUID.randomUUID());
+        cubo.setCity(city);
         cubo.setName(name);
         cubo.setOwner(player);
         cubo.setPermissionIn(new Permission(true, true, true, true, true));
@@ -63,7 +67,7 @@ public class CuboHandler extends Handler<Cubo> {
 
         if (add(cubo)) {
             player.getPlayerEntity().sendMessage(ChatText.Colored("Cubo created : " + cubo, ChatFormatting.GOLD), Util.NIL_UUID);
-            Logger.info(MessageFormat.format("{0}[New] %s created a cubo : %s",
+            Logger.info(MessageFormat.format("{0}[New] {1} created a cubo : {2}",
                     PrefixLogger, player.getDisplayName(), cubo));
             return cubo;
         }
@@ -72,30 +76,40 @@ public class CuboHandler extends Handler<Cubo> {
 
     @Override
     protected boolean add(Cubo value) {
-        if (dataArray.contains(value)) return false;
+        if (!dataArray.contains(value))
+            dataArray.add(value);
 
-        dataArray.add(value);
-        cuboMap.put(value.getUuid(), value);
-        cuboMapFromName.put(value.getName(), value);
+        if (!cuboMap.containsKey(value.getUuid()))
+            cuboMap.put(value.getUuid(), value);
+        if (!cuboMapFromName.containsKey(value.getName()))
+            cuboMapFromName.put(value.getName(), value);
 
         return true;
     }
 
     public boolean Delete(String name) {
+        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo DS1");
         Cubo cubo = getCubo(name);
+        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo DS2");
 
         if (cubo == null) return false;
+        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo DS3");
         return Delete(cubo);
     }
 
     @Override
     public boolean Delete(Cubo value) {
+        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo D1");
         if (!dataArray.contains(value)) return false;
+        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo D2");
 
         dataArray.remove(value);
+        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo D3");
         cuboMap.remove(value.getUuid());
+        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo D4");
         cuboMapFromName.remove(value.getName());
-        return false;
+        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo D5");
+        return true;
     }
 
     public void updateDependencies() {
@@ -104,6 +118,7 @@ public class CuboHandler extends Handler<Cubo> {
     }
 
     public Cubo getCubo(String name) {
+        WarOfSquirrels.LOGGER.info("[WoS][Debug] size of cuboMapFromName " + cuboMapFromName.size());
         return cuboMapFromName.get(name);
     }
 

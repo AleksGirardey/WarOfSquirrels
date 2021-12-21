@@ -41,9 +41,7 @@ public class RespawnEvents {
         ServerPlayer serverPlayer = WarOfSquirrels.server.getPlayerList().getPlayer(player.getUUID());
 
         if (serverPlayer != null && spawnPoint != null) {
-            WarOfSquirrels.LOGGER.info("[WoS][Debug] Setting SpawnPoint on " + spawnPoint.position);
             serverPlayer.setRespawnPosition(spawnPoint.dimension, spawnPoint.position, 0f, true, false);
-//        event.getPlayer().teleportTo(spawnPoint.position.getX(), spawnPoint.position.getY(), spawnPoint.position.getZ());
         }
     }
 }

@@ -36,16 +36,7 @@ public class CitySetSpawn extends CityMayorOrAssistantCommandBuilder {
         player.getPlayerEntity().sendMessage(ChatText.Error("You cannot set your spawn on this chunk."), Util.NIL_UUID);
         return true;
     }
-
-    @Override
-    protected boolean CanDoIt(FullPlayer player) {
-        if (player.getAssistant()) return super.CanDoIt(player);
-        else {
-            if (player.getCity() == null) return false;
-            return player.getCity().getOwner().equals(player);
-        }
-    }
-
+    
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         int x, y, z;

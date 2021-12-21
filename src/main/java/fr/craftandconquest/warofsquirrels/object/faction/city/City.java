@@ -112,6 +112,9 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         citizens.add(player);
         player.setCity(this);
 
+        player.setAssistant(false);
+        player.setResident(false);
+
         MutableComponent messageToTarget = new TextComponent("Vous avez rejoint " + displayName + ".")
                 .withStyle(ChatFormatting.GREEN);
         player.getPlayerEntity().sendMessage(messageToTarget, Util.NIL_UUID);
@@ -208,15 +211,15 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         int size = WarOfSquirrels.instance.getChunkHandler().getSize(this);
 
         message.append("---===| " + rank.getName() + " " + displayName + " [" + citizens.size() + "] |===---\n");
-        message.append("Faction: " + (faction == null ? "----" : faction.getDisplayName()) + "\n");
-        message.append("Mayor: " + owner.getDisplayName() + "\n");
-        message.append("Assistant(s): " + Utils.getStringFromPlayerList(getAssistants()) + "\n");
-        message.append("Resident(s): " + Utils.getStringFromPlayerList(getCitizens()) + "\n");
-        message.append("Recruit(s): " + Utils.getStringFromPlayerList(getRecruits()) + "\n");
-        message.append("Tag: " + tag + "\n");
-        message.append("Chunks [" + size + "/" + rank.chunkMax + "]\n");
-        message.append("Outpost [" + WarOfSquirrels.instance.getChunkHandler().getOutpostSize(this) + "]\n");
-        message.append("Permissions:\n" + displayPermissions());
+        message.append("  Faction: " + (faction == null ? "----" : faction.getDisplayName()) + "\n");
+        message.append("  Mayor: " + owner.getDisplayName() + "\n");
+        message.append("  Assistant(s): " + Utils.getStringFromPlayerList(getAssistants()) + "\n");
+        message.append("  Resident(s): " + Utils.getStringFromPlayerList(getResidents()) + "\n");
+        message.append("  Recruit(s): " + Utils.getStringFromPlayerList(getRecruits()) + "\n");
+        message.append("  Tag: " + tag + "\n");
+        message.append("  Chunks [" + size + "/" + rank.chunkMax + "]\n");
+        message.append("  Outpost [" + WarOfSquirrels.instance.getChunkHandler().getOutpostSize(this) + "]\n");
+        message.append("  Permissions:\n" + displayPermissions());
 
         message.withStyle(ChatFormatting.BLUE);
         player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
@@ -228,12 +231,12 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         permissionsAsString.append("=== Default Permission [Build|Container|Switch|Farm|Interact] ===\n");
 
         defaultPermission.forEach((k, v) ->
-                permissionsAsString.append("    ").append(k.toString()).append(" ").append(v.toString()).append("\n"));
+                permissionsAsString.append("  ").append(k.toString()).append(" ").append(v.toString()).append("\n"));
 
         permissionsAsString.append("=== Custom Permission [Build|Container|Switch|Farm|Interact] ===\n");
 
         customPermission.forEach((k, v) ->
-                permissionsAsString.append("    ").append(k.getPermissionDisplayName()).append(" ").append(v.toString()).append("\n"));
+                permissionsAsString.append("  ").append(k.getPermissionDisplayName()).append(" ").append(v.toString()).append("\n"));
 
         return permissionsAsString.toString();
     }

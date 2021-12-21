@@ -28,12 +28,21 @@ public class CityCuboDelete extends CityCommandBuilder implements IAdminCommand 
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(context.getArgument(argumentName, String.class));
+        String cuboName = context.getArgument(argumentName, String.class);
+        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(cuboName);
 
-        if (cubo != null && IsAdmin(player) || (player.getCity().getOwner() == player || player.getAssistant()))
+        if (cubo == null) {
+            player.getPlayerEntity().sendMessage(ChatText.Error("Cubo '" + cuboName + "' does not exist."), Util.NIL_UUID);
+            return false;
+        }
+
+        if (IsAdmin(player) || cubo.getCity().getOwner().equals(player) || (cubo.getCity().equals(player.getCity()) && player.getAssistant()))
             return true;
 
-        return cubo != null && cubo.getOwner() == player;
+        if (cubo.getOwner().equals(player)) return true;
+
+        player.getPlayerEntity().sendMessage(ChatText.Error("You cannot delete the cubo '" + cuboName + "'"), Util.NIL_UUID);
+        return false;
     }
 
     @Override

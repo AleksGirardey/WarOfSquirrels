@@ -116,13 +116,9 @@ public class ChunkHandler extends Handler<Chunk> {
         int chunksValue = 0;
         int outpostValue = 0;
 
-        if (cityMap.containsKey(city)) {
-            Logger.info("[WoS][Debug] cityMap contains city");
+        if (cityMap.containsKey(city))
             chunksValue = cityMap.get(city).size();
-        }
         outpostValue = getOutpostSize(city);
-
-        Logger.info(MessageFormat.format("[WoS][Debug] {0} - {1} = {2}", chunksValue, outpostValue, chunksValue - outpostValue));
 
         return chunksValue - outpostValue;
     }
