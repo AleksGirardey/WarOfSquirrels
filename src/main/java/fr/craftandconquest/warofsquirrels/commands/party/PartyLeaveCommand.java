@@ -35,7 +35,7 @@ public class PartyLeaveCommand extends PartyCommandBuilder {
         party.remove(player);
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerFromTarget(party, player);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(party, null, messageToParty, true);
-        player.getPlayerEntity().sendMessage(messageToPlayer, Util.NIL_UUID);
+        player.sendMessage(messageToPlayer);
         return 0;
     }
 

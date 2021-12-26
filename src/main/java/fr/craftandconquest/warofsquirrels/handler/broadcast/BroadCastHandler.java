@@ -101,7 +101,7 @@ public class BroadCastHandler {
                 .withStyle(color == null ? ChatFormatting.YELLOW : color);
 
         for (FullPlayer p : party.toList())
-            p.getPlayerEntity().sendMessage(text, Util.NIL_UUID);
+            p.sendMessage(text);
     }
 
     public void partyInvitation(FullPlayer sender, FullPlayer receiver) {
@@ -111,7 +111,7 @@ public class BroadCastHandler {
                 .withStyle(ChatFormatting.YELLOW);
 
         partyChannel(WarOfSquirrels.instance.getPartyHandler().getFromPlayer(sender), partyMessage, ChatFormatting.YELLOW);
-        receiver.getPlayerEntity().sendMessage(receiverMessage, Util.NIL_UUID);
+        receiver.sendMessage(receiverMessage);
     }
 
     public void cityInvitation(FullPlayer receiver, FullPlayer sender, City city) {
@@ -120,7 +120,7 @@ public class BroadCastHandler {
                 city.displayName +
                 ". Use /accept or /refuse to respond.";
         String cityMessage = receiver.getDisplayName() + " has been invited to join your city.";
-        receiver.getPlayerEntity().sendMessage(new TextComponent(invitationMessage), Util.NIL_UUID);
+        receiver.sendMessage(new TextComponent(invitationMessage));
         BroadCastMessage(sender.getCity(), sender, new TextComponent(cityMessage), true);
     }
 
@@ -132,8 +132,8 @@ public class BroadCastHandler {
         MutableComponent toSender = new TextComponent(factionReceiver.getDisplayName() + " has been invited to be your ally.").withStyle(ChatFormatting.GOLD);
         MutableComponent toReceiver = new TextComponent("The faction " + factionSender.getDisplayName() + " want to be your ally. Use /accept or /refuse to respond.").withStyle(ChatFormatting.GOLD);
 
-        factionLeader.getPlayerEntity().sendMessage(toReceiver, Util.NIL_UUID);
-        for (FullPlayer player : assistants) player.getPlayerEntity().sendMessage(toReceiver, Util.NIL_UUID);
+        factionLeader.sendMessage(toReceiver);
+        for (FullPlayer player : assistants) player.sendMessage(toReceiver);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(factionSender, null, toSender, true);
     }

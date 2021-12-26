@@ -29,8 +29,8 @@ public class CityInvitation extends Invitation {
         MutableComponent toSender = ChatText.Error(receiver.getDisplayName() + " declined your invitation.");
         MutableComponent toReceiver = ChatText.Error("The invitation from " + sender.getDisplayName() + " have been decline.");
 
-        sender.getPlayerEntity().sendMessage(toSender, Util.NIL_UUID);
-        receiver.getPlayerEntity().sendMessage(toReceiver, Util.NIL_UUID);
+        sender.sendMessage(toSender);
+        receiver.sendMessage(toReceiver);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class CityInvitation extends Invitation {
         MutableComponent toReceiver = ChatText.Error("The invitation from '"
                 + sender.getDisplayName() + "' has expired.");
 
-        sender.getPlayerEntity().sendMessage(toSender, Util.NIL_UUID);
-        receiver.getPlayerEntity().sendMessage(toReceiver, Util.NIL_UUID);
+        sender.sendMessage(toSender);
+        receiver.sendMessage(toReceiver);
     }
 }

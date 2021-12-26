@@ -15,8 +15,6 @@ import net.minecraft.world.entity.player.Player;
 public class CityHelp extends CommandBuilder {
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        Player entity = player.getPlayerEntity();
-
         MutableComponent message = ChatText.Colored(
                 """
                         --==| city help |==--
@@ -31,7 +29,7 @@ public class CityHelp extends CommandBuilder {
                         /city list
                         /city cubo""", ChatFormatting.WHITE);
 
-        entity.sendMessage(message, Util.NIL_UUID);
+        player.sendMessage(message);
 
         return 0;
     }

@@ -31,7 +31,7 @@ public class PartyInvitation extends Invitation {
         MutableComponent refuseTextPlayer = ChatText.Error("L'invitation de " + sender.getDisplayName() + " a été refusé.");
 
         party.Send(refuseTextParty);
-        receiver.getPlayerEntity().sendMessage(refuseTextPlayer, Util.NIL_UUID);
+        receiver.sendMessage(refuseTextPlayer);
     }
 
     @Override
@@ -41,8 +41,8 @@ public class PartyInvitation extends Invitation {
         MutableComponent toReceiver = ChatText.Error("L'invitation de '"
                 + sender.getDisplayName() + "' a expiré.");
 
-        sender.getPlayerEntity().sendMessage(toSender, Util.NIL_UUID);
-        receiver.getPlayerEntity().sendMessage(toReceiver, Util.NIL_UUID);
+        sender.sendMessage(toSender);
+        receiver.sendMessage(toReceiver);
     }
 
     @Override

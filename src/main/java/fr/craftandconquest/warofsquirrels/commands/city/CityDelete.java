@@ -8,7 +8,6 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
@@ -28,8 +27,7 @@ public class CityDelete extends CityMayorCommandBuilder implements IAdminCommand
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (player.getCity().getFaction() != null) {
             if (player.getCity().getFaction().getCapital().equals(player.getCity())) {
-                player.getPlayerEntity()
-                        .sendMessage(ChatText.Error("You cannot delete your faction capital."), Util.NIL_UUID);
+                player.sendMessage(ChatText.Error("You cannot delete your faction capital."));
                 return false;
             }
         }

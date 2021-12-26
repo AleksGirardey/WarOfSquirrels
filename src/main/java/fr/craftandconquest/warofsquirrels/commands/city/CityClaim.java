@@ -57,16 +57,16 @@ public class CityClaim extends CityMayorOrAssistantCommandBuilder {
                 CityRank r = player.getCity().getRank();
 
                 if (r.getChunkMax() == chh.getSize(player.getCity())) {
-                    player.getPlayerEntity().sendMessage(
-                            ChatText.Error("You reached the maximum chunk available to claim."), Util.NIL_UUID);
+                    player.sendMessage(
+                            ChatText.Error("You reached the maximum chunk available to claim."));
                     return false;
                 }
                 return true;
             } else if (chh.canBePlaced(player.getCity(), true, chunkLocation))
                 return true;
         }
-        player.getPlayerEntity().sendMessage(
-                ChatText.Error("You can't claim here."), Util.NIL_UUID);
+        player.sendMessage(
+                ChatText.Error("You can't claim here."));
         return false;
     }
 

@@ -37,13 +37,13 @@ public class CityCuboSet extends CommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        player.getPlayerEntity().sendMessage(ChatText.Success("""
+        player.sendMessage(ChatText.Success("""
                 === Cubo set ===
                 ... set owner : Défini le propriétaire du cubo
                 ... set inperm : Défini les permissions des joueurs dans la liste
                 ... set outperm : Défini les permissions des joueurs hors de la liste
                 ... set customperm : Défini des permissions spécifiques pour un joueur, une ville ou une faction
-                """), Util.NIL_UUID);
+                """));
         return 0;
     }
 

@@ -36,8 +36,8 @@ public class CityCuboAdd extends CommandBuilder implements IAdminCommand {
         MutableComponent message;
 
         if (cubo == null || target == null) {
-            player.getPlayerEntity().sendMessage(
-                    ChatText.Error("Les arguments '" + cuboName + "' et '" + playerName + "' ne sont pas valides."), Util.NIL_UUID);
+            player.sendMessage(
+                    ChatText.Error("Les arguments '" + cuboName + "' et '" + playerName + "' ne sont pas valides."));
             return false;
         }
 
@@ -46,7 +46,7 @@ public class CityCuboAdd extends CommandBuilder implements IAdminCommand {
                 || (cubo.getCity() == player.getCity()
                 && (cubo.getCity().getOwner() == player || player.getAssistant()))) return true;
 
-        player.getPlayerEntity().sendMessage(ChatText.Error("Vous ne pouvez pas ajouter quelqu'un à ce cubo."), Util.NIL_UUID);
+        player.sendMessage(ChatText.Error("Vous ne pouvez pas ajouter quelqu'un à ce cubo."));
         return false;
     }
 
@@ -59,6 +59,7 @@ public class CityCuboAdd extends CommandBuilder implements IAdminCommand {
 
         cubo.AddPlayerInList(target);
         WarOfSquirrels.instance.getCuboHandler().Save();
+        player.sendMessage(ChatText.Success("Player '" + playerName + "' has been added to cubo '" + cuboName + "' access list"));
         return 0;
     }
 

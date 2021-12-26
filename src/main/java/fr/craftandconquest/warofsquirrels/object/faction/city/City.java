@@ -94,12 +94,14 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         return citizens.stream()
                 .filter(FullPlayer::getResident)
                 .filter(player -> !player.getAssistant())
+                .filter(player -> !player.equals(owner))
                 .collect(Collectors.toList());
     }
 
     @JsonIgnore
     public List<FullPlayer> getRecruits() {
         return citizens.stream()
+                .filter(player -> !player.equals(owner))
                 .filter(player -> !player.getResident())
                 .filter(player -> !player.getAssistant())
                 .collect(Collectors.toList());
@@ -107,17 +109,14 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
     @JsonIgnore
     public boolean addCitizen(FullPlayer player) {
-        if (citizens.contains(player)) return false;
-
-        citizens.add(player);
-        player.setCity(this);
+        if (!register(player)) return false;
 
         player.setAssistant(false);
         player.setResident(false);
 
         MutableComponent messageToTarget = new TextComponent("Vous avez rejoint " + displayName + ".")
                 .withStyle(ChatFormatting.GREEN);
-        player.getPlayerEntity().sendMessage(messageToTarget, Util.NIL_UUID);
+        player.sendMessage(messageToTarget);
 
         MutableComponent messageToCity = new TextComponent(player.getDisplayName() + " à rejoint la ville.")
                 .withStyle(ChatFormatting.GREEN);
@@ -132,8 +131,8 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         citizens.remove(player);
         player.setCity(null);
 
-        player.getPlayerEntity().sendMessage(ChatText.Error(isKicked ?
-                "Vous avez été expulsé de " + displayName + "." : "Vous avez quitté " + displayName), Util.NIL_UUID);
+        player.sendMessage(ChatText.Error(isKicked ?
+                "Vous avez été expulsé de " + displayName + "." : "Vous avez quitté " + displayName));
 
         MutableComponent messageToCity = ChatText.Error(player.getDisplayName() + (isKicked ?
                 " a été expulsé de la ville." : " a quitté la ville."));
@@ -222,7 +221,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         message.append("  Permissions:\n" + displayPermissions());
 
         message.withStyle(ChatFormatting.BLUE);
-        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
+        player.sendMessage(message);
     }
 
     public String displayPermissions() {
@@ -256,5 +255,14 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
             customPermission.put(target, permission.permission);
         }
+    }
+
+    public boolean register(FullPlayer player) {
+        if (citizens.contains(player)) return false;
+
+        citizens.add(player);
+        player.setCity(this);
+
+        return true;
     }
 }

@@ -30,8 +30,8 @@ public class FactionSetCapital extends FactionCommandMayor implements ICityExtra
         if (city != null && city.getFaction() != null && city.getFaction() == player.getCity().getFaction())
             return true;
 
-        player.getPlayerEntity().sendMessage(ChatText.Error("La ville '" + getRawArgument(context)
-                + "' n'existe pas ou ne fait pas partit de votre faction."), Util.NIL_UUID);
+        player.sendMessage(ChatText.Error("La ville '" + getRawArgument(context)
+                + "' n'existe pas ou ne fait pas partit de votre faction."));
         return false;
     }
 

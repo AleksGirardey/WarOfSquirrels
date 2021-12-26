@@ -11,7 +11,6 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
@@ -36,43 +35,37 @@ public class CityCuboSetOutPerm extends CommandBuilder implements IPermissionExt
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo SetOutPerm C1");
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(context.getArgument(cuboNameArgument, String.class));
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo SetOutPerm C2");
 
         if (cubo == null) return false;
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo SetOutPerm C3");
 
         List<FullPlayer> list = new ArrayList<>();
 
         list.add(cubo.getOwner());
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo SetOutPerm C4");
         list.add(cubo.getCity().getOwner());
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo SetOutPerm C5");
         list.addAll(cubo.getCity().getAssistants());
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo SetOutPerm C6");
 
         if (list.contains(player))
             return true;
 
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo SetOutPerm C7");
-        player.getPlayerEntity()
-                .sendMessage(ChatText.Error("Vous ne pouvez pas modifier les permissions de ce cubo."), Util.NIL_UUID);
+        player.sendMessage(ChatText.Error("Vous ne pouvez pas modifier les permissions de ce cubo."));
         return true;
     }
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo SetOutPerm E1");
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(context.getArgument(cuboNameArgument, String.class));
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo SetOutPerm E2");
         Permission permission = getPermission(context);
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo SetOutPerm E3");
 
         cubo.setPermissionOut(permission);
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo SetOutPerm E4");
         WarOfSquirrels.instance.getCuboHandler().Save();
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo SetOutPerm E5");
+        MutableComponent text = ChatText.Success("Outperm permissions for cubo '" + cubo.getName() + "' are now " + permission);
+
+        player.sendMessage(text);
+
+        if (!cubo.getOwner().equals(player))
+            cubo.getOwner().sendMessage(text);
+
         return 0;
     }
 

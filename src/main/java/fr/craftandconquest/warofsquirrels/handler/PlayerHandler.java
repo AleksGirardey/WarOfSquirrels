@@ -44,9 +44,9 @@ public class PlayerHandler extends Handler<FullPlayer> {
     }
 
     public boolean add(FullPlayer player) {
-        if (!dataArray.contains(player)) {
-            playersByName.put(player.getDisplayName(), player);
-        }
+        if (playersByName.containsKey(player.getDisplayName())) return false;
+
+        playersByName.put(player.getDisplayName(), player);
         return true;
     }
 

@@ -50,9 +50,9 @@ public class CitySetMayor extends CityMayorCommandBuilder implements IAdminComma
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        return IsAdmin(player) || WarOfSquirrels.instance.getPlayerHandler()
+        return IsAdmin(player) || (player.getCity() != null && WarOfSquirrels.instance.getPlayerHandler()
                 .get(context.getArgument(argumentName, String.class))
-                .getCity() == player.getCity();
+                .getCity().equals(player.getCity()));
     }
 
     @Override

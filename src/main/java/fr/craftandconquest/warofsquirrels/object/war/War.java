@@ -176,7 +176,7 @@ public class War implements IChannelTarget {
 
     public boolean AddAttacker(FullPlayer player) {
         if (attackers.size() == attackersLimit) {
-            player.getPlayerEntity().sendMessage(ChatText.Error("You can't join this war, wait for defenders to join"), Util.NIL_UUID);
+            player.sendMessage(ChatText.Error("You can't join this war, wait for defenders to join"));
             return false;
         }
         attackers.add(player);
@@ -419,17 +419,17 @@ public class War implements IChannelTarget {
         message.append(ChatText.Colored("\n===[" + cityAttacker.tag + "] "
                 + attackersPoints.getScore() + " - " + defendersPoints.getScore() + " [" + cityDefender.tag + "]===", ChatFormatting.WHITE).withStyle(ChatFormatting.BOLD));
 
-        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
+        player.sendMessage(message);
 
         chunkBeingCaptured.forEach((chunk, f) -> {
             float val = Capture(chunk);
 
             if (val > 0f)
-                player.getPlayerEntity().sendMessage(ChatText.Success("["
+                player.sendMessage(ChatText.Success("["
                         + (chunk.posX * 16) + ";"
                         + (chunk.posZ * 16) + "] "
                         + Utils.toTime((int) (chunkBeingCaptured.get(chunk) / val))
-                        + " secondes."), Util.NIL_UUID);
+                        + " secondes."));
 
         });
     }

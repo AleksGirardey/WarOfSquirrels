@@ -45,7 +45,7 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
         else
             message = ChatText.Colored("Admin mode désactivé", ChatFormatting.GOLD);
 
-        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
+        player.sendMessage(message);
 
         return 0;
     }

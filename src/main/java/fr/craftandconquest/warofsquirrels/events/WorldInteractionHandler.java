@@ -19,6 +19,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
@@ -108,9 +109,7 @@ public class WorldInteractionHandler {
 
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
-    public void OnBlockDestroy(BlockEvent.BreakEvent event) {
-        // Deal with sign shop
-
+    public void OnLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
 
         if (WarOfSquirrels.instance.getCuboHandler().playerExists(player)) {
@@ -119,8 +118,15 @@ public class WorldInteractionHandler {
                     player,
                     new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
                     true);
-            return;
         }
+    }
+
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    @SubscribeEvent
+    public void OnBlockDestroy(BlockEvent.BreakEvent event) {
+        // Deal with sign shop
+
+        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
 
         if (player.isAdminMode()) return;
 
@@ -137,9 +143,9 @@ public class WorldInteractionHandler {
 
         if (!canConstruct) {
             event.setCanceled(true);
-            player.getPlayerEntity().sendMessage(new TextComponent("You cannot destroy here")
+            player.sendMessage(new TextComponent("You cannot destroy here")
                     .withStyle(ChatFormatting.BOLD)
-                    .withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    .withStyle(ChatFormatting.RED));
         }
     }
 
@@ -167,9 +173,8 @@ public class WorldInteractionHandler {
 
         if (!canConstruct) {
             event.setCanceled(true);
-            player.getPlayerEntity().sendMessage(
-                    ChatText.Error("You cannot build here").withStyle(ChatFormatting.BOLD),
-                    Util.NIL_UUID);
+            player.sendMessage(
+                    ChatText.Error("You cannot build here").withStyle(ChatFormatting.BOLD));
         }
     }
 
@@ -193,9 +198,7 @@ public class WorldInteractionHandler {
 
         if (!canFarm) {
             event.setCanceled(true);
-            player.getPlayerEntity().sendMessage(
-                    ChatText.Error("You have no right to interact with this entity."),
-                    Util.NIL_UUID);
+            player.sendMessage(ChatText.Error("You have no right to interact with this entity."));
         }
     }
 
@@ -204,9 +207,13 @@ public class WorldInteractionHandler {
     public void OnPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
 
+        WarOfSquirrels.LOGGER.info("INTERACT WITH " + event.getHand().name());
+
+
         int lastDimensionId = Chunk.DimensionToId(player.lastDimension);
 
         if (WarOfSquirrels.instance.getCuboHandler().playerExists(player)) {
+            if (event.getHand().equals(InteractionHand.OFF_HAND)) return;
             event.setCanceled(true);
             WarOfSquirrels.instance.getCuboHandler().set(
                     player,
@@ -286,7 +293,7 @@ public class WorldInteractionHandler {
     public boolean OnPlayerContainer(Player playerEntity, BlockPos target, int dimensionId) {
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
 
-        if (PermissionAPI.hasPermission(player.getPlayerEntity(), "minecraft.command.op")) return true;
+        if (player.isAdminMode()) return true;
 
         return WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
                 PermissionHandler.Rights.CONTAINER,

@@ -36,13 +36,21 @@ public class CityCuboSetOwner extends CommandBuilder implements IAdminCommand {
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(context.getArgument(cuboNameArgument, String.class));
+        String cuboName = context.getArgument(cuboNameArgument, String.class);
+        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(cuboName);
 
-        if (cubo == null) return false;
+        if (cubo == null) {
+            player.sendMessage(ChatText.Error("Cubo '" + cuboName + "' does not exist"));
+            return false;
+        }
 
-        FullPlayer target = WarOfSquirrels.instance.getPlayerHandler().get(context.getArgument(playerNameArgument, String.class));
+        String playerName = context.getArgument(playerNameArgument, String.class);
+        FullPlayer target = WarOfSquirrels.instance.getPlayerHandler().get(playerName);
 
-        if (target == null) return false;
+        if (target == null) {
+            player.sendMessage(ChatText.Error("Player '" + playerName + "' does not exist"));
+            return false;
+        }
 
         List<FullPlayer> list = new ArrayList<>();
 
@@ -53,9 +61,8 @@ public class CityCuboSetOwner extends CommandBuilder implements IAdminCommand {
         if (list.contains(player))
             return true;
 
-        player.getPlayerEntity()
-                .sendMessage(ChatText.Error("Vous ne pouvez pas modifier les permissions de ce cubo."), Util.NIL_UUID);
-        return true;
+        player.sendMessage(ChatText.Error("Vous ne pouvez pas modifier les permissions de ce cubo."));
+        return false;
     }
 
     @Override

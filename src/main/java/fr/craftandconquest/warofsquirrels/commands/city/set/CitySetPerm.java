@@ -40,14 +40,14 @@ public class CitySetPerm extends CityMayorOrAssistantCommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        player.getPlayerEntity().sendMessage(ChatText.Success(
+        player.sendMessage(ChatText.Success(
                 "--==| city set perm |==--\n"
                         + "/city set perm ally [build] [container] [switch]"
                         + "/city set perm enemy [build] [container] [switch]"
                         + "/city set perm faction [build] [container] [switch]"
                         + "/city set perm outside [build] [container] [switch]"
                         + "/city set perm recruit [build] [container] [switch]"
-                        + "/city set perm resident [build] [container] [switch]"), Util.NIL_UUID);
+                        + "/city set perm resident [build] [container] [switch]"));
         return 0;
     }
 }

@@ -112,8 +112,11 @@ public class CityHandler extends Handler<City> {
 
         if (!WarOfSquirrels.instance.getChunkHandler().deleteCity(city)) return false;
 
+        if (!WarOfSquirrels.instance.getCuboHandler().deleteCity(city)) return false;
+
         for (FullPlayer player : city.getCitizens()) {
             player.setAssistant(false);
+            player.setResident(false);
             player.setCity(null);
         }
 

@@ -72,8 +72,8 @@ public class PartyHandler {
     public void DisplayInfo(FullPlayer player) {
         Party party = getFromPlayer(player);
 
-        player.getPlayerEntity().sendMessage(ChatText.Colored("=== Groupe[" + party.size() + "] ===", ChatFormatting.BLUE), Util.NIL_UUID);
-        player.getPlayerEntity().sendMessage(ChatText.Colored("Chef : " + party.getLeader(), ChatFormatting.BLUE), Util.NIL_UUID);
-        player.getPlayerEntity().sendMessage(ChatText.Colored("Joueur(s) : " + party.getPlayers(), ChatFormatting.BLUE), Util.NIL_UUID);
+        player.sendMessage(ChatText.Colored("=== Groupe[" + party.size() + "] ===", ChatFormatting.BLUE));
+        player.sendMessage(ChatText.Colored("Chef : " + party.getLeader(), ChatFormatting.BLUE));
+        player.sendMessage(ChatText.Colored("Joueur(s) : " + party.getPlayers(), ChatFormatting.BLUE));
     }
 }

@@ -32,7 +32,7 @@ public class CityCuboDelete extends CityCommandBuilder implements IAdminCommand 
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(cuboName);
 
         if (cubo == null) {
-            player.getPlayerEntity().sendMessage(ChatText.Error("Cubo '" + cuboName + "' does not exist."), Util.NIL_UUID);
+            player.sendMessage(ChatText.Error("Cubo '" + cuboName + "' does not exist."));
             return false;
         }
 
@@ -41,7 +41,7 @@ public class CityCuboDelete extends CityCommandBuilder implements IAdminCommand 
 
         if (cubo.getOwner().equals(player)) return true;
 
-        player.getPlayerEntity().sendMessage(ChatText.Error("You cannot delete the cubo '" + cuboName + "'"), Util.NIL_UUID);
+        player.sendMessage(ChatText.Error("You cannot delete the cubo '" + cuboName + "'"));
         return false;
     }
 
@@ -50,7 +50,7 @@ public class CityCuboDelete extends CityCommandBuilder implements IAdminCommand 
         String cuboName = context.getArgument(argumentName, String.class);
 
         if (WarOfSquirrels.instance.getCuboHandler().Delete(cuboName)) {
-            player.getPlayerEntity().sendMessage(ChatText.Success("Le cubo " + cuboName + " est maintenant détruit."), Util.NIL_UUID);
+            player.sendMessage(ChatText.Success("Le cubo " + cuboName + " est maintenant détruit."));
         }
 
         return 0;

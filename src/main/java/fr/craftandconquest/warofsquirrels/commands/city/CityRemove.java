@@ -22,7 +22,7 @@ public class CityRemove extends CityMayorOrAssistantCommandBuilder implements IP
 
         if (target == null || target.getCity() == null || target.getCity().getOwner().equals(target) || !target.getCity().equals(player.getCity())) {
             MutableComponent message = ChatText.Error("Le joueur '").append(getRawPlayer(context).getDisplayName()).append("' n'existe pas ou ne peut pas être expulsé de votre ville.");
-            player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
+            player.sendMessage(message);
             return false;
         }
         return true;

@@ -27,12 +27,12 @@ public class FactionHelpCommand extends CommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        player.getPlayerEntity().sendMessage(ChatText.Success("--==| faction help |==--\n" +
+        player.sendMessage(ChatText.Success("--==| faction help |==--\n" +
                 "/faction info <faction>\n" +
                 "/faction list\n" +
                 "/faction create [FactionName] [TerritoryName]\n" +
                 "/faction delete\n" +
-                "/faction set ..."), Util.NIL_UUID);
+                "/faction set ..."));
         return 0;
     }
 }

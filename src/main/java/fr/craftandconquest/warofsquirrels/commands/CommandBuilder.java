@@ -37,7 +37,7 @@ public abstract class CommandBuilder implements Command<CommandSourceStack>, IAd
             return ExecCommand(player, context);
 
         if (ErrorMessage() != null) {
-            player.getPlayerEntity().sendMessage(ErrorMessage()/*.append(" : " + errorTarget)*/, Util.NIL_UUID);
+            player.sendMessage(ErrorMessage());
         }
         return -1;
     }

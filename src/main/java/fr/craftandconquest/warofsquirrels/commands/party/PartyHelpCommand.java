@@ -18,7 +18,7 @@ public class PartyHelpCommand extends CommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        player.getPlayerEntity().sendMessage(ChatText.Success(
+        player.sendMessage(ChatText.Success(
                 """
                         --==| party help |==--
                         /party info
@@ -27,7 +27,7 @@ public class PartyHelpCommand extends CommandBuilder {
                         /party invite [PlayerName]
                         /party remove [PlayerName]
                         /party leave
-                        """), Util.NIL_UUID);
+                        """));
         return 0;
     }
 

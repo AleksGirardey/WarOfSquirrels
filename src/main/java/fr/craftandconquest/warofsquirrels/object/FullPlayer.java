@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minecraft.Util;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -87,7 +89,7 @@ public class FullPlayer implements IPermission {
     }
 
     public void updateDependencies() {
-        city = WarOfSquirrels.instance.getCityHandler().getCity(cityUuid);
+        WarOfSquirrels.instance.getCityHandler().getCity(cityUuid).register(this);
     }
 
     @JsonIgnore
@@ -122,5 +124,16 @@ public class FullPlayer implements IPermission {
         final FullPlayer target = (FullPlayer) obj;
 
         return target.getUuid().equals(this.uuid);
+    }
+
+    public boolean sendMessage(MutableComponent message) {
+        Player player = getPlayerEntity();
+
+        if (player != null) {
+            player.sendMessage(message, Util.NIL_UUID);
+            return true;
+        }
+
+        return false;
     }
 }

@@ -31,10 +31,9 @@ public class CityCuboList extends CityCommandBuilder {
         List<Cubo> cubos = WarOfSquirrels.instance.getCuboHandler().getCubo(player);
 
         MutableComponent message = ChatText.Colored("=== Liste de vos cubo(s) [" + cubos.size() + "] ===\n", ChatFormatting.BLUE);
-
         cubos.forEach(c -> message.append("- ").append(c.display()).append("\n"));
 
-        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
+        player.sendMessage(message);
         return 0;
     }
 

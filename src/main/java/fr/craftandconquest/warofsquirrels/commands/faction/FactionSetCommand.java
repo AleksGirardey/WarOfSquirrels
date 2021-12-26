@@ -38,12 +38,12 @@ public class FactionSetCommand extends CommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        player.getPlayerEntity().sendMessage(ChatText.Colored("""
+        player.sendMessage(ChatText.Colored("""
                 --==| faction set help |==--
                 /faction set ally [faction] <build> <container> <switch>
                 /faction set enemy [faction] <build> <container> <switch>
                 /faction set neutral [faction]
-                """, ChatFormatting.GOLD), Util.NIL_UUID);
+                """, ChatFormatting.GOLD));
         return 0;
     }
 

@@ -31,16 +31,16 @@ public class WarJoin extends CityCommandBuilder {
         City playerCity = player.getCity();
 
         if (city == null) {
-            player.getPlayerEntity().sendMessage(ChatText.Error("The city '" + cityName + "' does not exist")
-                    .withStyle(ChatFormatting.BOLD), Util.NIL_UUID);
+            player.sendMessage(ChatText.Error("The city '" + cityName + "' does not exist")
+                    .withStyle(ChatFormatting.BOLD));
             return false;
         }
 
         War war = WarOfSquirrels.instance.getWarHandler().getWar(city);
 
         if (war == null) {
-            player.getPlayerEntity().sendMessage(ChatText.Error("The city '" + cityName + "' is not at war")
-                    .withStyle(ChatFormatting.BOLD), Util.NIL_UUID);
+            player.sendMessage(ChatText.Error("The city '" + cityName + "' is not at war")
+                    .withStyle(ChatFormatting.BOLD));
             return false;
         }
 

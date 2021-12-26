@@ -43,13 +43,13 @@ public abstract class Channel {
 
     public void SendAnnounce(MutableComponent message) {
         for (FullPlayer player : receivers) {
-            player.getPlayerEntity().sendMessage(transformTextAnnounce(message), Util.NIL_UUID);
+            player.sendMessage(transformTextAnnounce(message));
         }
     }
 
     public void SendMessage(FullPlayer sender, MutableComponent message) {
         for (FullPlayer player : receivers) {
-            player.getPlayerEntity().sendMessage(transformText(sender, message), Util.NIL_UUID);
+            player.sendMessage(transformText(sender, message));
         }
     }
 }

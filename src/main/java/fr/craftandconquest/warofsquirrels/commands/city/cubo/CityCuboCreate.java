@@ -44,9 +44,9 @@ public class CityCuboCreate extends CityMayorOrAssistantCommandBuilder {
                     }
                 }
             }
-            player.getPlayerEntity().sendMessage(ChatText.Error("Vous ne pouvez pas définir de cubo avec des limites."), Util.NIL_UUID);
+            player.sendMessage(ChatText.Error("Vous ne pouvez pas définir de cubo avec des limites."));
         } else
-            player.getPlayerEntity().sendMessage(ChatText.Error("Vous devez dans un premier temps définir les limites du cubo (/city cubo)"), Util.NIL_UUID);
+            player.sendMessage(ChatText.Error("Vous devez dans un premier temps définir les limites du cubo (/city cubo)"));
         return false;
     }
 

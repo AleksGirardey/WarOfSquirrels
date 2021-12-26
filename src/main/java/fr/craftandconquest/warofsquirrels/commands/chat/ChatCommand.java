@@ -24,7 +24,7 @@ public abstract class ChatCommand extends CommandBuilder {
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         player.setChatTarget(BroadCastTarget.valueOf(commandName().toUpperCase()));
-        player.getPlayerEntity().sendMessage(new TextComponent("Chat toggle to " + commandName().toUpperCase()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
+        player.sendMessage(new TextComponent("Chat toggle to " + commandName().toUpperCase()).withStyle(ChatFormatting.GOLD));
 
         return 0;
     }

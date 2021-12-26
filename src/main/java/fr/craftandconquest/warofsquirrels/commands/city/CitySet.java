@@ -39,12 +39,12 @@ public class CitySet extends CityMayorOrAssistantCommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        player.getPlayerEntity().sendMessage(ChatText.Success(
+        player.sendMessage(ChatText.Success(
                 """
                         --==| city set help |==--
                         /city set spawn
                         /city set mayor [player]
-                        /city set assistant [player]"""), Util.NIL_UUID);
+                        /city set assistant [player]"""));
         return 0;
     }
 }

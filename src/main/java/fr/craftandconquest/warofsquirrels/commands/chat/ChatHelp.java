@@ -24,13 +24,13 @@ public class ChatHelp extends CommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        player.getPlayerEntity().sendMessage(ChatText.Colored("""
+        player.sendMessage(ChatText.Colored("""
                 /chat general : Toggle general chat
                 /chat city : Toggle city chat
                 /chat faction : Toggle faction chat
                 /chat war : Toggle war chat
                 /chat party : Toggle party chat
-                """, ChatFormatting.GOLD), Util.NIL_UUID);
+                """, ChatFormatting.GOLD));
         return 0;
     }
 

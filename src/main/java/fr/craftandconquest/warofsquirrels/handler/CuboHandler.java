@@ -40,7 +40,7 @@ public class CuboHandler extends Handler<Cubo> {
 
     public Cubo CreateCubo(FullPlayer player, String name) {
         if (!points.containsKey(player)) {
-            player.getPlayerEntity().sendMessage(ChatText.Error("You need to activate the cubo mode first"), Util.NIL_UUID);
+            player.sendMessage(ChatText.Error("You need to activate the cubo mode first"));
             return null;
         }
 
@@ -66,7 +66,7 @@ public class CuboHandler extends Handler<Cubo> {
         cubo.setVector(vectorCubo);
 
         if (add(cubo)) {
-            player.getPlayerEntity().sendMessage(ChatText.Colored("Cubo created : " + cubo, ChatFormatting.GOLD), Util.NIL_UUID);
+            player.sendMessage(ChatText.Colored("Cubo created : " + cubo, ChatFormatting.GOLD));
             Logger.info(MessageFormat.format("{0}[New] {1} created a cubo : {2}",
                     PrefixLogger, player.getDisplayName(), cubo));
             return cubo;
@@ -88,27 +88,20 @@ public class CuboHandler extends Handler<Cubo> {
     }
 
     public boolean Delete(String name) {
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo DS1");
         Cubo cubo = getCubo(name);
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo DS2");
 
         if (cubo == null) return false;
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo DS3");
+
         return Delete(cubo);
     }
 
     @Override
     public boolean Delete(Cubo value) {
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo D1");
         if (!dataArray.contains(value)) return false;
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo D2");
 
         dataArray.remove(value);
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo D3");
         cuboMap.remove(value.getUuid());
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo D4");
         cuboMapFromName.remove(value.getName());
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] Cubo D5");
         return true;
     }
 
@@ -118,7 +111,6 @@ public class CuboHandler extends Handler<Cubo> {
     }
 
     public Cubo getCubo(String name) {
-        WarOfSquirrels.LOGGER.info("[WoS][Debug] size of cuboMapFromName " + cuboMapFromName.size());
         return cuboMapFromName.get(name);
     }
 
@@ -179,16 +171,16 @@ public class CuboHandler extends Handler<Cubo> {
     }
 
     private static Pair<Vector3, Vector3> newCubo(FullPlayer player) {
-        player.getPlayerEntity().sendMessage(ChatText.Success(
-                "-=== CuboVector mode [ON] ===-"), Util.NIL_UUID);
+        player.sendMessage(ChatText.Success(
+                "-=== CuboVector mode [ON] ===-"));
         return (Pair.of(null, null));
     }
 
     public void deactivateCuboMode(FullPlayer player) {
         if (points.get(player) != null) {
             points.remove(player);
-            player.getPlayerEntity().sendMessage(ChatText.Success(
-                    "-=== CuboVector mode [OFF] ===-"), Util.NIL_UUID);
+            player.sendMessage(ChatText.Success(
+                    "-=== CuboVector mode [OFF] ===-"));
         }
     }
 
@@ -215,10 +207,10 @@ public class CuboHandler extends Handler<Cubo> {
         points.replace(player, Pair.of(left, right));
 
         message.append(" set at the position [" + block.x + ";" + block.y + ";" + block.z + "]");
-        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
+        player.sendMessage(message);
     }
 
-    public void deleteCity(City city) {
+    public boolean deleteCity(City city) {
         List<UUID> removeList = new ArrayList<>();
 
         dataArray.forEach(c -> {
@@ -228,6 +220,7 @@ public class CuboHandler extends Handler<Cubo> {
 
         removeList.forEach(uuid -> Delete(getCubo(uuid)));
         Save();
+        return true;
     }
 
     public List<String> getStringFromPlayer(FullPlayer player) {

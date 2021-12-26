@@ -12,7 +12,7 @@ public class ChatWar extends ChatCommand {
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (WarOfSquirrels.instance.getWarHandler().Contains(player)) return true;
 
-        player.getPlayerEntity().sendMessage(ChatText.Error("You do not belong to a war."), Util.NIL_UUID);
+        player.sendMessage(ChatText.Error("You do not belong to a war."));
         return false;
     }
 

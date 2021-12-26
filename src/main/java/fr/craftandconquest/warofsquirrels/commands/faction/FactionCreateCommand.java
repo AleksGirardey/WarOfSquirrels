@@ -42,7 +42,7 @@ public class FactionCreateCommand extends CityMayorCommandBuilder implements ITe
         if (player.getCity().getFaction() == null
                 && influence.getValue() >= WarOfSquirrels.instance.getConfig().getBaseInfluenceRequired()) return true;
 
-        player.getPlayerEntity().sendMessage(ChatText.Error("Vous ne remplissez pas les conditions nécessaire pour former une faction."), Util.NIL_UUID);
+        player.sendMessage(ChatText.Error("Vous ne remplissez pas les conditions nécessaire pour former une faction."));
         return false;
     }
 

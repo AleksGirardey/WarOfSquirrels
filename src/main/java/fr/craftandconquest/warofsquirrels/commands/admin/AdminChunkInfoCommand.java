@@ -96,7 +96,7 @@ public class AdminChunkInfoCommand extends AdminCommandBuilder {
 //                .sendMessage(new StringTextComponent(" === [" + chunkPos.getKey() + ";" + chunkPos.getValue() + "] === "));
 //
 //        biomeMap.forEach((k, v) ->
-//                player.getPlayerEntity().sendMessage(new StringTextComponent(
+//                player.sendMessage(new StringTextComponent(
 //                registry.getValue(k).getTranslationKey() + " - " + v)));
 
         return 0;

@@ -124,7 +124,7 @@ public class PlayersInteractionHandler {
         Territory newTerritory = WarOfSquirrels.instance.getTerritoryHandler().get(new Vector2(event.getNewPos().chunk().x, event.getNewPos().chunk().z));
 
         if (oldTerritory != newTerritory) {
-            player.getPlayerEntity().sendMessage(ChatText.Colored("~~~~| " + newTerritory.getName() + " |~~~~", ChatFormatting.GOLD), Util.NIL_UUID);
+            player.sendMessage(ChatText.Colored("~~~~| " + newTerritory.getName() + " |~~~~", ChatFormatting.GOLD));
         }
 
         Chunk lastChunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), dimensionId);
@@ -142,17 +142,14 @@ public class PlayersInteractionHandler {
                         }
                     }
 
-                    player.getPlayerEntity().sendMessage(ChatText.Colored("~~~~| " + newChunk.getCity().getDisplayName() + " |~~~~", ChatFormatting.GOLD),
-                            Util.NIL_UUID);
+                    player.sendMessage(ChatText.Colored("~~~~| " + newChunk.getCity().getDisplayName() + " |~~~~", ChatFormatting.GOLD));
                 }
             } else {
-                player.getPlayerEntity().sendMessage(ChatText.Colored("~~~~| Wilderness |~~~~", ChatFormatting.GOLD),
-                        Util.NIL_UUID);
+                player.sendMessage(ChatText.Colored("~~~~| Wilderness |~~~~", ChatFormatting.GOLD));
             }
         } else {
             if (newChunk != null) {
-                player.getPlayerEntity().sendMessage(ChatText.Colored("~~~~| " + newChunk.getCity().getDisplayName() + " |~~~~", ChatFormatting.GOLD),
-                        Util.NIL_UUID);
+                player.sendMessage(ChatText.Colored("~~~~| " + newChunk.getCity().getDisplayName() + " |~~~~", ChatFormatting.GOLD));
             }
         }
     }

@@ -27,15 +27,19 @@ public class CityList extends CommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        List<City> cityList = WarOfSquirrels.instance.getCityHandler().getAll();
+//        WarOfSquirrels.instance.getFactionHandler().getCitiesGroupedByFaction();
+        List<City> freeCityList = WarOfSquirrels.instance.getCityHandler().getAll().stream().filter(c -> c.getFaction() == null).toList();
         MutableComponent message = ChatText.Success("");
 
-        for (int i = 0; i < cityList.size(); ++i) {
-            message.append(cityList.get(i).displayName);
-            if (i != cityList.size() - 1)
-                message.append(", ");
+
+        message.append(ChatText.Success("=== Free cities [" + freeCityList.size() + "] ===\n"));
+
+        for (int i = 0; i < freeCityList.size(); ++i) {
+            message.append(freeCityList.get(i).displayName + "");
+            if (i != freeCityList.size() - 1)
+                message.append("");
         }
-        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
+        player.sendMessage(message);
         return 0;
     }
 

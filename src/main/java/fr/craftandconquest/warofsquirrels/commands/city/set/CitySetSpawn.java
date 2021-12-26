@@ -33,7 +33,7 @@ public class CitySetSpawn extends CityMayorOrAssistantCommandBuilder {
         if (chunk != null && chunk.getCity().equals(player.getCity()) && (chunk.getHomeBlock() || chunk.getOutpost())) {
             return true;
         }
-        player.getPlayerEntity().sendMessage(ChatText.Error("You cannot set your spawn on this chunk."), Util.NIL_UUID);
+        player.sendMessage(ChatText.Error("You cannot set your spawn on this chunk."));
         return true;
     }
     

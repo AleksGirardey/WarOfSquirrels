@@ -8,7 +8,7 @@ import net.minecraft.network.chat.MutableComponent;
 public abstract class CityMayorOrAssistantCommandBuilder extends CityCommandBuilder {
     @Override
     protected MutableComponent ErrorMessage() {
-        return ChatText.Error("You need to be at assistant or mayor in your city to perform this command")
+        return ChatText.Error("You need to be assistant or mayor in your city to perform this command")
                 .withStyle(ChatFormatting.BOLD);
     }
 

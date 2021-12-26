@@ -32,7 +32,7 @@ public class WarLeave extends CityCommandBuilder {
 
         if (war.RemovePlayer(player))
             return 1;
-        player.getPlayerEntity().sendMessage(ChatText.Error("You cannot leave the war.").withStyle(ChatFormatting.BOLD), Util.NIL_UUID);
+        player.sendMessage(ChatText.Error("You cannot leave the war.").withStyle(ChatFormatting.BOLD));
 
         return 0;
     }

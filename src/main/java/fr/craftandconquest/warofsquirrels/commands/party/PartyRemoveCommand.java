@@ -37,7 +37,7 @@ public class PartyRemoveCommand extends PartyCommandLeader implements IPlayerExt
         else
             return true;
 
-        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
+        player.sendMessage(message);
         return false;
     }
 
@@ -55,7 +55,7 @@ public class PartyRemoveCommand extends PartyCommandLeader implements IPlayerExt
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerFromTarget(party, target);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(party, null, messageToParty, true);
 
-        target.getPlayerEntity().sendMessage(messageToTarget, Util.NIL_UUID);
+        target.sendMessage(messageToTarget);
         return 0;
     }
 

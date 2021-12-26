@@ -57,7 +57,7 @@ public class Party implements IChannelTarget {
     }
 
     public void Send(MutableComponent text) {
-        leader.getPlayerEntity().sendMessage(text, Util.NIL_UUID);
+        leader.sendMessage(text);
     }
 
     public void Send(String text) {

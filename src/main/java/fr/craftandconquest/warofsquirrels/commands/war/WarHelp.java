@@ -14,8 +14,6 @@ import net.minecraft.world.entity.player.Player;
 public class WarHelp extends CommandBuilder {
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        Player entity = player.getPlayerEntity();
-
         MutableComponent message = ChatText.Colored("""
                 ---=== /war ===---
                 - war attack
@@ -25,7 +23,7 @@ public class WarHelp extends CommandBuilder {
                 - war list
                 - war target""", ChatFormatting.BLUE);
 
-        entity.sendMessage(message, Util.NIL_UUID);
+        player.sendMessage(message);
 
         return 0;
     }

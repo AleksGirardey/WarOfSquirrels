@@ -46,8 +46,8 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
 
         if (super.CanDoIt(player) && party.size() >= minPartySize && party.createCityCheck()) return true;
 
-        player.getPlayerEntity().sendMessage(
-                ChatText.Error("You need to be in a party of at least " + minPartySize + " wanderers to create a new city"), Util.NIL_UUID);
+        player.sendMessage(
+                ChatText.Error("You need to be in a party of at least " + minPartySize + " wanderers to create a new city"));
         return false;
     }
 
@@ -70,7 +70,7 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
         } else
             message = ChatText.Error("Leave your city first !");
 
-        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
+        player.sendMessage(message);
         return false;
     }
 
@@ -104,7 +104,7 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
 
-        player.getPlayerEntity().sendMessage(chunk.creationLogText(), Util.NIL_UUID);
+        player.sendMessage(chunk.creationLogText());
 
         return 0;
     }

@@ -34,14 +34,14 @@ public class CityCuboRemove extends CommandBuilder implements IAdminCommand {
         FullPlayer target = WarOfSquirrels.instance.getPlayerHandler().get(playerName);
 
         if (cubo == null || target == null) {
-            player.getPlayerEntity().sendMessage(ChatText.Error("Les arguments '" + cuboName + "' et '" + playerName + "' ne sont pas valides."), Util.NIL_UUID);
+            player.sendMessage(ChatText.Error("Les arguments '" + cuboName + "' et '" + playerName + "' ne sont pas valides."));
             return false;
         }
 
         if ((cubo.getCity().getOwner().equals(player) || (player.getAssistant() && player.getCity().equals(cubo.getCity())) || IsAdmin(player))) return true;
         if (cubo.getOwner().equals(player)) return true;
 
-        player.getPlayerEntity().sendMessage(ChatText.Error("Vous ne pouvez pas enlever quelqu'un de ce cubo."), Util.NIL_UUID);
+        player.sendMessage(ChatText.Error("Vous ne pouvez pas enlever quelqu'un de ce cubo."));
         return false;
     }
 

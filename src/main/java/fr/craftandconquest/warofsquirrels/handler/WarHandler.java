@@ -117,18 +117,18 @@ public class WarHandler {
 
     public void DisplayList(FullPlayer player) {
         if (WarOfSquirrels.instance.getConfig().isPeaceTime()) {
-            player.getPlayerEntity().sendMessage(ChatText.Success("---=== Time is at peace ===---"), Util.NIL_UUID);
+            player.sendMessage(ChatText.Success("---=== Time is at peace ===---"));
             return;
         }
 
         if (!wars.isEmpty()) {
-            player.getPlayerEntity().sendMessage(ChatText.Success("---=== Battles [" + wars.size() + "] ===---"), Util.NIL_UUID);
+            player.sendMessage(ChatText.Success("---=== Battles [" + wars.size() + "] ===---"));
 
             for (War war : wars)
-                player.getPlayerEntity().sendMessage(ChatText.Success(war.getCityAttacker().getDisplayName() + " [" + war.getAttackersPoints().getScore() + "] vs. "
-                        + war.getCityDefender().getDisplayName() + " [" + war.getDefendersPoints().getScore() + "]"), Util.NIL_UUID);
+                player.sendMessage(ChatText.Success(war.getCityAttacker().getDisplayName() + " [" + war.getAttackersPoints().getScore() + "] vs. "
+                        + war.getCityDefender().getDisplayName() + " [" + war.getDefendersPoints().getScore() + "]"));
         } else
-            player.getPlayerEntity().sendMessage(ChatText.Success("There is no battles at this moment."), Util.NIL_UUID);
+            player.sendMessage(ChatText.Success("There is no battles at this moment."));
     }
 
     public void AddPoints(FullPlayer killer, FullPlayer victim) {

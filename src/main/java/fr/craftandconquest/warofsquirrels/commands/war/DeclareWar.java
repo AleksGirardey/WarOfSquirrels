@@ -37,8 +37,8 @@ public class DeclareWar extends CityAssistantCommandBuilder {
 //        }
 
         if (party == null) {
-            player.getPlayerEntity().sendMessage(ChatText.Error("You need a party to attack. /party create")
-                    .withStyle(ChatFormatting.BOLD), Util.NIL_UUID);
+            player.sendMessage(ChatText.Error("You need a party to attack. /party create")
+                    .withStyle(ChatFormatting.BOLD));
             return false;
         }
 
@@ -46,15 +46,15 @@ public class DeclareWar extends CityAssistantCommandBuilder {
             if (p.getCity() != party.getLeader().getCity()
                     && (!WarOfSquirrels.instance.getFactionHandler().areEnemies(p.getCity().getFaction(), attackTarget.getFaction())
                     || !WarOfSquirrels.instance.getFactionHandler().areAllies(p.getCity().getFaction(), party.getLeader().getCity().getFaction()))) {
-                player.getPlayerEntity().sendMessage(ChatText.Error("Your party member '" + p.getDisplayName() + "' can't participate to this war.")
-                        .withStyle(ChatFormatting.BOLD), Util.NIL_UUID);
+                player.sendMessage(ChatText.Error("Your party member '" + p.getDisplayName() + "' can't participate to this war.")
+                        .withStyle(ChatFormatting.BOLD));
                 return false;
             }
         }
 
         if (WarOfSquirrels.instance.getConfig().isPeaceTime())
-            player.getPlayerEntity().sendMessage(ChatText.Error("You cannot declare war in time of peace !!")
-                    .withStyle(ChatFormatting.BOLD), Util.NIL_UUID);
+            player.sendMessage(ChatText.Error("You cannot declare war in time of peace !!")
+                    .withStyle(ChatFormatting.BOLD));
         return (!WarOfSquirrels.instance.getConfig().isPeaceTime());
     }
 

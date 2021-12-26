@@ -32,7 +32,7 @@ public class PartyInviteCommand extends PartyCommandLeader implements IPlayerExt
         else
             return true;
 
-        player.getPlayerEntity().sendMessage(message, Util.NIL_UUID);
+        player.sendMessage(message);
         return false;
     }
 
@@ -48,7 +48,7 @@ public class PartyInviteCommand extends PartyCommandLeader implements IPlayerExt
 
         WarOfSquirrels.instance.getInvitationHandler().CreateInvitation(new PartyInvitation(target, player, party));
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(party, null, messageToParty, true);
-        target.getPlayerEntity().sendMessage(messageToTarget, Util.NIL_UUID);
+        target.sendMessage(messageToTarget);
         return 0;
     }
 

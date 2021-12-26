@@ -56,8 +56,7 @@ public class CityCuboSetCustomPerm extends CommandBuilder implements IPermission
         if (list.contains(player))
             return true;
 
-        player.getPlayerEntity()
-                .sendMessage(ChatText.Error("Vous ne pouvez pas modifier les permissions de ce cubo."), Util.NIL_UUID);
+        player.sendMessage(ChatText.Error("Vous ne pouvez pas modifier les permissions de ce cubo."));
         return true;
     }
 
@@ -69,6 +68,13 @@ public class CityCuboSetCustomPerm extends CommandBuilder implements IPermission
 
         cubo.AddPlayerCustomPermission(target, permission);
         WarOfSquirrels.instance.getCuboHandler().Save();
+        MutableComponent text = ChatText.Success("Custom permissions for player '" + target.getDisplayName() + "' on cubo '" + cubo.getName() + "' are now " + permission);
+
+        player.sendMessage(text);
+
+        if (!cubo.getOwner().equals(player))
+            cubo.getOwner().sendMessage(text);
+
         return 0;
     }
 
