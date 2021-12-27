@@ -2,10 +2,12 @@ package fr.craftandconquest.warofsquirrels.utils;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
@@ -13,8 +15,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.MessageFormat;
+import java.util.*;
 
 public class Utils {
 
@@ -138,5 +140,76 @@ public class Utils {
                 res.append(", ");
         }
         return res.toString();
+    }
+
+    public static MutableComponent getSortedPlayerList() {
+        Map<City, Integer> cityMap = new LinkedHashMap<>();
+        List<City> cities = WarOfSquirrels.instance.getCityHandler().getAll();
+
+        cities.forEach(c -> {
+            int size = c.getOnlinePlayers().size();
+
+            if (size > 0)
+                cityMap.put(c, size);
+        });
+
+        MutableComponent message = ChatText.Success("");
+
+        cityMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .forEach(entry -> {
+                    if (entry.getValue() <= 0) return;
+
+                    message.append(MessageFormat.format("[{0}][{1}] {2}\n", entry.getValue(), entry.getKey().getDisplayName(), getStringFromPlayerList(entry.getKey().getOnlinePlayers())));
+                });
+
+        return message;
+    }
+
+    public static MutableComponent getSortedCityList() {
+        Map<Faction, List<Pair<City, Integer>>> factions = new HashMap<>();
+        Map<Faction, Integer> factionMap = new LinkedHashMap<>();
+        List<City> freeCityList = new ArrayList<>();
+        List<City> cityList = WarOfSquirrels.instance.getCityHandler().getAll();
+
+        for (City city : cityList) {
+            Faction faction = city.getFaction();
+
+            if (faction != null) {
+                if (!factions.containsKey(faction)) {
+                    factions.put(faction, new ArrayList<>());
+                    factionMap.put(faction, 0);
+                }
+
+                int size = city.getOnlinePlayers().size();
+
+                factions.get(faction).add(new Pair<>(city, size));
+                factionMap.computeIfPresent(faction, (k, v) -> v + size);
+            } else {
+                freeCityList.add(city);
+            }
+        }
+
+        MutableComponent message = ChatText.Success("");
+
+        factionMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .forEach(k -> {
+                    message.append(MessageFormat.format("== {0} [{1}] ==\n", k.getKey().getDisplayName(), k.getValue()));
+                    List<Pair<City, Integer>> subList = factions.get(k.getKey());
+                    for (Pair<City, Integer> pair : subList) {
+                        message.append(MessageFormat.format("  - {0}[{1}]\n",pair.getKey().getDisplayName(), pair.getValue()));
+                    }
+                });
+
+        message.append(ChatText.Success("=== Free cities [" + freeCityList.size() + "] ===\n"));
+
+        for (int i = 0; i < freeCityList.size(); ++i) {
+            message.append(freeCityList.get(i).displayName + "");
+            if (i != freeCityList.size() - 1)
+                message.append("");
+        }
+
+        return message;
     }
 }
