@@ -48,6 +48,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     @Getter
     @Setter
     private UUID cityUuid;
+
     @Getter
     @Setter
     public String displayName;
@@ -57,10 +58,12 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     @JsonIgnore
     @Getter
     private Faction faction = null;
+
     @JsonProperty
     @Getter
     @Setter
     private UUID factionUuid;
+
     @Getter
     private CityRank rank;
 

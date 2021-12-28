@@ -9,6 +9,7 @@ import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import fr.craftandconquest.warofsquirrels.object.war.War;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
+import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.OnSaveListener;
 import fr.craftandconquest.warofsquirrels.utils.Pair;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
@@ -106,31 +107,65 @@ public class PermissionHandler {
         return false;
     }
 
-    private Permission getPermissionToCheck(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player) {
-        Pair<Integer, Integer> chunkLocation = Utils.WorldToChunkCoordinates((int) position.x, (int) position.z);
-        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(chunkLocation.getKey(), chunkLocation.getValue(), dimensionId);
+    private Permission checkCuboPermission(FullPlayer player, Cubo cubo) {
+        List<FullPlayer> inList = cubo.getInList();
+        if (inList.contains(player) || cubo.getOwner().equals(player))
+            return cubo.getPermissionIn();
+        else if (cubo.getCustomPermission(player) != null)
+            return cubo.getCustomPermission(player);
+        else
+            return cubo.getPermissionOut();
+    }
 
+    private Permission checkChunkPermission(FullPlayer player, Chunk chunk) {
+        boolean hasCity = player.getCity() != null;
+        boolean isOwner = hasCity && player.getCity().getOwner().equals(player);
+        boolean isAssistant = player.getAssistant();
+        boolean isResident = player.getResident();
+
+
+    }
+
+    private Permission getPermissionToCheck(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player) {
         Permission permission;
 
-        WarOfSquirrels.LOGGER.info(MessageFormat.format("[WoS][Debug] Looking for permission on chunk [{0};{1}] ({2})", chunkLocation.getKey(), chunkLocation.getValue(), (chunk == null ? "NULL" : "CHUNK")));
+        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(position);
+        boolean isThereCubo = cubo != null;
 
-        // If the block isn't in a claimed chunk, default nature permissions apply
+        Pair<Integer, Integer> chunkLocation = Utils.WorldToChunkCoordinates((int) position.x, (int) position.z);
+        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(chunkLocation.getKey(), chunkLocation.getValue(), dimensionId);
+        boolean isThereChunk = chunk != null;
+
+        Pair<Integer, Integer> territoryLocation = Utils.ChunkToTerritoryCoordinates(chunkLocation.getKey(), chunkLocation.getValue());
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(territoryLocation.getKey(), territoryLocation.getValue());
+        boolean isThereTerritory = territory != null; // ALWAYS TRUE IF OVERWORLD
+
+
+
+        if (isThereCubo) return checkCuboPermission(player, cubo);
+        else if (isThereChunk) return checkChunkPermission(player, chunk);
+
+
+
+        // If the block isn't in a claimed chunk, territory or default nature permissions apply
         if (chunk == null) {
-            return WarOfSquirrels.instance.getConfig().getDefaultNaturePermission();
+            if (territory == null || territory.getFaction() == null)
+                return WarOfSquirrels.instance.getConfig().getDefaultNaturePermission();
+
+            permission = ExtractCustomPermission(territory.getFaction().getCustomPermission());
+
+            if (permission == null) return
         }
 
         // The chunk is claimed, we need to know how the player is related to the chunk (Citizen, ally, enemy, outsider)
         if (player.getCity() != null) {
-            WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city");
             /*
              ** Player belongs to a city, we need to set if the chunk belongs to his city
              */
             if (player.getCity() == chunk.getCity()) {
-                WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city and it's equal to city chunk");
                 // Verification dans un premier temps si le chunk et le joueur est en guerre
 
                 if (WarOfSquirrels.instance.getWarHandler().Contains(chunk.getCity())) {
-                    WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city and it's equal to city chunk but the chunk is at war");
                     War war = WarOfSquirrels.instance.getWarHandler().getWar(chunk.getCity());
 
                     if (war.getCityDefender() == chunk.getCity() && war.contains(player)) {
@@ -142,10 +177,8 @@ public class PermissionHandler {
                  ** The city chunk is the same as the player chunk, we have to define his status in the city
                  */
                 if (player.getAssistant() || player.getCity().getOwner().equals(player)) {
-                    WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city and it's equal to city chunk but the player is assistant or mayor");
                     return new Permission(true, true, true, true, true);
                 } else {
-                    WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city and it's equal to city chunk looking for resident or recruit player");
                     permission = player.getCity().getCustomPermission().getOrDefault(player, (player.getResident() ?
                             player.getCity().getDefaultPermission().get(PermissionRelation.RESIDENT) :
                             player.getCity().getDefaultPermission().get(PermissionRelation.RECRUIT)));
@@ -155,9 +188,6 @@ public class PermissionHandler {
                  ** Le joueur n'appartient pas à la ville il faut donc verifié si il est
                  ** allié, enemi, ou de la même faction
                  */
-
-                WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city but it's different from the chunk city");
-
                 boolean isAlly = WarOfSquirrels.instance.getDiplomacyHandler()
                         .getAllies(chunk.getCity().getFaction()).contains(player.getCity().getFaction());
                 boolean isEnemy = WarOfSquirrels.instance.getDiplomacyHandler()
@@ -176,7 +206,6 @@ public class PermissionHandler {
                                                 PermissionRelation.FACTION : PermissionRelation.OUTSIDER)))));
 
                 if (WarOfSquirrels.instance.getWarHandler().Contains(chunk.getCity())) {
-                    WarOfSquirrels.LOGGER.info("[WoS][Debug] Player got a city but it's different from the chunk city and the chunk is at war");
                     War war = WarOfSquirrels.instance.getWarHandler().getWar(chunk.getCity());
 
                     if (war.contains(player)) {
@@ -190,29 +219,12 @@ public class PermissionHandler {
                 }
             }
         } else { // else Outsider
-            WarOfSquirrels.LOGGER.info("[WoS][Debug] Player has no city");
             permission = chunk.getCity().getCustomPermission().getOrDefault(player,
                     chunk.getCity().getDefaultPermission().get(PermissionRelation.OUTSIDER));
         }
 
-        /*
-         ** Le joueur n'a aucun rang qui outre-passe les droits d'un eventuel
-         ** cubo, on verifie donc si le block appartient à un cubo
-         */
-        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(position);
-        if (cubo != null) {
-            WarOfSquirrels.LOGGER.info("[WoS][Debug] Player bumped into a cuboide");
-            /*
-             ** On vérifie si le joueur est dans la liste ou l'owner
-             */
-            List<FullPlayer> inList = cubo.getInList();
-            if (inList.contains(player) || cubo.getOwner().equals(player))
-                permission = cubo.getPermissionIn();
-            else if (cubo.getCustomPermission(player) != null)
-                permission = cubo.getCustomPermission(player);
-            else
-                permission = cubo.getPermissionOut();
-        }
+
+
 
         return permission;
     }
