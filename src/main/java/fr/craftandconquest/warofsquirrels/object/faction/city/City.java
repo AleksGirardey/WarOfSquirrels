@@ -8,10 +8,7 @@ import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
-import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
-import fr.craftandconquest.warofsquirrels.object.permission.Permission;
-import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
-import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
+import fr.craftandconquest.warofsquirrels.object.permission.*;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
@@ -31,19 +28,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class City implements IPermission, IFortification, IChannelTarget, AttackTarget {
-    @AllArgsConstructor
-    public static class CityCustomPermission {
-        public UUID targetUuid;
-        public CityCustomPermissionType type;
-        public Permission permission;
-    }
-
-    public enum CityCustomPermissionType {
-        Faction,
-        City,
-        Player,
-    }
-
     @JsonProperty
     @Getter
     @Setter
@@ -76,7 +60,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     private Map<PermissionRelation, Permission> defaultPermission;
     @Getter
     @Setter
-    private List<CityCustomPermission> customPermissionList = new ArrayList<>();
+    private List<CustomPermission> customPermissionList = new ArrayList<>();
 
     @JsonIgnore
     private int balance;
@@ -247,12 +231,8 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         SetOwner(WarOfSquirrels.instance.getPlayerHandler().get(ownerUUID));
         SetFaction(WarOfSquirrels.instance.getFactionHandler().get(factionUuid));
 
-        for (CityCustomPermission permission : customPermissionList) {
-            IPermission target = switch (permission.type) {
-                case Faction -> WarOfSquirrels.instance.getFactionHandler().get(permission.targetUuid);
-                case City -> WarOfSquirrels.instance.getCityHandler().getCity(permission.targetUuid);
-                case Player -> WarOfSquirrels.instance.getPlayerHandler().get(permission.targetUuid);
-            };
+        for (CustomPermission permission : customPermissionList) {
+            IPermission target = permission.getTarget();
 
             if (target == null) continue;
 

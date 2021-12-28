@@ -3,6 +3,7 @@ package fr.craftandconquest.warofsquirrels.handler;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
+import fr.craftandconquest.warofsquirrels.object.permission.CustomPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
@@ -107,6 +108,14 @@ public class PermissionHandler {
         return false;
     }
 
+    private Permission extractCustomPermission(IPermission target, List<CustomPermission> permissionList) {
+        for (CustomPermission custom : permissionList) {
+            if (custom.targetUuid.equals(target.getUuid()))
+                return custom.permission;
+        }
+        return null;
+    }
+
     private Permission checkCuboPermission(FullPlayer player, Cubo cubo) {
         List<FullPlayer> inList = cubo.getInList();
         if (inList.contains(player) || cubo.getOwner().equals(player))
@@ -119,11 +128,55 @@ public class PermissionHandler {
 
     private Permission checkChunkPermission(FullPlayer player, Chunk chunk) {
         boolean hasCity = player.getCity() != null;
+        boolean hasFaction = player.getCity().getFaction() != null;
+        boolean chunkHasFaction = chunk.getCity().getFaction() != null;
+        boolean sameCity = hasCity && chunk.getCity().equals(player.getCity());
         boolean isOwner = hasCity && player.getCity().getOwner().equals(player);
         boolean isAssistant = player.getAssistant();
         boolean isResident = player.getResident();
 
+        Permission customPerm;
 
+        customPerm = extractCustomPermission(player, chunk.getCity().getCustomPermissionList());
+
+        if (customPerm != null) return customPerm;
+
+        if (!hasCity) {
+            return chunk.getCity().getDefaultPermission().get(PermissionRelation.OUTSIDER);
+        }
+
+        customPerm = extractCustomPermission(player.getCity(), chunk.getCity().getCustomPermissionList());
+        if (customPerm != null) return customPerm;
+
+        if (player.getCity().getFaction() != null) {
+            customPerm = extractCustomPermission(player.getCity().getFaction(), chunk.getCity().getCustomPermissionList());
+            if (customPerm != null) return customPerm;
+        }
+
+        if (sameCity) {
+            if (isOwner || isAssistant) return new Permission(true, true, true, true, true);
+
+            return isResident ? chunk.getCity().getDefaultPermission().get(PermissionRelation.RESIDENT) :
+                    chunk.getCity().getDefaultPermission().get(PermissionRelation.RECRUIT);
+        }
+
+        if (!chunkHasFaction || !hasFaction) return chunk.getCity().getDefaultPermission().get(PermissionRelation.OUTSIDER);
+
+
+    }
+
+    private Permission checkTerritoryPermission(FullPlayer player, Territory territory) {
+
+    }
+
+    private Permission checkWarPermission(FullPlayer player, Chunk chunk) {
+        if (isThereChunk && WarOfSquirrels.instance.getWarHandler().Contains(chunk.getCity())) {
+            War war = WarOfSquirrels.instance.getWarHandler().getWar(chunk.getCity());
+
+            if (war.getCityDefender().equals(chunk.getCity()) && war.contains(player)) {
+                return new Permission(true, true, true, false, false);
+            }
+        }
     }
 
     private Permission getPermissionToCheck(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player) {
@@ -139,23 +192,16 @@ public class PermissionHandler {
         Pair<Integer, Integer> territoryLocation = Utils.ChunkToTerritoryCoordinates(chunkLocation.getKey(), chunkLocation.getValue());
         Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(territoryLocation.getKey(), territoryLocation.getValue());
         boolean isThereTerritory = territory != null; // ALWAYS TRUE IF OVERWORLD
+        
+        boolean isThereWarOnCity = isThereChunk && WarOfSquirrels.instance.getWarHandler().Contains(chunk.getCity());
 
-
+        if (isThereWarOnCity) return checkWarPermission(player, chunk);
 
         if (isThereCubo) return checkCuboPermission(player, cubo);
-        else if (isThereChunk) return checkChunkPermission(player, chunk);
+        if (isThereChunk) return checkChunkPermission(player, chunk);
+        if (isThereTerritory) return checkTerritoryPermission(player, territory);
 
-
-
-        // If the block isn't in a claimed chunk, territory or default nature permissions apply
-        if (chunk == null) {
-            if (territory == null || territory.getFaction() == null)
-                return WarOfSquirrels.instance.getConfig().getDefaultNaturePermission();
-
-            permission = ExtractCustomPermission(territory.getFaction().getCustomPermission());
-
-            if (permission == null) return
-        }
+        return WarOfSquirrels.instance.getConfig().getDefaultNaturePermission();
 
         // The chunk is claimed, we need to know how the player is related to the chunk (Citizen, ally, enemy, outsider)
         if (player.getCity() != null) {
@@ -163,16 +209,6 @@ public class PermissionHandler {
              ** Player belongs to a city, we need to set if the chunk belongs to his city
              */
             if (player.getCity() == chunk.getCity()) {
-                // Verification dans un premier temps si le chunk et le joueur est en guerre
-
-                if (WarOfSquirrels.instance.getWarHandler().Contains(chunk.getCity())) {
-                    War war = WarOfSquirrels.instance.getWarHandler().getWar(chunk.getCity());
-
-                    if (war.getCityDefender() == chunk.getCity() && war.contains(player)) {
-                        return new Permission(true, true, true, false, false);
-                    }
-                }
-
                 /*
                  ** The city chunk is the same as the player chunk, we have to define his status in the city
                  */
@@ -192,7 +228,6 @@ public class PermissionHandler {
                         .getAllies(chunk.getCity().getFaction()).contains(player.getCity().getFaction());
                 boolean isEnemy = WarOfSquirrels.instance.getDiplomacyHandler()
                         .getEnemies(chunk.getCity().getFaction()).contains(player.getCity().getFaction());
-
                 boolean isFaction = chunk.getCity().getFaction().equals(player.getCity().getFaction());
 
                 Map<IPermission, Permission> customPerm = chunk.getCity().getCustomPermission();
