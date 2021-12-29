@@ -17,23 +17,17 @@ public class CustomPermission {
     public UUID targetUuid;
 
     @JsonProperty @Getter @Setter
-    public CustomPermissionType type;
+    public PermissionTarget type;
 
     @JsonProperty @Getter @Setter
     public Permission permission;
 
-    public enum CustomPermissionType {
-        Faction,
-        City,
-        Player,
-    }
-
     @JsonIgnore
     public IPermission getTarget() {
         return switch (type) {
-            case Player -> WarOfSquirrels.instance.getPlayerHandler().get(targetUuid);
-            case City -> WarOfSquirrels.instance.getCityHandler().getCity(targetUuid);
-            case Faction -> WarOfSquirrels.instance.getFactionHandler().get(targetUuid);
+            case PLAYER -> WarOfSquirrels.instance.getPlayerHandler().get(targetUuid);
+            case CITY -> WarOfSquirrels.instance.getCityHandler().getCity(targetUuid);
+            case FACTION -> WarOfSquirrels.instance.getFactionHandler().get(targetUuid);
         };
     }
 }

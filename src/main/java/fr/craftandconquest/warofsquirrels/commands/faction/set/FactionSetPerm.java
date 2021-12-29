@@ -1,17 +1,18 @@
-package fr.craftandconquest.warofsquirrels.commands.city.set.perm;
+package fr.craftandconquest.warofsquirrels.commands.faction.set;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.extractor.IPermissionExtractor;
+import fr.craftandconquest.warofsquirrels.commands.faction.FactionMayorOrAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.MutableComponent;
 
-public abstract class CitySetPerm extends CityMayorOrAssistantCommandBuilder implements IPermissionExtractor {
+public abstract class FactionSetPerm extends FactionMayorOrAssistantCommandBuilder implements IPermissionExtractor {
     protected abstract String getGroupTarget();
     protected abstract PermissionRelation getPermissionRelation();
 
@@ -29,8 +30,13 @@ public abstract class CitySetPerm extends CityMayorOrAssistantCommandBuilder imp
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Permission permission = getPermission(context);
 
-        WarOfSquirrels.instance.getCityHandler().SetDefaultPermission(getPermissionRelation(), permission, player.getCity());
+        WarOfSquirrels.instance.getFactionHandler().SetDefaultPermission(getPermissionRelation(), permission, player.getCity().getFaction());
 
         return 0;
+    }
+
+    @Override
+    protected MutableComponent ErrorMessage() {
+        return null;
     }
 }

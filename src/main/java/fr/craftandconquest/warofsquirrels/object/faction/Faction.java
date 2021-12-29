@@ -6,10 +6,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
-import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
-import fr.craftandconquest.warofsquirrels.object.permission.Permission;
-import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
-import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
+import fr.craftandconquest.warofsquirrels.object.permission.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,7 +45,7 @@ public class Faction implements IPermission, IChannelTarget {
     private Map<PermissionRelation, Permission> defaultPermission;
     @Getter
     @Setter
-    private List<City.CityCustomPermission> customPermissionList = new ArrayList<>();
+    private List<CustomPermission> customPermissionList = new ArrayList<>();
 
     public Faction(String displayName, City capital) {
         this.factionUuid = UUID.randomUUID();
@@ -73,6 +70,14 @@ public class Faction implements IPermission, IChannelTarget {
     public void updateDependencies() {
         this.capital = WarOfSquirrels.instance.getCityHandler().getCity(this.capitalUuid);
         Populate();
+
+        for (CustomPermission permission : customPermissionList) {
+            IPermission target = permission.getTarget();
+
+            if (target == null) continue;
+
+            customPermission.put(target, permission.permission);
+        }
     }
 
     @Override

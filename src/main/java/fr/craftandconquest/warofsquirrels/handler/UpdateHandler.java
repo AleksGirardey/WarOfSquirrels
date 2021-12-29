@@ -35,6 +35,7 @@ public class UpdateHandler {
         message.withStyle(ChatFormatting.ITALIC);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
+//        WarOfSquirrels.instance.getCityHandler().update();
         WarOfSquirrels.instance.getTerritoryHandler().update();
 //        WarOfSquirrels.instance.getLoanHandler().update();
         this.CreateDailyUpdate();

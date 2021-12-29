@@ -5,6 +5,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.object.permission.CustomPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
@@ -177,12 +178,16 @@ public class CityHandler extends Handler<City> {
     }
 
     public void SetCustomPermission(IPermission target, Permission permission, City city) {
-        if (city.getCustomPermission().containsKey(target))
+        if (city.getCustomPermission().containsKey(target)) {
             city.getCustomPermission().replace(target, permission);
-        else
+            city.getCustomPermissionList()
+                    .stream().filter(e -> e.getTargetUuid().equals(target.getUuid()))
+                    .findFirst().get().setPermission(permission);
+        }
+        else {
             city.getCustomPermission().put(target, permission);
-
-        city.getCustomPermissionList().add(new City.CityCustomPermission(target.getUuid(), City.CityCustomPermissionType.City, permission));
+            city.getCustomPermissionList().add(new CustomPermission(target.getUuid(), target.getPermissionTarget(), permission));
+        }
 
         Save();
     }
@@ -209,4 +214,9 @@ public class CityHandler extends Handler<City> {
             city.updateDependencies();
         Save();
     }
+
+//    public void update() {
+//        for (City city : dataArray)
+//            city.SpreadInfluence();
+//    }
 }
