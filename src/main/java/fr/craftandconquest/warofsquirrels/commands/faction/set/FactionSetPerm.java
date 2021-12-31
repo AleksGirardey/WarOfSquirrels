@@ -2,23 +2,32 @@ package fr.craftandconquest.warofsquirrels.commands.faction.set;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.commands.extractor.IPermissionExtractor;
 import fr.craftandconquest.warofsquirrels.commands.faction.FactionMayorOrAssistantCommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.faction.set.perm.FactionSetPermAlly;
+import fr.craftandconquest.warofsquirrels.commands.faction.set.perm.FactionSetPermEnemy;
+import fr.craftandconquest.warofsquirrels.commands.faction.set.perm.FactionSetPermFaction;
+import fr.craftandconquest.warofsquirrels.commands.faction.set.perm.FactionSetPermOutside;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
-import fr.craftandconquest.warofsquirrels.object.permission.Permission;
-import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.MutableComponent;
 
-public abstract class FactionSetPerm extends FactionMayorOrAssistantCommandBuilder implements IPermissionExtractor {
-    protected abstract String getGroupTarget();
-    protected abstract PermissionRelation getPermissionRelation();
+import java.text.MessageFormat;
+
+public class FactionSetPerm extends FactionMayorOrAssistantCommandBuilder {
+    private final FactionSetPermAlly factionSetPermAlly = new FactionSetPermAlly();
+    private final FactionSetPermEnemy factionSetPermEnemy = new FactionSetPermEnemy();
+    private final FactionSetPermFaction factionSetPermFaction = new FactionSetPermFaction();
+    private final FactionSetPermOutside factionSetPermOutside = new FactionSetPermOutside();
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal(getGroupTarget()).then(getPermissionRegister(this));
+        return Commands.literal("perm")
+                .executes(this)
+                .then(factionSetPermAlly.register())
+                .then(factionSetPermEnemy.register())
+                .then(factionSetPermFaction.register())
+                .then(factionSetPermOutside.register());
     }
 
     @Override
@@ -28,15 +37,14 @@ public abstract class FactionSetPerm extends FactionMayorOrAssistantCommandBuild
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        Permission permission = getPermission(context);
-
-        WarOfSquirrels.instance.getFactionHandler().SetDefaultPermission(getPermissionRelation(), permission, player.getCity().getFaction());
-
+        String perm = "[build] [container] [switch] [farm] [interact]";
+        player.sendMessage(ChatText.Success(MessageFormat.format(
+                """
+                        --==| faction set perm |==--
+                         /faction set perm ally {0}
+                         /faction set perm enemy {0}
+                         /faction set perm faction {0}
+                         /faction set perm outside {0}""", perm)));
         return 0;
-    }
-
-    @Override
-    protected MutableComponent ErrorMessage() {
-        return null;
     }
 }

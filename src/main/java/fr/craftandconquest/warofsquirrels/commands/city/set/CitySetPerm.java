@@ -11,6 +11,8 @@ import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
+import java.text.MessageFormat;
+
 public class CitySetPerm extends CityMayorOrAssistantCommandBuilder {
     private final CitySetPermAlly citySetPermAlly = new CitySetPermAlly();
     private final CitySetPermEnemy citySetPermEnemy = new CitySetPermEnemy();
@@ -40,14 +42,16 @@ public class CitySetPerm extends CityMayorOrAssistantCommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        player.sendMessage(ChatText.Success(
-                "--==| city set perm |==--\n"
-                        + "/city set perm ally [build] [container] [switch]"
-                        + "/city set perm enemy [build] [container] [switch]"
-                        + "/city set perm faction [build] [container] [switch]"
-                        + "/city set perm outside [build] [container] [switch]"
-                        + "/city set perm recruit [build] [container] [switch]"
-                        + "/city set perm resident [build] [container] [switch]"));
+        String perm = "[build] [container] [switch] [farm] [interact]";
+        player.sendMessage(ChatText.Success(MessageFormat.format(
+                """
+                        --==| city set perm |==--
+                        /city set perm ally {0}
+                        /city set perm enemy {0}
+                        /city set perm faction {0}
+                        /city set perm outside {0}
+                        /city set perm recruit {0}
+                        /city set perm resident {0}""", perm)));
         return 0;
     }
 }
