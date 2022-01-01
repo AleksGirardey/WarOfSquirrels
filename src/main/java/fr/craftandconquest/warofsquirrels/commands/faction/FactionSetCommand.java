@@ -3,10 +3,7 @@ package fr.craftandconquest.warofsquirrels.commands.faction;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
-import fr.craftandconquest.warofsquirrels.commands.faction.set.FactionSetAlly;
-import fr.craftandconquest.warofsquirrels.commands.faction.set.FactionSetCapital;
-import fr.craftandconquest.warofsquirrels.commands.faction.set.FactionSetEnemy;
-import fr.craftandconquest.warofsquirrels.commands.faction.set.FactionSetNeutral;
+import fr.craftandconquest.warofsquirrels.commands.faction.set.*;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
@@ -16,6 +13,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
 public class FactionSetCommand extends CommandBuilder {
+    private static final FactionSetPerm factionSetPerm = new FactionSetPerm();
     private static final FactionSetCapital factionSetCapital = new FactionSetCapital();
     private static final FactionSetAlly factionSetAlly = new FactionSetAlly();
     private static final FactionSetEnemy factionSetEnemy = new FactionSetEnemy();
@@ -25,6 +23,7 @@ public class FactionSetCommand extends CommandBuilder {
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("set")
                 .executes(this)
+                .then(factionSetPerm.register())
                 .then(factionSetCapital.register())
                 .then(factionSetAlly.register())
                 .then(factionSetEnemy.register())
