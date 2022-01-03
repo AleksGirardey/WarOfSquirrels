@@ -22,5 +22,5 @@ public class CityRank {
     int chunkMax;
     @Getter
     @Setter
-    int citizensMax;
+    int bastionMax;
 }

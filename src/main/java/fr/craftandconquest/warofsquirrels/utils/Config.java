@@ -8,6 +8,7 @@ import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.world.level.dimension.LevelStem;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -113,13 +114,11 @@ public class Config {
         Map<Integer, CityRank> initRanks = new HashMap<>();
         Map<PermissionRelation, Permission> defaultPermissions = new HashMap<>();
 
-        initRanks.put(0, new CityRank("Colonie", "Chef", "Assistant", 4, 2));
-        initRanks.put(1, new CityRank("Village", "Maire", "Assistant", 9, 4));
-        initRanks.put(2, new CityRank("Ville", "Bourgmestre", "Assistant", 15, 8));
-        initRanks.put(3, new CityRank("Comté", "Comte", "Assistant", 22, 11));
-        initRanks.put(4, new CityRank("Duché", "Duc", "Assistant", 30, 15));
-        initRanks.put(5, new CityRank("Royaume", "Roi", "Assistant", 40, 20));
-        initRanks.put(6, new CityRank("Empire", "Empereur", "Assistant", 50, 25));
+        initRanks.put(0, new CityRank("Settlement", "Chief", "Assistant", 1, 0));
+        initRanks.put(1, new CityRank("Colony", "Governor", "Assistant", 25, 0));
+        initRanks.put(2, new CityRank("Hamlet", "Burgomaster", "Assistant", 68, 2));
+        initRanks.put(3, new CityRank("Village", "Lord", "Assistant", 68, 6));
+        initRanks.put(4, new CityRank("Town", "Mayor", "Assistant", 68, 15));
 
         defaultPermissions.put(PermissionRelation.ENEMY, new Permission("enemy", false, false, false, false, false));
         defaultPermissions.put(PermissionRelation.ALLY, new Permission("ally", false, false, true, false, false));

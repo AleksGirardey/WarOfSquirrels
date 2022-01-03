@@ -3,13 +3,13 @@ package fr.craftandconquest.warofsquirrels.object.faction.city;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.handler.InfluenceHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.permission.*;
+import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
@@ -18,7 +18,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
@@ -52,6 +51,8 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     @Getter
     private CityRank rank;
 
+    @JsonProperty @Getter @Setter private ChestLocation upgradeChestLocation;
+
     @JsonIgnore
     @Getter
     @Setter
@@ -72,6 +73,8 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     @JsonIgnore
     @Getter
     private final List<FullPlayer> citizens = new ArrayList<>();
+
+    @Getter @Setter CityUpgrade cityUpgrade;
 
     public List<FullPlayer> getAssistants() {
         return citizens.stream().filter(FullPlayer::getAssistant).collect(Collectors.toCollection(ArrayList::new));
@@ -239,6 +242,9 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
             customPermission.put(target, permission.permission);
         }
+
+        if (upgradeChestLocation != null)
+            upgradeChestLocation.update();
     }
 
     public boolean register(FullPlayer player) {

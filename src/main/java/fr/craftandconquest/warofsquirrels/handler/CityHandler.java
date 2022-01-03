@@ -9,6 +9,7 @@ import fr.craftandconquest.warofsquirrels.object.permission.CustomPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
+import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
@@ -56,6 +57,8 @@ public class CityHandler extends Handler<City> {
         city.tag = tag;
         city.SetOwner(owner);
         city.SetRank(0);
+        city.setCityUpgrade(new CityUpgrade());
+        city.getCityUpgrade().Init();
         city.setCustomPermission(new HashMap<>());
         city.setDefaultPermission(new HashMap<>(WarOfSquirrels.instance.config.getConfiguration().getPermissionMap()));
 

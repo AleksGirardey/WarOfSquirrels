@@ -35,7 +35,7 @@ public class RespawnEvents {
     private void SetPlayerRespawnPoint(ServerPlayer player) {
         FullPlayer fullPlayer = WarOfSquirrels.instance.getPlayerHandler().get(player.getUUID());
 
-        if (fullPlayer.getCity() == null) return;
+        if (fullPlayer == null || fullPlayer.getCity() == null) return;
 
         ReSpawnPoint spawnPoint = Utils.NearestSpawnPoint(player);
         ServerPlayer serverPlayer = WarOfSquirrels.server.getPlayerList().getPlayer(player.getUUID());
