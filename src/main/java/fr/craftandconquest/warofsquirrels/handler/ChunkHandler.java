@@ -66,9 +66,15 @@ public class ChunkHandler extends Handler<Chunk> {
             chunksMap.put(position, chunk);
         }
 
+        if (!cityMap.containsKey(chunk.getCity())) {
+            cityMap.put(chunk.getCity(), new ArrayList<>());
+        }
+
+        cityMap.get(chunk.getCity()).add(chunk);
+
         if (!dataArray.contains(chunk)) {
             if (dataArray.size() == 0)
-                dataArray = new ArrayList<Chunk>();
+                dataArray = new ArrayList<>();
             dataArray.add(chunk);
         }
 

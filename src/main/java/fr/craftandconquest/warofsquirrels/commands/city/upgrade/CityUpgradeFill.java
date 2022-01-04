@@ -7,6 +7,7 @@ import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantComm
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -25,7 +26,12 @@ public class CityUpgradeFill extends CityMayorOrAssistantCommandBuilder {
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         City city = player.getCity();
 
-        return city.getUpgradeChestLocation() != null;
+        if (city.getUpgradeChestLocation() == null) {
+            player.sendMessage(ChatText.Error("You need to set your city's upgrade chest. (/city set upgradeChestLocation)"));
+            return false;
+        }
+
+        return true;
     }
 
     @Override

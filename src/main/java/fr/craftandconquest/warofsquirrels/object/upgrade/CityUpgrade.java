@@ -53,6 +53,10 @@ public class CityUpgrade {
         }
     }
 
+    public void Populate() {
+        currentLevelUpgrade.Populate();
+    }
+
     @Override
     public String toString() {
         return currentLevelUpgrade.toString();

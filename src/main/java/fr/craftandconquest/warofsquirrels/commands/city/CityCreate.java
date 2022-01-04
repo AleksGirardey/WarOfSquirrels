@@ -106,6 +106,8 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
 
         player.sendMessage(chunk.creationLogText());
 
+        cih.Save();
+
         return 0;
     }
 

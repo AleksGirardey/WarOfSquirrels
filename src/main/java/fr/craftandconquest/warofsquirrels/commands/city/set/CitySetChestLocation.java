@@ -51,6 +51,8 @@ public class CitySetChestLocation extends CityMayorOrAssistantCommandBuilder {
         CuboHandler handler = WarOfSquirrels.instance.getCuboHandler();
         Pair<Vector3, Vector3> points = handler.getPoints(player);
 
+        player.sendMessage(ChatText.Success("Upgrade chest location now set between " + points.getKey() + " and " + points.getValue()));
+
         player.getCity().setUpgradeChestLocation(new ChestLocation(points.getLeft(), points.getRight()));
         return 0;
     }

@@ -2,20 +2,22 @@ package fr.craftandconquest.warofsquirrels.object.upgrade.city;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
 import fr.craftandconquest.warofsquirrels.object.upgrade.UpgradeItem;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 
 import java.util.*;
 
 @AllArgsConstructor
+@NoArgsConstructor
 public class LevelUpgrade {
 
     @JsonIgnore public static Map<Integer, LevelUpgrade> levelUpgradeMap;
@@ -50,7 +52,33 @@ public class LevelUpgrade {
     @JsonProperty @Getter int levelIndex;
     @JsonProperty @Getter int minPeople;
     @JsonProperty @Getter int delayInDays;
-    @JsonProperty @Getter Map<UpgradeItem, Integer> upgradeItems;
+    @JsonProperty @Getter @Setter List<UpgradeItem> upgradeItemList;
+
+    @JsonIgnore @Getter @Setter Map<UpgradeItem, Integer> upgradeItems;
+
+    public LevelUpgrade(int index, int ppl, int delay, List<UpgradeItem> list) {
+        levelIndex = index;
+        minPeople = ppl;
+        delayInDays = delay;
+        upgradeItemList = list;
+    }
+
+    public LevelUpgrade(int index, int ppl, int delay, Map<UpgradeItem, Integer> map) {
+        levelIndex = index;
+        minPeople = ppl;
+        delayInDays = delay;
+        upgradeItems = new HashMap<>(map);
+        upgradeItemList = new ArrayList<>();
+
+        fillList();
+    }
+
+    private void fillList() {
+        upgradeItems.forEach((key, value) -> {
+            key.setAmount(value);
+            upgradeItemList.add(key);
+        });
+    }
 
     public boolean contains(Container container) {
         Set<Item> list = new HashSet<>();
@@ -79,6 +107,12 @@ public class LevelUpgrade {
         }
     }
 
+    public void Populate() {
+        upgradeItems = new HashMap<>();
+
+        upgradeItemList.forEach(item -> upgradeItems.put(item, item.getAmount()));
+    }
+
     @JsonIgnore @Override
     public LevelUpgrade clone() throws CloneNotSupportedException {
         super.clone();
@@ -92,7 +126,7 @@ public class LevelUpgrade {
         builder.append("== Level Upgrade [").append(levelIndex).append("] ==\n");
         for(Map.Entry<UpgradeItem, Integer> entry : upgradeItems.entrySet()) {
             if (entry.getValue() <= 0) continue;
-            builder.append("- ").append(entry.getValue()).append(" ").append(entry.getKey()).append("\n");
+            builder.append("- ").append(entry.getValue()).append(" (").append(Utils.SplitToStack(entry.getValue())).append(") ").append(entry.getKey()).append("\n");
         }
 
         builder.append("Requires a minimum of ")

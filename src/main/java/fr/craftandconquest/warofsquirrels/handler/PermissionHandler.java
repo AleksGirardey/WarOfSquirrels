@@ -128,7 +128,7 @@ public class PermissionHandler {
 
     private Permission checkChunkPermission(FullPlayer player, Chunk chunk) {
         boolean hasCity = player.getCity() != null;
-        boolean hasFaction = player.getCity().getFaction() != null;
+        boolean hasFaction = hasCity && player.getCity().getFaction() != null;
         boolean chunkHasFaction = chunk.getCity().getFaction() != null;
         boolean sameCity = hasCity && chunk.getCity().equals(player.getCity());
         boolean isOwner = hasCity && player.getCity().getOwner().equals(player);
@@ -176,7 +176,7 @@ public class PermissionHandler {
 
     private Permission checkTerritoryPermission(FullPlayer player, Territory territory) {
         boolean hasCity = player.getCity() != null;
-        boolean hasFaction = player.getCity().getFaction() != null;
+        boolean hasFaction = hasCity && player.getCity().getFaction() != null;
         boolean territoryHasFaction = territory.getFaction() != null;
 
         if (!territoryHasFaction) return WarOfSquirrels.instance.getConfig().getDefaultNaturePermission();

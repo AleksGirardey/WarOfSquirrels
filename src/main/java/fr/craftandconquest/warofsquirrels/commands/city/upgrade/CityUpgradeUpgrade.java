@@ -5,11 +5,12 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class CityUpgradeUpgrade extends CityMayorOrAssistantCommandBuilder {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return null;
+        return Commands.literal("upgrade");
     }
 
     @Override

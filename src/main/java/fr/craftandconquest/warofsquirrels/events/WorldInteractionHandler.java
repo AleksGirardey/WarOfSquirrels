@@ -207,9 +207,6 @@ public class WorldInteractionHandler {
     public void OnPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
 
-        WarOfSquirrels.LOGGER.info("INTERACT WITH " + event.getHand().name());
-
-
         int lastDimensionId = Chunk.DimensionToId(player.lastDimension);
 
         if (WarOfSquirrels.instance.getCuboHandler().playerExists(player)) {

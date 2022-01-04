@@ -2,6 +2,7 @@ package fr.craftandconquest.warofsquirrels.handler;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
@@ -62,6 +63,8 @@ public class PlayerHandler extends Handler<FullPlayer> {
                 (int) playerEntity.getOnPos().getY(),
                 (int) playerEntity.getOnPos().getZ());
         player.lastDimension = playerEntity.getCommandSenderWorld().dimension();
+
+        player.setChatTarget(BroadCastTarget.GENERAL);
 
         playersByName.put(player.getDisplayName(), player);
         dataArray.add(player);

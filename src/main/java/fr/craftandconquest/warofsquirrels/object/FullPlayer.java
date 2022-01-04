@@ -89,7 +89,8 @@ public class FullPlayer implements IPermission {
     }
 
     public void updateDependencies() {
-        WarOfSquirrels.instance.getCityHandler().getCity(cityUuid).register(this);
+        if (cityUuid != null)
+            WarOfSquirrels.instance.getCityHandler().getCity(cityUuid).register(this);
     }
 
     @JsonIgnore

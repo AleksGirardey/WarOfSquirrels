@@ -212,4 +212,8 @@ public class Utils {
 
         return message;
     }
+
+    public static String SplitToStack(int amount) {
+        return (amount / 64) + " stacks and " + (amount % 64);
+    }
 }

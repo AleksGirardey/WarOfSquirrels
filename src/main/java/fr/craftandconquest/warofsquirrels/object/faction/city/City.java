@@ -243,6 +243,8 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
             customPermission.put(target, permission.permission);
         }
 
+        cityUpgrade.Populate();
+
         if (upgradeChestLocation != null)
             upgradeChestLocation.update();
     }
