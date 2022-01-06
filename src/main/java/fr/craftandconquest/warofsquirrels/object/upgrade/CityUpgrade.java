@@ -174,12 +174,35 @@ public class CityUpgrade {
         if (currentLevelUpgrade != null) currentLevelUpgrade.Populate();
     }
 
-    public int getCostReduction() {
+    @JsonIgnore public int getCostReduction() {
         int housingLevel = housing.getCurrentLevel();
         if (housingLevel <= 1) return 0;
         if (housingLevel == 2) return -5;
         if (housingLevel == 3) return -8;
         if (housingLevel == 4) return -10;
+
+        return 0;
+    }
+
+    @JsonIgnore public int getInfluenceGeneratedDistantNeighbour() {
+        switch (facility.getCurrentLevel()) {
+            case 0 -> { return 0; }
+            case 1 -> { return 20; }
+            case 2 -> { return 50; }
+            case 3 -> { return 100; }
+            case 4 -> { return 120; }
+        }
+
+        return 0;
+    }
+
+    @JsonIgnore public int getInfluenceRange() {
+        switch (facility.getCurrentLevel()) {
+            case 0 -> { return 0; }
+            case 1 -> { return 1; }
+            case 2, 3 -> { return 2; }
+            case 4 -> { return 3; }
+        }
 
         return 0;
     }

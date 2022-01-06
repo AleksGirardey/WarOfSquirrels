@@ -87,20 +87,15 @@ public class Territory {
             this.factionUuid = faction.getFactionUuid();
     }
 
-    public int GetInfluenceGenerated() {
-        return fortification != null ? fortification.getInfluenceGenerated() : 0;
-    }
-
-    public int GetSelfInfluenceGenerated() {
-        return fortification != null ? fortification.getSelfInfluenceGenerated() : 0;
-    }
-
     public void SpreadInfluence() {
         InfluenceHandler handler = WarOfSquirrels.instance.getInfluenceHandler();
         List<Territory> neighbors = WarOfSquirrels.instance.getTerritoryHandler().getNeighbors(this);
 
         if (fortification != null) {
-            handler.pushInfluence(fortification.getFaction(), this, GetSelfInfluenceGenerated());
+            if (faction == null) {
+                handler.pushInfluence(fortification, this, fortification.getSelfInfluenceGenerated());
+            }
+
 
             if (faction != null) {
                 for (Territory territory : neighbors)

@@ -212,12 +212,12 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
     @JsonIgnore
     public int getInfluenceGeneratedDistantNeighbour() {
-        
+        return getCityUpgrade().getInfluenceGeneratedDistantNeighbour();
     }
 
     @JsonIgnore
     public int getInfluenceRange() {
-
+        return getCityUpgrade().getInfluenceRange();
     }
 
     @JsonIgnore
