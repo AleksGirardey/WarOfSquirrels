@@ -29,8 +29,7 @@ public class CityHandler extends Handler<City> {
         cityMap = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<List<City>>() {
-        })) return;
+        if (!Load(new TypeReference<>() {})) return;
 
         Log();
     }
@@ -58,7 +57,7 @@ public class CityHandler extends Handler<City> {
         city.SetOwner(owner);
         city.SetRank(0);
         city.setCityUpgrade(new CityUpgrade());
-        city.getCityUpgrade().Init();
+        city.getCityUpgrade().Init(city);
         city.setCustomPermission(new HashMap<>());
         city.setDefaultPermission(new HashMap<>(WarOfSquirrels.instance.config.getConfiguration().getPermissionMap()));
 
@@ -218,8 +217,8 @@ public class CityHandler extends Handler<City> {
         Save();
     }
 
-//    public void update() {
-//        for (City city : dataArray)
-//            city.SpreadInfluence();
-//    }
+    public void update() {
+        for (City city : dataArray)
+            city.Update();
+    }
 }

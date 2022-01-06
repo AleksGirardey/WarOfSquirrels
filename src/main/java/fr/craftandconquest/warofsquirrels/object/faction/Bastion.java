@@ -2,36 +2,43 @@ package fr.craftandconquest.warofsquirrels.object.faction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.UUID;
 
 public class Bastion implements IFortification {
-    @JsonProperty
-    @Getter
-    @Setter
+    @JsonProperty @Getter @Setter
     private UUID bastionUuid;
-    @JsonProperty
-    @Getter
-    @Setter
+
+    @JsonProperty @Getter @Setter
     private String name;
-    @JsonProperty
-    @Getter
-    private UUID factionUuid;
 
-    @JsonIgnore
-    @Getter
-    private Faction faction;
+    @JsonProperty @Getter
+    private UUID cityUuid;
 
-    public void SetFaction(Faction faction) {
-        this.faction = faction;
-        if (faction != null)
-            this.factionUuid = faction.getFactionUuid();
+    @JsonIgnore @Getter
+    private City city;
+
+    public void SetCity(City city) {
+        this.city = city;
+        if (city != null)
+            this.cityUuid = city.getCityUuid();
+    }
+
+    @Override
+    public Faction getFaction() {
+        return this.city.getFaction();
     }
 
     @Override
     public UUID getUniqueId() {
         return bastionUuid;
+    }
+
+    @Override
+    public City getRelatedCity() {
+        return city;
     }
 }

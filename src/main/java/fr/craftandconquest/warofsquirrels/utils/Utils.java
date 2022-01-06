@@ -8,6 +8,7 @@ import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
@@ -213,7 +214,19 @@ public class Utils {
         return message;
     }
 
-    public static String SplitToStack(int amount) {
-        return (amount / 64) + " stacks and " + (amount % 64);
+    public static MutableComponent SplitToStack(int amount) {
+        MutableComponent message = new TextComponent("");
+        int stacks = amount / 64;
+        int blocks = amount % 64;
+
+        if (stacks > 0) {
+            message.append(stacks + " stacks");
+            if (blocks > 0)
+                message.append(" and ");
+        }
+        if (blocks > 0)
+            message.append(blocks + " blocks");
+
+        return message;
     }
 }

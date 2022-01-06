@@ -25,7 +25,7 @@ public class UpdateHandler {
 
         OnSaveUpdate.clear();
 
-//        this.CreateDailyUpdate();
+        this.CreateDailyUpdate();
         this.CreateSaveUpdate();
     }
 
@@ -35,7 +35,7 @@ public class UpdateHandler {
         message.withStyle(ChatFormatting.ITALIC);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
-//        WarOfSquirrels.instance.getCityHandler().update();
+        WarOfSquirrels.instance.getCityHandler().update();
         WarOfSquirrels.instance.getTerritoryHandler().update();
 //        WarOfSquirrels.instance.getLoanHandler().update();
         this.CreateDailyUpdate();
@@ -55,7 +55,7 @@ public class UpdateHandler {
     }
 
     public void CreateDailyUpdate() {
-        long delay = DelayBeforeMidnight();
+        long delay = DelayBeforeReset();
         delay *= 1000;
 
         currentDailyUpdateTimer = new Timer();
@@ -80,7 +80,7 @@ public class UpdateHandler {
         }, delay);
     }
 
-    public long DelayBeforeMidnight() {
+    public long DelayBeforeReset() {
         //TODO: Modifier la detection du prochain reset (00:00) pour ne pas déclencher plusieurs fois l'update lors du passage à minuit
         LocalDateTime localNow = LocalDateTime.now();
         ZonedDateTime zonedNow = ZonedDateTime.of(localNow, ZoneId.systemDefault());

@@ -1,6 +1,7 @@
 package fr.craftandconquest.warofsquirrels.object.faction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 
 import java.util.UUID;
 
@@ -15,6 +16,9 @@ public interface IFortification {
 
     @JsonIgnore
     Faction getFaction();
+
+    @JsonIgnore
+    City getRelatedCity();
 
     @JsonIgnore
     default int getSelfInfluenceGenerated() {

@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class CityUpgradeFill extends CityMayorOrAssistantCommandBuilder {
+public abstract class CityUpgradeFill extends CityMayorOrAssistantCommandBuilder {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("fill").executes(this);

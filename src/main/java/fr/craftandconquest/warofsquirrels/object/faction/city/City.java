@@ -11,6 +11,7 @@ import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.permission.*;
 import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
+import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import lombok.AllArgsConstructor;
@@ -99,6 +100,11 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     }
 
     @JsonIgnore
+    public int getSize() {
+        return citizens.size();
+    }
+
+    @JsonIgnore
     public boolean addCitizen(FullPlayer player) {
         if (!register(player)) return false;
 
@@ -179,6 +185,24 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         return cityUuid;
     }
 
+    @Override
+    public City getRelatedCity() { return this; }
+
+    @JsonIgnore
+    public Chunk getHomeBlock() {
+        return WarOfSquirrels.instance.getChunkHandler().getHomeBlock(this);
+    }
+
+    /* Upgrade related */
+    @JsonIgnore
+    public int getCostReduction() {
+        Chunk hb = getHomeBlock();
+        return cityUpgrade.getCostReduction() /*+ WarOfSquirrels.instance.getTerritoryHandler().get(hb.posX, hb.posZ).getCostReduction()*/;
+    }
+
+//    @JsonIgnore
+//    public
+
     @JsonIgnore
     public List<FullPlayer> getOnlinePlayers() {
         List<FullPlayer> onlinePlayers = new ArrayList<>();
@@ -243,7 +267,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
             customPermission.put(target, permission.permission);
         }
 
-        cityUpgrade.Populate();
+        cityUpgrade.Populate(this);
 
         if (upgradeChestLocation != null)
             upgradeChestLocation.update();
@@ -256,5 +280,9 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         player.setCity(this);
 
         return true;
+    }
+
+    public void Update() {
+        cityUpgrade.VerifyLevelUp();
     }
 }

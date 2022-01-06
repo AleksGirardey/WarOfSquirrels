@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
@@ -64,7 +67,7 @@ public class UpgradeItem {
         return list;
     }
 
-    public String toString() {
-        return item == null ? itemTag.getName().toString() : item.toString();//Objects.requireNonNull(item.getRegistryName()).toString();
+    public MutableComponent asString() {
+        return item == null ? new TextComponent(itemTag.toString()) : new TranslatableComponent(item.getDescriptionId() + "." + item.getRegistryName());
     }
 }
