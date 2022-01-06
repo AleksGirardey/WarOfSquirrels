@@ -65,8 +65,10 @@ public abstract class Upgrade {
         upgradeItemList.forEach(item -> upgradeItems.put(item, item.getAmount()));
     }
 
-    public void fill(Container container) {
-        if (!contains(container)) return;
+    public int fill(Container container) {
+        int amount = 0;
+
+        if (!contains(container)) return amount;
 
         for (int index = 0; index < container.getContainerSize(); ++index) {
             ItemStack stack = container.getItem(index);
@@ -77,11 +79,14 @@ public abstract class Upgrade {
 
                     amountToRemove = Math.min(amountToRemove, entry.getValue());
 
+                    amount += amountToRemove;
+
                     container.removeItem(index, amountToRemove);
                     entry.setValue(entry.getValue() - amountToRemove);
                 }
             }
         }
+        return amount;
     }
 
     protected boolean hasCompleteItems() {

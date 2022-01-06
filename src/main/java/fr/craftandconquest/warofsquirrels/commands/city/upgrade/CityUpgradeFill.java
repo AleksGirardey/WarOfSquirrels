@@ -8,6 +8,7 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import lombok.AllArgsConstructor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -16,10 +17,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class CityUpgradeFill extends CityMayorOrAssistantCommandBuilder {
+import java.util.concurrent.atomic.AtomicInteger;
+
+@AllArgsConstructor
+public class CityUpgradeFill extends CityMayorOrAssistantCommandBuilder {
+    private String upgradeTarget;
+    private CityUpgrade.UpgradeType upgradeType;
+
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("fill").executes(this);
+        return Commands.literal(upgradeTarget).executes(this);
     }
 
     @Override
@@ -31,6 +38,11 @@ public abstract class CityUpgradeFill extends CityMayorOrAssistantCommandBuilder
             return false;
         }
 
+        if (!city.getCityUpgrade().CanFill(upgradeType)) {
+            player.sendMessage(ChatText.Error("You cannot upgrade this; Check if you got the correct city level."));
+            return false;
+        }
+
         return true;
     }
 
@@ -39,6 +51,7 @@ public abstract class CityUpgradeFill extends CityMayorOrAssistantCommandBuilder
         City city = player.getCity();
         BlockPos cornerOne = city.getUpgradeChestLocation().getCornerOne();
         BlockPos cornerTwo = city.getUpgradeChestLocation().getCornerTwo();
+        AtomicInteger amount = new AtomicInteger();
 
         Level level = WarOfSquirrels.server.getLevel(Level.OVERWORLD);
 
@@ -52,8 +65,10 @@ public abstract class CityUpgradeFill extends CityMayorOrAssistantCommandBuilder
             ChestBlock chestBlock = (ChestBlock) level.getBlockState(blockPos).getBlock();
             Container container = ChestBlock.getContainer(chestBlock, blockState, level, blockPos, false);
 
-            city.getCityUpgrade().FillUpgrade(CityUpgrade.UpgradeType.Level, container);
+            amount.addAndGet(city.getCityUpgrade().FillUpgrade(upgradeType, container));
         });
+
+        player.sendMessage(ChatText.Success("Upgrade " + upgradeType + " has been filled with " + amount + " blocks or items."));
 
         return 0;
     }

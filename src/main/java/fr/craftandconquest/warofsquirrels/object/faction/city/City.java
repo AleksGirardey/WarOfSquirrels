@@ -200,8 +200,25 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         return cityUpgrade.getCostReduction() /*+ WarOfSquirrels.instance.getTerritoryHandler().get(hb.posX, hb.posZ).getCostReduction()*/;
     }
 
-//    @JsonIgnore
-//    public
+    @JsonIgnore
+    public int getInfluenceGeneratedCloseNeighbour() {
+        return 50;
+    }
+
+    @JsonIgnore
+    public int getSelfInfluenceGenerated() {
+        return 100;
+    }
+
+    @JsonIgnore
+    public int getInfluenceGeneratedDistantNeighbour() {
+        
+    }
+
+    @JsonIgnore
+    public int getInfluenceRange() {
+
+    }
 
     @JsonIgnore
     public List<FullPlayer> getOnlinePlayers() {

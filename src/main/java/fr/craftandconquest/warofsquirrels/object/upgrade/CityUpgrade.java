@@ -115,7 +115,7 @@ public class CityUpgrade {
         }
     }
 
-    public void FillUpgrade(UpgradeType type, Container container) {
+    public int FillUpgrade(UpgradeType type, Container container) {
         Upgrade target = null;
 
         switch (type) {
@@ -126,8 +126,8 @@ public class CityUpgrade {
             case Palace -> target = currentPalaceUpgrade;
         }
 
-        if (target == null) return;
-        target.fill(container);
+        if (target == null) return 0;
+         return target.fill(container);
     }
 
     public void SetNextTarget(UpgradeType type) {
@@ -184,6 +184,46 @@ public class CityUpgrade {
         return 0;
     }
 
+    public boolean CanFill(UpgradeType type) {
+        UpgradeInfo info = null;
+
+        switch (type) {
+            case Level -> info = level;
+            case Housing -> info = housing;
+            case Facility -> info = facility;
+            case HeadQuarter -> info = headQuarter;
+            case Palace -> info = palace;
+        }
+
+        if (info.getCurrentLevel() >= 4) return false;
+
+        if (type == UpgradeType.Level) return true;
+
+        return info.getCurrentLevel() < level.getCurrentLevel();
+    }
+
+    public UpgradeInfo getUpgradeInfo(UpgradeType type) {
+        switch (type) {
+            case Level -> { return level; }
+            case Housing -> { return housing; }
+            case Facility -> { return facility; }
+            case HeadQuarter -> { return headQuarter; }
+            case Palace -> { return palace; }
+        }
+        return level;
+    }
+
+    public MutableComponent asString(UpgradeType type) {
+        switch (type) {
+            case Level -> { return currentLevelUpgrade.asString(); }
+            case Housing -> { return currentHousingUpgrade.asString(); }
+            case Facility -> { return currentFacilityUpgrade.asString(); }
+            case HeadQuarter -> { return currentHeadQuarterUpgrade.asString(); }
+            case Palace -> { return currentPalaceUpgrade.asString(); }
+        }
+
+        return asString();
+    }
 
     public MutableComponent asString() {
         return currentLevelUpgrade.asString()
