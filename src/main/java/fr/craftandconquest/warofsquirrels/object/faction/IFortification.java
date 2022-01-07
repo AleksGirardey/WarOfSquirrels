@@ -21,12 +21,20 @@ public interface IFortification {
     City getRelatedCity();
 
     @JsonIgnore
-    default int getSelfInfluenceGenerated() {
-        return 100;
-    }
+    FortificationType getFortificationType();
 
     @JsonIgnore
-    default int getInfluenceGenerated() {
-        return 100;
-    }
+    int getSelfInfluenceGenerated();
+
+    @JsonIgnore
+    int getInfluenceMax();
+
+    @JsonIgnore
+    int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly);
+
+    @JsonIgnore
+    int getInfluenceGeneratedDistantNeighbour();
+
+    @JsonIgnore
+    int getInfluenceRange();
 }

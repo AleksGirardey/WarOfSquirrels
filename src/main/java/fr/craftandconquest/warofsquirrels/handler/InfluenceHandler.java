@@ -3,6 +3,7 @@ package fr.craftandconquest.warofsquirrels.handler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
+import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.Influence;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
@@ -79,6 +80,16 @@ public class InfluenceHandler extends Handler<Influence> {
         return influence;
     }
 
+    public Influence CreateInfluence(City city, Territory territory) {
+        Influence influence = new Influence(city, territory);
+
+        if (!add(influence)) return null;
+
+        Save();
+        LogInfluenceCreation(influence);
+        return influence;
+    }
+
     @Override
     public boolean Delete(Influence value) {
         factionInfluenceMap.get(value.getFaction()).keySet().removeIf(t -> t.equals(value.getTerritory()));
@@ -135,16 +146,33 @@ public class InfluenceHandler extends Handler<Influence> {
         });
     }
 
-    public void pushInfluence(Faction faction, Territory territory, int influenceGenerated) {
+    public void pushInfluence(IFortification fortification, Territory territory, int influenceGenerated) {
         Map<Territory, Influence> map = new HashMap<>();
         Influence influence;
 
-        if (factionInfluenceMap.containsKey(faction))
-            map = factionInfluenceMap.get(faction);
-        if (map.containsKey(territory))
-            influence = map.get(territory);
-        else
-            influence = CreateInfluence(faction, territory);
+        boolean hasFaction = fortification.getFaction() != null;
+
+        if (hasFaction) {
+            Faction faction = fortification.getFaction();
+
+            if (factionInfluenceMap.containsKey(faction))
+                map = factionInfluenceMap.get(faction);
+            if (map.containsKey(territory))
+                influence = map.get(territory);
+            else
+                influence = CreateInfluence(faction, territory);
+        } else {
+            City city = fortification.getRelatedCity();
+
+            if (cityInfluenceMap.containsKey(city)) {
+                map = cityInfluenceMap.get(city);
+            }
+            if (map.containsKey(territory))
+                influence = map.get(territory);
+            else
+                influence = CreateInfluence(city, territory);
+        }
+
 
         if (influenceGenerated >= 0)
             influence.AddInfluence(influenceGenerated);

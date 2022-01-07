@@ -41,4 +41,34 @@ public class Bastion implements IFortification {
     public City getRelatedCity() {
         return city;
     }
+
+    @Override
+    public FortificationType getFortificationType() {
+        return null;
+    }
+
+    @Override
+    public int getSelfInfluenceGenerated() {
+        return 0;
+    }
+
+    @Override
+    public int getInfluenceMax() {
+        return 0;
+    }
+
+    @Override
+    public int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly) {
+        return 0;
+    }
+
+    @Override
+    public int getInfluenceGeneratedDistantNeighbour() {
+        return 0;
+    }
+
+    @Override
+    public int getInfluenceRange() {
+        return 0;
+    }
 }

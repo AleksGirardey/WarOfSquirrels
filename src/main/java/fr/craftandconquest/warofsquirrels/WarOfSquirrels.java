@@ -10,7 +10,11 @@ import fr.craftandconquest.warofsquirrels.object.ConfigData;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.utils.Config;
 import lombok.Getter;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -36,6 +40,8 @@ public class WarOfSquirrels {
 
     private final CommandRegisterManager commandRegisterManager;
 
+    private final static ResourceLocation SpawnDimension = new ResourceLocation("minecraft", "craftandconquest/spawn");
+    public static final ResourceKey<Level> SPAWN = ResourceKey.create(Registry.DIMENSION_REGISTRY, SpawnDimension);
     @Getter
     private Boolean isModInit = false;
 
@@ -149,5 +155,6 @@ public class WarOfSquirrels {
         UpdateHandler.OnSaveUpdate.add(diplomacyHandler);
         UpdateHandler.OnSaveUpdate.add(factionHandler);
         UpdateHandler.OnSaveUpdate.add(influenceHandler);
+        UpdateHandler.OnSaveUpdate.add(territoryHandler);
     }
 }

@@ -165,6 +165,27 @@ public class TerritoryHandler extends Handler<Territory> {
         // Nothing To Do
     }
 
+    public List<Territory> getNeighbors(Territory territory, int range) {
+        List<Territory> neighbors = new ArrayList<>();
+        int startingX = territory.getPosX() - range;
+        int endingX = territory.getPosX() + range;
+
+        for (int x = startingX; x <= endingX; ++x) {
+            int diff = range - Math.abs(x);
+            int startingZ = territory.getPosZ() - diff;
+            int endingZ = territory.getPosZ() + diff;
+
+            for (int z = startingZ; z <= endingZ; ++z) {
+                Territory neighbor = get(x, z);
+
+                if (neighbor != null)
+                    neighbors.add(get(x, z));
+            }
+         }
+
+        return neighbors;
+    }
+
     public List<Territory> getNeighbors(Territory territory) {
         List<Territory> neighbors = new ArrayList<>();
         int halfSize = WarOfSquirrels.instance.getConfig().getMapSize() / 2;
@@ -211,11 +232,12 @@ public class TerritoryHandler extends Handler<Territory> {
         return territories[posX][posZ];
     }
 
-    public boolean claim(int posX, int posZ, Faction faction, IFortification fortification) {
+    public boolean Claim(int posX, int posZ, Faction faction, IFortification fortification, String name) {
         Territory territory = get(posX, posZ);
 
         if (territory == null) return false;
 
+        territory.setName(name);
         territory.SetFaction(faction);
         territory.SetFortification(fortification);
 

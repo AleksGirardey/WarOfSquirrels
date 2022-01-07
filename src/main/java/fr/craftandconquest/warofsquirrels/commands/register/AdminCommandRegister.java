@@ -5,21 +5,27 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.admin.AdminChunkInfoCommand;
+import fr.craftandconquest.warofsquirrels.commands.admin.AdminForceDailyUpdate;
+import fr.craftandconquest.warofsquirrels.commands.admin.AdminTpSpawn;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.level.Level;
 
 public class AdminCommandRegister extends CommandBuilder implements ICommandRegister {
     private final AdminChunkInfoCommand adminChunkInfoCommand = new AdminChunkInfoCommand();
+    private final AdminForceDailyUpdate adminForceDailyUpdate = new AdminForceDailyUpdate();
+    private final AdminTpSpawn adminTpSpawn = new AdminTpSpawn(false);
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("admin")
                 .then(adminChunkInfoCommand.register())
+                .then(adminForceDailyUpdate.register())
+                .then(adminTpSpawn.register())
                 .executes(this)
         );
     }

@@ -201,7 +201,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     }
 
     @JsonIgnore
-    public int getInfluenceGeneratedCloseNeighbour() {
+    public int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly) {
         return 50;
     }
 
@@ -219,6 +219,12 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     public int getInfluenceRange() {
         return getCityUpgrade().getInfluenceRange();
     }
+
+    @JsonIgnore
+    public int getInfluenceMax() { return 4000; }
+
+    @JsonIgnore
+    public FortificationType getFortificationType() { return FortificationType.CITY; }
 
     @JsonIgnore
     public List<FullPlayer> getOnlinePlayers() {

@@ -42,23 +42,24 @@ public class FactionCreateCommand extends CityMayorCommandBuilder implements ITe
         if (player.getCity().getFaction() == null
                 && influence.getValue() >= WarOfSquirrels.instance.getConfig().getBaseInfluenceRequired()) return true;
 
-        player.sendMessage(ChatText.Error("Vous ne remplissez pas les conditions nécessaire pour former une faction."));
+        player.sendMessage(ChatText.Error("You do not met requirements to create a faction."));
         return false;
     }
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        String name = context.getArgument(factionName, String.class);
+        String fName = context.getArgument(factionName, String.class);
+        String tName = context.getArgument(territoryName, String.class);
         Territory territory = ExtractTerritory(player);
-        Faction faction = WarOfSquirrels.instance.getFactionHandler().CreateFaction(name, player.getCity());
+        Faction faction = WarOfSquirrels.instance.getFactionHandler().CreateFaction(fName, player.getCity());
 
         player.getCity().SetFaction(faction);
-        territory.SetFaction(faction);
-        territory.setName(context.getArgument(territoryName, String.class));
+
+        if (!WarOfSquirrels.instance.getTerritoryHandler().Claim(territory.getPosX(), territory.getPosZ(), faction, player.getCity(), tName))
+            return -1;
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(ChatText.Colored(
-                player.getDisplayName() + " forme la faction '"
-                        + name + "' dont la capitale est '" + player.getCity().displayName + "'", ChatFormatting.GOLD));
+                player.getDisplayName() + " has formed the nation '" + fName + "' and set '" + player.getCity().displayName + "' as capital", ChatFormatting.GOLD));
         WarOfSquirrels.instance.getBroadCastHandler().AddTarget(faction, new FactionChannel(faction));
 
         for (FullPlayer p : player.getCity().getCitizens())

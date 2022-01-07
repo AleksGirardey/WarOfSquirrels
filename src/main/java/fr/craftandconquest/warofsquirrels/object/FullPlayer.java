@@ -24,64 +24,24 @@ import java.util.UUID;
 @NoArgsConstructor
 public class FullPlayer implements IPermission {
 
-//    @JsonIgnore
-//    @Getter
-//    @Setter
-//    private Player playerEntity;
-
-    @JsonProperty
-    @Getter
-    @Setter
-    private UUID uuid;
-    @JsonProperty("DisplayName")
-    @Getter
-    @Setter
-    private String displayName;
-    @JsonProperty
-    private int score;
-    @JsonProperty
-    private UUID cityUuid;
-    @JsonProperty
-    @Getter
-    @Setter
-    private Boolean assistant;
-    @JsonProperty
-    @Getter
-    @Setter
-    private Boolean resident = false;
-    @JsonProperty
-    @Getter
-    @Setter
-    private int balance;
+    @JsonProperty @Getter @Setter private UUID uuid;
+    @JsonProperty("DisplayName") @Getter @Setter private String displayName;
+    @JsonProperty private int score;
+    @JsonProperty private UUID cityUuid;
+    @JsonProperty @Getter @Setter private Boolean assistant;
+    @JsonProperty @Getter @Setter private Boolean resident = false;
+    @JsonProperty @Getter @Setter private int balance;
 
     /* -- Extra Fields -- */
-    @Getter
-    @Setter
-    private int lastChunkX = 10000;
-    @Getter
-    @Setter
-    private int lastChunkZ = 10000;
-    @Getter
-    @Setter
-    private boolean reincarnation;
-    @JsonProperty
-    @Getter
-    @Setter
-    private boolean adminMode;
-    private long lastClick;
+    @Getter @Setter private int lastChunkX = 10000;
+    @Getter @Setter private int lastChunkZ = 10000;
+    @Getter @Setter private boolean reincarnation;
 
-    @JsonIgnore
-    @Getter
-    private City city;
-
-    @JsonIgnore
-    public Vector3 lastPosition;
-    @JsonIgnore
-    public ResourceKey<Level> lastDimension;
-
-    @JsonIgnore
-    @Getter @Setter
-    private BroadCastTarget chatTarget;
+    @JsonIgnore @Getter @Setter private boolean adminMode;
+    @JsonIgnore @Getter private City city;
+    @JsonIgnore public Vector3 lastPosition;
+    @JsonIgnore public ResourceKey<Level> lastDimension;
+    @JsonIgnore @Getter @Setter private BroadCastTarget chatTarget;
 
     public void setCity(City city) {
         cityUuid = city != null ? city.getCityUuid() : null;

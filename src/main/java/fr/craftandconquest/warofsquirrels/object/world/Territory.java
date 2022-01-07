@@ -89,19 +89,49 @@ public class Territory {
 
     public void SpreadInfluence() {
         InfluenceHandler handler = WarOfSquirrels.instance.getInfluenceHandler();
-        List<Territory> neighbors = WarOfSquirrels.instance.getTerritoryHandler().getNeighbors(this);
 
         if (fortification != null) {
             if (faction == null) {
                 handler.pushInfluence(fortification, this, fortification.getSelfInfluenceGenerated());
+                return;
             }
 
-
-            if (faction != null) {
-                for (Territory territory : neighbors)
-                    handler.pushInfluence(faction, territory, GetInfluenceGenerated());
-            }
+            SpreadSelfInfluence();
+            SpreadCloseInfluence(true);
+            if (fortification.getFortificationType() == IFortification.FortificationType.BASTION)
+                SpreadCloseInfluence(false);
+            SpreadDistantInfluence();
         }
+    }
+
+    public void SpreadSelfInfluence() {
+        WarOfSquirrels.instance.getInfluenceHandler().pushInfluence(fortification, this, fortification.getSelfInfluenceGenerated());
+    }
+
+    public void SpreadCloseInfluence(boolean neutralOnly) {
+        InfluenceHandler handler = WarOfSquirrels.instance.getInfluenceHandler();
+        List<Territory> neighbors = WarOfSquirrels.instance.getTerritoryHandler().getNeighbors(this);
+
+        for (Territory territory : neighbors) {
+            if (neutralOnly && territory.getFaction() != null) continue;
+
+            handler.pushInfluence(fortification, territory, fortification.getInfluenceGeneratedCloseNeighbour(neutralOnly));
+        }
+    }
+
+    public void SpreadDistantInfluence() {
+        InfluenceHandler handler = WarOfSquirrels.instance.getInfluenceHandler();
+        List<Territory> neighbors = WarOfSquirrels.instance.getTerritoryHandler().getNeighbors(this, fortification.getInfluenceRange());
+
+        for (Territory territory : neighbors) {
+            if (territory.getFaction() == null)
+                handler.pushInfluence(fortification, territory, fortification.getInfluenceGeneratedDistantNeighbour());
+        }
+    }
+
+    @JsonIgnore
+    public int getInfluenceMax() {
+        return fortification.getInfluenceMax(); // Ajouter influence du biome du territoire
     }
 
     private void SetBiomeMap() {

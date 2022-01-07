@@ -77,7 +77,7 @@ public class Influence {
     }
 
     public void AddInfluence(int influence) {
-        this.value = Math.min(value + influence, WarOfSquirrels.instance.getConfig().getInfluenceMax());
+        this.value = Math.min(value + influence, territory.getInfluenceMax());
     }
 
     public void SubInfluence(int influence) {
