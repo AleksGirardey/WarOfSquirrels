@@ -47,9 +47,9 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
         MutableComponent message;
 
         if (player.isAdminMode())
-            message = ChatText.Colored("Admin mode activé.", ChatFormatting.GOLD);
+            message = ChatText.Colored("Admin mode activated.", ChatFormatting.GOLD);
         else
-            message = ChatText.Colored("Admin mode désactivé", ChatFormatting.GOLD);
+            message = ChatText.Colored("Admin mode deactivated", ChatFormatting.GOLD);
 
         player.sendMessage(message);
 
