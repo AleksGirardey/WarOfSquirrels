@@ -1,4 +1,4 @@
-package fr.craftandconquest.warofsquirrels.commands.city.cubo;
+package fr.craftandconquest.warofsquirrels.commands.cubo;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -8,14 +8,13 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
 import java.util.List;
 
-public class CityCuboList extends CityCommandBuilder {
+public class CuboList extends CityCommandBuilder {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("list").executes(this);
@@ -30,7 +29,7 @@ public class CityCuboList extends CityCommandBuilder {
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         List<Cubo> cubos = WarOfSquirrels.instance.getCuboHandler().getCubo(player);
 
-        MutableComponent message = ChatText.Colored("=== Liste de vos cubo(s) [" + cubos.size() + "] ===\n", ChatFormatting.BLUE);
+        MutableComponent message = ChatText.Colored("=== Your cubo(s) [" + cubos.size() + "] ===\n", ChatFormatting.BLUE);
         cubos.forEach(c -> message.append("- ").append(c.display()).append("\n"));
 
         player.sendMessage(message);

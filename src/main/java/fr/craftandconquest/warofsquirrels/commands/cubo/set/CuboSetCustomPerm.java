@@ -1,4 +1,4 @@
-package fr.craftandconquest.warofsquirrels.commands.city.cubo.set;
+package fr.craftandconquest.warofsquirrels.commands.cubo.set;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -11,7 +11,6 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
@@ -19,8 +18,9 @@ import net.minecraft.network.chat.MutableComponent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CityCuboSetInPerm extends CommandBuilder implements IPermissionExtractor, IAdminCommand {
+public class CuboSetCustomPerm extends CommandBuilder implements IPermissionExtractor, IAdminCommand {
     private final String cuboNameArgument = "[CuboName]";
+    private final String playerNameArgument = "[TargetName]";
 
     @Override
     protected boolean CanDoIt(FullPlayer player) {
@@ -29,9 +29,10 @@ public class CityCuboSetInPerm extends CommandBuilder implements IPermissionExtr
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("inperm").then(Commands
+        return Commands.literal("customperm").then(Commands
                 .argument(cuboNameArgument, StringArgumentType.string())
-                .then(getPermissionRegister(this)));
+                .then(Commands.argument(playerNameArgument, StringArgumentType.string())
+                        .then(getPermissionRegister(this))));
     }
 
     @Override
@@ -39,6 +40,10 @@ public class CityCuboSetInPerm extends CommandBuilder implements IPermissionExtr
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(context.getArgument(cuboNameArgument, String.class));
 
         if (cubo == null) return false;
+
+        FullPlayer target = WarOfSquirrels.instance.getPlayerHandler().get(context.getArgument(playerNameArgument, String.class));
+
+        if (target == null) return false;
 
         List<FullPlayer> list = new ArrayList<>();
 
@@ -49,18 +54,19 @@ public class CityCuboSetInPerm extends CommandBuilder implements IPermissionExtr
         if (list.contains(player))
             return true;
 
-        player.sendMessage(ChatText.Error("Vous ne pouvez pas modifier les permissions de ce cubo."));
+        player.sendMessage(ChatText.Error("You cannot change permissions of this cubo."));
         return true;
     }
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(context.getArgument(cuboNameArgument, String.class));
+        FullPlayer target = WarOfSquirrels.instance.getPlayerHandler().get(context.getArgument(playerNameArgument, String.class));
         Permission permission = getPermission(context);
 
-        cubo.setPermissionIn(permission);
+        cubo.AddPlayerCustomPermission(target, permission);
         WarOfSquirrels.instance.getCuboHandler().Save();
-        MutableComponent text = ChatText.Success("Inperm permissions for cubo '" + cubo.getName() + "' are now " + permission);
+        MutableComponent text = ChatText.Success("Custom permissions for player '" + target.getDisplayName() + "' on cubo '" + cubo.getName() + "' are now " + permission);
 
         player.sendMessage(text);
 
@@ -72,6 +78,6 @@ public class CityCuboSetInPerm extends CommandBuilder implements IPermissionExtr
 
     @Override
     protected MutableComponent ErrorMessage() {
-        return ChatText.Error("Vous ne pouvez pas utiliser cette commande.");
+        return ChatText.Error("You cannot use this command.");
     }
 }

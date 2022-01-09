@@ -1,23 +1,22 @@
-package fr.craftandconquest.warofsquirrels.commands.city.cubo;
+package fr.craftandconquest.warofsquirrels.commands.cubo;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
-import fr.craftandconquest.warofsquirrels.commands.city.cubo.set.CityCuboSetCustomPerm;
-import fr.craftandconquest.warofsquirrels.commands.city.cubo.set.CityCuboSetInPerm;
-import fr.craftandconquest.warofsquirrels.commands.city.cubo.set.CityCuboSetOutPerm;
-import fr.craftandconquest.warofsquirrels.commands.city.cubo.set.CityCuboSetOwner;
+import fr.craftandconquest.warofsquirrels.commands.cubo.set.CuboSetCustomPerm;
+import fr.craftandconquest.warofsquirrels.commands.cubo.set.CityCuboSetInPerm;
+import fr.craftandconquest.warofsquirrels.commands.cubo.set.CityCuboSetOutPerm;
+import fr.craftandconquest.warofsquirrels.commands.cubo.set.CityCuboSetOwner;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
-public class CityCuboSet extends CommandBuilder {
+public class CuboSet extends CommandBuilder {
     private final CityCuboSetInPerm cityCuboSetInPerm = new CityCuboSetInPerm();
     private final CityCuboSetOutPerm cityCuboSetOutPerm = new CityCuboSetOutPerm();
-    private final CityCuboSetCustomPerm cityCuboSetCustomPerm = new CityCuboSetCustomPerm();
+    private final CuboSetCustomPerm cuboSetCustomPerm = new CuboSetCustomPerm();
     private final CityCuboSetOwner cityCuboSetOwner = new CityCuboSetOwner();
 
     @Override
@@ -26,7 +25,7 @@ public class CityCuboSet extends CommandBuilder {
                 .executes(this)
                 .then(cityCuboSetInPerm.register())
                 .then(cityCuboSetOutPerm.register())
-                .then(cityCuboSetCustomPerm.register())
+                .then(cuboSetCustomPerm.register())
                 .then(cityCuboSetOwner.register());
     }
 
@@ -39,10 +38,10 @@ public class CityCuboSet extends CommandBuilder {
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         player.sendMessage(ChatText.Success("""
                 === Cubo set ===
-                ... set owner : Défini le propriétaire du cubo
-                ... set inperm : Défini les permissions des joueurs dans la liste
-                ... set outperm : Défini les permissions des joueurs hors de la liste
-                ... set customperm : Défini des permissions spécifiques pour un joueur, une ville ou une faction
+                ... set owner : Set cubo's owner
+                ... set inperm : Define permission for players on the list
+                ... set outperm : Define permission for players outside the list
+                ... set customperm : Define custom permission associated to a player or city or faction
                 """));
         return 0;
     }

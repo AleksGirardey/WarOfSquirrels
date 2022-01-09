@@ -1,4 +1,4 @@
-package fr.craftandconquest.warofsquirrels.commands.city.cubo;
+package fr.craftandconquest.warofsquirrels.commands.cubo;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -9,12 +9,11 @@ import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
-public class CityCuboRemove extends CommandBuilder implements IAdminCommand {
+public class CuboRemove extends CommandBuilder implements IAdminCommand {
     private final String cuboNameArgument = "[Cubo]";
     private final String playerNameArgument = "[Player]";
 
@@ -34,14 +33,14 @@ public class CityCuboRemove extends CommandBuilder implements IAdminCommand {
         FullPlayer target = WarOfSquirrels.instance.getPlayerHandler().get(playerName);
 
         if (cubo == null || target == null) {
-            player.sendMessage(ChatText.Error("Les arguments '" + cuboName + "' et '" + playerName + "' ne sont pas valides."));
+            player.sendMessage(ChatText.Error("Arguments '" + cuboName + "' and/or '" + playerName + "' are not valid."));
             return false;
         }
 
         if ((cubo.getCity().getOwner().equals(player) || (player.getAssistant() && player.getCity().equals(cubo.getCity())) || IsAdmin(player))) return true;
         if (cubo.getOwner().equals(player)) return true;
 
-        player.sendMessage(ChatText.Error("Vous ne pouvez pas enlever quelqu'un de ce cubo."));
+        player.sendMessage(ChatText.Error("You cannot remove someone from this cubo."));
         return false;
     }
 
@@ -54,6 +53,9 @@ public class CityCuboRemove extends CommandBuilder implements IAdminCommand {
 
         cubo.RemovePlayerInList(target);
         WarOfSquirrels.instance.getCuboHandler().Save();
+
+        player.sendMessage(ChatText.Success("Player '" + playerName + "' has been removed from cubo '" + cuboName + "'"));
+
         return 0;
     }
 

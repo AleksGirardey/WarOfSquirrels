@@ -1,4 +1,4 @@
-package fr.craftandconquest.warofsquirrels.commands.city.cubo.set;
+package fr.craftandconquest.warofsquirrels.commands.cubo;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -9,26 +9,17 @@ import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class CityCuboSetOwner extends CommandBuilder implements IAdminCommand {
-    private final String cuboNameArgument = "[CuboName]";
-    private final String playerNameArgument = "[PlayerName]";
-
-    @Override
-    protected boolean CanDoIt(FullPlayer player) {
-        return IsAdmin(player) || super.CanDoIt(player);
-    }
+public class CuboAdd extends CommandBuilder implements IAdminCommand {
+    private final String cuboNameArgument = "[Cubo]";
+    private final String playerNameArgument = "[Player]";
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("owner").then(
+        return Commands.literal("add").then(
                 Commands.argument(cuboNameArgument, StringArgumentType.string()).then(
                         Commands.argument(playerNameArgument, StringArgumentType.string())
                                 .executes(this)));
@@ -37,42 +28,37 @@ public class CityCuboSetOwner extends CommandBuilder implements IAdminCommand {
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         String cuboName = context.getArgument(cuboNameArgument, String.class);
-        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(cuboName);
-
-        if (cubo == null) {
-            player.sendMessage(ChatText.Error("Cubo '" + cuboName + "' does not exist"));
-            return false;
-        }
-
         String playerName = context.getArgument(playerNameArgument, String.class);
+        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(cuboName);
         FullPlayer target = WarOfSquirrels.instance.getPlayerHandler().get(playerName);
 
-        if (target == null) {
-            player.sendMessage(ChatText.Error("Player '" + playerName + "' does not exist"));
+        MutableComponent message;
+
+        if (cubo == null || target == null) {
+            player.sendMessage(
+                    ChatText.Error("Arguments '" + cuboName + "' and/or '" + playerName + "' are not valid."));
             return false;
         }
 
-        List<FullPlayer> list = new ArrayList<>();
+        if (IsAdmin(player)
+                || cubo.getOwner() == player
+                || (cubo.getCity() == player.getCity()
+                && (cubo.getCity().getOwner() == player || player.getAssistant()))) return true;
 
-        list.add(cubo.getOwner());
-        list.add(cubo.getCity().getOwner());
-        list.addAll(cubo.getCity().getAssistants());
-
-        if (list.contains(player))
-            return true;
-
-        player.sendMessage(ChatText.Error("Vous ne pouvez pas modifier les permissions de ce cubo."));
+        player.sendMessage(ChatText.Error("You cannot add someone to this cubo."));
         return false;
     }
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(context.getArgument(cuboNameArgument, String.class));
-        FullPlayer target = WarOfSquirrels.instance.getPlayerHandler().get(context.getArgument(playerNameArgument, String.class));
+        String cuboName = context.getArgument(cuboNameArgument, String.class);
+        String playerName = context.getArgument(playerNameArgument, String.class);
+        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(cuboName);
+        FullPlayer target = WarOfSquirrels.instance.getPlayerHandler().get(playerName);
 
-        cubo.setOwner(target);
+        cubo.AddPlayerInList(target);
         WarOfSquirrels.instance.getCuboHandler().Save();
-
+        player.sendMessage(ChatText.Success("Player '" + playerName + "' has been added to cubo '" + cuboName + "' access list"));
         return 0;
     }
 

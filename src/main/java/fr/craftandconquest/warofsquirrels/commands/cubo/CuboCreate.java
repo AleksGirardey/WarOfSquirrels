@@ -1,10 +1,10 @@
-package fr.craftandconquest.warofsquirrels.commands.city.cubo;
+package fr.craftandconquest.warofsquirrels.commands.cubo;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
 import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.handler.CuboHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
@@ -12,12 +12,11 @@ import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class CityCuboCreate extends CityMayorOrAssistantCommandBuilder {
+public class CuboCreate extends CityMayorOrAssistantCommandBuilder implements IAdminCommand {
     private final String argumentName = "[CuboName]";
 
     @Override
@@ -28,6 +27,8 @@ public class CityCuboCreate extends CityMayorOrAssistantCommandBuilder {
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         CuboHandler handler = WarOfSquirrels.instance.getCuboHandler();
+
+        if (IsAdmin(player)) return true;
 
         if (handler.playerExists(player)) {
             Pair<Vector3, Vector3> points = handler.getPoints(player);
@@ -44,9 +45,9 @@ public class CityCuboCreate extends CityMayorOrAssistantCommandBuilder {
                     }
                 }
             }
-            player.sendMessage(ChatText.Error("Vous ne pouvez pas définir de cubo avec des limites."));
+            player.sendMessage(ChatText.Error("You cannot create a cubo with those bounds"));
         } else
-            player.sendMessage(ChatText.Error("Vous devez dans un premier temps définir les limites du cubo (/city cubo)"));
+            player.sendMessage(ChatText.Error("You need to define boundaries first (using /cubo)"));
         return false;
     }
 

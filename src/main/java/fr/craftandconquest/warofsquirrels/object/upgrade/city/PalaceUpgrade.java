@@ -1,5 +1,6 @@
 package fr.craftandconquest.warofsquirrels.object.upgrade.city;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
@@ -60,12 +61,13 @@ public class PalaceUpgrade extends Upgrade {
 
     @JsonProperty @Getter int minBastion;
 
-    protected PalaceUpgrade(int index, int delay, int bastion, List<UpgradeItem> list) {
+    @JsonCreator
+    public PalaceUpgrade(@JsonProperty("upgradeIndex") int index, @JsonProperty("delayInDays") int delay, @JsonProperty("minBastion") int bastion, @JsonProperty("upgradeItemList") List<UpgradeItem> list) {
         super(index, delay, list);
         minBastion = bastion;
     }
 
-    protected PalaceUpgrade(int index, int delay, int bastion, Map<UpgradeItem, Integer> map) {
+    public PalaceUpgrade(int index, int delay, int bastion, Map<UpgradeItem, Integer> map) {
         super(index, delay);
         minBastion = bastion;
         upgradeItems = new HashMap<>(map);

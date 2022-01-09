@@ -1,5 +1,6 @@
 package fr.craftandconquest.warofsquirrels.object.upgrade.city;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
@@ -48,7 +49,8 @@ public class LevelUpgrade extends Upgrade {
 
     @JsonProperty @Getter int minPeople;
 
-    public LevelUpgrade(int index, int ppl, int delay, List<UpgradeItem> list) {
+    @JsonCreator
+    public LevelUpgrade(@JsonProperty("upgradeIndex") int index, @JsonProperty("minPeople") int ppl, @JsonProperty("delayInDays") int delay, @JsonProperty("upgradeItemList") List<UpgradeItem> list) {
         super(index, delay, list);
         minPeople = ppl;
     }

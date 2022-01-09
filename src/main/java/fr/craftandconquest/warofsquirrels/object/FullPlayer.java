@@ -31,11 +31,13 @@ public class FullPlayer implements IPermission {
     @JsonProperty @Getter @Setter private Boolean assistant;
     @JsonProperty @Getter @Setter private Boolean resident = false;
     @JsonProperty @Getter @Setter private int balance;
+    @JsonProperty @Getter @Setter private boolean fake = false;
 
     /* -- Extra Fields -- */
     @Getter @Setter private int lastChunkX = 10000;
     @Getter @Setter private int lastChunkZ = 10000;
     @Getter @Setter private boolean reincarnation;
+
 
     @JsonIgnore @Getter @Setter private boolean adminMode;
     @JsonIgnore @Getter private City city;

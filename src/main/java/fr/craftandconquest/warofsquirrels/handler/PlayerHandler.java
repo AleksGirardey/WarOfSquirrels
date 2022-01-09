@@ -3,10 +3,12 @@ package fr.craftandconquest.warofsquirrels.handler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
+import fr.craftandconquest.warofsquirrels.object.FakePlayer;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -72,6 +74,27 @@ public class PlayerHandler extends Handler<FullPlayer> {
         LogPlayerCreation(player);
 
         return player;
+    }
+
+    public FullPlayer CreateFakePlayer(String name) {
+        FakePlayer fake = new FakePlayer();
+
+        fake.setUuid(UUID.randomUUID());
+        fake.setDisplayName(name);
+        fake.setFake(true);
+        fake.lastPosition = new Vector3(0, 0, 0);
+        fake.lastDimension = Level.OVERWORLD;
+
+        playersByName.put(name, fake);
+        dataArray.add(fake);
+
+        LogPlayerCreation(fake);
+
+        return fake;
+    }
+
+    public boolean contains(String name) {
+        return playersByName.containsKey(name);
     }
 
     @Override

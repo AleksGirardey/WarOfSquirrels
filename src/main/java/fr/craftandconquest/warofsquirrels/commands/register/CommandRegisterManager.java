@@ -14,6 +14,7 @@ public class CommandRegisterManager {
     private final WarCommandRegister warCommandRegister = new WarCommandRegister();
     private final AdminCommandRegister adminCommandRegister = new AdminCommandRegister();
     private final ChatCommandRegister chatCommandRegister = new ChatCommandRegister();
+    private final CuboCommandRegister cuboCommandRegister = new CuboCommandRegister();
 
     private final AcceptCommand acceptCommand = new AcceptCommand();
     private final RefuseCommand refuseCommand = new RefuseCommand();
@@ -27,6 +28,7 @@ public class CommandRegisterManager {
         partyCommandRegister.register(dispatcher);
         adminCommandRegister.register(dispatcher);
         chatCommandRegister.register(dispatcher);
+        cuboCommandRegister.register(dispatcher);
 
         dispatcher.register(acceptCommand.register());
         dispatcher.register(refuseCommand.register());

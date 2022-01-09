@@ -17,4 +17,3 @@ public abstract class AdminCommandBuilder extends CommandBuilder {
         return ChatText.Error("You have not enough rights to perform this command");
     }
 }
-

@@ -122,6 +122,7 @@ public class ChunkHandler extends Handler<Chunk> {
         int chunksValue = 0;
         int outpostValue = 0;
 
+
         if (cityMap.containsKey(city))
             chunksValue = cityMap.get(city).size();
         outpostValue = getOutpostSize(city);
@@ -261,7 +262,8 @@ public class ChunkHandler extends Handler<Chunk> {
             if (!cityMap.containsKey(chunk.getCity())) {
                 cityMap.put(chunk.getCity(), new ArrayList<>());
             }
-            cityMap.get(chunk.getCity()).add(chunk);
+            if (!cityMap.get(chunk.getCity()).contains(chunk))
+                cityMap.get(chunk.getCity()).add(chunk);
         }
         Save();
     }

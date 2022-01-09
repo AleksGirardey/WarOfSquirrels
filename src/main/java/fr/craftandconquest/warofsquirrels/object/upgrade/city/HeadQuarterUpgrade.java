@@ -1,6 +1,8 @@
 package fr.craftandconquest.warofsquirrels.object.upgrade.city;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.upgrade.Upgrade;
 import fr.craftandconquest.warofsquirrels.object.upgrade.UpgradeItem;
@@ -55,7 +57,8 @@ public class HeadQuarterUpgrade extends Upgrade {
         }};
     }
 
-    public HeadQuarterUpgrade(int index, int delay, List<UpgradeItem> list) {
+    @JsonCreator
+    public HeadQuarterUpgrade(@JsonProperty("upgradeIndex") int index, @JsonProperty("delayInDays") int delay, @JsonProperty("upgradeItemList") List<UpgradeItem> list) {
         super(index, delay, list);
     }
 

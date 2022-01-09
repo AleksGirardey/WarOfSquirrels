@@ -1,4 +1,4 @@
-package fr.craftandconquest.warofsquirrels.commands.city.cubo;
+package fr.craftandconquest.warofsquirrels.commands.cubo;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -9,12 +9,11 @@ import fr.craftandconquest.warofsquirrels.commands.city.CityCommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
-public class CityCuboDelete extends CityCommandBuilder implements IAdminCommand {
+public class CuboDelete extends CityCommandBuilder implements IAdminCommand {
     private final String argumentName = "[CuboName]";
 
     @Override
@@ -50,7 +49,7 @@ public class CityCuboDelete extends CityCommandBuilder implements IAdminCommand 
         String cuboName = context.getArgument(argumentName, String.class);
 
         if (WarOfSquirrels.instance.getCuboHandler().Delete(cuboName)) {
-            player.sendMessage(ChatText.Success("Le cubo " + cuboName + " est maintenant détruit."));
+            player.sendMessage(ChatText.Success("cubo " + cuboName + " has been destroyed."));
         }
 
         return 0;
