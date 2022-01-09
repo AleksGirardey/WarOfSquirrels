@@ -13,8 +13,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.Util;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -32,6 +34,7 @@ public class FullPlayer implements IPermission {
     @JsonProperty @Getter @Setter private Boolean resident = false;
     @JsonProperty @Getter @Setter private int balance;
     @JsonProperty @Getter @Setter private boolean fake = false;
+    @JsonProperty @Getter @Setter private String lastDimension;
 
     /* -- Extra Fields -- */
     @Getter @Setter private int lastChunkX = 10000;
@@ -42,7 +45,6 @@ public class FullPlayer implements IPermission {
     @JsonIgnore @Getter @Setter private boolean adminMode;
     @JsonIgnore @Getter private City city;
     @JsonIgnore public Vector3 lastPosition;
-    @JsonIgnore public ResourceKey<Level> lastDimension;
     @JsonIgnore @Getter @Setter private BroadCastTarget chatTarget;
 
     public void setCity(City city) {
@@ -72,6 +74,11 @@ public class FullPlayer implements IPermission {
     @JsonIgnore
     public boolean isOnline() {
         return (WarOfSquirrels.server.getPlayerList().getPlayer(uuid) != null);
+    }
+
+    @JsonIgnore
+    public ResourceKey<Level> getLastDimensionKey() {
+        return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation("minecraft", lastDimension));
     }
 
     @Override

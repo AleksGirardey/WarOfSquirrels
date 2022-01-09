@@ -10,6 +10,7 @@ import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import fr.craftandconquest.warofsquirrels.utils.SpawnTeleporter;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.ChatFormatting;
@@ -17,6 +18,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -63,12 +65,16 @@ public class WorldInteractionHandler {
 
         FullPlayer player;
         
-        if (!playerHandler.exists(playerEntity.getUUID(), true))
+        if (!playerHandler.exists(playerEntity.getUUID(), true)) {
             player = playerHandler.CreatePlayer(playerEntity);
-        else {
+            SpawnTeleporter sp = new SpawnTeleporter(WarOfSquirrels.instance.getConfig().getServerSpawn());
+            ServerLevel level = WarOfSquirrels.server.getLevel(WarOfSquirrels.SPAWN);
+            if (level != null)
+                playerEntity.changeDimension(level, sp);
+        } else {
             player = playerHandler.get(playerEntity.getUUID());
             player.setChatTarget(BroadCastTarget.GENERAL);
-            player.lastDimension = event.getPlayer().getCommandSenderWorld().dimension();
+            player.setLastDimension(event.getPlayer().getCommandSenderWorld().dimension().location().getPath());
             player.lastPosition = new Vector3(
                     (float) event.getPlayer().getBlockX(),
                     (float) event.getPlayer().getBlockY(),
@@ -137,7 +143,7 @@ public class WorldInteractionHandler {
         boolean canConstruct = WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
                 rights,
                 new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
-                Chunk.DimensionToId(player.lastDimension),
+                Chunk.DimensionToId(player.getLastDimensionKey()),
                 player,
                 event.getState().getBlock());
 
@@ -167,7 +173,7 @@ public class WorldInteractionHandler {
         boolean canConstruct = WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
                 rights,
                 new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
-                Chunk.DimensionToId(player.lastDimension),
+                Chunk.DimensionToId(player.getLastDimensionKey()),
                 player,
                 event.getPlacedBlock().getBlock());
 
@@ -207,7 +213,7 @@ public class WorldInteractionHandler {
     public void OnPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
 
-        int lastDimensionId = Chunk.DimensionToId(player.lastDimension);
+        String lastDimensionId = Chunk.DimensionToId(player.getLastDimensionKey());
 
         if (WarOfSquirrels.instance.getCuboHandler().playerExists(player)) {
             if (event.getHand().equals(InteractionHand.OFF_HAND)) return;
@@ -273,7 +279,7 @@ public class WorldInteractionHandler {
         }
     }
 
-    private boolean HandlePlayerRightClick(Player playerEntity, BlockPos target, int dimensionId) {
+    private boolean HandlePlayerRightClick(Player playerEntity, BlockPos target, String dimensionId) {
         Vector3 position = new Vector3(target.getX(), target.getY(), target.getZ());
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
 
@@ -287,7 +293,7 @@ public class WorldInteractionHandler {
         event.setCanceled(true);
     }
 
-    public boolean OnPlayerContainer(Player playerEntity, BlockPos target, int dimensionId) {
+    public boolean OnPlayerContainer(Player playerEntity, BlockPos target, String dimensionId) {
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
 
         if (player.isAdminMode()) return true;

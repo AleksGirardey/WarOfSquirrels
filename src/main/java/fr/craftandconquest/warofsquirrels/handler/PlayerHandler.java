@@ -64,7 +64,7 @@ public class PlayerHandler extends Handler<FullPlayer> {
                 (int) playerEntity.getOnPos().getX(),
                 (int) playerEntity.getOnPos().getY(),
                 (int) playerEntity.getOnPos().getZ());
-        player.lastDimension = playerEntity.getCommandSenderWorld().dimension();
+        player.setLastDimension(playerEntity.getCommandSenderWorld().dimension().location().getPath());
 
         player.setChatTarget(BroadCastTarget.GENERAL);
 
@@ -83,7 +83,7 @@ public class PlayerHandler extends Handler<FullPlayer> {
         fake.setDisplayName(name);
         fake.setFake(true);
         fake.lastPosition = new Vector3(0, 0, 0);
-        fake.lastDimension = Level.OVERWORLD;
+        fake.setLastDimension(Level.OVERWORLD.location().getPath());
 
         playersByName.put(name, fake);
         dataArray.add(fake);

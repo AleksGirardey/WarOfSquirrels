@@ -52,7 +52,7 @@ public class Cubo {
     //@JsonProperty private UUID permissionOutUuid;
     @JsonProperty
     private List<UUID> inListUuid = new ArrayList<>();
-    //    @JsonProperty private UUID loanUuid;
+    //@JsonProperty private UUID loanUuid;
     @JsonProperty
     private Map<UUID, Permission> customInListUuid = new HashMap<>();
     @JsonProperty

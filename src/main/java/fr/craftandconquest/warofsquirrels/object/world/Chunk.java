@@ -6,8 +6,10 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.antlr.v4.runtime.misc.NotNull;
 
@@ -23,7 +25,7 @@ public class Chunk {
     private int respawnY;
     private int respawnZ;
     private UUID cityUuid;
-    private int dimensionId;
+    private String dimensionId;
     private ResourceKey<Level> dimension;
 
     private City city;
@@ -55,12 +57,12 @@ public class Chunk {
     }
 
     @JsonProperty("dimension")
-    public int getDimensionId() {
+    public String getDimensionId() {
         return dimensionId;
     }
 
     @JsonProperty("dimension")
-    public void setDimensionId(int id) {
+    public void setDimensionId(String id) {
         dimensionId = id;
         dimension = IdToDimension(id);
     }
@@ -170,7 +172,7 @@ public class Chunk {
 
         Chunk chunk = (Chunk) obj;
 
-        return chunk.posX == this.posX && chunk.posZ == this.posZ && chunk.getDimensionId() == this.dimensionId;
+        return chunk.posX == this.posX && chunk.posZ == this.posZ && chunk.getDimensionId().equals(this.dimensionId);
     }
 
     @Override
@@ -178,21 +180,12 @@ public class Chunk {
         return ("[" + posX + ";" + posZ + "] owned by " + city.getDisplayName() + " in dimension " + dimensionId);
     }
 
-    public static ResourceKey<Level> IdToDimension(int id) {
-        return switch (id) {
-            case 0 -> Level.OVERWORLD;
-            case 1 -> Level.NETHER;
-            case 2 -> Level.END;
-            default -> null;
-        };
+    public static ResourceKey<Level> IdToDimension(String id) {
+        return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation("minecraft", id));
     }
 
-    public static int DimensionToId(ResourceKey<Level> dimension) {
-        if (dimension == Level.OVERWORLD) return 0;
-        if (dimension == Level.NETHER) return 1;
-        if (dimension == Level.END) return 2;
-
-        return -1;
+    public static String DimensionToId(ResourceKey<Level> dimension) {
+        return dimension.location().getPath();
     }
 
     public void updateDependencies() {

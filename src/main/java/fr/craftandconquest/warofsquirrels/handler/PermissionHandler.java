@@ -2,6 +2,7 @@ package fr.craftandconquest.warofsquirrels.handler;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.permission.CustomPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
@@ -49,7 +50,7 @@ public class PermissionHandler {
     }
 
     public boolean hasRightsTo(Rights rights, Object... objects) {
-        ResourceKey<Level> dimension = Chunk.IdToDimension((int) objects[1]);
+        ResourceKey<Level> dimension = Chunk.IdToDimension((String) objects[1]);
         switch (rights) {
             case SET_HOMEBLOCK:
                 return hasRightsToSetHomeBlock((FullPlayer) objects[0], (Chunk) objects[1]);
@@ -224,6 +225,11 @@ public class PermissionHandler {
 
     private Permission getPermissionToCheck(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player) {
         Permission permission = null;
+
+        AdminCubo adminCubo = WarOfSquirrels.instance.getAdminHandler().get(position, dimensionId);
+        boolean isThereAdminCubo = adminCubo != null;
+
+        if (isThereAdminCubo) return new Permission(false, false, true, false, false);
 
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(position);
         boolean isThereCubo = cubo != null;

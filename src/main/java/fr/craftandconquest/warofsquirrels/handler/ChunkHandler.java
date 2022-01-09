@@ -147,7 +147,7 @@ public class ChunkHandler extends Handler<Chunk> {
 
         Chunk oldHB, newHB;
 
-        newHB = getChunk((int) position.x, (int) position.z, player.lastDimension);
+        newHB = getChunk((int) position.x, (int) position.z, player.getLastDimensionKey());
         oldHB = getHomeBlock(newHB.getCity());
 
         newHB.setHomeBlock(true);

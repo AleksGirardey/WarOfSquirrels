@@ -1,11 +1,10 @@
-package fr.craftandconquest.warofsquirrels.commands.admin;
+package fr.craftandconquest.warofsquirrels.commands.admin.create;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.commands.admin.AdminCommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
@@ -19,7 +18,7 @@ public class AdminCreateFakePlayer extends AdminCommandBuilder {
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("createFakePlayer")
+        return Commands.literal("fakePlayer")
                 .executes(context -> {
                     ServerPlayer player = context.getSource().getPlayerOrException();
                     player.sendMessage(ChatText.Colored("== Fake Player List ==", ChatFormatting.GRAY), Util.NIL_UUID);

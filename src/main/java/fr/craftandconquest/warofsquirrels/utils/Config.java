@@ -8,7 +8,6 @@ import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.world.level.dimension.LevelStem;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -154,6 +153,7 @@ public class Config {
                 10, // reincarnationTime;
                 15, // invitationTime;
                 1500, // startBalance;
+                new Vector3(8 , 67, -5),
 
                 /* War */
                 120, // preparationPhase;

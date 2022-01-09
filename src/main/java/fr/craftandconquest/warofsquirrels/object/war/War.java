@@ -457,7 +457,7 @@ public class War implements IChannelTarget {
                 x = (int) player.lastPosition.x;
                 z = (int) player.lastPosition.z;
 
-                c = WarOfSquirrels.instance.getChunkHandler().getChunk(x, z, player.lastDimension);
+                c = WarOfSquirrels.instance.getChunkHandler().getChunk(x, z, player.getLastDimensionKey());
                 if (c != null && c == chunk && inCaptureRange((int) player.lastPosition.y, c.getCity())) {
                     if (isAttacker(player))
                         att++;
@@ -486,7 +486,7 @@ public class War implements IChannelTarget {
             if (att.isOnline()) {
                 world = att.getPlayerEntity().getCommandSenderWorld();
                 Chunk chunk = WarOfSquirrels.instance.getChunkHandler()
-                        .getChunk(att.getLastChunkX(), att.getLastChunkZ(), att.lastDimension);
+                        .getChunk(att.getLastChunkX(), att.getLastChunkZ(), att.getLastDimensionKey());
 
                 if (chunk != null && chunk.getCity() == cityDefender
                         && !updated.contains(chunk) && !capturedChunk.contains(chunk)

@@ -22,6 +22,7 @@ import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
 
 import java.text.MessageFormat;
@@ -40,6 +41,8 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
     @Override
     protected boolean CanDoIt(FullPlayer player) {
         if (IsAdmin(player)) return true;
+
+        if (player.getLastDimensionKey() != Level.OVERWORLD) return false;
 
         Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
         int minPartySize = WarOfSquirrels.instance.getConfig().getMinPartySizeToCreateCity();

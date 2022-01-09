@@ -4,18 +4,17 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.WarHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
 import fr.craftandconquest.warofsquirrels.object.war.War;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
-import fr.craftandconquest.warofsquirrels.utils.ChatText;
-import fr.craftandconquest.warofsquirrels.utils.ReSpawnPoint;
-import fr.craftandconquest.warofsquirrels.utils.Utils;
-import fr.craftandconquest.warofsquirrels.utils.Vector2;
+import fr.craftandconquest.warofsquirrels.utils.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -24,6 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -53,49 +53,43 @@ public class PlayersInteractionHandler {
     @SubscribeEvent
     public void OnDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
         WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID())
-                .lastDimension = event.getTo();
+                .setLastDimension(event.getTo().location().getPath());
         WarOfSquirrels.instance.getPlayerHandler().Save();
     }
 
-//    @OnlyIn(Dist.DEDICATED_SERVER)
-////    @SubscribeEvent
-//    public void OnPlayerMove(LivingEvent.LivingUpdateEvent event) {
-//        if (event.getEntityLiving() == null || !(event.getEntityLiving() instanceof Player playerEntity)) {
-//            return;
-//        }
-//
-//        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
-//
-//        if (player == null) return;
-//
-//        Vector3 newPosition = new Vector3(
-//                Math.round(playerEntity.getBlockX()),
-//                Math.round(playerEntity.getBlockY()),
-//                Math.round(playerEntity.getBlockZ()));
-//
-//        ResourceKey<Level> dimensionId = playerEntity.getCommandSenderWorld().dimension();
-//
-//        if (!player.lastPosition.equals(newPosition)) {
-//            Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(newPosition, dimensionId);
-//            if (chunk != null) {
-//                if (WarOfSquirrels.instance.getWarHandler().IsConcerned(new Vector2(newPosition.x, newPosition.z), dimensionId)) {
-//                    War war = WarOfSquirrels.instance.getWarHandler().getWar(chunk.getCity());
-//
-//                    if (!war.isDefender(player) && !war.isAttacker(player)) {
-////                        playerEntity.teleportKeepLoaded(
-////                                player.lastPosition.x,
-////                                player.lastPosition.y,
-////                                player.lastPosition.z);
-//
-//                        event.setCanceled(true);
-//                        return;
-//                    }
-//                }
-//            }
-//
-//            player.lastPosition = newPosition;
-//        }
-//    }
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    @SubscribeEvent
+    public void OnPlayerMove(LivingEvent.LivingUpdateEvent event) {
+        if (event.getEntityLiving() == null || !(event.getEntityLiving() instanceof Player playerEntity)) {
+            return;
+        }
+
+        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
+
+        if (player == null) return;
+
+        Vector3 newPosition = new Vector3(
+                Math.round(playerEntity.getBlockX()),
+                Math.round(playerEntity.getBlockY()),
+                Math.round(playerEntity.getBlockZ()));
+
+        ResourceKey<Level> dimensionId = playerEntity.getCommandSenderWorld().dimension();
+
+        AdminCubo cubo = WarOfSquirrels.instance.getAdminHandler().get(newPosition, dimensionId);
+
+        if (cubo != null && cubo.isTeleporter()) {
+            AdminCubo target = WarOfSquirrels.instance.getAdminHandler().get(cubo.getLinkedPortal());
+
+            if (target != null) {
+                SpawnTeleporter tp = new SpawnTeleporter(target.getRespawnPoint());
+                ServerLevel level = WarOfSquirrels.server.getLevel(target.getDimensionKey());
+
+                if (level == null) return;
+
+                player.getPlayerEntity().changeDimension(level, tp);
+            }
+        }
+    }
 
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
@@ -119,6 +113,8 @@ public class PlayersInteractionHandler {
         player.setLastChunkZ(event.getOldPos().chunk().z);
 
         ResourceKey<Level> dimensionId = event.getEntity().getCommandSenderWorld().dimension();
+
+        if (dimensionId != Level.OVERWORLD) return;
 
         Territory oldTerritory = WarOfSquirrels.instance.getTerritoryHandler().get(new Vector2(event.getOldPos().chunk().x, event.getOldPos().chunk().z));
         Territory newTerritory = WarOfSquirrels.instance.getTerritoryHandler().get(new Vector2(event.getNewPos().chunk().x, event.getNewPos().chunk().z));

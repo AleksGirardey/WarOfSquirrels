@@ -73,6 +73,7 @@ public class WarOfSquirrels {
     private CuboHandler cuboHandler;
     @Getter
     private UpdateHandler updateHandler;
+    @Getter private AdminHandler adminHandler;
 
     public Config config;
 
@@ -123,6 +124,7 @@ public class WarOfSquirrels {
         factionHandler = new FactionHandler(LOGGER);
         influenceHandler = new InfluenceHandler(LOGGER);
         broadCastHandler = new BroadCastHandler(LOGGER);
+        adminHandler = new AdminHandler(LOGGER);
 
         AddSaveListeners();
 

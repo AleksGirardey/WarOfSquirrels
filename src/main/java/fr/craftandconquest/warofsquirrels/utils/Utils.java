@@ -54,7 +54,7 @@ public class Utils {
     @Nullable
     public static ReSpawnPoint NearestSpawnPoint(Player playerEntity) {
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
-        ResourceKey<Level> dimension = player.lastDimension;
+        ResourceKey<Level> dimension = player.getLastDimensionKey();
 
         if (player.getCity() == null) return null;
 
@@ -70,7 +70,7 @@ public class Utils {
         chunkList.add(WarOfSquirrels.instance.getChunkHandler().getHomeBlock(player.getCity()));
 
         for (Chunk chunk : chunkList) {
-            if (chunk.getDimension().equals(player.lastDimension)) {
+            if (chunk.getDimension().equals(player.getLastDimensionKey())) {
                 Vec3 pos = new Vec3(chunk.getRespawnX(), chunk.getRespawnY(), chunk.getRespawnZ());
                 if (spawnPoint == null || (playerPosition.distanceTo(spawnPoint) > playerPosition.distanceTo(pos))) {
                     spawnPoint = pos;
