@@ -18,14 +18,10 @@ import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.LevelStem;
-
-import java.text.MessageFormat;
 
 public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITerritoryExtractor {
     private final String cityNameArgument = "[CityName]";
