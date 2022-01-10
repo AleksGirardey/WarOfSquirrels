@@ -14,6 +14,7 @@ import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -307,5 +308,10 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
     public void Update() {
         cityUpgrade.VerifyLevelUp();
+    }
+
+    @JsonIgnore @Override
+    public Vector3 getSpawn() {
+        return getHomeBlock().getRespawnPoint();
     }
 }

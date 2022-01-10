@@ -17,6 +17,7 @@ public class CityCommandRegister implements ICommandRegister {
     private final CityRemove cityRemove = new CityRemove();
     private final CityLeave cityLeave = new CityLeave();
     private final CityList cityList = new CityList();
+    private final CityTp cityTp = new CityTp();
     private final CityUpgradeCommand cityUpgradeCommand = new CityUpgradeCommand();
 
     @Override
@@ -35,6 +36,7 @@ public class CityCommandRegister implements ICommandRegister {
                 .then(cityLeave.register())
                 .then(cityList.register())
                 .then(cityUpgradeCommand.register())
+                .then(cityTp.register())
                 .executes(cityHelp)
         );
     }

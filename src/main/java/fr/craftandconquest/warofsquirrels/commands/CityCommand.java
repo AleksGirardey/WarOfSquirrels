@@ -9,6 +9,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
+import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.entity.player.Player;
@@ -45,9 +46,7 @@ public class CityCommand implements Command<CommandSourceStack> {
                 playerEntity.getCommandSenderWorld().dimension());
 
         chunk.setHomeBlock(true);
-        chunk.setRespawnX(playerEntity.getBlockX());
-        chunk.setRespawnY(playerEntity.getBlockY());
-        chunk.setRespawnZ(playerEntity.getBlockZ());
+        chunk.setRespawnPoint(new Vector3(playerEntity.getBlockX(), playerEntity.getBlockY(), playerEntity.getBlockZ()));
 
         WarOfSquirrels.instance.getChunkHandler().Save();
 

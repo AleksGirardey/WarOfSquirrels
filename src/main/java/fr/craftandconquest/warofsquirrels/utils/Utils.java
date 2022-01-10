@@ -5,6 +5,7 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
+import fr.craftandconquest.warofsquirrels.object.war.War;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
@@ -58,31 +59,20 @@ public class Utils {
 
         if (player.getCity() == null) return null;
 
-        Vec3 playerPosition = new Vec3(
-                playerEntity.getOnPos().getX(),
-                playerEntity.getOnPos().getY(),
-                playerEntity.getOnPos().getZ());
         Vec3 spawnPoint = null;
+        Vector3 spawn;
 
-        List<Chunk> chunkList = new ArrayList<>(WarOfSquirrels.instance.getChunkHandler().getOutpostList(player.getCity()));
-        // ToDo: Add Bastion ?
+        if (WarOfSquirrels.instance.getWarHandler().Contains(player)) {
+            War war = WarOfSquirrels.instance.getWarHandler().getWar(player);
 
-        chunkList.add(WarOfSquirrels.instance.getChunkHandler().getHomeBlock(player.getCity()));
+            if (war.isAttacker(player))
+                spawn = war.getAttackerSpawn(player);
+            else
+                spawn = war.getDefenderSpawn(player);
+        } else
+            spawn = player.getCity().getSpawn();
 
-        for (Chunk chunk : chunkList) {
-            if (chunk.getDimension().equals(player.getLastDimensionKey())) {
-                Vec3 pos = new Vec3(chunk.getRespawnX(), chunk.getRespawnY(), chunk.getRespawnZ());
-                if (spawnPoint == null || (playerPosition.distanceTo(spawnPoint) > playerPosition.distanceTo(pos))) {
-                    spawnPoint = pos;
-                }
-            }
-        }
-
-        if (spawnPoint == null) {
-            Chunk homeBlock = WarOfSquirrels.instance.getChunkHandler().getHomeBlock(player.getCity());
-            spawnPoint = new Vec3(homeBlock.getRespawnX(), homeBlock.getRespawnY(), homeBlock.getRespawnZ());
-            dimension = homeBlock.getDimension();
-        }
+        spawnPoint = new Vec3(spawn.x, spawn.y, spawn.z);
 
         return new ReSpawnPoint(dimension, new BlockPos(spawnPoint));
     }
@@ -96,7 +86,7 @@ public class Utils {
         if (homeBlockList.size() == 0)
             return (-1);
         for (Chunk c : homeBlockList) {
-            Vector2 vec = new Vector2(c.posX, c.posZ);
+            Vector2 vec = new Vector2(c.getPosX(), c.getPosZ());
             double dist = vec.distance(playerChunk);
 
             closerDistance = Double.min(dist, closerDistance);

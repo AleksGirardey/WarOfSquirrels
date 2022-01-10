@@ -65,7 +65,7 @@ public class AdminTp extends AdminCommandBuilder {
             dim = cubo.getDimensionKey();
         } else {
             Chunk hb = city.getHomeBlock();
-            tp = new SpawnTeleporter(hb.getRespawnX(), hb.getRespawnY(), hb.getRespawnZ());
+            tp = new SpawnTeleporter(hb.getRespawnPoint());
             dim = Level.OVERWORLD;
         }
 

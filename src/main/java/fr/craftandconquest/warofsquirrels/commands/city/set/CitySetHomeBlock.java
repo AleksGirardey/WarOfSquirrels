@@ -20,14 +20,15 @@ public class CitySetHomeBlock extends CityMayorOrAssistantCommandBuilder {
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        ChunkHandler chunkHandler = WarOfSquirrels.instance.getChunkHandler();
-        Chunk chunk;
-        int x, z;
-
-        x = player.getLastChunkX();
-        z = player.getLastChunkZ();
-        chunk = chunkHandler.getChunk(x, z, player.getPlayerEntity().getCommandSenderWorld().dimension());
-        return (chunk != null && chunk.getCity() == player.getCity() && !chunk.getHomeBlock() && !chunk.getOutpost());
+        return false;
+//        ChunkHandler chunkHandler = WarOfSquirrels.instance.getChunkHandler();
+//        Chunk chunk;
+//        int x, z;
+//
+//        x = player.getLastChunkX();
+//        z = player.getLastChunkZ();
+//        chunk = chunkHandler.getChunk(x, z, player.getPlayerEntity().getCommandSenderWorld().dimension());
+//        return (chunk != null && chunk.getCity() == player.getCity() && !chunk.getHomeBlock() && !chunk.getOutpost());
     }
 
     @Override

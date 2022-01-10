@@ -2,9 +2,13 @@ package fr.craftandconquest.warofsquirrels.object.faction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.object.world.Chunk;
+import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import lombok.Getter;
 import lombok.Setter;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.UUID;
 
@@ -70,5 +74,15 @@ public class Bastion implements IFortification {
     @Override
     public int getInfluenceRange() {
         return 0;
+    }
+
+    @JsonIgnore
+    public Chunk getHomeBlock() {
+        return WarOfSquirrels.instance.getChunkHandler().getHomeBlock(this);
+    }
+
+    @JsonIgnore @Override
+    public Vector3 getSpawn() {
+        return getHomeBlock().getRespawnPoint();
     }
 }

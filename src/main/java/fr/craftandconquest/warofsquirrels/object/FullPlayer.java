@@ -35,6 +35,7 @@ public class FullPlayer implements IPermission {
     @JsonProperty @Getter @Setter private int balance;
     @JsonProperty @Getter @Setter private boolean fake = false;
     @JsonProperty @Getter @Setter private String lastDimension;
+    @JsonProperty @Getter @Setter private int remainingTp;
 
     /* -- Extra Fields -- */
     @Getter @Setter private int lastChunkX = 10000;
@@ -79,6 +80,18 @@ public class FullPlayer implements IPermission {
     @JsonIgnore
     public ResourceKey<Level> getLastDimensionKey() {
         return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation("minecraft", lastDimension));
+    }
+
+    public void update() {
+        if (city != null) {
+            switch (city.getCityUpgrade().getPalace().getCurrentLevel()) {
+                case 2 -> remainingTp = 1;
+                case 3, 4 -> remainingTp = 2;
+                default -> remainingTp = 0;
+            }
+        } else {
+            remainingTp = 0;
+        }
     }
 
     @Override

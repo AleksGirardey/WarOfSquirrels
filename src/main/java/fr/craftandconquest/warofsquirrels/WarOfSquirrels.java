@@ -74,6 +74,7 @@ public class WarOfSquirrels {
     @Getter
     private UpdateHandler updateHandler;
     @Getter private AdminHandler adminHandler;
+    @Getter private BastionHandler bastionHandler;
 
     public Config config;
 
@@ -125,6 +126,7 @@ public class WarOfSquirrels {
         influenceHandler = new InfluenceHandler(LOGGER);
         broadCastHandler = new BroadCastHandler(LOGGER);
         adminHandler = new AdminHandler(LOGGER);
+        bastionHandler = new BastionHandler(LOGGER);
 
         AddSaveListeners();
 

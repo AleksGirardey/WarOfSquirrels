@@ -9,6 +9,7 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -49,9 +50,7 @@ public class CitySetSpawn extends CityMayorOrAssistantCommandBuilder {
         ChunkPos chunkPos = Utils.WorldToChunkPos(x, z);
 
         chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(chunkPos.x, chunkPos.z, player.getPlayerEntity().getCommandSenderWorld().dimension());
-        chunk.setRespawnX(x);
-        chunk.setRespawnY(y);
-        chunk.setRespawnZ(z);
+        chunk.setRespawnPoint(new Vector3(x, y, z));
 
         MutableComponent message = ChatText.Success(chunk + " has now a spawn point at [" + x + ";" + y + ";" + z + "]");
 

@@ -3,8 +3,13 @@ package fr.craftandconquest.warofsquirrels.object.world;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
+import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import fr.craftandconquest.warofsquirrels.utils.Vector3;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.MutableComponent;
@@ -16,130 +21,60 @@ import org.antlr.v4.runtime.misc.NotNull;
 import java.util.UUID;
 
 public class Chunk {
-    public int posX;
-    public int posZ;
-    private String name;
-    private Boolean homeBlock = false;
-    private Boolean outpost = false;
-    private int respawnX;
-    private int respawnY;
-    private int respawnZ;
-    private UUID cityUuid;
-    private String dimensionId;
-    private ResourceKey<Level> dimension;
+    @JsonProperty @Getter @Setter private int posX;
+    @JsonProperty @Getter @Setter private int posZ;
+    @JsonProperty @Getter @Setter private String name;
+    @JsonProperty @Getter @Setter private Boolean homeBlock = false;
+    @JsonProperty @Getter @Setter private Boolean outpost = false;
+    @JsonProperty @Getter @Setter private Vector3 respawnPoint;
+    @JsonProperty @Getter private String dimensionId;
+    @JsonIgnore @Getter private ResourceKey<Level> dimension;
 
-    private City city;
+    @JsonProperty @Getter @Setter private UUID fortificationUuid;
+    @JsonIgnore @Getter private City city;
+    @JsonIgnore @Getter private Bastion bastion;
 
     public Chunk(double x, double z, UUID cityUuid, ResourceKey<Level> dimension) {
         this(x, z, WarOfSquirrels.instance.getCityHandler().getCity(cityUuid), dimension);
         name = String.format("%s%d%d", city.getDisplayName(), posX, posZ);
     }
 
-    public Chunk(double x, double z, City city, ResourceKey<Level> dimension) {
+    public Chunk(double x, double z, IFortification fortification, ResourceKey<Level> dimension) {
         posX = (int) x;
         posZ = (int) z;
-        this.cityUuid = city.getCityUuid();
-        this.city = city;
+        this.fortificationUuid = fortification.getUniqueId();
+        setFortification();
         this.dimension = dimension;
         this.dimensionId = DimensionToId(dimension);
     }
 
     public Chunk() { }
 
-    @JsonProperty("cityUuid")
-    public UUID getCityUuid() {
-        return cityUuid;
+    public void setFortification() {
+        city = WarOfSquirrels.instance.getCityHandler().getCity(fortificationUuid);
+        bastion = WarOfSquirrels.instance.getBastionHandler().get(fortificationUuid);
     }
 
-    @JsonProperty("cityUuid")
-    public void setCityUuid(UUID uuid) {
-        cityUuid = uuid;
-    }
-
-    @JsonProperty("dimension")
-    public String getDimensionId() {
-        return dimensionId;
-    }
-
-    @JsonProperty("dimension")
+    @JsonProperty
     public void setDimensionId(String id) {
         dimensionId = id;
         dimension = IdToDimension(id);
     }
 
-    @JsonIgnore void setDimension(ResourceKey<Level> dim) { dimension = dim; }
-
     @JsonIgnore
-    public ResourceKey<Level> getDimension() { return dimension; }
-
-    @JsonProperty("name")
-    public String getName() {
-        return name;
+    public void setDimension(ResourceKey<Level> dim) {
+        dimension = dim;
+        dimensionId = dim.location().getPath();
     }
 
-    @JsonProperty("name")
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @JsonProperty("homeBlock")
-    public Boolean getHomeBlock() {
-        return homeBlock;
-    }
-
-    @JsonProperty("homeBlock")
-    public void setHomeBlock(Boolean homeBlock) {
-        this.homeBlock = homeBlock;
-    }
-
-    @JsonProperty("outpost")
-    public Boolean getOutpost() {
-        return outpost;
-    }
-
-    @JsonProperty("outpost")
-    public void setOutpost(Boolean outpost) {
-        this.outpost = outpost;
-    }
-
-    @JsonProperty("respawnPosX")
-    public int getRespawnX() {
-        return respawnX;
-    }
-
-    @JsonProperty("respawnPosX")
-    public void setRespawnX(int respawnX) {
-        this.respawnX = respawnX;
-    }
-
-    @JsonProperty("respawnPosY")
-    public int getRespawnY() {
-        return respawnY;
-    }
-
-    @JsonProperty("respawnPosY")
-    public void setRespawnY(int respawnY) {
-        this.respawnY = respawnY;
-    }
-
-    @JsonProperty("respawnPosZ")
-    public int getRespawnZ() {
-        return respawnZ;
-    }
-
-    @JsonProperty("respawnPosZ")
-    public void setRespawnZ(int respawnZ) {
-        this.respawnZ = respawnZ;
-    }
-
-    @JsonIgnore
-    public City getCity() {
-        return city;
-    }
-
-    @JsonIgnore
     public void setCity(City city) {
+        fortificationUuid = city.getUuid();
         this.city = city;
+    }
+
+    public void setBastion(Bastion bastion) {
+        fortificationUuid = bastion.getBastionUuid();
+        this.bastion = bastion;
     }
 
     public MutableComponent creationLogText() {
@@ -154,15 +89,13 @@ public class Chunk {
                 .append(String.format("at [%d;%d]", posX, posZ));
 
         if (homeBlock || outpost)
-            message.append(String.format(" with respawn point at [%d;%d;%d]", respawnX, respawnY, respawnZ));
+            message.append(String.format(" with respawn point at %s", respawnPoint));
 
         return ChatText.Success(message.toString());
     }
 
     public void setRespawn(BlockPos pos) {
-        setRespawnX(pos.getX());
-        setRespawnY(pos.getY());
-        setRespawnZ(pos.getZ());
+        respawnPoint = new Vector3(pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override
@@ -189,6 +122,6 @@ public class Chunk {
     }
 
     public void updateDependencies() {
-        setCity(WarOfSquirrels.instance.getCityHandler().getCity(cityUuid));
+        setFortification();
     }
 }

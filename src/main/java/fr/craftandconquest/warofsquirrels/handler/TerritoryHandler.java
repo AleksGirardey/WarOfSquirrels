@@ -6,6 +6,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.ConfigData;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Pair;
@@ -208,6 +209,18 @@ public class TerritoryHandler extends Handler<Territory> {
             neighbors.add(get(posXLess, posZ));
 
         return neighbors;
+    }
+
+    public Territory get(String name) {
+        return dataArray.stream()
+                .filter(t -> t.getName().equals(name))
+                .findFirst().orElse(null);
+    }
+
+    public Territory get(City city) {
+        return dataArray.stream()
+                .filter(t -> t.getFortificationUuid().equals(city.getUuid()))
+                .findFirst().orElse(null);
     }
 
     public Territory get(UUID uuid) {

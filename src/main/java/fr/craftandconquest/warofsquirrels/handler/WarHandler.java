@@ -8,12 +8,8 @@ import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
 import fr.craftandconquest.warofsquirrels.object.war.Party;
 import fr.craftandconquest.warofsquirrels.object.war.War;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
-import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
+import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
-import fr.craftandconquest.warofsquirrels.utils.Vector2;
-import net.minecraft.Util;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import java.util.ArrayList;
@@ -33,7 +29,7 @@ public class WarHandler {
         return target instanceof City && CreateWar(city, (City) city, party);
     }
 
-    public boolean CreateWar(City attacker, City defender, Party party) {
+    public boolean CreateWar(City attacker, City defender, Territory target, Party party) {
         if (WarOfSquirrels.instance.getFactionHandler().areEnemies(attacker.getFaction(), defender.getFaction())) {
             int defenders = defender.getOnlinePlayers().size();
 
@@ -44,13 +40,22 @@ public class WarHandler {
 
             if (PermissionAPI.hasPermission(party.getLeader().getPlayerEntity(), "minecraft.command.op")
                     || defenders > 4 && party.size() < (defenders + 1)) {
-                wars.add(new War(attacker, defender, party.toList()));
+                wars.add(new War(attacker, defender, target, party.toList()));
                 return true;
             } else
                 party.Send("You cannot attack this city, they are not enough !");
         } else
             party.Send("You cannot attack this city, she is not your enemy !");
         return false;
+    }
+
+    public War getWar(String name) {
+        for (War war : wars) {
+            if (war.getCityDefender().getDisplayName().equals(name) ||
+            war.getCityAttacker().getDisplayName().equals(name) ||
+            war.getTag().equals(name)) return war;
+        }
+        return null;
     }
 
     public War getWar(FullPlayer player) {

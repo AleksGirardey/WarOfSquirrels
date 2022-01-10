@@ -37,6 +37,7 @@ public class UpdateHandler {
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
         WarOfSquirrels.instance.getCityHandler().update();
         WarOfSquirrels.instance.getTerritoryHandler().update();
+        WarOfSquirrels.instance.getPlayerHandler().update();
 //        WarOfSquirrels.instance.getLoanHandler().update();
         this.CreateDailyUpdate();
     }
@@ -91,7 +92,7 @@ public class UpdateHandler {
     }
 
     public void CancelTask() {
-//        currentDailyUpdateTimer.cancel();
+        currentDailyUpdateTimer.cancel();
         currentSaveUpdateTimer.cancel();
     }
 }

@@ -2,6 +2,7 @@ package fr.craftandconquest.warofsquirrels.object.faction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.utils.Vector3;
 
 import java.util.UUID;
 
@@ -37,4 +38,7 @@ public interface IFortification {
 
     @JsonIgnore
     int getInfluenceRange();
+
+    @JsonIgnore
+    Vector3 getSpawn();
 }
