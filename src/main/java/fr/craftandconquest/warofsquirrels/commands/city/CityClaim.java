@@ -7,15 +7,18 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
+import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
+import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
-import net.minecraft.Util;
+import fr.craftandconquest.warofsquirrels.utils.Pair;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
-import java.text.MessageFormat;
+import java.util.List;
 
 public class CityClaim extends CityMayorOrAssistantCommandBuilder {
     private final static CityClaim CMD_NO_ARGS = new CityClaim(false);
@@ -51,22 +54,40 @@ public class CityClaim extends CityMayorOrAssistantCommandBuilder {
         x = player.getPlayerEntity().chunkPosition().x;
         z = player.getPlayerEntity().chunkPosition().z;
 
+        Pair<Integer, Integer> territoryPos = Utils.ChunkToTerritoryCoordinates(x, z);
+        Territory targetTerritory = WarOfSquirrels.instance.getTerritoryHandler().get(Utils.ChunkToTerritoryCoordinatesVector(x, z));
+
         if (!chh.exists(x, z, dimensionId)) {
             ChunkLocation chunkLocation = new ChunkLocation(x, z, dimensionId);
-            if (chh.canBePlaced(player.getCity(), false, chunkLocation)) {
-                CityRank r = player.getCity().getRank();
+            if (chh.canPlaceChunk(player.getCity(), chunkLocation)) {
+                int chunkSize = targetTerritory.getFortification().getLinkedChunkSize();
+                int maxChunk = targetTerritory.getFortification().getMaxChunk();
 
-                if (r.getChunkMax() == chh.getSize(player.getCity())) {
-                    player.sendMessage(
-                            ChatText.Error("You reached the maximum chunk available to claim."));
+                if (chunkSize >= maxChunk) {
+                    player.sendMessage(ChatText.Error("You reached the maximum chunk available to claim on this territory."));
                     return false;
                 }
-                return true;
-            } else if (chh.canBePlaced(player.getCity(), true, chunkLocation))
-                return true;
+            } else {
+                int outpostCount = chh.getOutpostSize(player.getCity());
+                List<Chunk> outpostList = chh.getOutpostList(player.getCity());
+
+                if (outpostCount >= player.getCity().getMaxOutpost()) {
+                    player.sendMessage(ChatText.Error("You reached the maximum outposts available."));
+                    return false;
+                }
+
+                for (Chunk chunk : outpostList) {
+                    if (territoryPos.equals(Utils.ChunkToTerritoryCoordinates(chunk.getPosX(), chunk.getPosZ()))) {
+                        player.sendMessage(ChatText.Error("Your city already got an outpost on this territory"));
+                        return false;
+                    }
+                }
+
+                return chh.canPlaceOutpost(player.getCity(), chunkLocation);
+            }
+            return true;
         }
-        player.sendMessage(
-                ChatText.Error("You can't claim here."));
+        player.sendMessage(ChatText.Error("You can't claim here."));
         return false;
     }
 
@@ -79,10 +100,18 @@ public class CityClaim extends CityMayorOrAssistantCommandBuilder {
         x = player.getPlayerEntity().chunkPosition().x;
         z = player.getPlayerEntity().chunkPosition().z;
 
+        ChunkLocation chunkLocation = new ChunkLocation(x, z, dimensionId);
+        Chunk chunk;
+
         if (args)
-            chh.CreateChunk(x, z, player.getCity(), dimensionId, context.getArgument(argumentName, String.class));
+            chunk = chh.CreateChunk(x, z, player.getCity(), dimensionId, context.getArgument(argumentName, String.class));
         else
-            chh.CreateChunk(x, z, player.getCity(), dimensionId);
+            chunk = chh.CreateChunk(x, z, player.getCity(), dimensionId);
+
+        if (!chh.canPlaceChunk(player.getCity(), chunkLocation)) {
+            chunk.setOutpost(true);
+        }
+
         return 0;
     }
 }

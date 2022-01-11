@@ -6,6 +6,7 @@ import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.channels.WarChannel;
+import fr.craftandconquest.warofsquirrels.object.faction.Influence;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
@@ -207,8 +208,7 @@ public class War implements IChannelTarget {
     }
 
     public int AddAttackerCapturePoints() {
-        CityRank rank = cityDefender.getRank();
-        int max = rank.getChunkMax();
+        int max = cityDefender.getMaxChunk();
         int used = WarOfSquirrels.instance.getChunkHandler().getSize(cityDefender);
         int result = Math.round(max <= 15 ? 1000f / used : 67 * ((float) max / (float) used));
 
@@ -250,6 +250,9 @@ public class War implements IChannelTarget {
     public void LaunchRollback() {
         this.timer = new Timer();
         WarOfSquirrels.instance.getBroadCastHandler().WarAnnounce(this, WarState.Rollback);
+
+        DeclareWinner();
+
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -262,24 +265,45 @@ public class War implements IChannelTarget {
         // Nothing to do for now
     }
 
-    protected boolean CheckWin() {
+    protected void DeclareWinner() {
         BroadCastHandler broadCastHandler = WarOfSquirrels.instance.getBroadCastHandler();
         MutableComponent text;
-        if (defendersPoints.getScore() >= 1000)
+        boolean hasDefenseWon = defendersPoints.getScore() >= 1000;
+
+        int pointsToRemove = 250 + Math.abs(defendersPoints.getScore() - attackersPoints.getScore());
+
+        if (hasDefenseWon) {
             text = ChatText.Colored(cityAttacker.displayName
                     + " failed to win his attack against "
                     + cityDefender.displayName
                     + "(" + attackersPoints.getScore() + " - " + defendersPoints.getScore(), ChatFormatting.GOLD);
-        else if (attackersPoints.getScore() >= 1000)
+
+            Influence influence = WarOfSquirrels.instance.getInfluenceHandler().get(targetTerritory.getFaction(), targetTerritory);
+
+            influence.SubInfluence(pointsToRemove);
+
+            if (influence.getValue() <= 0) {
+                targetTerritory.setHasFallen(true);
+                targetTerritory.setDaysBeforeReset(3);
+            }
+        } else {
             text = ChatText.Colored(cityAttacker.displayName
                     + " won his attack against "
                     + cityDefender.displayName
                     + "(" + attackersPoints.getScore() + " - " + defendersPoints.getScore(), ChatFormatting.GOLD);
-        else
-            return false;
+
+            Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(cityAttacker);
+            WarOfSquirrels.instance.getInfluenceHandler().get(territory.getFaction(), territory).SubInfluence(pointsToRemove);
+        }
         broadCastHandler.BroadCastWorldAnnounce(text);
-        this.state = WarState.Rollback;
-        return true;
+    }
+
+    protected boolean CheckWin() {
+        if (defendersPoints.getScore() >= 1000 || attackersPoints.getScore() >= 1000) {
+            this.state = WarState.Rollback;
+            return true;
+        }
+        return false;
     }
 
     public boolean contains(FullPlayer player) {
@@ -409,7 +433,7 @@ public class War implements IChannelTarget {
     }
 
     private void Capture() {
-        int chunkMax = cityDefender.getRank().getChunkMax() - 1;
+        int chunkMax = cityDefender.getMaxChunk() - 1;
         float time = (chunkMax <= 15.0f ? 900.0f / chunkMax : 60f);
 
         captureSpeed = (100f / (attackers.size() * time));

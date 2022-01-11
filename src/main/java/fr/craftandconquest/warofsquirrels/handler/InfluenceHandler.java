@@ -172,15 +172,16 @@ public class InfluenceHandler extends Handler<Influence> {
             else
                 influence = CreateInfluence(city, territory);
         }
+    }
 
-
+    public void pushInfluence(Influence influence, int influenceGenerated) {
         if (influenceGenerated >= 0)
             influence.AddInfluence(influenceGenerated);
         else
             influence.SubInfluence(influenceGenerated);
 
         Logger.debug(String.format("%s[Influence] Influence généré sur le territoire '%s' : %d (%d)",
-                PrefixLogger, territory.getName(), influenceGenerated, influence.getValue()));
+                PrefixLogger, influence.getTerritory().getName(), influenceGenerated, influence.getValue()));
     }
 
     public void Delete(Faction faction) {

@@ -12,33 +12,29 @@ public interface IFortification {
         BASTION
     }
 
-    @JsonIgnore
-    UUID getUniqueId();
+    @JsonIgnore UUID getUniqueId();
 
-    @JsonIgnore
-    Faction getFaction();
+    @JsonIgnore Faction getFaction();
 
-    @JsonIgnore
-    City getRelatedCity();
+    @JsonIgnore City getRelatedCity();
 
-    @JsonIgnore
-    FortificationType getFortificationType();
+    @JsonIgnore FortificationType getFortificationType();
 
-    @JsonIgnore
-    int getSelfInfluenceGenerated();
+    @JsonIgnore int getSelfInfluenceGenerated(boolean gotAttacked);
 
-    @JsonIgnore
-    int getInfluenceMax();
+    @JsonIgnore int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly, boolean gotAttacked);
 
-    @JsonIgnore
-    int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly);
+    @JsonIgnore int getInfluenceGeneratedDistantNeighbour(boolean gotAttacked);
 
-    @JsonIgnore
-    int getInfluenceGeneratedDistantNeighbour();
+    @JsonIgnore int getInfluenceMax();
 
-    @JsonIgnore
-    int getInfluenceRange();
+    @JsonIgnore int getInfluenceRange();
 
-    @JsonIgnore
-    Vector3 getSpawn();
+    @JsonIgnore Vector3 getSpawn();
+
+    @JsonIgnore boolean isProtected();
+
+    @JsonIgnore int getMaxChunk();
+
+    @JsonIgnore int getLinkedChunkSize();
 }

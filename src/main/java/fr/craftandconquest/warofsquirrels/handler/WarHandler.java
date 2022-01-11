@@ -22,12 +22,7 @@ public class WarHandler {
     public WarHandler() {
     }
 
-    private void rollback() {
-    }
-
-    public boolean CreateWar(City city, AttackTarget target, Party party) {
-        return target instanceof City && CreateWar(city, (City) city, party);
-    }
+    private void rollback() {}
 
     public boolean CreateWar(City attacker, City defender, Territory target, Party party) {
         if (WarOfSquirrels.instance.getFactionHandler().areEnemies(attacker.getFaction(), defender.getFaction())) {
@@ -38,8 +33,7 @@ public class WarHandler {
                 return false;
             }
 
-            if (PermissionAPI.hasPermission(party.getLeader().getPlayerEntity(), "minecraft.command.op")
-                    || defenders > 4 && party.size() < (defenders + 1)) {
+            if (party.getLeader().isAdminMode() || defenders > 4 && party.size() < (defenders + 1)) {
                 wars.add(new War(attacker, defender, target, party.toList()));
                 return true;
             } else

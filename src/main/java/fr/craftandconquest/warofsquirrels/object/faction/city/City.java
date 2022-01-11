@@ -30,51 +30,23 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class City implements IPermission, IFortification, IChannelTarget, AttackTarget {
-    @JsonProperty
-    @Getter
-    @Setter
-    private UUID cityUuid;
-
-    @Getter
-    @Setter
-    public String displayName;
+    @JsonProperty @Getter @Setter private UUID cityUuid;
+    @Getter @Setter public String displayName;
     public String tag;
     public UUID ownerUUID;
 
-    @JsonIgnore
-    @Getter
-    private Faction faction = null;
+    @JsonIgnore @Getter private Faction faction = null;
 
-    @JsonProperty
-    @Getter
-    @Setter
-    private UUID factionUuid;
-
-    @Getter
-    private CityRank rank;
+    @JsonProperty @Getter @Setter private UUID factionUuid;
 
     @JsonProperty @Getter @Setter private ChestLocation upgradeChestLocation;
+    @JsonProperty @Getter @Setter private boolean hasAttackedToday = false;
 
-    @JsonIgnore
-    @Getter
-    @Setter
-    private Map<IPermission, Permission> customPermission = new HashMap<>();
-    @Getter
-    @Setter
-    private Map<PermissionRelation, Permission> defaultPermission;
-    @Getter
-    @Setter
-    private List<CustomPermission> customPermissionList = new ArrayList<>();
-
-    @JsonIgnore
-    private int balance;
-
-    @JsonIgnore
-    @Getter
-    private FullPlayer owner;
-    @JsonIgnore
-    @Getter
-    private final List<FullPlayer> citizens = new ArrayList<>();
+    @JsonIgnore @Getter @Setter private Map<IPermission, Permission> customPermission = new HashMap<>();
+    @Getter @Setter private Map<PermissionRelation, Permission> defaultPermission;
+    @Getter @Setter private List<CustomPermission> customPermissionList = new ArrayList<>();
+    @JsonIgnore @Getter private FullPlayer owner;
+    @JsonIgnore @Getter private final List<FullPlayer> citizens = new ArrayList<>();
 
     @Getter @Setter CityUpgrade cityUpgrade;
 
@@ -128,6 +100,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
         citizens.remove(player);
         player.setCity(null);
+        player.reset();
 
         player.sendMessage(ChatText.Error(isKicked ?
                 "Vous avez été expulsé de " + displayName + "." : "Vous avez quitté " + displayName));
@@ -146,14 +119,20 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         this.owner = owner;
     }
 
-    public void SetRank(int rank) {
-        this.rank = WarOfSquirrels.instance.getConfig().getCityRankMap().get(rank);
-    }
-
     public void SetFaction(Faction faction) {
         this.faction = faction;
         if (faction != null)
             this.factionUuid = faction.getFactionUuid();
+    }
+
+    @JsonIgnore
+    public int getMaxOutpost() {
+        int hqLevel = cityUpgrade.getHeadQuarter().getCurrentLevel();
+
+        if (hqLevel >= 3) return 5;
+        else if (hqLevel == 2) return 2;
+
+        return 0;
     }
 
     @Override
@@ -201,31 +180,39 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         return cityUpgrade.getCostReduction() /*+ WarOfSquirrels.instance.getTerritoryHandler().get(hb.posX, hb.posZ).getCostReduction()*/;
     }
 
-    @JsonIgnore
-    public int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly) {
+    @JsonIgnore @Override
+    public int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly, boolean gotAttacked) {
         return 50;
     }
 
-    @JsonIgnore
-    public int getSelfInfluenceGenerated() {
-        return 100;
+    @JsonIgnore @Override
+    public int getSelfInfluenceGenerated(boolean gotAttacked) {
+        int baseAmount = gotAttacked ? 0 : 100;
+        return baseAmount + WarOfSquirrels.instance.getBastionHandler().get(this).size() * 20;
     }
 
-    @JsonIgnore
-    public int getInfluenceGeneratedDistantNeighbour() {
+    @JsonIgnore @Override
+    public int getInfluenceGeneratedDistantNeighbour(boolean gotAttacked) {
         return getCityUpgrade().getInfluenceGeneratedDistantNeighbour();
     }
 
-    @JsonIgnore
+    @JsonIgnore @Override
     public int getInfluenceRange() {
         return getCityUpgrade().getInfluenceRange();
     }
 
-    @JsonIgnore
-    public int getInfluenceMax() { return 4000; }
+    @JsonIgnore @Override
+    public int getInfluenceMax() {
+        return 4000;
+    }
 
     @JsonIgnore
     public FortificationType getFortificationType() { return FortificationType.CITY; }
+
+    @JsonIgnore
+    public int getAmountBastions() {
+        return WarOfSquirrels.instance.getBastionHandler().get(this).size();
+    }
 
     @JsonIgnore
     public List<FullPlayer> getOnlinePlayers() {
@@ -243,12 +230,21 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         return onlinePlayers;
     }
 
+    @JsonIgnore
+    public boolean canAttack() {
+        if (cityUpgrade.getHeadQuarter().getCurrentLevel() >= 2) return true;
+
+        return !hasAttackedToday;
+    }
+
     public void displayInfo(FullPlayer player) {
         MutableComponent message = new TextComponent("");
 
+        CityRank rank = WarOfSquirrels.instance.getConfig().getCityRankMap().get(cityUpgrade.getLevel().getCurrentLevel());
+
         int size = WarOfSquirrels.instance.getChunkHandler().getSize(this);
 
-        message.append("---===| " + rank.getName() + " " + displayName + " [" + citizens.size() + "] |===---\n");
+        message.append("--==| " + rank.getName() + " " + displayName + " [" + citizens.size() + "] |==--\n");
         message.append("  Faction: " + (faction == null ? "----" : faction.getDisplayName()) + "\n");
         message.append("  Mayor: " + owner.getDisplayName() + "\n");
         message.append("  Assistant(s): " + Utils.getStringFromPlayerList(getAssistants()) + "\n");
@@ -257,6 +253,12 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         message.append("  Tag: " + tag + "\n");
         message.append("  Chunks [" + size + "/" + rank.chunkMax + "]\n");
         message.append("  Outpost [" + WarOfSquirrels.instance.getChunkHandler().getOutpostSize(this) + "]\n");
+        message.append(" -= Upgrades =-\n");
+        message.append("  Level [" + cityUpgrade.getLevel().getCurrentLevel() + "/4]\n");
+        message.append("  Housing [" + cityUpgrade.getHousing().getCurrentLevel() + "/4]\n");
+        message.append("  Facility [" + cityUpgrade.getFacility().getCurrentLevel() + "/4]\n");
+        message.append("  Head Quarter [" + cityUpgrade.getHeadQuarter().getCurrentLevel() + "/4]\n");
+        message.append("  Palace [" + cityUpgrade.getPalace().getCurrentLevel() + "/4]\n");
         message.append("  Permissions:\n" + displayPermissions());
 
         message.withStyle(ChatFormatting.BLUE);
@@ -307,11 +309,25 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     }
 
     public void Update() {
+        hasAttackedToday = false;
         cityUpgrade.VerifyLevelUp();
     }
 
     @JsonIgnore @Override
     public Vector3 getSpawn() {
         return getHomeBlock().getRespawnPoint();
+    }
+
+    @JsonIgnore @Override
+    public boolean isProtected() { return true; }
+
+    @Override
+    public int getMaxChunk() {
+        return WarOfSquirrels.instance.getConfig().getCityRankMap().get(cityUpgrade.getLevel().getCurrentLevel()).chunkMax;
+    }
+
+    @Override
+    public int getLinkedChunkSize() {
+        return 0;
     }
 }

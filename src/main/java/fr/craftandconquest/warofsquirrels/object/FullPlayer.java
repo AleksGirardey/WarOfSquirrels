@@ -119,4 +119,10 @@ public class FullPlayer implements IPermission {
 
         return false;
     }
+
+    public void reset() {
+        setAssistant(false);
+        setRemainingTp(0);
+        setResident(false);
+    }
 }

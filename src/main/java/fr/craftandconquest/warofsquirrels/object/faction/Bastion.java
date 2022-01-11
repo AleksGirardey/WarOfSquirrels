@@ -22,8 +22,12 @@ public class Bastion implements IFortification {
     @JsonProperty @Getter
     private UUID cityUuid;
 
+    @JsonProperty @Setter
+    private boolean isProtected;
+
     @JsonIgnore @Getter
     private City city;
+
 
     public void SetCity(City city) {
         this.city = city;
@@ -52,22 +56,24 @@ public class Bastion implements IFortification {
     }
 
     @Override
-    public int getSelfInfluenceGenerated() {
-        return 0;
+    public int getSelfInfluenceGenerated(boolean gotAttacked) {
+        int baseInfluence = gotAttacked ? 0 : 100;
+        return baseInfluence;
     }
 
     @Override
     public int getInfluenceMax() {
-        return 0;
+        return 4000;
     }
 
     @Override
-    public int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly) {
-        return 0;
+    public int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly, boolean gotAttacked) {
+        int baseInfluence = gotAttacked ? 0 : 50;
+        return baseInfluence;
     }
 
     @Override
-    public int getInfluenceGeneratedDistantNeighbour() {
+    public int getInfluenceGeneratedDistantNeighbour(boolean gotAttacked) {
         return 0;
     }
 
@@ -84,5 +90,18 @@ public class Bastion implements IFortification {
     @JsonIgnore @Override
     public Vector3 getSpawn() {
         return getHomeBlock().getRespawnPoint();
+    }
+
+    @JsonIgnore @Override
+    public boolean isProtected() { return isProtected; }
+
+    @Override
+    public int getMaxChunk() {
+        return 0; // CHANGE ME
+    }
+
+    @Override
+    public int getLinkedChunkSize() {
+        return WarOfSquirrels.instance.getChunkHandler().getChunks(this).size();
     }
 }

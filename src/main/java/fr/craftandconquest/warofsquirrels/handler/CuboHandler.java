@@ -5,10 +5,14 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.cuboide.VectorCubo;
+import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
+import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -216,6 +220,21 @@ public class CuboHandler extends Handler<Cubo> {
         dataArray.forEach(c -> {
             if (c.getCity().equals(city))
                 removeList.add(c.getUuid());
+        });
+
+        removeList.forEach(uuid -> Delete(getCubo(uuid)));
+        Save();
+        return true;
+    }
+
+    public boolean deleteBastion(Bastion bastion) {
+        List<UUID> removeList = new ArrayList<>();
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(bastion);
+
+        dataArray.forEach(cubo -> {
+            Vector2 pos = Utils.WorldToTerritoryCoordinates((int) cubo.getVector().getA().x, (int) cubo.getVector().getA().z);
+            if (territory.getPosX() == pos.x && territory.getPosZ() == pos.y)
+                removeList.add(cubo.getUuid());
         });
 
         removeList.forEach(uuid -> Delete(getCubo(uuid)));

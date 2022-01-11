@@ -15,15 +15,13 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
 public class FactionClaimCommand extends FactionCommandAssistant implements ITerritoryExtractor {
-    private final String argumentName = "[TerritoryName]";
+//    private final String argumentName = "[TerritoryName]";
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands
                 .literal("claim")
-                .then(Commands
-                        .argument(argumentName, StringArgumentType.string())
-                        .executes(this));
+                .executes(this);
     }
 
     @Override
@@ -39,15 +37,15 @@ public class FactionClaimCommand extends FactionCommandAssistant implements ITer
         Territory territory = ExtractTerritory(player);
 
         territory.SetFaction(player.getCity().getFaction());
-        String name = context.getArgument(argumentName, String.class);
-        territory.setName(name);
+//        String name = context.getArgument(argumentName, String.class);
+//        territory.setName(name);
 
         int posX = territory.getPosX();
         int posZ = territory.getPosZ();
         int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
 
-        MutableComponent message = ChatText.Colored("La faction '" + territory.getFaction().getDisplayName() + "'"
-                + " a revendiqué l'appartenance du territoire maintenant appellé '" + territory.getName() + "' situé en ["
+        MutableComponent message = ChatText.Colored("Faction '" + territory.getFaction().getDisplayName() + "'"
+                + " claimed territory  '" + territory.getName() + "' at ["
                 + posX + ";" + posZ + "](~" + posX * territorySize + ";" + "~" + posZ * territorySize + ")", ChatFormatting.GOLD);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);

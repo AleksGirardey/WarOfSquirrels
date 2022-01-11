@@ -86,7 +86,6 @@ public class ChunkHandler extends Handler<Chunk> {
     }
 
     public boolean deleteCity(City city) {
-
         for (Chunk chunk : fortificationMap.get(city)) {
             ChunkLocation chunkLocation = new ChunkLocation(chunk.getPosX(), chunk.getPosZ(), chunk.getDimension());
             dataArray.remove(chunk);
@@ -98,9 +97,23 @@ public class ChunkHandler extends Handler<Chunk> {
         return true;
     }
 
-    public boolean canBePlaced(City city, boolean outpost, ChunkLocation location) {
-        if (outpost) return Utils.CanPlaceOutpost(location.PosX, location.PosZ);
+    public boolean deleteBastion(Bastion bastion) {
+        for (Chunk chunk : fortificationMap.get(bastion)) {
+            ChunkLocation chunkLocation = new ChunkLocation(chunk.getPosX(), chunk.getPosZ(), chunk.getDimension());
+            dataArray.remove(chunk);
+            chunksMap.keySet().removeIf(k -> k.equals(chunkLocation));
+        }
+        fortificationMap.keySet().removeIf(c -> c.equals(bastion));
 
+        Save();
+        return true;
+    }
+
+    public boolean canPlaceOutpost(City city, ChunkLocation location) {
+        return Utils.CanPlaceOutpost(location.PosX, location.PosZ);
+    }
+
+    public boolean canPlaceChunk(City city, ChunkLocation location) {
         Chunk bot = getChunk(location.PosX, location.PosZ - 1, location.DimensionId);
         Chunk top = getChunk(location.PosX, location.PosZ + 1, location.DimensionId);
         Chunk left = getChunk(location.PosX - 1, location.PosZ, location.DimensionId);

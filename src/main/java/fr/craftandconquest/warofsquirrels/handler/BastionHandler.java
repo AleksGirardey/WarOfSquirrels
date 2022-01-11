@@ -1,15 +1,83 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
+import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import org.apache.logging.log4j.Logger;
 
-import java.util.UUID;
+import java.text.MessageFormat;
+import java.util.*;
 
 public class BastionHandler extends Handler<Bastion> {
+    private final Map<City, List<Bastion>> bastionByCities;
+
+    protected static String DirName = "/WorldData";
+    protected static String JsonName = "/BastionHandler.json";
+
     public BastionHandler(Logger logger) {
         super("[WoS][BastionHandler]", logger);
+        bastionByCities = new HashMap<>();
+
+        if (!Init()) return;
+        if (!Load(new TypeReference<>() {})) return;
+
+        Log();
     }
+
+    @Override
+    protected boolean add(Bastion bastion) {
+        if (!dataArray.contains(bastion))
+            dataArray.add(bastion);
+
+        City related = bastion.getRelatedCity();
+        if (!bastionByCities.containsKey(related))
+            bastionByCities.put(related, new ArrayList<>());
+        bastionByCities.get(related).add(bastion);
+
+        return true;
+    }
+
+    public boolean deleteCity(City city) {
+        List<Bastion> list = new ArrayList<>(bastionByCities.get(city));
+
+        for (Bastion bastion : list) {
+            if (!Delete(bastion)) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean Delete(Bastion bastion) {
+        if (!WarOfSquirrels.instance.getChunkHandler().deleteBastion(bastion)) return false;
+        if (!WarOfSquirrels.instance.getCuboHandler().deleteBastion(bastion)) return false;
+        if (!WarOfSquirrels.instance.getTerritoryHandler().delete(bastion)) return false;
+
+        bastionByCities.get(bastion.getRelatedCity()).remove(bastion);
+        dataArray.remove(bastion);
+
+        return true;
+    }
+
+    @Override
+    public void Log() {
+        Logger.info(MessageFormat.format("{0} Bastions generated : {1}",
+                PrefixLogger, dataArray.size()));
+    }
+
+    @Override
+    public String getConfigDir() {
+        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
+    }
+
+    @Override
+    protected String getConfigPath() {
+        return getConfigDir() + JsonName;
+    }
+
+    @Override
+    public void spreadPermissionDelete(IPermission target) { }
 
     public Bastion get(UUID uuid) {
         for (Bastion bastion : dataArray) {
@@ -19,33 +87,7 @@ public class BastionHandler extends Handler<Bastion> {
         return null;
     }
 
-    @Override
-    protected boolean add(Bastion value) {
-        return false;
-    }
-
-    @Override
-    public boolean Delete(Bastion value) {
-        return false;
-    }
-
-    @Override
-    public void Log() {
-
-    }
-
-    @Override
-    public String getConfigDir() {
-        return null;
-    }
-
-    @Override
-    protected String getConfigPath() {
-        return null;
-    }
-
-    @Override
-    public void spreadPermissionDelete(IPermission target) {
-
+    public List<Bastion> get(City city) {
+        return bastionByCities.get(city);
     }
 }

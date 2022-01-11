@@ -55,7 +55,6 @@ public class CityHandler extends Handler<City> {
         city.displayName = name;
         city.tag = tag;
         city.SetOwner(owner);
-        city.SetRank(0);
         city.setCityUpgrade(new CityUpgrade());
         city.getCityUpgrade().Init(city);
         city.setCustomPermission(new HashMap<>());
@@ -114,8 +113,9 @@ public class CityHandler extends Handler<City> {
         WarOfSquirrels.instance.spreadPermissionDelete(city);
 
         if (!WarOfSquirrels.instance.getChunkHandler().deleteCity(city)) return false;
-
         if (!WarOfSquirrels.instance.getCuboHandler().deleteCity(city)) return false;
+        if (!WarOfSquirrels.instance.getBastionHandler().deleteCity(city)) return false;
+        if (!WarOfSquirrels.instance.getTerritoryHandler().delete(city)) return false;
 
         for (FullPlayer player : city.getCitizens()) {
             player.setAssistant(false);

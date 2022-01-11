@@ -8,7 +8,7 @@ import static net.minecraft.commands.Commands.literal;
 
 public class WarCommandRegister implements ICommandRegister {
     private final WarHelp warHelpCommand = new WarHelp();
-    private final DeclareWar declareWarCommand = new DeclareWar();
+    private final WarAttack declareWarCommand = new WarAttack();
     private final WarInfo warInfoCommand = new WarInfo();
     private final WarJoin warJoinCommand = new WarJoin();
     private final WarLeave warLeaveCommand = new WarLeave();

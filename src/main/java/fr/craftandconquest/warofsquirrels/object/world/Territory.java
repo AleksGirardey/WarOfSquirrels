@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.InfluenceHandler;
+import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
@@ -54,6 +55,9 @@ public class Territory {
     @JsonProperty
     @Getter
     private Map<String, Integer> biomeMap;
+    @JsonProperty @Getter @Setter boolean gotAttackedToday;
+    @JsonProperty @Getter @Setter int daysBeforeReset;
+    @JsonProperty @Getter @Setter boolean hasFallen;
 
     @JsonIgnore
     @Getter
@@ -88,11 +92,9 @@ public class Territory {
     }
 
     public void SpreadInfluence() {
-        InfluenceHandler handler = WarOfSquirrels.instance.getInfluenceHandler();
-
         if (fortification != null) {
             if (faction == null) {
-                handler.pushInfluence(fortification, this, fortification.getSelfInfluenceGenerated());
+                SpreadSelfInfluence();
                 return;
             }
 
@@ -105,7 +107,7 @@ public class Territory {
     }
 
     public void SpreadSelfInfluence() {
-        WarOfSquirrels.instance.getInfluenceHandler().pushInfluence(fortification, this, fortification.getSelfInfluenceGenerated());
+        WarOfSquirrels.instance.getInfluenceHandler().pushInfluence(fortification, this, fortification.getSelfInfluenceGenerated(gotAttackedToday));
     }
 
     public void SpreadCloseInfluence(boolean neutralOnly) {
@@ -115,7 +117,7 @@ public class Territory {
         for (Territory territory : neighbors) {
             if (neutralOnly && territory.getFaction() != null) continue;
 
-            handler.pushInfluence(fortification, territory, fortification.getInfluenceGeneratedCloseNeighbour(neutralOnly));
+            handler.pushInfluence(fortification, territory, fortification.getInfluenceGeneratedCloseNeighbour(neutralOnly, gotAttackedToday));
         }
     }
 
@@ -125,7 +127,7 @@ public class Territory {
 
         for (Territory territory : neighbors) {
             if (territory.getFaction() == null)
-                handler.pushInfluence(fortification, territory, fortification.getInfluenceGeneratedDistantNeighbour());
+                handler.pushInfluence(fortification, territory, fortification.getInfluenceGeneratedDistantNeighbour(gotAttackedToday));
         }
     }
 
@@ -171,6 +173,27 @@ public class Territory {
         }
 
         biome = mainBiome;
+    }
+
+    public void update() {
+        if (!hasFallen) {
+            SpreadInfluence();
+            gotAttackedToday = false;
+        } else {
+            --daysBeforeReset;
+
+            if (daysBeforeReset <= 0) {
+                WarOfSquirrels.instance.getBastionHandler().Delete((Bastion) fortification);
+                reset();
+            }
+        }
+    }
+
+    public void reset() {
+        factionUuid = null;
+        faction = null;
+        fortificationUuid = null;
+        fortification = null;
     }
 
     @Override

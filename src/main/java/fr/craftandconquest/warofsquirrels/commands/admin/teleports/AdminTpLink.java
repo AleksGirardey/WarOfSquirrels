@@ -45,7 +45,6 @@ public class AdminTpLink extends AdminCommandBuilder {
         AdminCubo second = WarOfSquirrels.instance.getAdminHandler().get(secondName);
 
         first.setLinkedPortal(second.getUuid());
-        second.setLinkedPortal(first.getUuid());
 
         WarOfSquirrels.instance.getAdminHandler().Save();
 

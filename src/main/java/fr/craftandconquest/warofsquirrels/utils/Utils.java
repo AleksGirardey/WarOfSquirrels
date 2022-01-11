@@ -30,14 +30,19 @@ public class Utils {
         return new ChunkPos(Math.floorDiv(posX, 16), Math.floorDiv(posZ, 16));
     }
 
+    public static Vector2 ChunkToTerritoryCoordinatesVector(int posX, int posZ) {
+        int size = WarOfSquirrels.instance.getConfig().getTerritorySize() / 16;
+        return new Vector2(Math.floorDiv(posX, size), Math.floorDiv(posZ, size));
+    }
+
     public static Pair<Integer, Integer> ChunkToTerritoryCoordinates(int posX, int posZ) {
         int size = WarOfSquirrels.instance.getConfig().getTerritorySize() / 16;
         return new Pair<>(Math.floorDiv(posX, size), Math.floorDiv(posZ, size));
     }
 
-    public static Pair<Integer, Integer> WorldToTerritoryCoordinates(int posX, int posZ) {
+    public static Vector2 WorldToTerritoryCoordinates(int posX, int posZ) {
         int size = WarOfSquirrels.instance.getConfig().getTerritorySize();
-        return new Pair<>(Math.floorDiv(posX, size), Math.floorDiv(posZ, size));
+        return new Vector2(Math.floorDiv(posX, size), Math.floorDiv(posZ, size));
     }
 
     public static boolean CanPlaceOutpost(int posX, int posZ) {
@@ -218,5 +223,9 @@ public class Utils {
             message.append(blocks + " blocks");
 
         return message;
+    }
+
+    public static int getRandomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
     }
 }

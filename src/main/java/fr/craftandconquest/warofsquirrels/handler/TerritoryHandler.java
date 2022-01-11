@@ -3,7 +3,7 @@ package fr.craftandconquest.warofsquirrels.handler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.ConfigData;
+import fr.craftandconquest.warofsquirrels.object.config.ConfigData;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
@@ -12,9 +12,6 @@ import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Pair;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.LevelStem;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.CheckForNull;
@@ -25,6 +22,52 @@ import java.text.MessageFormat;
 import java.util.*;
 
 public class TerritoryHandler extends Handler<Territory> {
+    private final static List<String> defaultTerritoryName = new ArrayList<>() {{
+        add("Elyphis");
+        add("Oberon");
+        add("Frayja");
+        add("Aelum");
+        add("Dendragon");
+        add("Gaia");
+        add("Wardak");
+        add("Anguemor");
+        add("Aarvan");
+        add("Vrihed");
+
+        add("Cazan");
+        add("Vocura");
+        add("Glazone");
+        add("Naidela");
+        add("Zutrul");
+        add("Oros");
+        add("Iwari");
+        add("Bephura");
+        add("Ufone");
+        add("Vagrus");
+
+        add("Chaubone");
+        add("Suwan");
+        add("Epos");
+        add("Datreon");
+        add("Iatrai");
+        add("Eunes");
+        add("Aitrus");
+        add("Ohira");
+        add("Ison");
+        add("Anor");
+
+        add("Iqesh");
+        add("Bruyela");
+        add("Keiwan");
+        add("Arias");
+        add("Obias");
+        add("Itun");
+        add("Izone");
+        add("Onax");
+        add("Ekor");
+        add("Afall");
+    }};
+
     private final Map<UUID, Territory> territoryMap;
     private final Map<Faction, List<Territory>> territoriesByFaction;
     private final Territory[][] territories;
@@ -41,8 +84,7 @@ public class TerritoryHandler extends Handler<Territory> {
         territoriesByFaction = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<List<Territory>>() {
-        })) return;
+        if (!Load(new TypeReference<>() {})) return;
 
         Log();
     }
@@ -71,6 +113,7 @@ public class TerritoryHandler extends Handler<Territory> {
 
     private void Generate() {
         ConfigData config = WarOfSquirrels.instance.getConfig();
+        List<String> names = new ArrayList<>(defaultTerritoryName);
         int halfSize = config.getMapSize() / 2;
         int maxX = halfSize / config.getTerritorySize();
         int maxZ = halfSize / config.getTerritorySize();
@@ -79,7 +122,10 @@ public class TerritoryHandler extends Handler<Territory> {
 
         for (int i = minX; i < maxX; ++i) { // -10 inc to 10 exc
             for (int j = minZ; j < maxZ; ++j) { // -10 inc to 10 exc
-                if (CreateTerritory("Province inconnue", i, j, null, null) == null)
+                int index = Utils.getRandomNumber(0, names.size());
+                String name = names.get(index);
+                names.remove(index);
+                if (CreateTerritory(name, i, j, null, null) == null)
                     return;
             }
         }
@@ -217,9 +263,9 @@ public class TerritoryHandler extends Handler<Territory> {
                 .findFirst().orElse(null);
     }
 
-    public Territory get(City city) {
+    public Territory get(IFortification fortification) {
         return dataArray.stream()
-                .filter(t -> t.getFortificationUuid().equals(city.getUuid()))
+                .filter(t -> t.getFortificationUuid().equals(fortification.getUniqueId()))
                 .findFirst().orElse(null);
     }
 
@@ -264,8 +310,14 @@ public class TerritoryHandler extends Handler<Territory> {
         Save();
     }
 
+    public boolean delete(IFortification fortification) {
+        get(fortification).reset();
+
+        return true;
+    }
+
     public void update() {
         for (Territory territory : dataArray)
-            territory.SpreadInfluence();
+            territory.update();
     }
 }

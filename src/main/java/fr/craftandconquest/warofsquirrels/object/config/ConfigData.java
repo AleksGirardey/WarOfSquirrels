@@ -1,4 +1,4 @@
-package fr.craftandconquest.warofsquirrels.object;
+package fr.craftandconquest.warofsquirrels.object.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
@@ -77,15 +77,10 @@ public class ConfigData {
     Vector3 serverSpawn;
 
     /* War */
-    @Getter
-    @Setter
-    private int preparationPhase;
-    @Getter
-    @Setter
-    private int rollbackPhase;
-    @Getter
-    @Setter
-    private int influenceMax;
+    @Getter @Setter private int preparationPhase;
+    @Getter @Setter private int rollbackPhase;
+    @Getter @Setter private int influenceMax;
+    @Getter @Setter private int attackCost;
 
     @JsonProperty("CityRanks")
     @Getter

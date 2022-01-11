@@ -2,7 +2,7 @@ package fr.craftandconquest.warofsquirrels.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.ConfigData;
+import fr.craftandconquest.warofsquirrels.object.config.ConfigData;
 import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
@@ -33,9 +33,7 @@ public class Config {
 
     private final Logger Logger;
 
-    @Getter
-    @Setter
-    private ConfigData configuration;
+    @Getter @Setter private ConfigData configuration;
 
     public Config(String prefix, Logger logger) {
         PrefixLogger = prefix;
@@ -159,6 +157,7 @@ public class Config {
                 120, // preparationPhase;
                 120, // rollbackPhase;
                 1000, // influenceMax;
+                150, // AttackCost;
 
                 initRanks, defaultPermissions, defaultNaturePermission);
     }
