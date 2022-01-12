@@ -11,6 +11,7 @@ import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.handler.CityHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.channels.CityChannel;
+import fr.craftandconquest.warofsquirrels.object.faction.Influence;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.war.Party;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
@@ -58,11 +59,17 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
         x = player.getPlayerEntity().chunkPosition().x;
         z = player.getPlayerEntity().chunkPosition().z;
 
+        if (!player.isWhitelistCityCreator() && !player.isAdminMode()) {
+            player.sendMessage(ChatText.Error("You cannot create a city. Please refer to Discord for rules."));
+            return false;
+        }
+
         if (player.getCity() == null) {
             Territory territory = ExtractTerritory(player);
             if (!WarOfSquirrels.instance.getChunkHandler().exists(x, z, player.getPlayerEntity().getCommandSenderWorld().dimension())
                     && Utils.CanPlaceCity(x, z)
-                    && territory.getFaction() == null && territory.getFortification() == null) {
+                    && territory.getFaction() == null
+                    && territory.getFortification() == null) {
                 return true;
             } else
                 message = ChatText.Error("You can't set a new city here ! Too close from civilization");
@@ -104,6 +111,8 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
 
         player.sendMessage(chunk.creationLogText());
+
+        player.setWhitelistCityCreator(false);
 
         cih.Save();
 

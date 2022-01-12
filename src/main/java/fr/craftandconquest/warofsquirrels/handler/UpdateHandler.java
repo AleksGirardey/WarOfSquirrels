@@ -38,6 +38,7 @@ public class UpdateHandler {
         WarOfSquirrels.instance.getCityHandler().update();
         WarOfSquirrels.instance.getTerritoryHandler().update();
         WarOfSquirrels.instance.getPlayerHandler().update();
+        WarOfSquirrels.instance.getBastionHandler().update();
 //        WarOfSquirrels.instance.getLoanHandler().update();
         this.CreateDailyUpdate();
     }

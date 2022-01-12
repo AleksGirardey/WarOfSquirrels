@@ -5,6 +5,7 @@ import fr.craftandconquest.warofsquirrels.handler.WarHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
+import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.war.War;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
@@ -120,7 +121,7 @@ public class PlayersInteractionHandler {
         Territory newTerritory = WarOfSquirrels.instance.getTerritoryHandler().get(new Vector2(event.getNewPos().chunk().x, event.getNewPos().chunk().z));
 
         if (oldTerritory != newTerritory) {
-            player.sendMessage(ChatText.Colored("~~~~| " + newTerritory.getName() + " |~~~~", ChatFormatting.GOLD));
+            player.sendMessage(ChatText.Colored("~~| " + newTerritory.getName() + " |~~", ChatFormatting.GOLD));
         }
 
         Chunk lastChunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), dimensionId);
@@ -138,14 +139,25 @@ public class PlayersInteractionHandler {
                         }
                     }
 
-                    player.sendMessage(ChatText.Colored("~~~~| " + newChunk.getCity().getDisplayName() + " |~~~~", ChatFormatting.GOLD));
+                    String place = newChunk.getFortification().getDisplayName();
+
+                    if (newChunk.getFortification().getFortificationType() == IFortification.FortificationType.BASTION) {
+                        place += (" - " + newChunk.getFortification().getRelatedCity().getDisplayName());
+                    }
+
+                    player.sendMessage(ChatText.Colored("~~| " + place + " |~~", ChatFormatting.GOLD));
                 }
             } else {
-                player.sendMessage(ChatText.Colored("~~~~| Wilderness |~~~~", ChatFormatting.GOLD));
+                player.sendMessage(ChatText.Colored("~~| Wilderness |~~", ChatFormatting.GOLD));
             }
         } else {
             if (newChunk != null) {
-                player.sendMessage(ChatText.Colored("~~~~| " + newChunk.getCity().getDisplayName() + " |~~~~", ChatFormatting.GOLD));
+                String place = newChunk.getFortification().getDisplayName();
+
+                if (newChunk.getFortification().getFortificationType() == IFortification.FortificationType.BASTION) {
+                    place += (" - " + newChunk.getFortification().getRelatedCity().getDisplayName());
+                }
+                player.sendMessage(ChatText.Colored("~~| " + place + " |~~", ChatFormatting.GOLD));
             }
         }
     }

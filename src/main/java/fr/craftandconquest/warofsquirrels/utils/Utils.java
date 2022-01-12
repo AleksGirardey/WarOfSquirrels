@@ -26,6 +26,12 @@ public class Utils {
         return new Pair<>(Math.floorDiv(posX, 16), Math.floorDiv(posZ, 16));
     }
 
+    public static Vector2 WorldToChunk(int posX, int posZ) {
+        ChunkPos pos = WorldToChunkPos(posX, posZ);
+
+        return new Vector2(pos.x, pos.z);
+    }
+
     public static ChunkPos WorldToChunkPos(int posX, int posZ) {
         return new ChunkPos(Math.floorDiv(posX, 16), Math.floorDiv(posZ, 16));
     }
@@ -64,7 +70,7 @@ public class Utils {
 
         if (player.getCity() == null) return null;
 
-        Vec3 spawnPoint = null;
+        Vec3 spawnPoint;
         Vector3 spawn;
 
         if (WarOfSquirrels.instance.getWarHandler().Contains(player)) {
@@ -103,7 +109,7 @@ public class Utils {
         City city = player.getCity();
 
         if (city != null) {
-            CityRank rank = city.getRank();
+            CityRank rank = WarOfSquirrels.instance.getConfig().getCityRankMap().get(city.getCityUpgrade().getLevel().getCurrentLevel());
 
             if (city.getOwner() == player)
                 return String.format("%s %s", rank.getPrefixMayor(), player.getDisplayName());

@@ -7,6 +7,7 @@ import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
+import fr.craftandconquest.warofsquirrels.object.faction.Influence;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
@@ -16,6 +17,7 @@ import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -264,9 +266,9 @@ public class WorldInteractionHandler {
 
         player.sendMessage(ChatText.Colored(MessageFormat.format(
                 """
-                        ===| Territory {0} [{1};{2}] |===
+                        ==| Territory {0} [{1};{2}] |==
                             Owner : {3}
-                        ===| Chunk [{4};{5}] |===
+                        ==| Chunk [{4};{5}] |==
                             Owner : {6}""",
                 territory.getName(), territory.getPosX(), territory.getPosZ(),
                 (territory.getFaction() == null ? "None" : territory.getFaction().getDisplayName()),
@@ -274,8 +276,20 @@ public class WorldInteractionHandler {
                 (chunk == null ? "None" : chunk.getCity().getDisplayName())),
                 ChatFormatting.LIGHT_PURPLE), Util.NIL_UUID);
 
+        List<Influence> influenceList  = WarOfSquirrels.instance.getInfluenceHandler().getAll(territory);
+        MutableComponent message = ChatText.Colored("==| Influence |==", ChatFormatting.BLUE);
+
+        for (Influence influence : influenceList) {
+            if (influence.getFaction() != null)
+                message.append("  [Faction] ").append(influence.getFaction().getDisplayName()).append(" [").append(influence.getValue() + "").append("]\n");
+            else
+                message.append("  [City] ").append(influence.getCity().getDisplayName()).append(" [").append(influence.getValue() + "").append("]\n");
+        }
+
+        player.sendMessage(message, Util.NIL_UUID);
+
         if (cubo != null) {
-            player.sendMessage(ChatText.Colored("===| Cubo '" + cubo.getName() + "' [" + cubo.getOwner().getDisplayName() + "] |===", ChatFormatting.LIGHT_PURPLE), Util.NIL_UUID);
+            player.sendMessage(ChatText.Colored("==| Cubo '" + cubo.getName() + "' [" + cubo.getOwner().getDisplayName() + "] |==", ChatFormatting.LIGHT_PURPLE), Util.NIL_UUID);
         }
     }
 
@@ -308,8 +322,8 @@ public class WorldInteractionHandler {
     public static boolean IsContainer(Level world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity tileEntity) {
         if (state == null)
             state = world.getBlockState(pos);
-        if (tileEntity == null)
-            tileEntity = world.getBlockEntity(pos);
+//        if (tileEntity == null)
+//            tileEntity = world.getBlockEntity(pos);
         return state.getBlock() instanceof Container;
     }
 

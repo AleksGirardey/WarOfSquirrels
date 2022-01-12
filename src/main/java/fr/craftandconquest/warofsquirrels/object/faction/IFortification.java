@@ -12,6 +12,8 @@ public interface IFortification {
         BASTION
     }
 
+    @JsonIgnore String getDisplayName();
+
     @JsonIgnore UUID getUniqueId();
 
     @JsonIgnore Faction getFaction();

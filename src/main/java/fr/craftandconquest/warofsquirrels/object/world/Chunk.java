@@ -50,6 +50,12 @@ public class Chunk {
 
     public Chunk() { }
 
+    @JsonIgnore
+    public IFortification getFortification() {
+        return city == null ? bastion : city;
+    }
+
+    @JsonIgnore
     public void setFortification() {
         city = WarOfSquirrels.instance.getCityHandler().getCity(fortificationUuid);
         bastion = WarOfSquirrels.instance.getBastionHandler().get(fortificationUuid);

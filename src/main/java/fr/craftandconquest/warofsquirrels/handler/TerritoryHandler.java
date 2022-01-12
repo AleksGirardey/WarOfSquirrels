@@ -6,7 +6,6 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.config.ConfigData;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
-import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Pair;
@@ -291,12 +290,11 @@ public class TerritoryHandler extends Handler<Territory> {
         return territories[posX][posZ];
     }
 
-    public boolean Claim(int posX, int posZ, Faction faction, IFortification fortification, String name) {
+    public boolean Claim(int posX, int posZ, Faction faction, IFortification fortification) {
         Territory territory = get(posX, posZ);
 
         if (territory == null) return false;
 
-        territory.setName(name);
         territory.SetFaction(faction);
         territory.SetFortification(fortification);
 

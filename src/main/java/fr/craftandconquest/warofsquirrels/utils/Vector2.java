@@ -30,4 +30,9 @@ public class Vector2 {
         float v1 = b.y - a.y;
         return Math.sqrt(v0 * v0 + v1 * v1);
     }
+
+    @Override
+    public String toString() {
+        return "[" + x + ";" + y + "]";
+    }
 }

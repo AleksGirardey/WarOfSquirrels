@@ -19,15 +19,11 @@ import net.minecraft.commands.Commands;
 
 public class FactionCreateCommand extends CityMayorCommandBuilder implements ITerritoryExtractor {
     private final String factionName = "[FactionName]";
-    private final String territoryName = "[TerritoryName]";
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("create")
-                .then(Commands
-                        .argument(factionName, StringArgumentType.string())
-                        .then(Commands.argument(territoryName, StringArgumentType.string())
-                                .executes(this)));
+                .then(Commands.argument(factionName, StringArgumentType.string()).executes(this));
     }
 
     @Override
@@ -49,23 +45,23 @@ public class FactionCreateCommand extends CityMayorCommandBuilder implements ITe
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         String fName = context.getArgument(factionName, String.class);
-        String tName = context.getArgument(territoryName, String.class);
         Territory territory = ExtractTerritory(player);
         Faction faction = WarOfSquirrels.instance.getFactionHandler().CreateFaction(fName, player.getCity());
 
         player.getCity().SetFaction(faction);
 
-        if (!WarOfSquirrels.instance.getTerritoryHandler().Claim(territory.getPosX(), territory.getPosZ(), faction, player.getCity(), tName))
+        if (!WarOfSquirrels.instance.getTerritoryHandler().Claim(territory.getPosX(), territory.getPosZ(), faction, player.getCity()))
             return -1;
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(ChatText.Colored(
-                player.getDisplayName() + " has formed the nation '" + fName + "' and set '" + player.getCity().displayName + "' as capital", ChatFormatting.GOLD));
-        WarOfSquirrels.instance.getBroadCastHandler().AddTarget(faction, new FactionChannel(faction));
+                player.getDisplayName() + " has formed the nation '" + fName +
+                        "' and set '" + player.getCity().displayName + "' as capital", ChatFormatting.GOLD));
 
+        WarOfSquirrels.instance.getBroadCastHandler().AddTarget(faction, new FactionChannel(faction));
         for (FullPlayer p : player.getCity().getCitizens())
             WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(faction, p);
 
-        WarOfSquirrels.instance.getInfluenceHandler().ResetOthersInfluence(territory);
+//        WarOfSquirrels.instance.getInfluenceHandler().ResetOthersInfluence(territory);
         WarOfSquirrels.instance.getCityHandler().Save();
         WarOfSquirrels.instance.getTerritoryHandler().Save();
         return 0;

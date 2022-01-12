@@ -36,6 +36,7 @@ public class FullPlayer implements IPermission {
     @JsonProperty @Getter @Setter private boolean fake = false;
     @JsonProperty @Getter @Setter private String lastDimension;
     @JsonProperty @Getter @Setter private int remainingTp;
+    @JsonProperty @Getter @Setter private boolean whitelistCityCreator = false;
 
     /* -- Extra Fields -- */
     @Getter @Setter private int lastChunkX = 10000;

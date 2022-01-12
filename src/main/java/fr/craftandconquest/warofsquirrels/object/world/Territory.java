@@ -197,6 +197,16 @@ public class Territory {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj.getClass() != this.getClass()) return false;
+
+        Territory territory = (Territory) obj;
+
+        return territory.getPosX() == this.posX && territory.getPosZ() == this.posZ;
+    }
+
+    @Override
     public String toString() {
         return String.format("[%d;%d] Possédé par %s dans la dimension d'id %s de type %s",
                 posX,

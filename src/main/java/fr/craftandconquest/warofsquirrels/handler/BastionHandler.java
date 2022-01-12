@@ -5,6 +5,9 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
+import fr.craftandconquest.warofsquirrels.object.world.Territory;
+import fr.craftandconquest.warofsquirrels.utils.Vector2;
+import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -79,6 +82,22 @@ public class BastionHandler extends Handler<Bastion> {
     @Override
     public void spreadPermissionDelete(IPermission target) { }
 
+    public Bastion Create(Territory territory, City city, Vector2 chunkPosition) {
+        Bastion bastion = new Bastion();
+
+        bastion.setBastionUuid(UUID.randomUUID());
+        bastion.setName(territory.getName() + "'s bastion");
+        bastion.SetCity(city);
+        bastion.setProtected(true);
+        bastion.setTerritoryPosition(new Vector2(territory.getPosX(), territory.getPosZ()));
+
+        WarOfSquirrels.instance.getChunkHandler().CreateChunk((int) chunkPosition.x, (int) chunkPosition.y, bastion, Level.OVERWORLD);
+
+        add(bastion);
+
+        return bastion;
+    }
+
     public Bastion get(UUID uuid) {
         for (Bastion bastion : dataArray) {
             if (bastion.getBastionUuid().equals(uuid))
@@ -89,5 +108,15 @@ public class BastionHandler extends Handler<Bastion> {
 
     public List<Bastion> get(City city) {
         return bastionByCities.get(city);
+    }
+
+    public void update() {
+        for (Bastion bastion : dataArray)
+            bastion.update();
+    }
+
+    public void updateDependencies() {
+        for (Bastion bastion : dataArray)
+            bastion.updateDependencies();
     }
 }

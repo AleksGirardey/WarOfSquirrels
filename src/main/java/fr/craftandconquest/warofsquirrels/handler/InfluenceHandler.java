@@ -31,7 +31,7 @@ public class InfluenceHandler extends Handler<Influence> {
         influences = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<List<Influence>>() {
+        if (!Load(new TypeReference<>() {
         })) return;
 
         Log();
@@ -172,6 +172,8 @@ public class InfluenceHandler extends Handler<Influence> {
             else
                 influence = CreateInfluence(city, territory);
         }
+
+        pushInfluence(influence, influenceGenerated);
     }
 
     public void pushInfluence(Influence influence, int influenceGenerated) {
@@ -192,6 +194,10 @@ public class InfluenceHandler extends Handler<Influence> {
 
         factionInfluenceMap.keySet().removeIf(f -> f.equals(faction));
         Save();
+    }
+
+    public List<Influence> getAll(Territory territory) {
+        return dataArray.stream().filter(influence -> influence.getTerritory().equals(territory)).toList();
     }
 }
 

@@ -136,6 +136,7 @@ public class WarOfSquirrels {
         cuboHandler.UpdateDependencies();
         cityHandler.updateDependencies();
         chunkHandler.updateDependencies();
+        bastionHandler.updateDependencies();
 
         LOGGER.info("[WoS] Handlers created ! ");
     }
@@ -159,5 +160,6 @@ public class WarOfSquirrels {
         UpdateHandler.OnSaveUpdate.add(factionHandler);
         UpdateHandler.OnSaveUpdate.add(influenceHandler);
         UpdateHandler.OnSaveUpdate.add(territoryHandler);
+        UpdateHandler.OnSaveUpdate.add(bastionHandler);
     }
 }

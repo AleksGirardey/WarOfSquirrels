@@ -18,6 +18,7 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
     private final AdminForceDailyUpdate adminForceDailyUpdate = new AdminForceDailyUpdate();
     private final AdminCreate adminCreate = new AdminCreate();
     private final AdminTp adminTp = new AdminTp();
+    private final AdminWhitelist adminWhitelist = new AdminWhitelist();
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -26,6 +27,7 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
                 .then(adminForceDailyUpdate.register())
                 .then(adminCreate.register())
                 .then(adminTp.register())
+                .then(adminWhitelist.register())
                 .executes(this));
     }
 

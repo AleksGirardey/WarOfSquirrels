@@ -20,7 +20,7 @@ public class CityUpgradeInfo extends CityMayorOrAssistantCommandBuilder {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         if (upgradeType == null) return null;
-        return Commands.literal("info").then(Commands.literal(upgradeTarget).executes(this));
+        return Commands.literal(upgradeTarget).executes(this);
     }
 
     @Override

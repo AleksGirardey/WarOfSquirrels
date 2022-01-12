@@ -133,9 +133,7 @@ public class Config {
                 20, // distanceOutpost;
 
                 /* Influence */
-                400, // territoryClaimLimit;
-                10, // baseInfluenceGeneration;
-                40, // baseInfluenceRequired;
+                1500, // baseInfluenceRequired;
 
                 /* Speaking */
                 15, // shoutDistance;

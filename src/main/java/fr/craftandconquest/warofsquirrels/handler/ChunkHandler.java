@@ -254,22 +254,19 @@ public class ChunkHandler extends Handler<Chunk> {
         return asString.toString();
     }
 
-    public Chunk CreateChunk(int posX, int posZ, City city, ResourceKey<Level> dimension, String name) {
-        Chunk chunk = CreateChunk(posX, posZ, city, dimension);
+    public Chunk CreateChunk(int posX, int posZ, IFortification fortification, ResourceKey<Level> dimension, String name) {
+        Chunk chunk = new Chunk(posX, posZ, fortification, dimension);
 
         chunk.setName(name);
-
-        return chunk;
-    }
-
-    public Chunk CreateChunk(int posX, int posZ, City city, ResourceKey<Level> dimension) {
-        Chunk chunk = new Chunk(posX, posZ, city, dimension);
-        chunk.setName(String.format("Chunk[%d;%d]", posX, posZ));
 
         add(chunk);
 
         LogChunkCreation(chunk);
         return chunk;
+    }
+
+    public Chunk CreateChunk(int posX, int posZ, IFortification fortification, ResourceKey<Level> dimension) {
+        return CreateChunk(posX, posZ, fortification, dimension, String.format("Chunk[%d;%d]", posX, posZ));
     }
 
     public void updateDependencies() {

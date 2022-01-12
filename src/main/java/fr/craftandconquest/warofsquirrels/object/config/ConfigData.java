@@ -29,12 +29,6 @@ public class ConfigData {
     /* Influence */
     @Getter
     @Setter
-    private int territoryClaimLimit;
-    @Getter
-    @Setter
-    private int baseInfluenceGeneration;
-    @Getter
-    @Setter
     private int baseInfluenceRequired;
 
     /* Speaking */

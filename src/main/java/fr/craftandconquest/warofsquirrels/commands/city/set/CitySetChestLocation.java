@@ -42,7 +42,7 @@ public class CitySetChestLocation extends CityMayorOrAssistantCommandBuilder {
             }
             player.sendMessage(ChatText.Error("You cannot set your upgrade chest with those points."));
         } else
-            player.sendMessage(ChatText.Error("You need to set points first (use /city cubo)"));
+            player.sendMessage(ChatText.Error("You need to set points first (use /cubo)"));
         return false;
     }
 
