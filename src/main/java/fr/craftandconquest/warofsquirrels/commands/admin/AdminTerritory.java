@@ -14,8 +14,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
-import java.text.MessageFormat;
-
 public class AdminTerritory extends AdminCommandBuilder {
     private final AdminTerritoryList adminTerritoryList = new AdminTerritoryList();
     private final AdminTerritoryTp adminTerritoryTp = new AdminTerritoryTp();
@@ -41,23 +39,35 @@ public class AdminTerritory extends AdminCommandBuilder {
         int max = Math.floorDiv(halfSize, WarOfSquirrels.instance.getConfig().getTerritorySize());
         MutableComponent message = ChatText.Colored("", ChatFormatting.BLUE);
 
-//        for (int z = max - 1; z > -max; --z) {
-//            for (int x = -max; x < max; ++x) {
-//                Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(x, z);
-//
-//                if (territory == null) return -1;
-//
-//                MutableComponent lineOne = ChatText.Colored("", ChatFormatting.BLUE);
-//
-//                message.append(MessageFormat.format("""
-//                        +---
-//                        |
-//                        | {0}
-//                        |   """, (territory.getFaction() == null ? " " : territory.getFaction().getDisplayName().substring(0, 1))))
-//            }
-//            message.append("""
-//                    """)
-//        }
+        MutableComponent lineOne = ChatText.Colored("", ChatFormatting.BLUE);
+        for (int z = max - 1; z > -max; --z) {
+            lineOne = ChatText.Colored("", ChatFormatting.BLUE);
+            MutableComponent lineTwo = ChatText.Colored("", ChatFormatting.BLUE);
+            MutableComponent lineThree = ChatText.Colored("", ChatFormatting.BLUE);
+            MutableComponent lineFour = ChatText.Colored("", ChatFormatting.BLUE);
+
+            for (int x = -max; x < max; ++x) {
+                Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(x, z);
+
+                if (territory == null) return -1;
+                MutableComponent faction = ChatText.Colored(territory.getFaction() == null ?
+                        " " :
+                        territory.getFaction().getDisplayName().substring(0, 1), ChatFormatting.GREEN);
+
+                lineOne.append("+---");
+                lineTwo.append("|   ");
+                lineThree.append("| ").append(faction).append(" ");
+                lineFour.append("|   ");
+            }
+            lineOne.append("+\n");
+            lineTwo.append("|\n");
+            lineThree.append("|\n");
+            lineFour.append("|\n");
+
+            message.append(lineOne).append(lineTwo).append(lineThree).append(lineFour);
+        }
+
+        message.append(lineOne).append("+\n");
 
         return 0;
     }
