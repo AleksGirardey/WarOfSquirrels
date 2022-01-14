@@ -98,11 +98,17 @@ public class Territory {
                 return;
             }
 
+            WarOfSquirrels.instance.debugLog("SI 1");
             SpreadSelfInfluence();
+            WarOfSquirrels.instance.debugLog("SI 2");
             SpreadCloseInfluence(true);
-            if (fortification.getFortificationType() == IFortification.FortificationType.BASTION)
+            WarOfSquirrels.instance.debugLog("SI 3");
+            if (fortification.getFortificationType() == IFortification.FortificationType.BASTION) {
+            WarOfSquirrels.instance.debugLog("SI 4");
                 SpreadCloseInfluence(false);
+            }
             SpreadDistantInfluence();
+            WarOfSquirrels.instance.debugLog("SI 5");
         }
     }
 
@@ -133,7 +139,7 @@ public class Territory {
 
     @JsonIgnore
     public int getInfluenceMax() {
-        return fortification.getInfluenceMax(); // Ajouter influence du biome du territoire
+        return 4000 + (fortification != null ? fortification.getInfluenceMax() : 0); // Ajouter influence du biome du territoire
     }
 
     private void SetBiomeMap() {
@@ -186,6 +192,16 @@ public class Territory {
                 WarOfSquirrels.instance.getBastionHandler().Delete((Bastion) fortification);
                 reset();
             }
+        }
+    }
+
+    public void updateDependencies() {
+        if (factionUuid != null)
+            faction = WarOfSquirrels.instance.getFactionHandler().get(factionUuid);
+        if (fortificationUuid != null) {
+            fortification = WarOfSquirrels.instance.getCityHandler().getCity(fortificationUuid);
+            if (fortification == null)
+                fortification = WarOfSquirrels.instance.getBastionHandler().get(fortificationUuid);
         }
     }
 

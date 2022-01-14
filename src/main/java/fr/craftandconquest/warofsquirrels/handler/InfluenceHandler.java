@@ -39,10 +39,11 @@ public class InfluenceHandler extends Handler<Influence> {
 
     @Override
     protected boolean add(Influence value) {
-        if (influences.containsKey(value.getUuid()))
-            return false;
-
-        influences.put(value.getUuid(), value);
+        if (!dataArray.contains(value)) {
+            dataArray.add(value);
+        }
+        if (!influences.containsKey(value.getUuid()))
+            influences.put(value.getUuid(), value);
 
         if (value.getFaction() != null)
             return AddFactionInfluence(value);
@@ -52,20 +53,17 @@ public class InfluenceHandler extends Handler<Influence> {
     private boolean AddCityInfluence(Influence value) {
         if (!cityInfluenceMap.containsKey(value.getCity()))
             cityInfluenceMap.put(value.getCity(), new HashMap<>());
-        if (cityInfluenceMap.get(value.getCity()).containsKey(value.getTerritory()))
-            return false;
+        if (!cityInfluenceMap.get(value.getCity()).containsKey(value.getTerritory()))
+            cityInfluenceMap.get(value.getCity()).put(value.getTerritory(), value);
 
-        cityInfluenceMap.get(value.getCity()).put(value.getTerritory(), value);
         return true;
     }
 
     private boolean AddFactionInfluence(Influence value) {
         if (!factionInfluenceMap.containsKey(value.getFaction()))
             factionInfluenceMap.put(value.getFaction(), new HashMap<>());
-        if (factionInfluenceMap.get(value.getFaction()).containsKey(value.getTerritory()))
-            return false;
-
-        factionInfluenceMap.get(value.getFaction()).put(value.getTerritory(), value);
+        if (!factionInfluenceMap.get(value.getFaction()).containsKey(value.getTerritory()))
+            factionInfluenceMap.get(value.getFaction()).put(value.getTerritory(), value);
         return true;
     }
 
@@ -167,20 +165,22 @@ public class InfluenceHandler extends Handler<Influence> {
             if (cityInfluenceMap.containsKey(city)) {
                 map = cityInfluenceMap.get(city);
             }
-            if (map.containsKey(territory))
+            if (map.containsKey(territory)) {
                 influence = map.get(territory);
-            else
+            } else {
                 influence = CreateInfluence(city, territory);
+            }
         }
-
         pushInfluence(influence, influenceGenerated);
     }
 
     public void pushInfluence(Influence influence, int influenceGenerated) {
-        if (influenceGenerated >= 0)
+        if (influenceGenerated >= 0) {
             influence.AddInfluence(influenceGenerated);
-        else
+        }
+        else {
             influence.SubInfluence(influenceGenerated);
+        }
 
         Logger.debug(String.format("%s[Influence] Influence généré sur le territoire '%s' : %d (%d)",
                 PrefixLogger, influence.getTerritory().getName(), influenceGenerated, influence.getValue()));
@@ -198,6 +198,13 @@ public class InfluenceHandler extends Handler<Influence> {
 
     public List<Influence> getAll(Territory territory) {
         return dataArray.stream().filter(influence -> influence.getTerritory().equals(territory)).toList();
+    }
+
+    public void updateDependencies() {
+        dataArray.forEach(i-> {
+            i.updateDependencies();
+            add(i);
+        });
     }
 }
 

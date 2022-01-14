@@ -54,12 +54,12 @@ public class ChunkHandler extends Handler<Chunk> {
 
         dataArray.remove(chunk);
         chunksMap.entrySet().removeIf(entry -> entry.getKey().equals(chunkLocation));
-        fortificationMap.get(chunk.getCity()).remove(chunk);
+        fortificationMap.get(chunk.getFortification()).remove(chunk);
         return true;
     }
 
     private void LogChunkCreation(Chunk chunk) {
-        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(chunk.getCity(), null, chunk.creationLogText(), true);
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(chunk.getRelatedCity(), null, chunk.creationLogText(), true);
         Logger.info(PrefixLogger + " Chunk created at " + chunk);
     }
 
@@ -70,11 +70,11 @@ public class ChunkHandler extends Handler<Chunk> {
             chunksMap.put(position, chunk);
         }
 
-        if (!fortificationMap.containsKey(chunk.getCity())) {
-            fortificationMap.put(chunk.getCity(), new ArrayList<>());
+        if (!fortificationMap.containsKey(chunk.getFortification())) {
+            fortificationMap.put(chunk.getFortification(), new ArrayList<>());
         }
 
-        fortificationMap.get(chunk.getCity()).add(chunk);
+        fortificationMap.get(chunk.getFortification()).add(chunk);
 
         if (!dataArray.contains(chunk)) {
             if (dataArray.size() == 0)
@@ -119,10 +119,10 @@ public class ChunkHandler extends Handler<Chunk> {
         Chunk left = getChunk(location.PosX - 1, location.PosZ, location.DimensionId);
         Chunk right = getChunk(location.PosX + 1, location.PosZ, location.DimensionId);
 
-        return (bot != null && bot.getCity() == city)
-                || (top != null && top.getCity() == city)
-                || (left != null && left.getCity() == city)
-                || (right != null && right.getCity() == city);
+        return (bot != null && bot.getRelatedCity() == city)
+                || (top != null && top.getRelatedCity() == city)
+                || (left != null && left.getRelatedCity() == city)
+                || (right != null && right.getRelatedCity() == city);
     }
 
     public List<Chunk> getHomeBlockList() {
@@ -165,7 +165,7 @@ public class ChunkHandler extends Handler<Chunk> {
         Chunk oldHB, newHB;
 
         newHB = getChunk((int) position.x, (int) position.z, player.getLastDimensionKey());
-        oldHB = getHomeBlock(newHB.getCity());
+        oldHB = getHomeBlock(newHB.getFortification());
 
         newHB.setHomeBlock(true);
         if (oldHB != null)
@@ -173,8 +173,9 @@ public class ChunkHandler extends Handler<Chunk> {
 
         newHB.setRespawnPoint(position);
 
-        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(newHB.getCity(), null,
-                new TextComponent(String.format("Le HomeBlock de la ville est désormais en [%d;%d;%d]",
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(newHB.getRelatedCity(), null,
+                new TextComponent(String.format("Fortification '%s' homeblock is now set to [%d;%d;%d]",
+                        newHB.getFortification().getDisplayName(),
                         (int) position.x,
                         (int) position.y,
                         (int) position.z)), true);
@@ -258,6 +259,7 @@ public class ChunkHandler extends Handler<Chunk> {
         Chunk chunk = new Chunk(posX, posZ, fortification, dimension);
 
         chunk.setName(name);
+        chunk.setFortification();
 
         add(chunk);
 
@@ -273,11 +275,11 @@ public class ChunkHandler extends Handler<Chunk> {
         for (Chunk chunk : dataArray) {
             chunk.updateDependencies();
 
-            if (!fortificationMap.containsKey(chunk.getCity())) {
-                fortificationMap.put(chunk.getCity(), new ArrayList<>());
+            if (!fortificationMap.containsKey(chunk.getFortification())) {
+                fortificationMap.put(chunk.getFortification(), new ArrayList<>());
             }
-            if (!fortificationMap.get(chunk.getCity()).contains(chunk))
-                fortificationMap.get(chunk.getCity()).add(chunk);
+            if (!fortificationMap.get(chunk.getFortification()).contains(chunk))
+                fortificationMap.get(chunk.getFortification()).add(chunk);
         }
         Save();
     }

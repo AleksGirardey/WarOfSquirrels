@@ -35,11 +35,11 @@ public class CuboCreate extends CityMayorOrAssistantCommandBuilder implements IA
             if (points.getLeft() != null && points.getRight() != null) {
                 Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(points.getLeft(), player.getPlayerEntity().getCommandSenderWorld().dimension());
                 if (chunk != null) {
-                    City city = chunk.getCity();
+                    City city = chunk.getRelatedCity();
                     if (city == player.getCity()) {
                         chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(points.getRight(), player.getPlayerEntity().getCommandSenderWorld().dimension());
                         if (chunk != null) {
-                            city = chunk.getCity();
+                            city = chunk.getRelatedCity();
                             return city == player.getCity();
                         }
                     }

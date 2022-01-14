@@ -16,7 +16,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.UUID;
 
@@ -86,9 +85,12 @@ public class Chunk {
     public MutableComponent creationLogText() {
         StringBuilder message = new StringBuilder();
 
-        message.append("[Chunk] The city ")
-                .append(String.format("'%s'", city.displayName))
-                .append(String.format(" has claim a new %s ", homeBlock ?
+        message.append("[Chunk]");
+
+        if (city != null) message.append(" The city ").append(String.format("'%s'", city.displayName));
+        if (bastion != null) message.append(" The bastion ").append(String.format("'%s'", bastion.getDisplayName()));
+
+        message.append(String.format(" has claim a new %s ", homeBlock ?
                         "HomeBlock" : (outpost ?
                         "Outpost" : "Chunk")))
                 .append(name != null ? "'" + name + "' " : "")
@@ -116,7 +118,7 @@ public class Chunk {
 
     @Override
     public String toString() {
-        return ("[" + posX + ";" + posZ + "] owned by " + city.getDisplayName() + " in dimension " + dimensionId);
+        return ("[" + posX + ";" + posZ + "] owned by " + (city != null ? city.getDisplayName() : bastion.getDisplayName()) + " in dimension " + dimensionId);
     }
 
     public static ResourceKey<Level> IdToDimension(String id) {
@@ -129,5 +131,13 @@ public class Chunk {
 
     public void updateDependencies() {
         setFortification();
+    }
+
+    @JsonIgnore
+    public City getRelatedCity() {
+        if (city != null) return city;
+        else if (bastion != null) return bastion.getRelatedCity();
+
+        return null;
     }
 }

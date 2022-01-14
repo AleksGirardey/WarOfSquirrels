@@ -7,10 +7,10 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.TerritoryHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.selector.EntitySelector;
 
 public interface ITerritoryExtractor {
     String territoryNameArgument = "TerritoryName";
@@ -29,9 +29,8 @@ public interface ITerritoryExtractor {
 
     default Territory ExtractTerritory(FullPlayer player) {
         TerritoryHandler handler = WarOfSquirrels.instance.getTerritoryHandler();
-        int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
-        int x = player.getPlayerEntity().getBlockX() / territorySize;
-        int z = player.getPlayerEntity().getBlockZ() / territorySize;
-        return handler.get(x, z);
+        Vector2 territoryPos = Utils.WorldToTerritoryCoordinates(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
+
+        return handler.get((int) territoryPos.x, (int) territoryPos.y);
     }
 }

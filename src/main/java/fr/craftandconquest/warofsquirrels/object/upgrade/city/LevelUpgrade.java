@@ -3,6 +3,7 @@ package fr.craftandconquest.warofsquirrels.object.upgrade.city;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.upgrade.Upgrade;
 import fr.craftandconquest.warofsquirrels.object.upgrade.UpgradeItem;
@@ -81,7 +82,7 @@ public class LevelUpgrade extends Upgrade {
         builder.append("Requires :\n");
 
         if (minPeople > 0)
-            builder.append("  -").append(minPeople).append(" people in the city.");
+            builder.append("  -").append(minPeople).append(" people in the city.\n");
         if (delayInDays > 0)
             builder.append("  -").append(delayInDays).append(" days to complete the upgrade.\n");
 

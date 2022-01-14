@@ -135,6 +135,10 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
         return diplomacyMap.get(faction);
     }
 
+    public void updateDependencies() {
+        dataArray.forEach(Diplomacy::updateDependencies);
+    }
+
     @Override
     public void Log() {
         Logger.info(MessageFormat.format("{0} Diplomacy generated : {1}",

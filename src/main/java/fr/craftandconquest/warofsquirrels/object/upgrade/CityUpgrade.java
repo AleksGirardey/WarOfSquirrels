@@ -2,6 +2,7 @@ package fr.craftandconquest.warofsquirrels.object.upgrade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.upgrade.city.*;
@@ -79,14 +80,16 @@ public class CityUpgrade {
             }
         }
 
-        if (target == null) return false;
+        if (target == null) {
+            WarOfSquirrels.instance.debugLog("TARGET NULL");
+            return false;
+        }
 
         if (target.isComplete(fortification)) {
-            if (target.getDelayInDays() <= 0) LevelUp(type);
-            else {
-                targetInfo.setHasBeenComplete(true);
-                targetInfo.setDaysBeforeLevelUp(target.getDelayInDays());
-            }
+            targetInfo.setHasBeenComplete(true);
+            targetInfo.setDaysBeforeLevelUp(target.getDelayInDays());
+            if (target.getDelayInDays() <= 0)
+                LevelUp(type);
             return true;
         }
 
@@ -172,6 +175,10 @@ public class CityUpgrade {
         this.city = city;
 
         if (currentLevelUpgrade != null) currentLevelUpgrade.Populate();
+        if (currentFacilityUpgrade != null) currentFacilityUpgrade.Populate();
+        if (currentHousingUpgrade != null) currentHousingUpgrade.Populate();
+        if (currentHeadQuarterUpgrade != null) currentHeadQuarterUpgrade.Populate();
+        if (currentPalaceUpgrade != null) currentPalaceUpgrade.Populate();
     }
 
     @JsonIgnore public int getCostReduction() {

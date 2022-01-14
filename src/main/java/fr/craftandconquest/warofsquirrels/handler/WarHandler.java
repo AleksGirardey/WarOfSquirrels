@@ -87,7 +87,7 @@ public class WarHandler {
     }
 
     public boolean AbleTo(FullPlayer player, Chunk chunk) {
-        return AbleTo(player, chunk.getCity()) && !chunk.getHomeBlock() && !chunk.getOutpost();
+        return AbleTo(player, chunk.getRelatedCity()) && !chunk.getHomeBlock() && !chunk.getOutpost();
     }
 
     public boolean AbleTo(FullPlayer player, City city) {
@@ -155,8 +155,8 @@ public class WarHandler {
     public boolean IsConcerned(Chunk chunk) {
         if (chunk == null) return false;
 
-        War war = getWar(chunk.getCity());
+        War war = getWar(chunk.getRelatedCity());
 
-        return war != null && war.getCityDefender() == chunk.getCity();
+        return war != null && war.getCityDefender() == chunk.getRelatedCity();
     }
 }

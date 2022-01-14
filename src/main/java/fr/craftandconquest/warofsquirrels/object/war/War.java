@@ -6,6 +6,7 @@ import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.channels.WarChannel;
+import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.Influence;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
@@ -456,7 +457,7 @@ public class War implements IChannelTarget {
                 z = (int) player.lastPosition.z;
 
                 c = WarOfSquirrels.instance.getChunkHandler().getChunk(x, z, player.getLastDimensionKey());
-                if (c != null && c == chunk && inCaptureRange((int) player.lastPosition.y, c.getCity())) {
+                if (c != null && c == chunk && c.getBastion() != null && inCaptureRange((int) player.lastPosition.y, c.getBastion())) {
                     if (isAttacker(player))
                         att++;
                     else if (isDefender(player))
@@ -469,8 +470,8 @@ public class War implements IChannelTarget {
         return ret;
     }
 
-    private boolean inCaptureRange(int y, City city) {
-        int ySpawn = (int) WarOfSquirrels.instance.getChunkHandler().getHomeBlock(city).getRespawnPoint().y;
+    private boolean inCaptureRange(int y, Bastion bastion) {
+        int ySpawn = (int) WarOfSquirrels.instance.getChunkHandler().getHomeBlock(bastion).getRespawnPoint().y;
 
         return y <= ySpawn + 20 && y <= ySpawn - 20;
     }
@@ -486,7 +487,7 @@ public class War implements IChannelTarget {
                 Chunk chunk = WarOfSquirrels.instance.getChunkHandler()
                         .getChunk(att.getLastChunkX(), att.getLastChunkZ(), att.getLastDimensionKey());
 
-                if (chunk != null && chunk.getCity() == cityDefender
+                if (chunk != null && chunk.getRelatedCity() == cityDefender
                         && !updated.contains(chunk) && !capturedChunk.contains(chunk)
                         && !chunk.getHomeBlock() && !chunk.getOutpost()) {
                     updated.add(chunk);

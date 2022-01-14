@@ -129,9 +129,9 @@ public class PlayersInteractionHandler {
 
         if (lastChunk != null) {
             if (newChunk != null) {
-                if (lastChunk.getCity() != newChunk.getCity()) {
+                if (lastChunk.getRelatedCity() != newChunk.getRelatedCity()) {
                     if (WarOfSquirrels.instance.getWarHandler().IsConcerned(newChunk)) {
-                        War war = WarOfSquirrels.instance.getWarHandler().getWar(newChunk.getCity());
+                        War war = WarOfSquirrels.instance.getWarHandler().getWar(newChunk.getRelatedCity());
 
                         if (!war.isDefender(player) && !war.isAttacker(player)) {
                             event.setCanceled(true);

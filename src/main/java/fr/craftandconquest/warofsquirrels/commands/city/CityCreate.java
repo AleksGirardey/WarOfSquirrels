@@ -98,10 +98,12 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
         WarOfSquirrels.instance.getBroadCastHandler().AddTarget(city, new CityChannel(city));
         WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(city, player);
 
-        for (FullPlayer p : WarOfSquirrels.instance.getPartyHandler().getPartyFromLeader(player).toList()) {
-            p.setCity(city);
-            city.addCitizen(p);
-            WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(city, p);
+        if (WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player) != null) {
+            for (FullPlayer p : WarOfSquirrels.instance.getPartyHandler().getPartyFromLeader(player).toList()) {
+                p.setCity(city);
+                city.addCitizen(p);
+                WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(city, p);
+            }
         }
         MutableComponent message = ChatText.Colored("[BREAKING NEWS] " + cityName + " have been created by " + player.getDisplayName(),
                 ChatFormatting.GOLD);

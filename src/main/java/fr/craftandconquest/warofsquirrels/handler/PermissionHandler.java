@@ -130,46 +130,46 @@ public class PermissionHandler {
     private Permission checkChunkPermission(FullPlayer player, Chunk chunk) {
         boolean hasCity = player.getCity() != null;
         boolean hasFaction = hasCity && player.getCity().getFaction() != null;
-        boolean chunkHasFaction = chunk.getCity().getFaction() != null;
-        boolean sameCity = hasCity && chunk.getCity().equals(player.getCity());
+        boolean chunkHasFaction = chunk.getFortification().getFaction() != null;
+        boolean sameCity = hasCity && chunk.getRelatedCity().equals(player.getCity());
         boolean isOwner = hasCity && player.getCity().getOwner().equals(player);
         boolean isAssistant = player.getAssistant();
         boolean isResident = player.getResident();
 
         Permission customPerm;
 
-        customPerm = extractCustomPermission(player, chunk.getCity().getCustomPermissionList());
+        customPerm = extractCustomPermission(player, chunk.getRelatedCity().getCustomPermissionList());
 
         if (customPerm != null) return customPerm;
 
         if (!hasCity) {
-            return chunk.getCity().getDefaultPermission().get(PermissionRelation.OUTSIDER);
+            return chunk.getRelatedCity().getDefaultPermission().get(PermissionRelation.OUTSIDER);
         }
 
-        customPerm = extractCustomPermission(player.getCity(), chunk.getCity().getCustomPermissionList());
+        customPerm = extractCustomPermission(player.getCity(), chunk.getRelatedCity().getCustomPermissionList());
         if (customPerm != null) return customPerm;
 
         if (player.getCity().getFaction() != null) {
-            customPerm = extractCustomPermission(player.getCity().getFaction(), chunk.getCity().getCustomPermissionList());
+            customPerm = extractCustomPermission(player.getCity().getFaction(), chunk.getRelatedCity().getCustomPermissionList());
             if (customPerm != null) return customPerm;
         }
 
         if (sameCity) {
             if (isOwner || isAssistant) return new Permission(true, true, true, true, true);
 
-            return isResident ? chunk.getCity().getDefaultPermission().get(PermissionRelation.RESIDENT) :
-                    chunk.getCity().getDefaultPermission().get(PermissionRelation.RECRUIT);
+            return isResident ? chunk.getRelatedCity().getDefaultPermission().get(PermissionRelation.RESIDENT) :
+                    chunk.getRelatedCity().getDefaultPermission().get(PermissionRelation.RECRUIT);
         }
 
-        if (!chunkHasFaction || !hasFaction) return chunk.getCity().getDefaultPermission().get(PermissionRelation.OUTSIDER);
+        if (!chunkHasFaction || !hasFaction) return chunk.getRelatedCity().getDefaultPermission().get(PermissionRelation.OUTSIDER);
 
         boolean isAlly = WarOfSquirrels.instance.getDiplomacyHandler()
-                .getAllies(chunk.getCity().getFaction()).contains(player.getCity().getFaction());
+                .getAllies(chunk.getRelatedCity().getFaction()).contains(player.getCity().getFaction());
         boolean isEnemy = WarOfSquirrels.instance.getDiplomacyHandler()
-                .getEnemies(chunk.getCity().getFaction()).contains(player.getCity().getFaction());
-        boolean isFaction = chunk.getCity().getFaction().equals(player.getCity().getFaction());
+                .getEnemies(chunk.getRelatedCity().getFaction()).contains(player.getCity().getFaction());
+        boolean isFaction = chunk.getRelatedCity().getFaction().equals(player.getCity().getFaction());
 
-        return chunk.getCity().getDefaultPermission().get(isAlly ?
+        return chunk.getRelatedCity().getDefaultPermission().get(isAlly ?
                                         PermissionRelation.ALLY : (isEnemy ?
                                         PermissionRelation.ENEMY : isFaction ?
                                         PermissionRelation.FACTION : PermissionRelation.OUTSIDER));
@@ -203,17 +203,17 @@ public class PermissionHandler {
     private Permission checkWarPermission(FullPlayer player, Chunk chunk) {
         boolean playerInWar = WarOfSquirrels.instance.getWarHandler().Contains(player);
 
-        War warCity = WarOfSquirrels.instance.getWarHandler().getWar(chunk.getCity());
+        War warCity = WarOfSquirrels.instance.getWarHandler().getWar(chunk.getRelatedCity());
         War warPlayer = WarOfSquirrels.instance.getWarHandler().getWar(player);
 
         if (!playerInWar) return new Permission(false, false, false, false, false);
         if (!warCity.equals(warPlayer)) return null;
 
         boolean isAlly = WarOfSquirrels.instance.getDiplomacyHandler()
-                .getAllies(chunk.getCity().getFaction()).contains(player.getCity().getFaction());
+                .getAllies(chunk.getRelatedCity().getFaction()).contains(player.getCity().getFaction());
         boolean isEnemy = WarOfSquirrels.instance.getDiplomacyHandler()
-                .getEnemies(chunk.getCity().getFaction()).contains(player.getCity().getFaction());
-        boolean isFaction = chunk.getCity().getFaction().equals(player.getCity().getFaction());
+                .getEnemies(chunk.getRelatedCity().getFaction()).contains(player.getCity().getFaction());
+        boolean isFaction = chunk.getRelatedCity().getFaction().equals(player.getCity().getFaction());
 
         if (isAlly || isFaction)
             return new Permission(true, true, true, false, false);
@@ -242,7 +242,7 @@ public class PermissionHandler {
         Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(territoryLocation.getKey(), territoryLocation.getValue());
         boolean isThereTerritory = territory != null; // ALWAYS TRUE IF OVERWORLD
         
-        boolean isThereWarOnCity = isThereChunk && WarOfSquirrels.instance.getWarHandler().Contains(chunk.getCity());
+        boolean isThereWarOnCity = isThereChunk && WarOfSquirrels.instance.getWarHandler().Contains(chunk.getRelatedCity());
 
         if (isThereWarOnCity)
             permission = checkWarPermission(player, chunk);

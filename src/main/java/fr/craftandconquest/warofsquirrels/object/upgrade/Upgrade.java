@@ -16,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import java.util.*;
 
 public abstract class Upgrade {
-//    @JsonIgnore public static Map<Integer, Upgrade> upgradeMap;
     @JsonIgnore @Getter @Setter protected Map<UpgradeItem, Integer> upgradeItems;
 
     @JsonProperty @Getter @Setter protected List<UpgradeItem> upgradeItemList;
@@ -35,6 +34,7 @@ public abstract class Upgrade {
     }
 
     protected void fillList() {
+        upgradeItemList = new ArrayList<>();
         upgradeItems.forEach((key, value) -> {
             key.setAmount(value);
             upgradeItemList.add(key);
@@ -86,11 +86,12 @@ public abstract class Upgrade {
                 }
             }
         }
+        fillList();
         return amount;
     }
 
     protected boolean hasCompleteItems() {
-        return upgradeItems.values().stream().noneMatch(amount -> amount >= 0);
+        return upgradeItems.values().stream().noneMatch(amount -> amount > 0);
     }
 
     public void applyCostReduction(int percentage, int level) {
@@ -112,7 +113,8 @@ public abstract class Upgrade {
                 .append("== ").append(getUpgradeName()).append(" [" + upgradeIndex + "/" + "4] ==\n");
         for(Map.Entry<UpgradeItem, Integer> entry : upgradeItems.entrySet()) {
             if (entry.getValue() <= 0) continue;
-            entryComponent.append("- ").append(Utils.SplitToStack(entry.getValue()).withStyle(ChatFormatting.BLUE)).append(" (" + entry.getValue() + ") ").append(entry.getKey().asString().withStyle(ChatFormatting.BLUE)).append("\n");
+            entryComponent.append("- ").append(Utils.SplitToStack(entry.getValue()).withStyle(ChatFormatting.BLUE)).append(" (" + entry.getValue() + ") ")
+                    .append(entry.getKey().asString().withStyle(ChatFormatting.BLUE)).append("\n");
         }
 
         extra.append(getExtraRequirements());

@@ -39,4 +39,9 @@ public class Vector3 {
         float v2 = b.z - a.z;
         return Math.sqrt(v0 * v0 + v1 * v1 + v2 * v2);
     }
+
+    @Override
+    public String toString() {
+        return "[" + x + ";" + y + ";" + z +"]";
+    }
 }

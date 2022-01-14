@@ -10,10 +10,7 @@ import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.faction.Influence;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
-import fr.craftandconquest.warofsquirrels.utils.ChatText;
-import fr.craftandconquest.warofsquirrels.utils.SpawnTeleporter;
-import fr.craftandconquest.warofsquirrels.utils.Utils;
-import fr.craftandconquest.warofsquirrels.utils.Vector3;
+import fr.craftandconquest.warofsquirrels.utils.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -239,7 +236,7 @@ public class WorldInteractionHandler {
     @SubscribeEvent
     public void OnPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
         if (event.getItemStack().getItem() == Items.FEATHER) {
-            displayInfoFeather(event.getPlayer(), event.getPlayer().getOnPos(), event.getWorld().dimension());
+            Utils.displayInfoFeather(event.getPlayer(), event.getPlayer().getOnPos(), event.getWorld().dimension());
             event.setCanceled(true);
             return;
         }
@@ -248,49 +245,6 @@ public class WorldInteractionHandler {
 
         event.getPlayer().sendMessage(ChatText.Error("You have not the permission to interact with this item"), Util.NIL_UUID);
         event.setCanceled(true);
-    }
-
-    private void displayInfoFeather(Player player, BlockPos pos, ResourceKey<Level> dimensionId) {
-        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(
-                pos.getX() / WarOfSquirrels.instance.getConfig().getTerritorySize(),
-                pos.getZ() / WarOfSquirrels.instance.getConfig().getTerritorySize());
-
-        if (territory == null) return;
-
-        int posX = pos.getX();
-        int posZ = pos.getZ();
-        ChunkPos chunkPos = Utils.WorldToChunkPos(posX, posZ);
-
-        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(chunkPos.x, chunkPos.z, dimensionId);
-        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(new Vector3(posX, pos.getY(), posZ));
-
-        player.sendMessage(ChatText.Colored(MessageFormat.format(
-                """
-                        ==| Territory {0} [{1};{2}] |==
-                            Owner : {3}
-                        ==| Chunk [{4};{5}] |==
-                            Owner : {6}""",
-                territory.getName(), territory.getPosX(), territory.getPosZ(),
-                (territory.getFaction() == null ? "None" : territory.getFaction().getDisplayName()),
-                chunkPos.x, chunkPos.z,
-                (chunk == null ? "None" : chunk.getCity().getDisplayName())),
-                ChatFormatting.LIGHT_PURPLE), Util.NIL_UUID);
-
-        List<Influence> influenceList  = WarOfSquirrels.instance.getInfluenceHandler().getAll(territory);
-        MutableComponent message = ChatText.Colored("==| Influence |==", ChatFormatting.BLUE);
-
-        for (Influence influence : influenceList) {
-            if (influence.getFaction() != null)
-                message.append("  [Faction] ").append(influence.getFaction().getDisplayName()).append(" [").append(influence.getValue() + "").append("]\n");
-            else
-                message.append("  [City] ").append(influence.getCity().getDisplayName()).append(" [").append(influence.getValue() + "").append("]\n");
-        }
-
-        player.sendMessage(message, Util.NIL_UUID);
-
-        if (cubo != null) {
-            player.sendMessage(ChatText.Colored("==| Cubo '" + cubo.getName() + "' [" + cubo.getOwner().getDisplayName() + "] |==", ChatFormatting.LIGHT_PURPLE), Util.NIL_UUID);
-        }
     }
 
     private boolean HandlePlayerRightClick(Player playerEntity, BlockPos target, String dimensionId) {

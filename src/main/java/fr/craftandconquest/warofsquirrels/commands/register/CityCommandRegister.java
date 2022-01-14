@@ -19,6 +19,7 @@ public class CityCommandRegister implements ICommandRegister {
     private final CityList cityList = new CityList();
     private final CityTp cityTp = new CityTp();
     private final CityUpgradeCommand cityUpgradeCommand = new CityUpgradeCommand();
+    private final CityBastion cityBastion = new CityBastion();
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -37,6 +38,7 @@ public class CityCommandRegister implements ICommandRegister {
                 .then(cityList.register())
                 .then(cityUpgradeCommand.register())
                 .then(cityTp.register())
+                .then(cityBastion.register())
                 .executes(cityHelp)
         );
     }

@@ -1,5 +1,6 @@
 package fr.craftandconquest.warofsquirrels.object.faction;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
@@ -13,46 +14,40 @@ import java.util.UUID;
 
 @AllArgsConstructor
 public class Influence {
-    @JsonProperty
-    @Getter
-    @Setter
-    private UUID uuid;
-    @JsonProperty
-    @Getter
-    private UUID factionUuid;
-    @JsonProperty
-    @Getter
-    private UUID cityUuid;
-    @JsonProperty
-    @Getter
-    private UUID territoryUuid;
-    @JsonProperty
-    @Getter
-    int value;
+    @JsonProperty @Getter @Setter private UUID uuid;
+    @JsonProperty @Getter @Setter private UUID factionUuid;
+    @JsonProperty @Getter @Setter private UUID cityUuid;
+    @JsonProperty @Getter @Setter private UUID territoryUuid;
+    @JsonProperty @Getter @Setter int value;
 
-    @JsonIgnore
-    @Getter
-    private City city;
-    @JsonIgnore
-    @Getter
-    private Faction faction;
-    @JsonIgnore
-    @Getter
-    private Territory territory;
+    @JsonIgnore @Getter private City city;
+    @JsonIgnore @Getter private Faction faction;
+    @JsonIgnore @Getter private Territory territory;
 
-    public Influence() {
-        this.uuid = UUID.randomUUID();
-        this.value = 0;
+    @JsonCreator
+    public Influence(
+            @JsonProperty("uuid") UUID _uuid,
+            @JsonProperty("factionUuid") UUID _factionUuid,
+            @JsonProperty("cityUuid") UUID _cityUuid,
+            @JsonProperty("territoryUuid") UUID _territoryUuid,
+            @JsonProperty("value") int _value) {
+        uuid = _uuid;
+        factionUuid = _factionUuid;
+        cityUuid = _cityUuid;
+        territoryUuid = _territoryUuid;
+        value = _value;
     }
 
     public Influence(City city, Territory territory) {
-        super();
+        this.uuid = UUID.randomUUID();
+        this.value = 0;
         SetCity(city);
         SetTerritory(territory);
     }
 
     public Influence(Faction faction, Territory territory) {
-        super();
+        this.uuid = UUID.randomUUID();
+        this.value = 0;
         SetFaction(faction);
         SetTerritory(territory);
     }
@@ -82,6 +77,22 @@ public class Influence {
 
     public void SubInfluence(int influence) {
         this.value = Math.max(value - influence, 0);
+    }
+
+    public void updateDependencies() {
+        if (cityUuid != null) city = WarOfSquirrels.instance.getCityHandler().getCity(cityUuid);
+        if (factionUuid != null) faction = WarOfSquirrels.instance.getFactionHandler().get(factionUuid);
+        if (territoryUuid != null) territory = WarOfSquirrels.instance.getTerritoryHandler().get(territoryUuid);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj.getClass() != this.getClass()) return false;
+
+        Influence influence = (Influence) obj;
+
+        return influence.getUuid().equals(this.uuid);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class CityUnClaim extends CityMayorOrAssistantCommandBuilder {
 
         boolean ret = true;
 
-        if (chunk == null || chunk.getCity() != player.getCity()) {
+        if (chunk == null || chunk.getRelatedCity() != player.getCity()) {
             message = ChatText.Error("This chunk did not belong to your city.");
             ret = false;
         } else if (chunk.getHomeBlock()) {

@@ -2,6 +2,7 @@ package fr.craftandconquest.warofsquirrels.object.upgrade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.upgrade.bastion.*;
@@ -78,11 +79,10 @@ public class BastionUpgrade {
         if (target == null) return false;
 
         if (target.isComplete(fortification)) {
-            if (target.getDelayInDays() <= 0) LevelUp(type);
-            else {
-                targetInfo.setHasBeenComplete(true);
-                targetInfo.setDaysBeforeLevelUp(target.getDelayInDays());
-            }
+            targetInfo.setHasBeenComplete(true);
+            targetInfo.setDaysBeforeLevelUp(target.getDelayInDays());
+            if (target.getDelayInDays() <= 0)
+                LevelUp(type);
             return true;
         }
 
@@ -100,7 +100,9 @@ public class BastionUpgrade {
             case Road -> info = road;
         }
 
-        if (info == null) return;
+        if (info == null) {
+            return;
+        }
 
         if (info.isHasBeenComplete()) {
             info.setDaysBeforeLevelUp(Math.min(0, info.getDaysBeforeLevelUp() - 1));
@@ -145,6 +147,10 @@ public class BastionUpgrade {
         this.bastion = bastion;
 
         if (currentLevelUpgrade != null) currentLevelUpgrade.Populate();
+        if (currentVillageUpgrade != null) currentVillageUpgrade.Populate();
+        if (currentFortificationUpgrade != null) currentFortificationUpgrade.Populate();
+        if (currentBarrackUpgrade != null) currentBarrackUpgrade.Populate();
+        if (currentRoadUpgrade != null) currentRoadUpgrade.Populate();
     }
 
     @JsonIgnore

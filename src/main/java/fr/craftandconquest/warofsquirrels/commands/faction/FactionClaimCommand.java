@@ -10,6 +10,7 @@ import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -57,13 +58,16 @@ public class FactionClaimCommand extends FactionCommandAssistant implements ITer
                 + posX + ";" + posZ + "](~" + posX * territorySize + ";" + "~" + posZ * territorySize + ")", ChatFormatting.GOLD);
 
         Player entity = player.getPlayerEntity();
+        Vector3 position = new Vector3(entity.getBlockX(), entity.getBlockY(), entity.getBlockZ());
 
-        WarOfSquirrels.instance.getBastionHandler().Create(territory, player.getCity(), Utils.WorldToChunk(entity.getBlockX(), entity.getBlockZ()));
-        WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
+        WarOfSquirrels.instance.getBastionHandler().Create(territory, player.getCity(), Utils.WorldToChunk(entity.getBlockX(), entity.getBlockZ()), position);
 //        WarOfSquirrels.instance.getInfluenceHandler().ResetOthersInfluence(territory);
 
         WarOfSquirrels.instance.getBastionHandler().Save();
         WarOfSquirrels.instance.getTerritoryHandler().Save();
+        WarOfSquirrels.instance.getChunkHandler().Save();
+
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
         return 0;
     }
 

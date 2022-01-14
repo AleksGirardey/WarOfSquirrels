@@ -132,11 +132,12 @@ public class WarOfSquirrels {
         factionHandler.updateDependencies();
         playerHandler.updateDependencies();
         cuboHandler.updateDependencies();
-        playerHandler.updateDependencies();
-        cuboHandler.UpdateDependencies();
         cityHandler.updateDependencies();
         chunkHandler.updateDependencies();
         bastionHandler.updateDependencies();
+        territoryHandler.updateDependencies();
+        influenceHandler.updateDependencies();
+        diplomacyHandler.updateDependencies();
 
         LOGGER.info("[WoS] Handlers created ! ");
     }
@@ -161,5 +162,9 @@ public class WarOfSquirrels {
         UpdateHandler.OnSaveUpdate.add(influenceHandler);
         UpdateHandler.OnSaveUpdate.add(territoryHandler);
         UpdateHandler.OnSaveUpdate.add(bastionHandler);
+    }
+
+    public void debugLog(String message) {
+        LOGGER.info("[WoS][Debug] " + message);
     }
 }

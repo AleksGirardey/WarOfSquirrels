@@ -5,8 +5,11 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
+import fr.craftandconquest.warofsquirrels.object.upgrade.BastionUpgrade;
+import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
+import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -82,7 +85,7 @@ public class BastionHandler extends Handler<Bastion> {
     @Override
     public void spreadPermissionDelete(IPermission target) { }
 
-    public Bastion Create(Territory territory, City city, Vector2 chunkPosition) {
+    public Bastion Create(Territory territory, City city, Vector2 chunkPosition, Vector3 playerPosition) {
         Bastion bastion = new Bastion();
 
         bastion.setBastionUuid(UUID.randomUUID());
@@ -90,10 +93,15 @@ public class BastionHandler extends Handler<Bastion> {
         bastion.SetCity(city);
         bastion.setProtected(true);
         bastion.setTerritoryPosition(new Vector2(territory.getPosX(), territory.getPosZ()));
-
-        WarOfSquirrels.instance.getChunkHandler().CreateChunk((int) chunkPosition.x, (int) chunkPosition.y, bastion, Level.OVERWORLD);
+        bastion.setBastionUpgrade(new BastionUpgrade());
+        bastion.getBastionUpgrade().Init(bastion);
 
         add(bastion);
+
+        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().CreateChunk((int) chunkPosition.x, (int) chunkPosition.y, bastion, Level.OVERWORLD);
+        chunk.setRespawnPoint(playerPosition);
+
+        territory.SetFortification(bastion);
 
         return bastion;
     }
@@ -107,7 +115,7 @@ public class BastionHandler extends Handler<Bastion> {
     }
 
     public List<Bastion> get(City city) {
-        return bastionByCities.get(city);
+        return bastionByCities.getOrDefault(city, Collections.emptyList());
     }
 
     public void update() {

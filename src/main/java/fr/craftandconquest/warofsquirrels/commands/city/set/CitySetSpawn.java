@@ -31,10 +31,10 @@ public class CitySetSpawn extends CityMayorOrAssistantCommandBuilder {
 
 //        WarOfSquirrels.LOGGER.info("[WoS][Debug] " + (chunk == null ? "NULL":"CHUNK") + " - " + (!chunk.getCity().equals(player.getCity()) ? "NONE":"EQUAL") + " - " + (chunk.getHomeBlock() ? "HB" : "NONE") + " - " + (chunk.getOutpost() ? "Outpost" : "NONE"));
 
-        if (chunk != null && chunk.getCity().equals(player.getCity()) && (chunk.getHomeBlock() || chunk.getOutpost())) {
+        if (chunk != null && chunk.getRelatedCity().equals(player.getCity()) && (chunk.getHomeBlock() || chunk.getOutpost())) {
             return true;
         }
-        player.sendMessage(ChatText.Error("You cannot set your spawn on this chunk."));
+        player.sendMessage(ChatText.Error("You cannot set your fortification spawn on this chunk."));
         return true;
     }
     

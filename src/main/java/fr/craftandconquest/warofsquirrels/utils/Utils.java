@@ -2,11 +2,16 @@ package fr.craftandconquest.warofsquirrels.utils;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
+import fr.craftandconquest.warofsquirrels.object.faction.Influence;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.war.War;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
+import fr.craftandconquest.warofsquirrels.object.world.Territory;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
@@ -49,6 +54,13 @@ public class Utils {
     public static Vector2 WorldToTerritoryCoordinates(int posX, int posZ) {
         int size = WarOfSquirrels.instance.getConfig().getTerritorySize();
         return new Vector2(Math.floorDiv(posX, size), Math.floorDiv(posZ, size));
+    }
+
+    public static Vector3 TerritoryToWorldCoordinates(int posX, int posZ) {
+        int size = WarOfSquirrels.instance.getConfig().getTerritorySize();
+        int half = size / 2;
+
+        return new Vector3(posX * size + half, 100, posZ * size + half);
     }
 
     public static boolean CanPlaceOutpost(int posX, int posZ) {
@@ -233,5 +245,57 @@ public class Utils {
 
     public static int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
+    }
+
+    public static void displayInfoFeather(Player player, BlockPos pos, ResourceKey<Level> dimensionId) {
+        Vector2 territoryPos = Utils.WorldToTerritoryCoordinates(pos.getX(), pos.getZ());
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(territoryPos);
+
+        if (territory == null) return;
+
+        int posX = pos.getX();
+        int posZ = pos.getZ();
+        ChunkPos chunkPos = Utils.WorldToChunkPos(posX, posZ);
+
+        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(chunkPos.x, chunkPos.z, dimensionId);
+        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(new Vector3(posX, pos.getY(), posZ));
+
+        displayInfoFeather(player, territory, chunkPos, chunk, cubo);
+    }
+
+    public static void displayInfoFeather(Player player, Territory territory, ChunkPos chunkPos, Chunk chunk,  Cubo cubo) {
+        MutableComponent message = ChatText.Colored("", ChatFormatting.LIGHT_PURPLE);
+
+        if (territory != null) {
+            message.append(MessageFormat.format("==| Territory {0} [{1};{2}] |==\n  Owner : {3}\n",
+                    territory.getName(), territory.getPosX(), territory.getPosZ(),
+                    (territory.getFaction() == null ? "None" : territory.getFaction().getDisplayName())));
+        }
+
+        if (chunkPos != null) {
+            message.append(MessageFormat.format("==| Chunk [{0};{1}] |==\n  Owner : {2}\n",
+                    chunkPos.x, chunkPos.z,
+                    (chunk == null ? "None" : chunk.getFortification().getDisplayName())));
+        }
+
+        List<Influence> influenceList  = WarOfSquirrels.instance.getInfluenceHandler().getAll(territory);
+        if (influenceList.size() > 0) {
+            message.append("==| Influence |==\n");
+
+            for (Influence influence : influenceList) {
+                if (influence.getFaction() != null)
+                    message.append("  [Faction] ").append(influence.getFaction().getDisplayName());
+                else
+                    message.append("  [City] ").append(influence.getCity().getDisplayName());
+
+                message.append(" [").append(influence.getValue() + "").append("/").append(influence.getTerritory().getInfluenceMax() + "").append("]\n");
+            }
+        }
+
+        if (cubo != null) {
+            message.append("==| Cubo '" + cubo.getName() + "' [" + cubo.getOwner().getDisplayName() + "] |==");
+        }
+
+        player.sendMessage(message, Util.NIL_UUID);
     }
 }

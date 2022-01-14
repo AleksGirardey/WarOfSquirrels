@@ -1,5 +1,6 @@
 package fr.craftandconquest.warofsquirrels.object.upgrade;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -29,6 +30,14 @@ public class UpgradeItem {
     @JsonIgnore @Getter @Setter private Item item;
     @JsonIgnore @Getter @Setter private Tag.Named<Item> itemTag;
 
+    @JsonCreator
+    public UpgradeItem(@JsonProperty("itemId") int id, @JsonProperty("tagId") String tagId, @JsonProperty("amount") int amount) {
+//        WarOfSquirrels.instance.debugLog("Creating Upgrade item with : " + id + " ; " + tagId + " ; " + amount);
+        this.amount = amount;
+        setItemId(id);
+        setTagId(tagId);
+    }
+
     public UpgradeItem(Item _item) {
         item = _item;
         itemId = Item.getId(item);
@@ -46,12 +55,14 @@ public class UpgradeItem {
     @JsonSetter public void setItemId(int id) {
         if (id == -1) return;
 
+        itemId = id;
         item = Item.byId(id);
     }
 
     @JsonSetter public void setTagId(String id) {
         if (id.equals("NOTSET")) return;
 
+        tagId = id;
         itemTag = ItemTags.bind(id);
     }
 
@@ -68,6 +79,6 @@ public class UpgradeItem {
     }
 
     public MutableComponent asString() {
-        return item == null ? new TextComponent(itemTag.toString()) : new TranslatableComponent(item.getDescriptionId() + "." + item.getRegistryName());
+        return item == null ? new TranslatableComponent(itemTag.getName().toString()) : new TranslatableComponent(item.getDescriptionId()); //+ "." + item.getRegistryName()
     }
 }

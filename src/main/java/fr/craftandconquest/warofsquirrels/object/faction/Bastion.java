@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.minecraft.network.chat.MutableComponent;
 
 import java.util.UUID;
 
@@ -80,7 +79,7 @@ public class Bastion implements IFortification {
 
     @Override
     public int getInfluenceMax() {
-        return 4000 + bastionUpgrade.getInfluenceMax();
+        return bastionUpgrade.getInfluenceMax();
     }
 
     @Override

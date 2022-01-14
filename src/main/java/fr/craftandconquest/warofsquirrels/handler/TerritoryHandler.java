@@ -234,24 +234,25 @@ public class TerritoryHandler extends Handler<Territory> {
 
     public List<Territory> getNeighbors(Territory territory) {
         List<Territory> neighbors = new ArrayList<>();
-        int halfSize = WarOfSquirrels.instance.getConfig().getMapSize() / 2;
-        int max = halfSize / WarOfSquirrels.instance.getConfig().getTerritorySize();
-        --max;
+        int halfSize = Math.floorDiv(WarOfSquirrels.instance.getConfig().getMapSize(), 2);
+        int max = Math.floorDiv(halfSize, WarOfSquirrels.instance.getConfig().getTerritorySize());
+
         int posX = territory.getPosX();
         int posZ = territory.getPosZ();
-        int posXMore = Math.min(posX + 1, max);
+        int posXMore = Math.min(posX + 1, max - 1);
         int posXLess = Math.max(posX - 1, -max);
-        int posZMore = Math.min(posZ + 1, max);
+        int posZMore = Math.min(posZ + 1, max - 1);
         int posZLess = Math.max(posZ - 1, -max);
 
-        if (get(posX, posZMore) != territory)
-            neighbors.add(get(posX, posZMore));
-        if (get(posX, posZLess) != territory)
-            neighbors.add(get(posX, posZLess));
-        if (get(posXMore, posZ) != territory)
-            neighbors.add(get(posXMore, posZ));
-        if (get(posXLess, posZ) != territory)
-            neighbors.add(get(posXLess, posZ));
+        Territory north = get(posX, posZMore);
+        Territory south = get(posX, posZLess);
+        Territory east = get(posXMore, posZ);
+        Territory west = get(posXLess, posZ);
+
+        if (north != null && !north.equals(territory)) neighbors.add(north);
+        if (south != null && !south.equals(territory)) neighbors.add(south);
+        if (east != null && !east.equals(territory)) neighbors.add(east);
+        if (west != null && !west.equals(territory)) neighbors.add(west);
 
         return neighbors;
     }
@@ -315,7 +316,12 @@ public class TerritoryHandler extends Handler<Territory> {
     }
 
     public void update() {
-        for (Territory territory : dataArray)
-            territory.update();
+        dataArray.stream().filter(t -> t.getFortification() != null).forEach(Territory::update);
+
+//        for (Territory territory : dataArray) territory.update();
+    }
+
+    public void updateDependencies() {
+        dataArray.forEach(Territory::updateDependencies);
     }
 }

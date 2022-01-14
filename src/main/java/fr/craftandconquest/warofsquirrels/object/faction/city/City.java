@@ -31,24 +31,20 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class City implements IPermission, IFortification, IChannelTarget, AttackTarget {
     @JsonProperty @Getter @Setter private UUID cityUuid;
-    @Getter @Setter public String displayName;
-    public String tag;
-    public UUID ownerUUID;
-
-    @JsonIgnore @Getter private Faction faction = null;
-
+    @JsonProperty @Setter public String displayName;
+    @JsonProperty public String tag;
+    @JsonProperty public UUID ownerUUID;
     @JsonProperty @Getter @Setter private UUID factionUuid;
-
     @JsonProperty @Getter @Setter private ChestLocation upgradeChestLocation;
     @JsonProperty @Getter @Setter private boolean hasAttackedToday = false;
+    @JsonProperty @Getter @Setter private Map<PermissionRelation, Permission> defaultPermission;
+    @JsonProperty @Getter @Setter private List<CustomPermission> customPermissionList = new ArrayList<>();
+    @JsonProperty @Getter @Setter CityUpgrade cityUpgrade;
 
-    @JsonIgnore @Getter @Setter private Map<IPermission, Permission> customPermission = new HashMap<>();
-    @Getter @Setter private Map<PermissionRelation, Permission> defaultPermission;
-    @Getter @Setter private List<CustomPermission> customPermissionList = new ArrayList<>();
     @JsonIgnore @Getter private FullPlayer owner;
+    @JsonIgnore private Faction faction = null;
+    @JsonIgnore @Getter @Setter private Map<IPermission, Permission> customPermission = new HashMap<>();
     @JsonIgnore @Getter private final List<FullPlayer> citizens = new ArrayList<>();
-
-    @Getter @Setter CityUpgrade cityUpgrade;
 
     public List<FullPlayer> getAssistants() {
         return citizens.stream().filter(FullPlayer::getAssistant).collect(Collectors.toCollection(ArrayList::new));
@@ -123,6 +119,11 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         this.faction = faction;
         if (faction != null)
             this.factionUuid = faction.getFactionUuid();
+    }
+
+    @Override
+    public Faction getFaction() {
+        return faction;
     }
 
     @JsonIgnore
@@ -203,7 +204,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
     @JsonIgnore @Override
     public int getInfluenceMax() {
-        return 4000;
+        return 0;
     }
 
     @JsonIgnore
@@ -329,5 +330,18 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     @Override
     public int getLinkedChunkSize() {
         return 0;
+    }
+
+    @Override
+    public String getDisplayName() { return displayName; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj.getClass() != this.getClass()) return false;
+
+        City city = (City) obj;
+
+        return city.getUuid().equals(this.cityUuid);
     }
 }

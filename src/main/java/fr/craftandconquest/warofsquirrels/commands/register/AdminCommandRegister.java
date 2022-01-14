@@ -19,6 +19,7 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
     private final AdminCreate adminCreate = new AdminCreate();
     private final AdminTp adminTp = new AdminTp();
     private final AdminWhitelist adminWhitelist = new AdminWhitelist();
+    private final AdminTerritory adminTerritory = new AdminTerritory();
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -28,6 +29,7 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
                 .then(adminCreate.register())
                 .then(adminTp.register())
                 .then(adminWhitelist.register())
+                .then(adminTerritory.register())
                 .executes(this));
     }
 

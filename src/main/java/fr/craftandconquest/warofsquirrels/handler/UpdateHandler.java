@@ -30,16 +30,22 @@ public class UpdateHandler {
     }
 
     public void DailyUpdate() {
-        MutableComponent message = ChatText.Colored("A new day begin..", ChatFormatting.GOLD);
-        message.withStyle(ChatFormatting.BOLD);
-        message.withStyle(ChatFormatting.ITALIC);
+//        message.withStyle(ChatFormatting.BOLD);
+//        message.withStyle(ChatFormatting.ITALIC);
 
-        WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
+        String prefix = "[WoS][Debug] ";
+
+        LOGGER.info(prefix + "Updating City");
         WarOfSquirrels.instance.getCityHandler().update();
+        LOGGER.info(prefix + "Updating Territory");
         WarOfSquirrels.instance.getTerritoryHandler().update();
+        LOGGER.info(prefix + "Updating Player");
         WarOfSquirrels.instance.getPlayerHandler().update();
+        LOGGER.info(prefix + "Updating Bastion");
         WarOfSquirrels.instance.getBastionHandler().update();
 //        WarOfSquirrels.instance.getLoanHandler().update();
+        MutableComponent message = ChatText.Colored("A new day begin..", ChatFormatting.GOLD);
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
         this.CreateDailyUpdate();
     }
 
