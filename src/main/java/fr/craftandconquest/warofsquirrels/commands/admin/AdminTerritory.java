@@ -51,13 +51,13 @@ public class AdminTerritory extends AdminCommandBuilder {
 
                 if (territory == null) return -1;
                 MutableComponent faction = ChatText.Colored(territory.getFaction() == null ?
-                        " " :
+                        "x" :
                         territory.getFaction().getDisplayName().substring(0, 1), ChatFormatting.GREEN);
 
                 lineOne.append("+---");
-                lineTwo.append("|   ");
-                lineThree.append("| ").append(faction).append(" ");
-                lineFour.append("|   ");
+                lineTwo.append("|xxx");
+                lineThree.append("|x").append(faction).append("x");
+                lineFour.append("|xxx");
             }
             lineOne.append("+\n");
             lineTwo.append("|\n");
@@ -68,6 +68,8 @@ public class AdminTerritory extends AdminCommandBuilder {
         }
 
         message.append(lineOne).append("+\n");
+
+        player.sendMessage(message);
 
         return 0;
     }

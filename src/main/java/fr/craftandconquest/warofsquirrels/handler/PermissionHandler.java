@@ -179,6 +179,10 @@ public class PermissionHandler {
         boolean hasCity = player.getCity() != null;
         boolean hasFaction = hasCity && player.getCity().getFaction() != null;
         boolean territoryHasFaction = territory.getFaction() != null;
+        boolean sameFaction = hasFaction && territoryHasFaction && player.getCity().getFaction().equals(territory.getFaction());
+        boolean isOwner = hasCity && player.getCity().getOwner().equals(player);
+        boolean isAssistant = player.getAssistant();
+        boolean isResident = player.getResident();
 
         if (!territoryHasFaction) return WarOfSquirrels.instance.getConfig().getDefaultNaturePermission();
 
@@ -187,6 +191,13 @@ public class PermissionHandler {
         if (customPerm != null) return customPerm;
 
         if (!hasFaction) return territory.getFaction().getDefaultPermission().get(PermissionRelation.OUTSIDER);
+
+        if (sameFaction) {
+            if (isOwner || isAssistant) return new Permission(true, true, true, true, true);
+
+            return isResident ? territory.getFaction().getDefaultPermission().get(PermissionRelation.RESIDENT) :
+                    territory.getFaction().getDefaultPermission().get(PermissionRelation.RECRUIT);
+        }
 
         boolean isAlly = WarOfSquirrels.instance.getDiplomacyHandler()
                 .getAllies(territory.getFaction()).contains(player.getCity().getFaction());

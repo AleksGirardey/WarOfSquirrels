@@ -59,7 +59,7 @@ public class CityClaim extends CityMayorOrAssistantCommandBuilder {
 
         if (!chh.exists(x, z, dimensionId)) {
             ChunkLocation chunkLocation = new ChunkLocation(x, z, dimensionId);
-            if (chh.canPlaceChunk(player.getCity(), chunkLocation)) {
+            if (chh.canPlaceChunk(targetTerritory, player.getCity(), chunkLocation)) {
                 int chunkSize = targetTerritory.getFortification().getLinkedChunkSize();
                 int maxChunk = targetTerritory.getFortification().getMaxChunk();
 
@@ -68,6 +68,10 @@ public class CityClaim extends CityMayorOrAssistantCommandBuilder {
                     return false;
                 }
             } else {
+                if (targetTerritory.getFaction() != null && player.getCity().getFaction() != null && targetTerritory.getFaction().equals(player.getCity().getFaction())) {
+                    player.sendMessage(ChatText.Error("You cannot place an outpost on your territory"));
+                    return false;
+                }
                 int outpostCount = chh.getOutpostSize(player.getCity());
                 List<Chunk> outpostList = chh.getOutpostList(player.getCity());
 
@@ -99,16 +103,17 @@ public class CityClaim extends CityMayorOrAssistantCommandBuilder {
 
         x = player.getPlayerEntity().chunkPosition().x;
         z = player.getPlayerEntity().chunkPosition().z;
+        Territory targetTerritory = WarOfSquirrels.instance.getTerritoryHandler().get(Utils.ChunkToTerritoryCoordinatesVector(x, z));
 
         ChunkLocation chunkLocation = new ChunkLocation(x, z, dimensionId);
         Chunk chunk;
 
         if (args)
-            chunk = chh.CreateChunk(x, z, player.getCity(), dimensionId, context.getArgument(argumentName, String.class));
+            chunk = chh.CreateChunk(x, z, targetTerritory.getFortification(), dimensionId, context.getArgument(argumentName, String.class));
         else
-            chunk = chh.CreateChunk(x, z, player.getCity(), dimensionId);
+            chunk = chh.CreateChunk(x, z, targetTerritory.getFortification(), dimensionId);
 
-        if (!chh.canPlaceChunk(player.getCity(), chunkLocation)) {
+        if (!chh.canPlaceChunk(targetTerritory, player.getCity(), chunkLocation)) {
             chunk.setOutpost(true);
         }
 

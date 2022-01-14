@@ -12,6 +12,7 @@ import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Pair;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
@@ -113,16 +114,20 @@ public class ChunkHandler extends Handler<Chunk> {
         return Utils.CanPlaceOutpost(location.PosX, location.PosZ);
     }
 
-    public boolean canPlaceChunk(City city, ChunkLocation location) {
+    public boolean canPlaceChunk(Territory territory, City city, ChunkLocation location) {
         Chunk bot = getChunk(location.PosX, location.PosZ - 1, location.DimensionId);
         Chunk top = getChunk(location.PosX, location.PosZ + 1, location.DimensionId);
         Chunk left = getChunk(location.PosX - 1, location.PosZ, location.DimensionId);
         Chunk right = getChunk(location.PosX + 1, location.PosZ, location.DimensionId);
 
-        return (bot != null && bot.getRelatedCity() == city)
-                || (top != null && top.getRelatedCity() == city)
-                || (left != null && left.getRelatedCity() == city)
-                || (right != null && right.getRelatedCity() == city);
+        Vector2 territoryPos = new Vector2(territory.getPosX(), territory.getPosZ());
+
+        boolean botCorrect = bot != null && bot.getRelatedCity().equals(city) && Utils.ChunkToTerritoryCoordinatesVector(bot.getPosX(), bot.getPosZ()).equals(territoryPos);
+        boolean topCorrect = top != null && top.getRelatedCity().equals(city) && Utils.ChunkToTerritoryCoordinatesVector(top.getPosX(), top.getPosZ()).equals(territoryPos);
+        boolean rightCorrect = right != null && right.getRelatedCity().equals(city) && Utils.ChunkToTerritoryCoordinatesVector(right.getPosX(), right.getPosZ()).equals(territoryPos);
+        boolean leftCorrect = left != null && left.getRelatedCity().equals(city) && Utils.ChunkToTerritoryCoordinatesVector(left.getPosX(), left.getPosZ()).equals(territoryPos);
+
+        return botCorrect || topCorrect || rightCorrect || leftCorrect;
     }
 
     public List<Chunk> getHomeBlockList() {
