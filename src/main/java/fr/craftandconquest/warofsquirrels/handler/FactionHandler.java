@@ -137,11 +137,14 @@ public class FactionHandler extends Handler<Faction> {
 
 
     public List<Diplomacy> getDiplomacy(Faction faction, boolean relation) {
-        List<Diplomacy> res = new ArrayList<>(),
-                diplo = WarOfSquirrels.instance.getDiplomacyHandler().get(faction);
+        List<Diplomacy> res = new ArrayList<>();
+        List<Diplomacy> diplo = WarOfSquirrels.instance.getDiplomacyHandler().get(faction);
 
-        if (diplo != null)
-            res.addAll(diplo.stream().filter(d -> d.isRelation() == relation).collect(Collectors.toList()));
+
+        if (diplo != null) {
+            WarOfSquirrels.instance.debugLog("FOUND " + diplo.size() + " DIPLOMACY RELATIONS");
+            res.addAll(diplo.stream().filter(d -> d.isRelation() == relation).toList());
+        }
         return res;
     }
 

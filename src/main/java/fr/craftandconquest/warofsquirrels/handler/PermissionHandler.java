@@ -10,9 +10,7 @@ import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import fr.craftandconquest.warofsquirrels.object.war.War;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
-import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
-import fr.craftandconquest.warofsquirrels.utils.OnSaveListener;
 import fr.craftandconquest.warofsquirrels.utils.Pair;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
@@ -21,10 +19,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class PermissionHandler {
 
@@ -51,26 +47,16 @@ public class PermissionHandler {
 
     public boolean hasRightsTo(Rights rights, Object... objects) {
         ResourceKey<Level> dimension = Chunk.IdToDimension((String) objects[1]);
-        switch (rights) {
-            case SET_HOMEBLOCK:
-                return hasRightsToSetHomeBlock((FullPlayer) objects[0], (Chunk) objects[1]);
-            case PLACE_IN_WAR:
-                return hasRightsToPlaceInWar((Vector3) objects[0], dimension, (FullPlayer) objects[2], (Block) objects[3]);
-            case DESTROY_IN_WAR:
-                return hasRightsToDestroyInWar((Vector3) objects[0], dimension, (FullPlayer) objects[2], (Block) objects[3]);
-            case BUILD:
-                return hasRightsToBuild((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
-            case CONTAINER:
-                return hasRightsToContainer((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
-            case SWITCH:
-                return hasRightsToSwitch((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
-            case FARM:
-                return hasRightsToFarm((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
-            case INTERACT:
-                return hasRightsToInteract((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
-            default:
-                return false;
-        }
+        return switch (rights) {
+            case SET_HOMEBLOCK -> hasRightsToSetHomeBlock((FullPlayer) objects[0], (Chunk) objects[1]);
+            case PLACE_IN_WAR -> hasRightsToPlaceInWar((Vector3) objects[0], dimension, (FullPlayer) objects[2], (Block) objects[3]);
+            case DESTROY_IN_WAR -> hasRightsToDestroyInWar((Vector3) objects[0], dimension, (FullPlayer) objects[2], (Block) objects[3]);
+            case BUILD -> hasRightsToBuild((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
+            case CONTAINER -> hasRightsToContainer((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
+            case SWITCH -> hasRightsToSwitch((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
+            case FARM -> hasRightsToFarm((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
+            case INTERACT -> hasRightsToInteract((Vector3) objects[0], dimension, (FullPlayer) objects[2]);
+        };
     }
 
     private boolean hasRightsToBuild(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player) {
@@ -98,15 +84,15 @@ public class PermissionHandler {
     }
 
     private boolean hasRightsToPlaceInWar(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player, Block block) {
-        if (authorizedPlacedItems.contains(block))
             return getPermissionToCheck(position, dimensionId, player).build;
-        return false;
+//        if (authorizedPlacedItems.contains(block))
+//        return false;
     }
 
     private boolean hasRightsToDestroyInWar(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player, Block block) {
-        if (authorizedDestroyedItems.contains(block))
             return getPermissionToCheck(position, dimensionId, player).build;
-        return false;
+//        if (authorizedDestroyedItems.contains(block))
+//        return false;
     }
 
     private Permission extractCustomPermission(IPermission target, List<CustomPermission> permissionList) {
@@ -219,6 +205,9 @@ public class PermissionHandler {
 
         if (!playerInWar) return new Permission(false, false, false, false, false);
         if (!warCity.equals(warPlayer)) return null;
+
+        if (warCity.getCityDefender().equals(player.getCity()))
+            return new Permission(true, true, true, true, true);
 
         boolean isAlly = WarOfSquirrels.instance.getDiplomacyHandler()
                 .getAllies(chunk.getRelatedCity().getFaction()).contains(player.getCity().getFaction());

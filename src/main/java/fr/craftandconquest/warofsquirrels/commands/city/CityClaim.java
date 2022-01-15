@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
@@ -87,7 +88,10 @@ public class CityClaim extends CityMayorOrAssistantCommandBuilder {
                     }
                 }
 
-                return chh.canPlaceOutpost(player.getCity(), chunkLocation);
+                if (!chh.canPlaceOutpost(player.getCity(), chunkLocation)) {
+                    player.sendMessage(ChatText.Error("You are too close from an other homeblock"));
+                    return false;
+                }
             }
             return true;
         }
@@ -107,15 +111,23 @@ public class CityClaim extends CityMayorOrAssistantCommandBuilder {
 
         ChunkLocation chunkLocation = new ChunkLocation(x, z, dimensionId);
         Chunk chunk;
-
-        if (args)
-            chunk = chh.CreateChunk(x, z, targetTerritory.getFortification(), dimensionId, context.getArgument(argumentName, String.class));
-        else
-            chunk = chh.CreateChunk(x, z, targetTerritory.getFortification(), dimensionId);
+        boolean isOutpost;
+        IFortification targetFortification;
 
         if (!chh.canPlaceChunk(targetTerritory, player.getCity(), chunkLocation)) {
-            chunk.setOutpost(true);
+            isOutpost = true;
+            targetFortification = player.getCity();
+        } else {
+            isOutpost = false;
+            targetFortification = targetTerritory.getFortification();
         }
+
+        if (args)
+            chh.CreateChunk(x, z, targetFortification, dimensionId, context.getArgument(argumentName, String.class))
+                    .setOutpost(isOutpost);
+        else
+            chh.CreateChunk(x, z, targetFortification, dimensionId)
+                    .setOutpost(isOutpost);
 
         return 0;
     }

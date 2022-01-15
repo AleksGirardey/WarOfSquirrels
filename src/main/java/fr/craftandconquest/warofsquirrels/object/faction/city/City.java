@@ -220,8 +220,8 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         List<FullPlayer> onlinePlayers = new ArrayList<>();
         MinecraftServer server = WarOfSquirrels.server;
 
-        if (server.getPlayerList().getPlayer(owner.getUuid()) != null)
-            onlinePlayers.add(owner);
+//        if (server.getPlayerList().getPlayer(owner.getUuid()) != null)
+//            onlinePlayers.add(owner);
 
         for (FullPlayer player : citizens) {
             if (server.getPlayerList().getPlayer(player.getUuid()) != null)

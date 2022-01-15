@@ -265,7 +265,7 @@ public class TerritoryHandler extends Handler<Territory> {
 
     public Territory get(IFortification fortification) {
         return dataArray.stream()
-                .filter(t -> t.getFortificationUuid().equals(fortification.getUniqueId()))
+                .filter(t -> t.getFortificationUuid() != null && t.getFortificationUuid().equals(fortification.getUniqueId()))
                 .findFirst().orElse(null);
     }
 

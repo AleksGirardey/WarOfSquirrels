@@ -140,14 +140,14 @@ public class ChunkHandler extends Handler<Chunk> {
         return Collections.emptyList();
     }
 
-    public int getSize(City city) {
+    public int getSize(IFortification fortification) {
         int chunksValue = 0;
         int outpostValue = 0;
 
-
-        if (fortificationMap.containsKey(city))
-            chunksValue = fortificationMap.get(city).size();
-        outpostValue = getOutpostSize(city);
+        if (fortificationMap.containsKey(fortification))
+            chunksValue = fortificationMap.get(fortification).size();
+        if (fortification.getFortificationType() == IFortification.FortificationType.CITY)
+            outpostValue = getOutpostSize((City) fortification);
 
         return chunksValue - outpostValue;
     }
@@ -290,20 +290,14 @@ public class ChunkHandler extends Handler<Chunk> {
     }
 
     public Vector3 getSpawnOnTerritory(Territory territory, City city) {
-        for (Chunk chunk : dataArray) {
+        List<Chunk> outposts = getOutpostList(city);
+
+        for (Chunk chunk : outposts) {
             Pair<Integer, Integer> pair = Utils.ChunkToTerritoryCoordinates(chunk.getPosX(), chunk.getPosZ());
-            boolean chunkHasCity = chunk.getCity() != null;
 
             if (territory.getPosX() != pair.getKey() || territory.getPosZ() != pair.getValue()) continue;
-            if (!chunk.getHomeBlock() || !chunk.getOutpost()) continue;
 
-            if (chunkHasCity) {
-                return chunk.getRespawnPoint();
-            } else {
-                if (chunk.getBastion().getCity().equals(city)) {
-                    return chunk.getRespawnPoint();
-                }
-            }
+            return chunk.getRespawnPoint();
         }
         return city.getHomeBlock().getRespawnPoint();
     }

@@ -8,6 +8,7 @@ import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import org.apache.logging.log4j.Logger;
 
+import javax.xml.validation.Validator;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,13 +38,16 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
 
     @Override
     protected boolean add(Diplomacy value) {
-        if (dataArray.contains(value)) return false;
+        if (!dataArray.contains(value)) {
+            dataArray.add(value);
+        }
 
-        dataArray.add(value);
-        diplomacyByUuid.put(value.getUuid(), value);
+        if (!diplomacyByUuid.containsKey(value.getUuid()))
+            diplomacyByUuid.put(value.getUuid(), value);
         if (!diplomacyMap.containsKey(value.getFaction()))
             diplomacyMap.put(value.getFaction(), new ArrayList<>());
-        diplomacyMap.get(value.getFaction()).add(value);
+        if (!diplomacyMap.get(value.getFaction()).contains(value))
+            diplomacyMap.get(value.getFaction()).add(value);
 
         return true;
     }
@@ -118,6 +122,7 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
     public void CreateDiplomacy(Faction main, Faction target, boolean relation, Permission permission) {
         Diplomacy diplomacy = new Diplomacy();
 
+        diplomacy.setUuid(UUID.randomUUID());
         diplomacy.SetFaction(main);
         diplomacy.SetTarget(target);
         diplomacy.setRelation(relation);

@@ -63,10 +63,12 @@ public class AdminTp extends AdminCommandBuilder {
         if (cubo != null) {
             tp = new SpawnTeleporter(cubo.getRespawnPoint());
             dim = cubo.getDimensionKey();
-        } else {
+        } else if (city != null) {
             Chunk hb = city.getHomeBlock();
             tp = new SpawnTeleporter(hb.getRespawnPoint());
             dim = Level.OVERWORLD;
+        } else {
+            return 0;
         }
 
         ServerLevel level = WarOfSquirrels.server.getLevel(dim);

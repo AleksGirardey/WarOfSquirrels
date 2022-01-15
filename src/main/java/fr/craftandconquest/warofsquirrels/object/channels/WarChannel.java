@@ -22,6 +22,7 @@ public class WarChannel extends Channel {
 
     @Override
     protected MutableComponent transformTextAnnounce(MutableComponent text) {
-        return ChatText.Colored(String.format("[%s] %s", war.getTag(), text), ChatFormatting.DARK_GREEN);
+        return ChatText.Colored(String.format("[%s] ", war.getTag()), ChatFormatting.DARK_GREEN)
+                .append(text);
     }
 }

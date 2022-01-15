@@ -38,7 +38,6 @@ public class AdminTerritoryInfo extends AdminCommandBuilder {
 
         Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(name);
 
-
         Utils.displayInfoFeather(player.getPlayerEntity(), territory, null, null, null);
 
         return 0;

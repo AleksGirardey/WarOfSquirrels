@@ -121,7 +121,7 @@ public class PlayersInteractionHandler {
         Territory newTerritory = WarOfSquirrels.instance.getTerritoryHandler().get(new Vector2(event.getNewPos().chunk().x, event.getNewPos().chunk().z));
 
         if (oldTerritory != newTerritory) {
-            player.sendMessage(ChatText.Colored("~~| " + newTerritory.getName() + " |~~", ChatFormatting.GOLD));
+            player.sendMessage(ChatText.Colored("~~| " + newTerritory.getName() + " |~~", ChatFormatting.DARK_GREEN));
         }
 
         Chunk lastChunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), dimensionId);

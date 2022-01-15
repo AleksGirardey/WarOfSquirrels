@@ -62,8 +62,10 @@ public class InfluenceHandler extends Handler<Influence> {
     private boolean AddFactionInfluence(Influence value) {
         if (!factionInfluenceMap.containsKey(value.getFaction()))
             factionInfluenceMap.put(value.getFaction(), new HashMap<>());
+
         if (!factionInfluenceMap.get(value.getFaction()).containsKey(value.getTerritory()))
             factionInfluenceMap.get(value.getFaction()).put(value.getTerritory(), value);
+
         return true;
     }
 
@@ -127,11 +129,15 @@ public class InfluenceHandler extends Handler<Influence> {
     }
 
     public Influence get(Faction faction, Territory territory) {
-        return factionInfluenceMap.get(faction).get(territory);
+        if (factionInfluenceMap.get(faction) != null)
+            return factionInfluenceMap.get(faction).get(territory);
+        return null;
     }
 
     public Influence get(City city, Territory territory) {
-        return cityInfluenceMap.get(city).get(territory);
+        if (cityInfluenceMap.get(city) != null)
+            return cityInfluenceMap.get(city).get(territory);
+        return null;
     }
 
     public void ResetOthersInfluence(Territory territory) {
@@ -184,6 +190,14 @@ public class InfluenceHandler extends Handler<Influence> {
 
         Logger.debug(String.format("%s[Influence] Influence généré sur le territoire '%s' : %d (%d)",
                 PrefixLogger, influence.getTerritory().getName(), influenceGenerated, influence.getValue()));
+    }
+
+    public void SwitchInfluence(City city, Faction faction, Territory territory) {
+        Influence old = get(city, territory);
+        Influence influence = CreateInfluence(faction, territory);
+
+        influence.setValue(old.getValue());
+        Delete(old);
     }
 
     public void Delete(Faction faction) {

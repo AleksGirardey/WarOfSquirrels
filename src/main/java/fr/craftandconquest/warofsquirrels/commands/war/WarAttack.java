@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.extractor.ITerritoryExtractor;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
@@ -15,7 +16,7 @@ import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-public class WarAttack extends CityAssistantCommandBuilder implements ITerritoryExtractor {
+public class WarAttack extends CityMayorOrAssistantCommandBuilder implements ITerritoryExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands
@@ -27,6 +28,11 @@ public class WarAttack extends CityAssistantCommandBuilder implements ITerritory
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
         Territory territory = getTerritory(context);
+
+        if (territory == null) {
+            player.sendMessage(ChatText.Error("Territory does not exist."));
+            return false;
+        }
 
         if (WarOfSquirrels.instance.getConfig().isPeaceTime()) {
             player.sendMessage(ChatText.Error("You cannot declare war in time of peace !"));
@@ -55,7 +61,7 @@ public class WarAttack extends CityAssistantCommandBuilder implements ITerritory
             return false;
         }
 
-        if (influence.getValue() < WarOfSquirrels.instance.getConfig().getAttackCost()) {
+        if (influence == null || influence.getValue() < WarOfSquirrels.instance.getConfig().getAttackCost()) {
             player.sendMessage(ChatText.Error("Your city does not have enough influence to attack."));
             return false;
         }

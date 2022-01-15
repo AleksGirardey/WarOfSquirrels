@@ -64,13 +64,16 @@ public class WarInfo extends CommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        String targetName = context.getArgument("cityTargetName", String.class);
-        AttackTarget target = WarOfSquirrels.instance.getCityHandler().getCity(targetName);
+        War war;
 
-//        if (target == null)
-//            target = WarOfSquirrels.instance.getBastionHandler().getBastion(targetName);
+        if (args) {
+            String targetName = context.getArgument("cityTargetName", String.class);
+            AttackTarget target = WarOfSquirrels.instance.getCityHandler().getCity(targetName);
 
-        War war = WarOfSquirrels.instance.getWarHandler().getWar(target);
+            war = WarOfSquirrels.instance.getWarHandler().getWar(target);
+        } else {
+            war = WarOfSquirrels.instance.getWarHandler().getWar(player);
+        }
 
         war.displayInfo(player);
 

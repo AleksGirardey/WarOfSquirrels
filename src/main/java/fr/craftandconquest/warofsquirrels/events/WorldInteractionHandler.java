@@ -216,7 +216,6 @@ public class WorldInteractionHandler {
     @SubscribeEvent
     public void OnPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
-
         String lastDimensionId = Chunk.DimensionToId(player.getLastDimensionKey());
 
         if (WarOfSquirrels.instance.getCuboHandler().playerExists(player)) {
@@ -255,6 +254,8 @@ public class WorldInteractionHandler {
     private boolean HandlePlayerRightClick(Player playerEntity, BlockPos target, String dimensionId) {
         Vector3 position = new Vector3(target.getX(), target.getY(), target.getZ());
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
+
+        if (player.isAdminMode()) return true;
 
         return WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(PermissionHandler.Rights.SWITCH,
                 position, dimensionId, player);

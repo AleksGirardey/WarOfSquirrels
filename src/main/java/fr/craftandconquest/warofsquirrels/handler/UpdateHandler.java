@@ -54,6 +54,7 @@ public class UpdateHandler {
         for (OnSaveListener listener : OnSaveUpdate) {
             listener.Save();
         }
+        WarOfSquirrels.instance.config.Save();
     }
 
     public void SaveUpdate() {

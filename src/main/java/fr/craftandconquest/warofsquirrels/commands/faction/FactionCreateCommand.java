@@ -53,6 +53,8 @@ public class FactionCreateCommand extends CityMayorCommandBuilder implements ITe
         if (!WarOfSquirrels.instance.getTerritoryHandler().Claim(territory.getPosX(), territory.getPosZ(), faction, player.getCity()))
             return -1;
 
+        WarOfSquirrels.instance.getInfluenceHandler().SwitchInfluence(player.getCity(), faction, territory);
+
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(ChatText.Colored(
                 player.getDisplayName() + " has formed the nation '" + fName +
                         "' and set '" + player.getCity().displayName + "' as capital", ChatFormatting.GOLD));
@@ -61,7 +63,7 @@ public class FactionCreateCommand extends CityMayorCommandBuilder implements ITe
         for (FullPlayer p : player.getCity().getCitizens())
             WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(faction, p);
 
-//        WarOfSquirrels.instance.getInfluenceHandler().ResetOthersInfluence(territory);
+        WarOfSquirrels.instance.getInfluenceHandler().Save();
         WarOfSquirrels.instance.getCityHandler().Save();
         WarOfSquirrels.instance.getTerritoryHandler().Save();
         return 0;

@@ -248,14 +248,14 @@ public class Utils {
     }
 
     public static void displayInfoFeather(Player player, BlockPos pos, ResourceKey<Level> dimensionId) {
-        Vector2 territoryPos = Utils.WorldToTerritoryCoordinates(pos.getX(), pos.getZ());
-        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(territoryPos);
-
-        if (territory == null) return;
-
+//        Vector2 territoryPos = Utils.WorldToTerritoryCoordinates(pos.getX(), pos.getZ());
         int posX = pos.getX();
         int posZ = pos.getZ();
         ChunkPos chunkPos = Utils.WorldToChunkPos(posX, posZ);
+        Vector2 chunkVector = new Vector2(chunkPos.x, chunkPos.z);
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(chunkVector);
+
+        if (territory == null) return;
 
         Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(chunkPos.x, chunkPos.z, dimensionId);
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(new Vector3(posX, pos.getY(), posZ));
