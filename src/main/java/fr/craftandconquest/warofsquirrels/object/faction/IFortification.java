@@ -22,11 +22,13 @@ public interface IFortification {
 
     @JsonIgnore FortificationType getFortificationType();
 
-    @JsonIgnore int getSelfInfluenceGenerated(boolean gotAttacked);
+    @JsonIgnore int getSelfInfluenceGenerated(boolean gotAttacked, boolean gotDefeated);
 
-    @JsonIgnore int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly, boolean gotAttacked);
+    @JsonIgnore int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly, boolean gotAttacked, boolean gotDefeated);
 
-    @JsonIgnore int getInfluenceGeneratedDistantNeighbour(boolean gotAttacked);
+    @JsonIgnore int getInfluenceGeneratedDistantNeighbour(boolean gotAttacked, boolean gotDefeated);
+
+    @JsonIgnore int getInfluenceDamage(boolean gotAttacked, boolean gotDefeated);
 
     @JsonIgnore int getInfluenceMax();
 

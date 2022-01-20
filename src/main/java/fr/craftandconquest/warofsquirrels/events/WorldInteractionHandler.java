@@ -24,6 +24,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -60,7 +61,7 @@ public class WorldInteractionHandler {
     public void PlayerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event) {
         List<BroadCastTarget> targets = new ArrayList<>();
         Player playerEntity = event.getPlayer();
-
+        
         PlayerHandler playerHandler = WarOfSquirrels.instance.getPlayerHandler();
         BroadCastHandler broadCastHandler = WarOfSquirrels.instance.getBroadCastHandler();
 
@@ -229,7 +230,7 @@ public class WorldInteractionHandler {
         } else if (IsContainer(event.getWorld(), event.getPos(), null, null)) {
             if (OnPlayerContainer(event.getPlayer(), event.getPos(), lastDimensionId))
                 return;
-        } else if (HandlePlayerRightClick(event.getPlayer(), event.getPos(), lastDimensionId))
+        } else if (HandlePlayerRightClick(event.getItemStack(), event.getPlayer(), event.getPos(), lastDimensionId))
             return;
 
         event.getPlayer().sendMessage(ChatText.Error("You do not have the permission to interact with this block"), Util.NIL_UUID);
@@ -245,17 +246,19 @@ public class WorldInteractionHandler {
             return;
         }
 
-        if (HandlePlayerRightClick(event.getPlayer(), event.getPos(), Chunk.DimensionToId(event.getWorld().dimension()))) return;
+        if (HandlePlayerRightClick(event.getItemStack(), event.getPlayer(), event.getPos(), Chunk.DimensionToId(event.getWorld().dimension()))) return;
 
         event.getPlayer().sendMessage(ChatText.Error("You have not the permission to interact with this item"), Util.NIL_UUID);
         event.setCanceled(true);
     }
 
-    private boolean HandlePlayerRightClick(Player playerEntity, BlockPos target, String dimensionId) {
+    private boolean HandlePlayerRightClick(ItemStack itemStack, Player playerEntity, BlockPos target, String dimensionId) {
         Vector3 position = new Vector3(target.getX(), target.getY(), target.getZ());
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
 
         if (player.isAdminMode()) return true;
+
+        if (itemStack.getItem() == Items.BOW || itemStack.getItem() == Items.CROSSBOW) return true;
 
         return WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(PermissionHandler.Rights.SWITCH,
                 position, dimensionId, player);

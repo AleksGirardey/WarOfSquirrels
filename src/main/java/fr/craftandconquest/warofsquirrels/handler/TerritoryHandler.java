@@ -19,6 +19,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TerritoryHandler extends Handler<Territory> {
     private final static List<String> defaultTerritoryName = new ArrayList<>() {{
@@ -209,6 +210,17 @@ public class TerritoryHandler extends Handler<Territory> {
     @Override
     public void spreadPermissionDelete(IPermission target) {
         // Nothing To Do
+    }
+
+    public int getDamageFromEnemy(Territory target, Faction enemy) {
+        List<Territory> list = getNeighbors(target);
+        AtomicInteger count = new AtomicInteger();
+
+        list.stream()
+                .filter(territory -> territory.getFaction() != null && territory.getFaction().equals(enemy))
+                .forEach(territory -> count.addAndGet(territory.getInfluenceDamage()));
+
+        return count.get();
     }
 
     public List<Territory> getNeighbors(Territory territory, int range) {

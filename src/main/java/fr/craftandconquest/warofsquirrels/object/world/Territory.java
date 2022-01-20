@@ -12,10 +12,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.biome.Biomes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,45 +28,20 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Territory {
 
-    @JsonProperty
-    @Getter
-    @Setter
-    private UUID uuid;
-    @JsonProperty
-    @Getter
-    @Setter
-    private String name;
-    @JsonProperty
-    @Getter
-    @Setter
-    private int posX;
-    @JsonProperty
-    @Getter
-    @Setter
-    private int posZ;
-    @JsonProperty
-    @Getter
-    private UUID factionUuid;
-    @JsonProperty
-    @Getter
-    private UUID fortificationUuid;
-    @JsonProperty
-    @Getter
-    @Setter
-    private String biome;
-    @JsonProperty
-    @Getter
-    private Map<String, Integer> biomeMap;
-    @JsonProperty @Getter @Setter boolean gotAttackedToday;
-    @JsonProperty @Getter @Setter int daysBeforeReset;
-    @JsonProperty @Getter @Setter boolean hasFallen;
+    @JsonProperty @Getter @Setter private UUID uuid;
+    @JsonProperty @Getter @Setter private String name;
+    @JsonProperty @Getter @Setter private int posX;
+    @JsonProperty @Getter @Setter private int posZ;
+    @JsonProperty @Getter         private UUID factionUuid;
+    @JsonProperty @Getter         private UUID fortificationUuid;
+    @JsonProperty @Getter @Setter private TerritoryBiome biome;
+    @JsonProperty @Getter @Setter private boolean gotAttackedToday;
+    @JsonProperty @Getter @Setter private boolean gotDefeatedToday;
+    @JsonProperty @Getter @Setter private int daysBeforeReset;
+    @JsonProperty @Getter @Setter private boolean hasFallen;
 
-    @JsonIgnore
-    @Getter
-    private Faction faction;
-    @JsonIgnore
-    @Getter
-    private IFortification fortification;
+    @JsonIgnore @Getter private Faction faction;
+    @JsonIgnore @Getter private IFortification fortification;
 
     public Territory(String name, int posX, int posZ, Faction faction, IFortification fortification) {
         this.uuid = UUID.randomUUID();
@@ -73,8 +50,6 @@ public class Territory {
         this.posZ = posZ;
         SetFaction(faction);
         SetFortification(fortification);
-        this.biome = "NONE";
-        biomeMap = new HashMap<>();
 
         SetBiomeMap();
     }
@@ -98,22 +73,20 @@ public class Territory {
                 return;
             }
 
-            WarOfSquirrels.instance.debugLog("SI 1");
             SpreadSelfInfluence();
-            WarOfSquirrels.instance.debugLog("SI 2");
             SpreadCloseInfluence(true);
-            WarOfSquirrels.instance.debugLog("SI 3");
             if (fortification.getFortificationType() == IFortification.FortificationType.BASTION) {
-            WarOfSquirrels.instance.debugLog("SI 4");
                 SpreadCloseInfluence(false);
             }
             SpreadDistantInfluence();
-            WarOfSquirrels.instance.debugLog("SI 5");
         }
     }
 
     public void SpreadSelfInfluence() {
-        WarOfSquirrels.instance.getInfluenceHandler().pushInfluence(fortification, this, fortification.getSelfInfluenceGenerated(gotAttackedToday));
+        int influence = fortification.getSelfInfluenceGenerated(gotAttackedToday, gotDefeatedToday);
+        influence += (influence * biome.ratioBonusInfluenceOnMe());
+
+        WarOfSquirrels.instance.getInfluenceHandler().pushInfluence(fortification, this, influence);
     }
 
     public void SpreadCloseInfluence(boolean neutralOnly) {
@@ -123,7 +96,11 @@ public class Territory {
         for (Territory territory : neighbors) {
             if (neutralOnly && territory.getFaction() != null) continue;
 
-            handler.pushInfluence(fortification, territory, fortification.getInfluenceGeneratedCloseNeighbour(neutralOnly, gotAttackedToday));
+            int influence = fortification.getInfluenceGeneratedCloseNeighbour(neutralOnly, gotAttackedToday, gotDefeatedToday);
+            influence += (influence * biome.ratioBonusInfluenceFromMe());
+            influence += (influence * territory.getBiome().ratioBonusInfluenceOnMe());
+
+            handler.pushInfluence(fortification, territory, influence);
         }
     }
 
@@ -132,25 +109,39 @@ public class Territory {
         List<Territory> neighbors = WarOfSquirrels.instance.getTerritoryHandler().getNeighbors(this, fortification.getInfluenceRange());
 
         for (Territory territory : neighbors) {
-            if (territory.getFaction() == null)
-                handler.pushInfluence(fortification, territory, fortification.getInfluenceGeneratedDistantNeighbour(gotAttackedToday));
+            if (territory.getFaction() == null) {
+                int influence = fortification.getInfluenceGeneratedDistantNeighbour(gotAttackedToday, gotDefeatedToday);
+                influence += (influence * biome.ratioBonusInfluenceFromMe());
+                influence += (influence * territory.getBiome().ratioBonusInfluenceOnMe());
+
+                handler.pushInfluence(fortification, territory, influence);
+            }
         }
     }
 
     @JsonIgnore
+    public int getInfluenceDamage() {
+        return fortification.getInfluenceDamage(gotAttackedToday, gotDefeatedToday);
+    }
+
+    @JsonIgnore
     public int getInfluenceMax() {
-        return 4000 + (fortification != null ? fortification.getInfluenceMax() : 0); // Ajouter influence du biome du territoire
+        int base = 4000;
+        int fromFortification = (fortification != null ? fortification.getInfluenceMax() : 0);
+        int fromBiome = (int) biome.bonusInfluenceMax();
+
+        return base + fromFortification + fromBiome;
     }
 
     private void SetBiomeMap() {
-        biomeMap = new HashMap<>();
+        Map<Biome.BiomeCategory, Integer> biomeMap = new HashMap<>();
         int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
         int posXMin = posX * territorySize;
         int posXMax = posXMin + territorySize;
         int posZMin = posZ * territorySize;
         int posZMax = posZMin + territorySize;
 
-        Level level = WarOfSquirrels.server.getLevel(Level.OVERWORLD);
+        ServerLevel level = WarOfSquirrels.server.getLevel(Level.OVERWORLD);
 
         if (level == null) return;
 
@@ -161,30 +152,21 @@ public class Territory {
                 ChunkPos chunkPos = Utils.WorldToChunkPos(x, z);
 
                 Biome.BiomeCategory category = biomeManager.getPrimaryBiomeAtChunk(chunkPos).getBiomeCategory();
+                biomeMap.compute(category, (k,v) -> v == null ? 1 : v + 1);
 
-                if (!biomeMap.containsKey(category.getSerializedName()))
-                    biomeMap.put(category.getSerializedName(), 0);
-                biomeMap.compute(category.getSerializedName(), (k, v) -> v += 1);
                 z += 16;
             }
             x += 16;
         }
 
-        String mainBiome = "NONE";
-        int count = 0;
-
-        for (Map.Entry<String, Integer> pair : biomeMap.entrySet()) {
-            if (pair.getValue() > count)
-                mainBiome = pair.getKey();
-        }
-
-        biome = mainBiome;
+        biome = new TerritoryBiome(biomeMap);
     }
 
     public void update() {
         if (!hasFallen) {
             SpreadInfluence();
             gotAttackedToday = false;
+            gotDefeatedToday = false;
         } else {
             --daysBeforeReset;
 
@@ -210,6 +192,8 @@ public class Territory {
         faction = null;
         fortificationUuid = null;
         fortification = null;
+        gotAttackedToday = false;
+        gotDefeatedToday = false;
     }
 
     @Override

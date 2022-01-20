@@ -4,6 +4,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
+import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.permission.CustomPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
@@ -15,9 +16,13 @@ import fr.craftandconquest.warofsquirrels.utils.Pair;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,14 +40,21 @@ public class PermissionHandler {
         DESTROY_IN_WAR
     }
 
-    private static final List<Block> authorizedPlacedItems = new ArrayList<>();
-    private static final List<Block> authorizedDestroyedItems = new ArrayList<>();
+    private static final List<Item> authorizedItems = new ArrayList<>();
+    private static final List<Tag.Named<Item>> authorizedItemsTag = new ArrayList<>();
 
     static {
-        authorizedPlacedItems.add(Blocks.LADDER);
+        authorizedItems.add(Items.LADDER);
+        authorizedItems.add(Items.GLASS);
+        authorizedItems.add(Items.GLASS_PANE);
+        authorizedItems.add(Items.SCAFFOLDING);
 
-        authorizedDestroyedItems.add(Blocks.GLASS);
-        authorizedDestroyedItems.add(Blocks.GLASS_PANE);
+        authorizedItemsTag.add(ItemTags.DOORS);
+        authorizedItemsTag.add(ItemTags.WOODEN_DOORS);
+        authorizedItemsTag.add(ItemTags.TRAPDOORS);
+        authorizedItemsTag.add(ItemTags.WOODEN_TRAPDOORS);
+        authorizedItemsTag.add(ItemTags.FENCES);
+        authorizedItemsTag.add(ItemTags.WOODEN_FENCES);
     }
 
     public boolean hasRightsTo(Rights rights, Object... objects) {
@@ -84,15 +96,11 @@ public class PermissionHandler {
     }
 
     private boolean hasRightsToPlaceInWar(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player, Block block) {
-            return getPermissionToCheck(position, dimensionId, player).build;
-//        if (authorizedPlacedItems.contains(block))
-//        return false;
+            return getPermissionToCheck(position, dimensionId, player, block).build;
     }
 
     private boolean hasRightsToDestroyInWar(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player, Block block) {
-            return getPermissionToCheck(position, dimensionId, player).build;
-//        if (authorizedDestroyedItems.contains(block))
-//        return false;
+            return getPermissionToCheck(position, dimensionId, player, block).build;
     }
 
     private Permission extractCustomPermission(IPermission target, List<CustomPermission> permissionList) {
@@ -197,33 +205,62 @@ public class PermissionHandler {
                 PermissionRelation.FACTION : PermissionRelation.OUTSIDER));
     }
 
-    private Permission checkWarPermission(FullPlayer player, Chunk chunk) {
+    private Permission checkWarPermission(War targetWar, War playerWar, Faction targetFaction, Faction playerFaction, FullPlayer player, Block block) {
         boolean playerInWar = WarOfSquirrels.instance.getWarHandler().Contains(player);
 
-        War warCity = WarOfSquirrels.instance.getWarHandler().getWar(chunk.getRelatedCity());
-        War warPlayer = WarOfSquirrels.instance.getWarHandler().getWar(player);
+        if (!playerInWar)
+            return new Permission(false, false, false, false, false);
 
-        if (!playerInWar) return new Permission(false, false, false, false, false);
-        if (!warCity.equals(warPlayer)) return null;
+        if (!targetWar.equals(playerWar))
+            return null;
 
-        if (warCity.getCityDefender().equals(player.getCity()))
-            return new Permission(true, true, true, true, true);
+        if (targetWar.getCityDefender().equals(player.getCity())) {
+            if (isAuthorized(block))
+                return new Permission(true, true, true, true, true);
+            else
+                return new Permission(false, true, true, false, false);
+        }
 
         boolean isAlly = WarOfSquirrels.instance.getDiplomacyHandler()
-                .getAllies(chunk.getRelatedCity().getFaction()).contains(player.getCity().getFaction());
-        boolean isEnemy = WarOfSquirrels.instance.getDiplomacyHandler()
-                .getEnemies(chunk.getRelatedCity().getFaction()).contains(player.getCity().getFaction());
-        boolean isFaction = chunk.getRelatedCity().getFaction().equals(player.getCity().getFaction());
+                .getAllies(targetFaction).contains(playerFaction);
+        boolean isEnemy = WarOfSquirrels.instance.getDiplomacyHandler().getEnemies(targetFaction).contains(playerFaction)
+                || WarOfSquirrels.instance.getDiplomacyHandler().getEnemies(playerFaction).contains(targetFaction);
+        boolean isFaction = targetFaction.equals(playerFaction);
 
-        if (isAlly || isFaction)
-            return new Permission(true, true, true, false, false);
-        else if (isEnemy)
-            return new Permission(true, false, false, false, false);
-        else
-            return new Permission(false, false, false, false, false);
+        if (isAlly || isFaction) {
+            if (isAuthorized(block))
+                return new Permission(true, true, true, true, true);
+        } else if (isEnemy) {
+            if (isAuthorized(block))
+                return new Permission(true, false, false, false, false);
+        }
+
+        return new Permission(false, false, false, false, false);
+    }
+
+    private Permission checkWarPermission(FullPlayer player, Territory territory, Block block) {
+        War targetWar = WarOfSquirrels.instance.getWarHandler().getWar(territory);
+        War playerWar = WarOfSquirrels.instance.getWarHandler().getWar(player);
+        Faction targetFaction = territory.getFaction();
+        Faction playerFaction = player.getCity().getFaction();
+
+        return checkWarPermission(targetWar, playerWar, targetFaction, playerFaction, player, block);
+    }
+
+    private Permission checkWarPermission(FullPlayer player, Chunk chunk, Block block) {
+        War targetWar = WarOfSquirrels.instance.getWarHandler().getWar(chunk.getRelatedCity());
+        War playerWar = WarOfSquirrels.instance.getWarHandler().getWar(player);
+        Faction targetFaction = chunk.getRelatedCity().getFaction();
+        Faction playerFaction = player.getCity().getFaction();
+
+        return checkWarPermission(targetWar, playerWar, targetFaction, playerFaction, player, block);
     }
 
     private Permission getPermissionToCheck(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player) {
+        return getPermissionToCheck(position, dimensionId, player, null);
+    }
+
+    private Permission getPermissionToCheck(Vector3 position, ResourceKey<Level> dimensionId, FullPlayer player, Block block) {
         Permission permission = null;
 
         AdminCubo adminCubo = WarOfSquirrels.instance.getAdminHandler().get(position, dimensionId);
@@ -243,9 +280,12 @@ public class PermissionHandler {
         boolean isThereTerritory = territory != null; // ALWAYS TRUE IF OVERWORLD
         
         boolean isThereWarOnCity = isThereChunk && WarOfSquirrels.instance.getWarHandler().Contains(chunk.getRelatedCity());
+        boolean isThereWarOnTerritory = isThereTerritory && WarOfSquirrels.instance.getWarHandler().Contains(territory);
 
         if (isThereWarOnCity)
-            permission = checkWarPermission(player, chunk);
+            permission = checkWarPermission(player, chunk, block);
+        else if (isThereWarOnTerritory)
+            permission = checkWarPermission(player, territory, block);
 
         if (permission != null) return permission;
 
@@ -254,5 +294,19 @@ public class PermissionHandler {
         if (isThereTerritory) return checkTerritoryPermission(player, territory);
 
         return WarOfSquirrels.instance.getConfig().getDefaultNaturePermission();
+    }
+
+    private boolean isAuthorized(Block block) {
+        ItemStack stack = new ItemStack(block);
+
+        for (Item item : authorizedItems) {
+            if (stack.is(item)) return true;
+        }
+
+        for (Tag.Named<Item> tag : authorizedItemsTag) {
+            if (stack.is(tag)) return true;
+        }
+
+        return false;
     }
 }

@@ -19,9 +19,7 @@ public class WarHandler {
 
     private final List<War> wars = new ArrayList<>();
 
-    public WarHandler() {
-    }
-
+    public WarHandler() {}
     private void rollback() {}
 
     public boolean CreateWar(City attacker, City defender, Territory target, Party party) {
@@ -72,8 +70,22 @@ public class WarHandler {
         return null;
     }
 
+    public War getWar(Territory territory) {
+        for (War war : wars) {
+            if (war.getTargetTerritory().equals(territory))
+                return war;
+        }
+        return null;
+    }
+
     public boolean Contains(FullPlayer player) {
         return getWar(player) != null;
+    }
+
+    public boolean Contains(Territory territory) {
+        War war = getWar(territory.getFortification().getRelatedCity());
+
+        return war != null && war.getTargetTerritory().equals(territory);
     }
 
     public boolean Contains(City city) {

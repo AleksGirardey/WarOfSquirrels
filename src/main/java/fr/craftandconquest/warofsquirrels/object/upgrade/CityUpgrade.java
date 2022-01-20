@@ -38,7 +38,7 @@ public class CityUpgrade {
     @JsonIgnore private City city;
 
     public void Init(City city) {
-        level = new UpgradeInfo(1);
+        level = new UpgradeInfo();
         housing = new UpgradeInfo();
         facility = new UpgradeInfo();
         headQuarter = new UpgradeInfo();

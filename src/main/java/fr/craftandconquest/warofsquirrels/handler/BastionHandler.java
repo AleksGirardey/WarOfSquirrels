@@ -99,6 +99,7 @@ public class BastionHandler extends Handler<Bastion> {
         add(bastion);
 
         Chunk chunk = WarOfSquirrels.instance.getChunkHandler().CreateChunk((int) chunkPosition.x, (int) chunkPosition.y, bastion, Level.OVERWORLD);
+        chunk.setHomeBlock(true);
         chunk.setRespawnPoint(playerPosition);
 
         territory.SetFortification(bastion);
@@ -124,7 +125,9 @@ public class BastionHandler extends Handler<Bastion> {
     }
 
     public void updateDependencies() {
-        for (Bastion bastion : dataArray)
+        for (Bastion bastion : dataArray) {
             bastion.updateDependencies();
+            add(bastion);
+        }
     }
 }

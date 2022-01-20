@@ -295,6 +295,8 @@ public class ChunkHandler extends Handler<Chunk> {
         for (Chunk chunk : outposts) {
             Pair<Integer, Integer> pair = Utils.ChunkToTerritoryCoordinates(chunk.getPosX(), chunk.getPosZ());
 
+            WarOfSquirrels.instance.debugLog(territory.getPosX() + " / " + pair.getKey() + " - " + territory.getPosZ() + " / " + pair.getValue());
+
             if (territory.getPosX() != pair.getKey() || territory.getPosZ() != pair.getValue()) continue;
 
             return chunk.getRespawnPoint();

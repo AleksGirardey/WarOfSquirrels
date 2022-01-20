@@ -150,8 +150,11 @@ public class CityHandler extends Handler<City> {
         List<City> cities = new ArrayList<>();
 
         for (City city : dataArray) {
-            if (city.getFaction() == faction)
+            WarOfSquirrels.instance.debugLog("Hello '" + city.getDisplayName() + "' - '" + (city.getFaction() != null) + "'");
+            if (city.getFaction() != null && city.getFaction().equals(faction)) {
+                WarOfSquirrels.instance.debugLog("+1");
                 cities.add(city);
+            }
         }
 
         return cities;

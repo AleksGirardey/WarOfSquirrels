@@ -7,13 +7,13 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
-import fr.craftandconquest.warofsquirrels.object.faction.city.CityRank;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Pair;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.resources.ResourceKey;
@@ -123,11 +123,14 @@ public class CityClaim extends CityMayorOrAssistantCommandBuilder {
         }
 
         if (args)
-            chh.CreateChunk(x, z, targetFortification, dimensionId, context.getArgument(argumentName, String.class))
-                    .setOutpost(isOutpost);
+            chunk = chh.CreateChunk(x, z, targetFortification, dimensionId, context.getArgument(argumentName, String.class));
         else
-            chh.CreateChunk(x, z, targetFortification, dimensionId)
-                    .setOutpost(isOutpost);
+            chunk = chh.CreateChunk(x, z, targetFortification, dimensionId);
+
+        if (isOutpost) {
+            chunk.setOutpost(true);
+            chunk.setRespawnPoint(new Vector3(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockY(), player.getPlayerEntity().getBlockZ()));
+        }
 
         return 0;
     }

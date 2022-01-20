@@ -58,16 +58,19 @@ public class Config {
         configFile = new File(getConfigPath());
 
         try {
-            if (!configFile.exists() && !configFile.createNewFile()) {
-                Logger.error(errorMessage);
-                return false;
+            if (!configFile.exists()) {
+                if (!configFile.createNewFile()) {
+                    Logger.error(errorMessage);
+                    return false;
+                }
+                configuration = defaultConfiguration();
+                return Save();
             }
-            configuration = defaultConfiguration();
-            return Save();
         } catch (IOException e) {
             Logger.error(errorMessage);
             return false;
         }
+        return true;
     }
 
     public boolean Save() {
@@ -129,8 +132,8 @@ public class Config {
         return new ConfigData(
                 /* Claiming */
                 4, // minPartySizeToCreateCity;
-                20, // distanceCities;
-                20, // distanceOutpost;
+                15, // distanceCities;
+                10, // distanceOutpost;
 
                 /* Influence */
                 1500, // baseInfluenceRequired;
@@ -140,10 +143,10 @@ public class Config {
                 10, // sayDistance;
 
                 /* World Config */
-                4608, // mapSize;
+                5120, // mapSize;
                 0,
                 0,
-                768, // territorySize;
+                512, // territorySize;
                 false, // territoriesGenerated;
                 true, // peaceTime;
                 10, // reincarnationTime;

@@ -14,6 +14,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
 public class CityBastionUpgrade extends CityBastionCommandBuilder {
+    private final CityBastionChestLocation chest = new CityBastionChestLocation();
     /** Info **/
     private final CityBastionUpgradeInfo info = new CityBastionUpgradeInfo("", null);
     private final CityBastionUpgradeInfo infoLevel = new CityBastionUpgradeInfo("level", BastionUpgrade.UpgradeType.Level);
@@ -38,6 +39,8 @@ public class CityBastionUpgrade extends CityBastionCommandBuilder {
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("upgrade")
                 .executes(this)
+                .then(Commands.literal("upgradeChestLocation")
+                        .executes(chest))
                 .then(Commands.literal("info")
                         .executes(info)
                         .then(infoLevel.register())

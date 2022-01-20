@@ -72,9 +72,11 @@ public class Bastion implements IFortification {
     }
 
     @Override
-    public int getSelfInfluenceGenerated(boolean gotAttacked) {
+    public int getSelfInfluenceGenerated(boolean gotAttacked, boolean gotDefeated) {
         int baseInfluence = gotAttacked ? 0 : 100;
-        return baseInfluence + bastionUpgrade.getSelfInfluenceGenerated();
+        int upgrade = gotDefeated ? 0 : bastionUpgrade.getSelfInfluenceGenerated();
+
+        return baseInfluence + upgrade;
     }
 
     @Override
@@ -83,14 +85,34 @@ public class Bastion implements IFortification {
     }
 
     @Override
-    public int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly, boolean gotAttacked) {
+    public int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly, boolean gotAttacked, boolean gotDefeated) {
         int baseInfluence = gotAttacked ? 0 : 50;
-        return baseInfluence + bastionUpgrade.getInfluenceGeneratedCloseNeighbour(neutralOnly);
+        int upgrade = gotDefeated ? 0 : bastionUpgrade.getInfluenceGeneratedCloseNeighbour(neutralOnly);
+
+        return baseInfluence + upgrade;
     }
 
     @Override
-    public int getInfluenceGeneratedDistantNeighbour(boolean gotAttacked) {
-        return 0 + bastionUpgrade.getInfluenceGeneratedDistantNeighbour();
+    public int getInfluenceGeneratedDistantNeighbour(boolean gotAttacked, boolean gotDefeated) {
+        int base = gotAttacked ? 0 : 0;
+        int upgrade = gotDefeated ? 0 : bastionUpgrade.getInfluenceGeneratedDistantNeighbour();
+
+        return base + upgrade;
+    }
+
+    @Override
+    public int getInfluenceDamage(boolean gotAttacked, boolean gotDefeated) {
+        if (gotDefeated) return 0;
+        
+        int barracksLevel = getBastionUpgrade().getBarrack().getCurrentLevel();
+        
+        return switch (barracksLevel) {
+            case 1 -> 30;
+            case 2 -> 35;
+            case 3 -> 40;
+            case 4 -> 45;
+            default -> 0;
+        };
     }
 
     @Override
@@ -128,6 +150,8 @@ public class Bastion implements IFortification {
 
     public void updateDependencies() {
         city = WarOfSquirrels.instance.getCityHandler().getCity(cityUuid);
+
+        bastionUpgrade.Populate(this);
 
         if (upgradeChestLocation != null)
             upgradeChestLocation.update();

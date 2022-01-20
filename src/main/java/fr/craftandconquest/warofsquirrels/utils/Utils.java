@@ -270,6 +270,8 @@ public class Utils {
             message.append(MessageFormat.format("==| Territory {0} [{1};{2}] |==\n  Owner : {3}\n",
                     territory.getName(), territory.getPosX(), territory.getPosZ(),
                     (territory.getFaction() == null ? "None" : territory.getFaction().getDisplayName())));
+            message.append("  Biome(s):\n");
+            message.append(territory.getBiome().asComponent());
         }
 
         if (chunkPos != null) {
@@ -297,5 +299,9 @@ public class Utils {
         }
 
         player.sendMessage(message, Util.NIL_UUID);
+    }
+
+    public static float clamp(float val, float min, float max) {
+        return Math.max(min, Math.min(max, val));
     }
 }

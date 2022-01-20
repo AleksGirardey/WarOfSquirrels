@@ -60,7 +60,8 @@ public class FactionInfoCommand extends CommandBuilder {
             faction = player.getCity().getFaction();
         }
 
-        player.sendMessage(ChatText.Colored(faction.toString(), ChatFormatting.WHITE));
+        faction.displayInfo(player);
+
         return 0;
     }
 

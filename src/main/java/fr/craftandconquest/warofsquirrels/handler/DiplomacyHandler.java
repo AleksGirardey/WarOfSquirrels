@@ -24,8 +24,7 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
         super("[WoS][DiplomacyHandler]", logger);
 
         if (!Init()) return;
-        if (!Load(new TypeReference<List<Diplomacy>>() {
-        })) return;
+        if (!Load(new TypeReference<>() {})) return;
 
         Log();
     }
@@ -44,6 +43,7 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
 
         if (!diplomacyByUuid.containsKey(value.getUuid()))
             diplomacyByUuid.put(value.getUuid(), value);
+
         if (!diplomacyMap.containsKey(value.getFaction()))
             diplomacyMap.put(value.getFaction(), new ArrayList<>());
         if (!diplomacyMap.get(value.getFaction()).contains(value))
@@ -142,6 +142,7 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
 
     public void updateDependencies() {
         dataArray.forEach(Diplomacy::updateDependencies);
+        Populate();
     }
 
     @Override

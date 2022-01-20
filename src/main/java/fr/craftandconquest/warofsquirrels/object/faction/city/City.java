@@ -12,6 +12,7 @@ import fr.craftandconquest.warofsquirrels.object.permission.*;
 import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
+import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
@@ -80,11 +81,11 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         player.setAssistant(false);
         player.setResident(false);
 
-        MutableComponent messageToTarget = new TextComponent("Vous avez rejoint " + displayName + ".")
+        MutableComponent messageToTarget = new TextComponent("You joined " + displayName + ".")
                 .withStyle(ChatFormatting.GREEN);
         player.sendMessage(messageToTarget);
 
-        MutableComponent messageToCity = new TextComponent(player.getDisplayName() + " à rejoint la ville.")
+        MutableComponent messageToCity = new TextComponent(player.getDisplayName() + " joined the city.")
                 .withStyle(ChatFormatting.GREEN);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null, messageToCity, true);
         WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(this, player);
@@ -99,10 +100,10 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         player.reset();
 
         player.sendMessage(ChatText.Error(isKicked ?
-                "Vous avez été expulsé de " + displayName + "." : "Vous avez quitté " + displayName));
+                "You got expelled of " + displayName + "." : "You left " + displayName));
 
         MutableComponent messageToCity = ChatText.Error(player.getDisplayName() + (isKicked ?
-                " a été expulsé de la ville." : " a quitté la ville."));
+                " got expelled from the city." : " left the city."));
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null, messageToCity, true);
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerFromTarget(this, player);
@@ -117,8 +118,10 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
     public void SetFaction(Faction faction) {
         this.faction = faction;
-        if (faction != null)
+        if (faction != null) {
             this.factionUuid = faction.getFactionUuid();
+            faction.addCity(this);
+        }
     }
 
     @Override
@@ -174,27 +177,38 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         return WarOfSquirrels.instance.getChunkHandler().getHomeBlock(this);
     }
 
-    /* Upgrade related */
     @JsonIgnore
     public int getCostReduction() {
-        Chunk hb = getHomeBlock();
-        return cityUpgrade.getCostReduction() /*+ WarOfSquirrels.instance.getTerritoryHandler().get(hb.posX, hb.posZ).getCostReduction()*/;
+        Territory target = WarOfSquirrels.instance.getTerritoryHandler().get(this);
+        int base = cityUpgrade.getCostReduction();
+        int territory = target != null ? (int) target.getBiome().ratioUpgradeReduction() : 0;
+
+        return base + territory;
     }
 
     @JsonIgnore @Override
-    public int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly, boolean gotAttacked) {
+    public int getInfluenceGeneratedCloseNeighbour(boolean neutralOnly, boolean gotAttacked, boolean gotDefeated) {
         return 50;
     }
 
     @JsonIgnore @Override
-    public int getSelfInfluenceGenerated(boolean gotAttacked) {
+    public int getSelfInfluenceGenerated(boolean gotAttacked, boolean gotDefeated) {
         int baseAmount = gotAttacked ? 0 : 100;
-        return baseAmount + WarOfSquirrels.instance.getBastionHandler().get(this).size() * 20;
+        int upgrade = gotDefeated ? 0 : WarOfSquirrels.instance.getBastionHandler().get(this).size() * 20;
+        return baseAmount + upgrade;
     }
 
     @JsonIgnore @Override
-    public int getInfluenceGeneratedDistantNeighbour(boolean gotAttacked) {
-        return getCityUpgrade().getInfluenceGeneratedDistantNeighbour();
+    public int getInfluenceGeneratedDistantNeighbour(boolean gotAttacked, boolean gotDefeated) {
+        int base = gotAttacked ? 0 : 0;
+        int upgrade = gotDefeated ? 0 : getCityUpgrade().getInfluenceGeneratedDistantNeighbour();
+
+        return base + upgrade;
+    }
+
+    @Override
+    public int getInfluenceDamage(boolean gotAttacked, boolean gotDefeated) {
+        return 0;
     }
 
     @JsonIgnore @Override
@@ -269,12 +283,12 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     public String displayPermissions() {
         StringBuilder permissionsAsString = new StringBuilder();
 
-        permissionsAsString.append("=== Default Permission [Build|Container|Switch|Farm|Interact] ===\n");
+        permissionsAsString.append("== Default Permission [Build|Container|Switch|Farm|Interact] ==\n");
 
         defaultPermission.forEach((k, v) ->
                 permissionsAsString.append("  ").append(k.toString()).append(" ").append(v.toString()).append("\n"));
 
-        permissionsAsString.append("=== Custom Permission [Build|Container|Switch|Farm|Interact] ===\n");
+        permissionsAsString.append("== Custom Permission [Build|Container|Switch|Farm|Interact] ==\n");
 
         customPermission.forEach((k, v) ->
                 permissionsAsString.append("  ").append(k.getPermissionDisplayName()).append(" ").append(v.toString()).append("\n"));

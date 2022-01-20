@@ -116,6 +116,10 @@ public class Chunk {
         return chunk.posX == this.posX && chunk.posZ == this.posZ && chunk.getDimensionId().equals(this.dimensionId);
     }
 
+    public String toStringShort() {
+        return "[" + posX + ";" + posZ + "]";
+    }
+
     @Override
     public String toString() {
         return ("[" + posX + ";" + posZ + "] owned by " + (city != null ? city.getDisplayName() : bastion.getDisplayName()) + " in dimension " + dimensionId);

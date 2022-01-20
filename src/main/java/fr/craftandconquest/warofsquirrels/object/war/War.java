@@ -13,6 +13,7 @@ import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import lombok.Getter;
 import lombok.Setter;
@@ -115,7 +116,9 @@ public class War implements IChannelTarget {
         defenderTeam = scoreboard.addPlayerTeam(cityDefender.displayName);
 
         attackerTeam.setAllowFriendlyFire(false);
+        attackerTeam.setPlayerPrefix(ChatText.Colored("Att", ChatFormatting.RED));
         defenderTeam.setAllowFriendlyFire(false);
+        defenderTeam.setPlayerPrefix(ChatText.Colored("Def", ChatFormatting.BLUE));
 
         defenders.forEach(f -> {
             f.getPlayerEntity().getScoreboard().setDisplayObjective(Scoreboard.DISPLAY_SLOT_TEAMS_SIDEBAR_START, timerObjective);
@@ -210,15 +213,14 @@ public class War implements IChannelTarget {
         this.defendersPoints.add(1000);
     }
 
-    public int AddAttackerCapturePoints() {
-        int max = targetTerritory.getFortification().getMaxChunk();
-        int used = WarOfSquirrels.instance.getChunkHandler().getSize(targetTerritory.getFortification());
-        int result = Math.round(max <= 15 ? 1000f / used : 67 * ((float) max / (float) used));
+    public void AddAttackerCapturePoints() {
+        int max = targetTerritory.getFortification().getMaxChunk() - 1;
+        int used = WarOfSquirrels.instance.getChunkHandler().getSize(targetTerritory.getFortification()) - 1;
+        int result = Math.round(max <= 15 ? 1001f / used : 67 * ((float) max / (float) used));
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null,
                 ChatText.Colored("Chunk captured for a total of " + result + " points.", ChatFormatting.GOLD), true);
         attackersPoints.add(result);
-        return result;
     }
 
     private void LaunchPreparation() {
@@ -257,6 +259,10 @@ public class War implements IChannelTarget {
         WarOfSquirrels.instance.getBroadCastHandler().WarAnnounce(this, WarState.Rollback);
 
         DeclareWinner();
+        ClearScoreboard(scoreboard);
+
+        defenders.forEach(f -> ClearScoreboard(f.getPlayerEntity().getScoreboard()));
+        attackers.forEach(f -> ClearScoreboard(f.getPlayerEntity().getScoreboard()));
 
         timer.schedule(new TimerTask() {
             @Override
@@ -277,28 +283,31 @@ public class War implements IChannelTarget {
 
         int pointsToRemove = 250 + Math.abs(defendersPoints.getScore() - attackersPoints.getScore());
 
+        targetTerritory.setGotAttackedToday(true);
+
         if (hasDefenseWon) {
             text = ChatText.Colored(cityAttacker.displayName
                     + " failed to win his attack against "
                     + cityDefender.displayName
                     + "(" + attackersPoints.getScore() + " - " + defendersPoints.getScore(), ChatFormatting.GOLD);
 
-            Influence influence = WarOfSquirrels.instance.getInfluenceHandler().get(targetTerritory.getFaction(), targetTerritory);
-
-            influence.SubInfluence(pointsToRemove);
-
-            if (influence.getValue() <= 0) {
-                targetTerritory.setHasFallen(true);
-                targetTerritory.setDaysBeforeReset(3);
-            }
+            Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(cityAttacker);
+            WarOfSquirrels.instance.getInfluenceHandler().get(territory.getFaction(), territory).SubInfluence(pointsToRemove);
         } else {
             text = ChatText.Colored(cityAttacker.displayName
                     + " won his attack against "
                     + cityDefender.displayName
                     + "(" + attackersPoints.getScore() + " - " + defendersPoints.getScore(), ChatFormatting.GOLD);
 
-            Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(cityAttacker);
-            WarOfSquirrels.instance.getInfluenceHandler().get(territory.getFaction(), territory).SubInfluence(pointsToRemove);
+            Influence influence = WarOfSquirrels.instance.getInfluenceHandler().get(targetTerritory.getFaction(), targetTerritory);
+            influence.SubInfluence(pointsToRemove + WarOfSquirrels.instance.getTerritoryHandler().getDamageFromEnemy(targetTerritory, cityAttacker.getFaction()));
+
+            targetTerritory.setGotDefeatedToday(true);
+
+            if (influence.getValue() <= 0) {
+                targetTerritory.setHasFallen(true);
+                targetTerritory.setDaysBeforeReset(3);
+            }
         }
         broadCastHandler.BroadCastWorldAnnounce(text);
     }
@@ -427,13 +436,11 @@ public class War implements IChannelTarget {
         chunkBeingCaptured.forEach((chunk, f) -> {
             float val = Capture(chunk);
 
-            if (val > 0f)
-                player.sendMessage(ChatText.Success("["
-                        + (chunk.getPosX() * 16) + ";"
-                        + (chunk.getPosZ() * 16) + "] "
-                        + Utils.toTime((int) (chunkBeingCaptured.get(chunk) / val))
-                        + " secondes."));
-
+            if (val != 0f)
+                player.sendMessage(ChatText.Success(chunk.toStringShort() + "[~"
+                        + (chunk.getPosX() * 16) + ";~"
+                        + (chunk.getPosZ() * 16) + "][" + (int) Math.floor(chunkBeingCaptured.get(chunk)) + "/100] "
+                        + Utils.toTime((int) (chunkBeingCaptured.get(chunk) / val))));
         });
     }
 
@@ -441,12 +448,11 @@ public class War implements IChannelTarget {
         int chunkMax = targetTerritory.getFortification().getMaxChunk() - 1;
         float time = (chunkMax <= 15.0f ? 900.0f / chunkMax : 60f);
 
-        captureSpeed = (100f / (attackers.size() * time));
+        captureSpeed = (100f / time);
     }
 
     private float Capture(Chunk chunk) {
-        Level world;
-        int att = 0, def = 0, x, z;
+        int att = 0, def = 0;
         float ret;
         Chunk c;
         List<FullPlayer> list = new ArrayList<>();
@@ -456,58 +462,79 @@ public class War implements IChannelTarget {
 
         for (FullPlayer player : list) {
             if (player.isOnline()) {
-                world = player.getPlayerEntity().getCommandSenderWorld();
-                x = (int) player.lastPosition.x;
-                z = (int) player.lastPosition.z;
+                Vector2 chunkPos = Utils.WorldToChunk(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
 
-                c = WarOfSquirrels.instance.getChunkHandler().getChunk(x, z, player.getLastDimensionKey());
-                if (c != null && c == chunk && c.getBastion() != null && inCaptureRange((int) player.lastPosition.y, c.getBastion())) {
-                    if (isAttacker(player))
-                        att++;
-                    else if (isDefender(player))
-                        def++;
+                c = WarOfSquirrels.instance.getChunkHandler().getChunk((int) chunkPos.x, (int) chunkPos.y, player.getLastDimensionKey());
+
+                boolean notNull = c != null;
+                boolean same = notNull && c.equals(chunk);
+                boolean sameFortification = notNull && c.getFortification().equals(targetTerritory.getFortification());
+                boolean inRange = notNull && inCaptureRange(player.getPlayerEntity().getBlockY(), c.getBastion());
+
+                WarOfSquirrels.instance.debugLog(notNull + " " + same + " " + sameFortification + " " + inRange);
+
+                if (notNull && same && sameFortification && inRange) {
+                    if (isAttacker(player)) att++;
+                    else if (isDefender(player)) def++;
                 }
             }
         }
 
-        ret = ((captureSpeed * att) - (0.45f * captureSpeed * def));
+        float attRatio = att / (float) attackers.size();
+        float defRatio = def / (float) defenders.size();
+
+
+        ret = captureSpeed * (attRatio - (0.45f * defRatio));
+        WarOfSquirrels.instance.debugLog("AttRatio " + attRatio + " vs " + defRatio + " DefRatio = " + ret);
         return ret;
     }
 
     private boolean inCaptureRange(int y, Bastion bastion) {
         int ySpawn = (int) WarOfSquirrels.instance.getChunkHandler().getHomeBlock(bastion).getRespawnPoint().y;
 
-        return y <= ySpawn + 20 && y <= ySpawn - 20;
+        return y <= ySpawn + 40 && y >= ySpawn - 40;
     }
 
     protected void UpdateCapture() {
         List<Chunk> updated = new ArrayList<>();
-        Level world;
-        float v;
 
-        for (FullPlayer att : attackers) {
-            if (att.isOnline()) {
-                world = att.getPlayerEntity().getCommandSenderWorld();
-                Chunk chunk = WarOfSquirrels.instance.getChunkHandler()
-                        .getChunk(att.getLastChunkX(), att.getLastChunkZ(), att.getLastDimensionKey());
+        List<FullPlayer> players = new ArrayList<>(attackers);
+        players.addAll(defenders);
 
-                if (chunk != null && chunk.getRelatedCity() == cityDefender
-                        && !updated.contains(chunk) && !capturedChunk.contains(chunk)
-                        && !chunk.getHomeBlock() && !chunk.getOutpost()) {
+        for (FullPlayer player : players) {
+            if (player.isOnline()) {
+                Vector2 chunkPos = Utils.WorldToChunk(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
+                Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk((int) chunkPos.x, (int) chunkPos.y, player.getLastDimensionKey());
+
+                boolean notNull = chunk != null;
+                boolean sameFortification = notNull && chunk.getFortification().equals(targetTerritory.getFortification());
+                boolean notInUpdated = notNull && !updated.contains(chunk);
+                boolean notCaptured = notNull && !capturedChunk.contains(chunk);
+                boolean notHomeblock = notNull && !chunk.getHomeBlock();
+                boolean notOutpost = notNull && !chunk.getOutpost();
+
+//                WarOfSquirrels.instance.debugLog("[UpdateCapture] " + att.getLastChunkX() + ";" + att.getLastChunkZ());
+//                WarOfSquirrels.instance.debugLog("[UpdateCapture] " + notNull + " - " + sameFortification + " - " + notInUpdated + " - " + notCaptured + " - " + notHomeblock + " - "+ notOutpost + " - ");
+
+                if (notNull && sameFortification && notInUpdated && notCaptured && notHomeblock && notOutpost) {
                     updated.add(chunk);
+                    float valueRemoved = Capture(chunk);
+
                     if (chunkBeingCaptured.containsKey(chunk)) {
-                        v = chunkBeingCaptured.get(chunk);
-                        chunkBeingCaptured.compute(chunk, (c, val) -> val - Capture(chunk));
-                    } else {
-                        v = 100;
-                        chunkBeingCaptured.put(chunk, 100 - Capture(chunk));
+                        chunkBeingCaptured.compute(chunk, (c, val) -> Utils.clamp( Objects.requireNonNullElse(val, 100f) - valueRemoved, 0, 100));
                     }
-                    if (this.lastAnnounceCapture == 0)
+                    else {
+                        chunkBeingCaptured.put(chunk, Utils.clamp( 100 - valueRemoved, 0, 100));
+                        lastAnnounceCapture = 0;
+                    }
+
+                    if (this.lastAnnounceCapture == 0) {
+                        float timeLeft = chunkBeingCaptured.get(chunk); // example : 55
                         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null,
-                                ChatText.Success("[Capture][" + (chunk.getPosX() * 16)
-                                        + ";" + (chunk.getPosZ() * 16) + "] Time before capture "
-                                        + Utils.toTime((int) (chunkBeingCaptured.get(chunk) / (v - chunkBeingCaptured.get(chunk)))) + " seconds."),
+                                ChatText.Success("[Capture]" + chunk.toStringShort() + "[" + (int) Math.floor(timeLeft) + "/100] Time before capture "
+                                        + Utils.toTime((int) (timeLeft / valueRemoved)) + "."),
                                 true);
+                    }
                     if (chunkBeingCaptured.get(chunk) <= 0) {
                         capturedChunk.add(chunk);
                         chunkBeingCaptured.remove(chunk);
@@ -539,5 +566,12 @@ public class War implements IChannelTarget {
             return WarOfSquirrels.instance.getChunkHandler().getHomeBlock(targetTerritory.getFortification()).getRespawnPoint();
         else
             return WarOfSquirrels.instance.getChunkHandler().getSpawnOnTerritory(targetTerritory, player.getCity());
+    }
+
+    public void ClearScoreboard(Scoreboard board) {
+        board.removeObjective(timerObjective);
+        board.removeObjective(pointsObjective);
+        board.removePlayerTeam(attackerTeam);
+        board.removePlayerTeam(defenderTeam);
     }
 }

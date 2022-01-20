@@ -101,15 +101,6 @@ public class PlayersInteractionHandler {
 
         if (player == null) return;
 
-//        ReSpawnPoint spawnPoint = Utils.NearestSpawnPoint(playerEntity);
-//
-//        ServerPlayer serverPlayer = WarOfSquirrels.server.getPlayerList().getPlayer(playerEntity.getUUID());
-//
-//        if (serverPlayer != null) {
-//            WarOfSquirrels.LOGGER.info("[WoS][Debug] Player respawn set to " + spawnPoint.position);
-//            serverPlayer.setRespawnPosition(spawnPoint.dimension, spawnPoint.position, 0f, false, true);
-//        }
-
         player.setLastChunkX(event.getOldPos().chunk().x);
         player.setLastChunkZ(event.getOldPos().chunk().z);
 
@@ -227,5 +218,24 @@ public class PlayersInteractionHandler {
         if (target == null) return;
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(target, sender, message.copy(), false);
+    }
+
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    @SubscribeEvent
+    public void OnPlayerBreakSpeed(PlayerEvent.BreakSpeed event) {
+        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
+
+        if (!player.getLastDimensionKey().equals(Level.OVERWORLD)) return;
+
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(Utils.WorldToChunk(event.getPlayer().getBlockX(), event.getPlayer().getBlockZ()));
+
+        if (territory == null) return;
+
+        if (WarOfSquirrels.instance.getWarHandler().getWar(territory) == null) return;
+
+        float value = event.getOriginalSpeed();
+        value += value * territory.getBiome().ratioBreakingSpeed();
+
+        event.setNewSpeed(value);
     }
 }

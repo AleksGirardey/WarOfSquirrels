@@ -59,8 +59,8 @@ public class Diplomacy {
     }
 
     public void updateDependencies() {
-        if (factionUuid != null) WarOfSquirrels.instance.getFactionHandler().get(factionUuid);
-        if (targetUuid != null) WarOfSquirrels.instance.getFactionHandler().get(targetUuid);
+        if (factionUuid != null) faction = WarOfSquirrels.instance.getFactionHandler().get(factionUuid);
+        if (targetUuid != null) target = WarOfSquirrels.instance.getFactionHandler().get(targetUuid);
     }
 
     @Override

@@ -3,6 +3,7 @@ package fr.craftandconquest.warofsquirrels.object.upgrade;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -108,14 +109,22 @@ public abstract class Upgrade {
         MutableComponent title = new TextComponent("");
         MutableComponent entryComponent = new TextComponent("");
         MutableComponent extra = new TextComponent("");
+        int count = 0;
 
-        title.withStyle(ChatFormatting.GREEN)
+        title.withStyle(ChatFormatting.DARK_GREEN)
                 .append("== ").append(getUpgradeName()).append(" [" + upgradeIndex + "/" + "4] ==\n");
         for(Map.Entry<UpgradeItem, Integer> entry : upgradeItems.entrySet()) {
             if (entry.getValue() <= 0) continue;
-            entryComponent.append("- ").append(Utils.SplitToStack(entry.getValue()).withStyle(ChatFormatting.BLUE)).append(" (" + entry.getValue() + ") ")
-                    .append(entry.getKey().asString().withStyle(ChatFormatting.BLUE)).append("\n");
+            ++count;
+            entryComponent.append("- ").withStyle(ChatFormatting.GREEN)
+                    .append(Utils.SplitToStack(entry.getValue()).withStyle(ChatFormatting.BLUE))
+                    .append(" (" + entry.getValue() + ") ").withStyle(ChatFormatting.GREEN)
+                    .append(entry.getKey().asString().withStyle(ChatFormatting.BLUE))
+                    .append("\n");
         }
+
+        if (count == 0)
+            entryComponent = ChatText.Success("Upgrade is ready to be completed ! Refer to /.. [UpgradeType] complete command\n").withStyle(ChatFormatting.GREEN);
 
         extra.append(getExtraRequirements());
 
