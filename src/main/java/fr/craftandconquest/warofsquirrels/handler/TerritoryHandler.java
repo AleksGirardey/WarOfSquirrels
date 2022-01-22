@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class TerritoryHandler extends Handler<Territory> {
     private final static List<String> defaultTerritoryName = new ArrayList<>() {{
@@ -56,6 +57,7 @@ public class TerritoryHandler extends Handler<Territory> {
         add("Ison");
         add("Anor");
 
+        // 40
         add("Iqesh");
         add("Bruyela");
         add("Keiwan");
@@ -66,6 +68,78 @@ public class TerritoryHandler extends Handler<Territory> {
         add("Onax");
         add("Ekor");
         add("Afall");
+
+        // 50
+        add("Ifkar");
+        add("Aderma");
+        add("Iomedae");
+        add("Helharian");
+        add("Thorstein");
+        add("Ultan");
+        add("Avendrah");
+        add("Deles");
+        add("Anthil");
+        add("Marmousset");
+
+        // 60
+        add("Esand");
+        add("Kayoa");
+        add("Opes");
+        add("Ceruth");
+        add("Vaegir");
+        add("Shomos");
+        add("Lorvald");
+        add("Ezora");
+        add("Itios");
+        add("Toceron");
+
+        // 70
+        add("Ikora");
+        add("Ocone");
+        add("Anoris");
+        add("Iadresh");
+        add("Adajin");
+        add("Anskylvia");
+        add("Ichiver");
+        add("Yavealan");
+        add("Eoyarim");
+        add("Citemare");
+
+        // 80
+        add("Capalis");
+        add("Lufiros");
+        add("Everglade");
+        add("Haven");
+        add("Ataes");
+        add("Esis");
+        add("Vrafor");
+        add("Slecox");
+        add("Plizin");
+        add("Ohux");
+
+        // 90
+        add("Minn");
+        add("Zun");
+        add("Heiz");
+        add("Sun");
+        add("Thalon");
+        add("Lavua");
+        add("Ivius");
+        add("Acalen");
+        add("Melovan");
+        add("Calade");
+
+        // 100
+        add("Dionandra");
+        add("Gala");
+        add("Acanthy");
+        add("Acaly");
+        add("Ilee");
+        add("Astien");
+        add("Lotia");
+        add("Angiss");
+        add("Ivin");
+        add("Malor");
     }};
 
     private final Map<UUID, Territory> territoryMap;
@@ -105,7 +179,7 @@ public class TerritoryHandler extends Handler<Territory> {
                 Generate();
             }
         } catch (IOException e) {
-            Logger.error(errorMessage + "'" + getConfigPath() + "' (File creation)");
+            Logger.error(errorMessage + "'" + getConfigPath() + "' (File creation) - " + e.getMessage());
             return false;
         }
         return true;
@@ -188,13 +262,22 @@ public class TerritoryHandler extends Handler<Territory> {
     }
 
     public void LogTerritoryCreation(Territory territory) {
-        Logger.info(PrefixLogger + territory + " created");
+        Logger.info(PrefixLogger + " " + territory.getName() + " created" + (territory.getBiome().isHasRiver() ? " with river." : ""));
     }
 
     @Override
     public void Log() {
+        AtomicReference<Double> sum = new AtomicReference<>((double) 0);
+        dataArray.forEach(t -> sum.updateAndGet(v -> v + t.getBiome().sum));
+
+        double v = sum.get() * 1/100;
+        v = Math.sqrt(v);
+
         Logger.info(MessageFormat.format("{0} Territories generated : {1}",
                 PrefixLogger, dataArray.size()));
+
+        Logger.info(MessageFormat.format("{0} Ecart type river : {1}",
+                PrefixLogger, v));
     }
 
     @Override

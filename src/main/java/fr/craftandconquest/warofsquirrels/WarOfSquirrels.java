@@ -17,11 +17,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -102,7 +102,7 @@ public class WarOfSquirrels {
     }
 
     @SubscribeEvent
-    public void OnServerStarting(FMLServerStartingEvent event) {
+    public void OnServerStarting(ServerStartingEvent event) {
         LOGGER.info("[WoS] Server Starting . . .");
 
         server = event.getServer();

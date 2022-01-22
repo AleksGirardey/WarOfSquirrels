@@ -1,8 +1,8 @@
 package fr.craftandconquest.warofsquirrels.object.world;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.minecraft.network.chat.MutableComponent;
@@ -14,9 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@AllArgsConstructor
 @NoArgsConstructor
 public class TerritoryBiome {
+    @JsonIgnore public static int riverChunkCount;
     @JsonIgnore private static final Map<Biome.BiomeCategory, EBiomeType> biomeMapping = new HashMap<>();
 
     static {
@@ -30,10 +30,12 @@ public class TerritoryBiome {
         biomeMapping.put(Biome.BiomeCategory.EXTREME_HILLS, EBiomeType.Mountains);
         biomeMapping.put(Biome.BiomeCategory.MESA, EBiomeType.Mountains);
         biomeMapping.put(Biome.BiomeCategory.ICY, EBiomeType.Mountains);
+        biomeMapping.put(Biome.BiomeCategory.MOUNTAIN, EBiomeType.Mountains);
 
         /* Forest */
         biomeMapping.put(Biome.BiomeCategory.JUNGLE, EBiomeType.Forest);
         biomeMapping.put(Biome.BiomeCategory.FOREST, EBiomeType.Forest);
+        biomeMapping.put(Biome.BiomeCategory.TAIGA, EBiomeType.Forest);
 
         /* Ocean */
         biomeMapping.put(Biome.BiomeCategory.BEACH, EBiomeType.Ocean);
@@ -60,39 +62,67 @@ public class TerritoryBiome {
         Swamp,
         None,
     }
+    @JsonIgnore @Getter private List<EBiomeType> biomes;
 
-    @JsonProperty @Getter private List<EBiomeType> biomes;
+    @JsonProperty @Getter private List<String> serializedBiomes;
     @JsonProperty @Getter private boolean hasRiver = false;
-    @JsonProperty @Getter private boolean isRiverComplete = false;
+    @JsonProperty("isRiverComplete") private boolean isRiverComplete = false;
+
+    @JsonIgnore public double sum;
+
+    @JsonCreator
+    public TerritoryBiome(@JsonProperty("serializedBiomes") List<String> _biomes, @JsonProperty("hasRiver") boolean _hasRiver, @JsonProperty("isRiverComplete") boolean _isRiverComplete) {
+        biomes = new ArrayList<>();
+        serializedBiomes = new ArrayList<>(_biomes);
+        hasRiver = _hasRiver;
+        isRiverComplete = _isRiverComplete;
+
+        Populate();
+    }
 
     public TerritoryBiome(Map<Biome.BiomeCategory, Integer> biomeMap) {
         biomes = new ArrayList<>();
+        serializedBiomes = new ArrayList<>();
 
         Map<EBiomeType, Integer> groupedMap = new HashMap<>();
 
         int max = biomeMap.values().stream().mapToInt(value -> value).sum();
-        int minValueToBeComplete = 10;
+        int minValueToBeComplete = 132;
 
         for (Map.Entry<Biome.BiomeCategory, Integer> biomeEntry : biomeMap.entrySet()) {
             EBiomeType type = biomeMapping.get(biomeEntry.getKey());
 
-            groupedMap.compute(type, (k, v) -> v == null ? 1 : v + 1);
+            groupedMap.compute(type, (k, v) -> v = (v == null ? biomeEntry.getValue() : v + biomeEntry.getValue()));
         }
 
         if (groupedMap.containsKey(EBiomeType.River)) {
-            hasRiver = true;
+            sum = groupedMap.get(EBiomeType.River) - 91;
+            sum *= sum;
+
+            TerritoryBiome.riverChunkCount += groupedMap.get(EBiomeType.River);
+            hasRiver = groupedMap.get(EBiomeType.River) >= 80;
             isRiverComplete = groupedMap.get(EBiomeType.River) >= minValueToBeComplete;
             groupedMap.remove(EBiomeType.River);
         }
 
-        groupedMap.forEach((k, v) -> v = v * 100 / max);
-        groupedMap.entrySet().stream()
-                .filter(e -> e.getValue() >= 33 && e.getKey() != EBiomeType.None)
-                .forEach(e -> addBiome(e.getKey()));
+        for (Map.Entry<EBiomeType, Integer> entry : groupedMap.entrySet()) {
+            if (entry.getKey().equals(EBiomeType.None)) return;
+
+            int percent = entry.getValue() * 100 / max;
+
+            if (percent >= 33)
+                addBiome(entry.getKey());
+        }
+
+//        groupedMap.forEach((k, v) -> v = ((v * 100) / max));
+//        groupedMap.entrySet().stream()
+//                .filter(e -> e.getValue() >= 33 && e.getKey() != EBiomeType.None)
+//                .forEach(e -> addBiome(e.getKey()));
     }
 
     private void addBiome(EBiomeType type) {
         biomes.add(type);
+        serializedBiomes.add(type.name());
     }
 
     @JsonIgnore
@@ -139,6 +169,10 @@ public class TerritoryBiome {
             ratio += isRiverComplete ? 10f : 15f;
         }
         return ratio;
+    }
+
+    private void Populate() {
+        serializedBiomes.forEach(s -> biomes.add(EBiomeType.valueOf(s)));
     }
 
     public MutableComponent asComponent() {

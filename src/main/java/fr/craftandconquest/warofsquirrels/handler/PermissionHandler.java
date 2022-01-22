@@ -278,9 +278,10 @@ public class PermissionHandler {
         Pair<Integer, Integer> territoryLocation = Utils.ChunkToTerritoryCoordinates(chunkLocation.getKey(), chunkLocation.getValue());
         Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(territoryLocation.getKey(), territoryLocation.getValue());
         boolean isThereTerritory = territory != null; // ALWAYS TRUE IF OVERWORLD
-        
+        boolean isThereFortification = isThereTerritory && territory.getFortification() != null; // ALWAYS TRUE IF OVERWORLD
+
         boolean isThereWarOnCity = isThereChunk && WarOfSquirrels.instance.getWarHandler().Contains(chunk.getRelatedCity());
-        boolean isThereWarOnTerritory = isThereTerritory && WarOfSquirrels.instance.getWarHandler().Contains(territory);
+        boolean isThereWarOnTerritory = isThereFortification && WarOfSquirrels.instance.getWarHandler().Contains(territory);
 
         if (isThereWarOnCity)
             permission = checkWarPermission(player, chunk, block);

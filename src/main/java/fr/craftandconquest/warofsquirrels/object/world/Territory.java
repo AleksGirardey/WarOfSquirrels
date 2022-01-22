@@ -12,12 +12,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.level.biome.Biomes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -145,14 +145,20 @@ public class Territory {
 
         if (level == null) return;
 
-        BiomeManager biomeManager = level.getBiomeManager();
-
         for (int x = posXMin; x < posXMax; ) {
             for (int z = posZMin; z < posZMax; ) {
                 ChunkPos chunkPos = Utils.WorldToChunkPos(x, z);
+                BlockPos pos = chunkPos.getMiddleBlockPosition(124);
 
-                Biome.BiomeCategory category = biomeManager.getPrimaryBiomeAtChunk(chunkPos).getBiomeCategory();
+                Biome.BiomeCategory category = level.getBiome(pos).getBiomeCategory();
                 biomeMap.compute(category, (k,v) -> v == null ? 1 : v + 1);
+
+//                if (biomeMap.get(category) >= 335)
+//                    WarOfSquirrels.instance.debugLog(category.getName() + " = " + biomeMap.get(category));
+
+//                if (posX == 0 && posZ == 0) {
+//                    WarOfSquirrels.instance.debugLog(category.getName() + " = " + biomeMap.get(category));
+//                }
 
                 z += 16;
             }
@@ -208,9 +214,9 @@ public class Territory {
 
     @Override
     public String toString() {
-        return String.format("[%d;%d] Possédé par %s dans la dimension d'id %s de type %s",
+        return String.format("[%d;%d] Possédé par %s dans la dimension d'id %s",
                 posX,
                 posZ,
-                faction != null ? faction.getDisplayName() : "personne", "Overworld", biome);
+                faction != null ? faction.getDisplayName() : "personne", "Overworld");
     }
 }
