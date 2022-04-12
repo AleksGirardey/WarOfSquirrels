@@ -42,7 +42,7 @@ public class AdminTerritoryTp extends AdminCommandBuilder {
         String name = StringArgumentType.getString(context, "territory");
 
         Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(name);
-        SpawnTeleporter tp = new SpawnTeleporter(Utils.TerritoryToWorldCoordinates(territory.getPosX(), territory.getPosZ()));
+        SpawnTeleporter tp = new SpawnTeleporter(Utils.FromTerritoryToWorld(territory.getPosX(), territory.getPosZ()));
         ResourceKey<Level> dim = Level.OVERWORLD;
         ServerLevel level = WarOfSquirrels.server.getLevel(dim);
 

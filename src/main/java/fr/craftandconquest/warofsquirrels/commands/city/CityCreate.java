@@ -85,9 +85,13 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
         String cityName = context.getArgument(cityNameArgument, String.class);
         CityHandler cih = WarOfSquirrels.instance.getCityHandler();
         ChunkHandler chh = WarOfSquirrels.instance.getChunkHandler();
-        City city = cih.CreateCity(cityName, cityName.substring(0, 3), player);
-        Chunk chunk;
+//        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
         Territory territory = ExtractTerritory(player);
+
+        if (territory == null) return -1;
+
+        City city = cih.CreateCity(cityName, cityName.substring(0, 3), player, territory);
+        Chunk chunk;
 
         player.setCity(city);
         chunk = chh.CreateChunk(player.getPlayerEntity().chunkPosition().x, player.getPlayerEntity().chunkPosition().z, city,
@@ -116,6 +120,7 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
 
         player.setWhitelistCityCreator(false);
 
+        chh.Save();
         cih.Save();
 
         return 0;

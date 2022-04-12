@@ -8,6 +8,7 @@ import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.core.BlockPos;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -94,6 +95,7 @@ public class Config {
         try {
             if (new BufferedReader(new FileReader(getConfigPath())).readLine() != null) {
                 configuration = mapper.readValue(configFile, ConfigData.class);
+                ReSpawnPoint.DEFAULT_SPAWN = new ReSpawnPoint(WarOfSquirrels.SPAWN, new BlockPos(configuration.getServerSpawn().x, configuration.getServerSpawn().y, configuration.getServerSpawn().z));
             }
         } catch (IOException e) {
             Logger.error(MessageFormat.format("{0} : {1}", errorMessage, e.getMessage()));
@@ -152,7 +154,7 @@ public class Config {
                 10, // reincarnationTime;
                 15, // invitationTime;
                 1500, // startBalance;
-                new Vector3(8 , 67, -5),
+                new Vector3(11 , 86, -2),
 
                 /* War */
                 120, // preparationPhase;

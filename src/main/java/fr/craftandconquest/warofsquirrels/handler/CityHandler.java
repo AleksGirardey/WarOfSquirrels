@@ -10,6 +10,7 @@ import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
+import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
@@ -48,12 +49,13 @@ public class CityHandler extends Handler<City> {
         return true;
     }
 
-    public City CreateCity(String name, String tag, FullPlayer owner) {
+    public City CreateCity(String name, String tag, FullPlayer owner, Territory territory) {
         City city = new City();
 
         city.setCityUuid(UUID.randomUUID());
         city.displayName = name;
         city.tag = tag;
+        city.setTerritory(territory);
         city.SetOwner(owner);
         city.setCityUpgrade(new CityUpgrade());
         city.getCityUpgrade().Init(city);
@@ -112,10 +114,17 @@ public class CityHandler extends Handler<City> {
     public boolean Delete(City city) {
         WarOfSquirrels.instance.spreadPermissionDelete(city);
 
-        if (!WarOfSquirrels.instance.getChunkHandler().deleteCity(city)) return false;
-        if (!WarOfSquirrels.instance.getCuboHandler().deleteCity(city)) return false;
-        if (!WarOfSquirrels.instance.getBastionHandler().deleteCity(city)) return false;
+        WarOfSquirrels.instance.debugLog("CD 1");
+        if (!WarOfSquirrels.instance.getInfluenceHandler().delete(city)) return false;
+        WarOfSquirrels.instance.debugLog("CD 2");
         if (!WarOfSquirrels.instance.getTerritoryHandler().delete(city)) return false;
+        WarOfSquirrels.instance.debugLog("CD 3");
+        if (!WarOfSquirrels.instance.getBastionHandler().deleteCity(city)) return false;
+        WarOfSquirrels.instance.debugLog("CD 4");
+        if (!WarOfSquirrels.instance.getCuboHandler().deleteCity(city)) return false;
+        WarOfSquirrels.instance.debugLog("CD 5");
+        if (!WarOfSquirrels.instance.getChunkHandler().deleteCity(city)) return false;
+        WarOfSquirrels.instance.debugLog("CD 6");
 
         for (FullPlayer player : city.getCitizens()) {
             player.setAssistant(false);

@@ -2,6 +2,7 @@ package fr.craftandconquest.warofsquirrels.object.upgrade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
@@ -99,7 +100,16 @@ public abstract class Upgrade {
         Map<UpgradeItem, Integer> defaultValues = getDefaultValues(level);
 
         upgradeItems.entrySet().forEach((entry) -> {
-            int newValue = Math.max(0, entry.getValue() + ((defaultValues.get(entry.getKey()) * percentage) / 100));
+            int oldValue = entry.getValue();
+            int defaultValue = defaultValues.get(entry.getKey());
+            int newValue = Math.max(0, oldValue + ((defaultValue * percentage) / 100));
+
+//            WarOfSquirrels.instance.debugLog("[ApplyCostReduction] " + oldValue
+//                    + " - " + defaultValue
+//                    + " - " + percentage
+//                    + " - " + ((defaultValue * percentage) / 100)
+//                    + " - " + newValue);
+
             entry.getKey().setAmount(newValue);
             entry.setValue(newValue);
         });

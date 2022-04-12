@@ -3,6 +3,7 @@ package fr.craftandconquest.warofsquirrels.commands.city.bastion;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.city.CityBastionCommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.city.bastion.upgrade.CityBastionChestLocation;
 import fr.craftandconquest.warofsquirrels.commands.city.bastion.upgrade.CityBastionUpgradeComplete;
 import fr.craftandconquest.warofsquirrels.commands.city.bastion.upgrade.CityBastionUpgradeFill;
 import fr.craftandconquest.warofsquirrels.commands.city.bastion.upgrade.CityBastionUpgradeInfo;

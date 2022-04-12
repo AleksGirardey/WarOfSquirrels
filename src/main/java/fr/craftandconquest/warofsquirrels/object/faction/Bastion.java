@@ -7,6 +7,7 @@ import fr.craftandconquest.warofsquirrels.object.faction.city.ChestLocation;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.upgrade.BastionUpgrade;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
+import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class Bastion implements IFortification {
     @JsonProperty @Getter @Setter
     private String name;
 
-    @JsonProperty @Getter @Setter
+    @JsonProperty @Setter
     private Vector2 territoryPosition;
 
     @JsonProperty @Getter
@@ -143,6 +144,15 @@ public class Bastion implements IFortification {
         return WarOfSquirrels.instance.getChunkHandler().getChunks(this).size();
     }
 
+    @JsonIgnore
+    public int getCostReduction() {
+        Territory target = WarOfSquirrels.instance.getTerritoryHandler().get(this);
+        int base = 0;
+        int territory = target != null ? (int) target.getBiome().ratioUpgradeReduction() : 0;
+
+        return base + territory;
+    }
+
     public void update() {
         isProtected = false;
         bastionUpgrade.VerifyLevelUp();
@@ -155,6 +165,11 @@ public class Bastion implements IFortification {
 
         if (upgradeChestLocation != null)
             upgradeChestLocation.update();
+    }
+
+    @Override
+    public Vector2 getTerritoryPosition() {
+        return territoryPosition;
     }
 
     @Override

@@ -30,7 +30,7 @@ public class CityUpgradeComplete extends CityMayorOrAssistantCommandBuilder {
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         City city = player.getCity();
-        boolean complete = city.getCityUpgrade().CompleteUpgrade(upgradeType, city);
+        boolean complete = city.getCityUpgrade().CompleteUpgrade(upgradeType, city, player.isAdminMode());
 
         if (complete) {
             WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(

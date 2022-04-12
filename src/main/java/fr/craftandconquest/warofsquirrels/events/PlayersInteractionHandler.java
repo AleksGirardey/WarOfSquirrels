@@ -11,12 +11,10 @@ import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.*;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,6 +25,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -74,6 +73,7 @@ public class PlayersInteractionHandler {
                 Math.round(playerEntity.getBlockY()),
                 Math.round(playerEntity.getBlockZ()));
 
+        player.lastPosition = newPosition;
         ResourceKey<Level> dimensionId = playerEntity.getCommandSenderWorld().dimension();
 
         AdminCubo cubo = WarOfSquirrels.instance.getAdminHandler().get(newPosition, dimensionId);
@@ -88,6 +88,23 @@ public class PlayersInteractionHandler {
                 if (level == null) return;
 
                 player.getPlayerEntity().changeDimension(level, tp);
+            }
+        }
+
+        Chunk lastChunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), dimensionId);
+        Chunk newChunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getPlayerEntity().chunkPosition().x, player.getPlayerEntity().chunkPosition().z, dimensionId);
+
+        if (newChunk == null || lastChunk == null || lastChunk.equals(newChunk)) return;
+
+        Territory newTerritory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(new Vector2(newChunk.getPosX(), newChunk.getPosZ()));
+
+        if (WarOfSquirrels.instance.getWarHandler().IsConcerned(newTerritory, newChunk)) {
+            War war = WarOfSquirrels.instance.getWarHandler().getWar(newChunk.getRelatedCity());
+
+            if (!war.isDefender(player) && !war.isAttacker(player)) {
+                //event.getEntity().setPos(new Vec3(player.lastPosition.x, player.lastPosition.y, player.lastPosition.z));
+                event.setResult(Event.Result.DENY);
+                player.sendMessage(ChatText.Error("You cannot walk into this battlefield."));
             }
         }
     }
@@ -108,8 +125,8 @@ public class PlayersInteractionHandler {
 
         if (dimensionId != Level.OVERWORLD) return;
 
-        Territory oldTerritory = WarOfSquirrels.instance.getTerritoryHandler().get(new Vector2(event.getOldPos().chunk().x, event.getOldPos().chunk().z));
-        Territory newTerritory = WarOfSquirrels.instance.getTerritoryHandler().get(new Vector2(event.getNewPos().chunk().x, event.getNewPos().chunk().z));
+        Territory oldTerritory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(new Vector2(event.getOldPos().chunk().x, event.getOldPos().chunk().z));
+        Territory newTerritory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(new Vector2(event.getNewPos().chunk().x, event.getNewPos().chunk().z));
 
         if (oldTerritory != newTerritory) {
             player.sendMessage(ChatText.Colored("~~| " + newTerritory.getName() + " |~~", ChatFormatting.DARK_GREEN));
@@ -118,17 +135,22 @@ public class PlayersInteractionHandler {
         Chunk lastChunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), dimensionId);
         Chunk newChunk = WarOfSquirrels.instance.getChunkHandler().getChunk(event.getNewPos().chunk().x, event.getNewPos().chunk().z, dimensionId);
 
+//        if (WarOfSquirrels.instance.getWarHandler().IsConcerned(newTerritory, newChunk)) {
+//            War war = WarOfSquirrels.instance.getWarHandler().getWar(newChunk.getRelatedCity());
+//
+//            if (!war.isDefender(player) && !war.isAttacker(player)) {
+//                event.getEntity().setPos(new Vec3(player.lastPosition.x, player.lastPosition.y, player.lastPosition.z));
+//                player.sendMessage(ChatText.Error("You cannot walk into this battlefield."));
+//                return;
+//            }
+//        }
+
         if (lastChunk != null) {
             if (newChunk != null) {
                 if (lastChunk.getRelatedCity() != newChunk.getRelatedCity()) {
-                    if (WarOfSquirrels.instance.getWarHandler().IsConcerned(newChunk)) {
-                        War war = WarOfSquirrels.instance.getWarHandler().getWar(newChunk.getRelatedCity());
-
-                        if (!war.isDefender(player) && !war.isAttacker(player)) {
-                            event.setCanceled(true);
-                            return;
-                        }
-                    }
+//                    if (WarOfSquirrels.instance.getWarHandler().IsConcerned(newChunk)) {
+//
+//                    }
 
                     String place = newChunk.getFortification().getDisplayName();
 
@@ -227,7 +249,7 @@ public class PlayersInteractionHandler {
 
         if (!player.getLastDimensionKey().equals(Level.OVERWORLD)) return;
 
-        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(Utils.WorldToChunk(event.getPlayer().getBlockX(), event.getPlayer().getBlockZ()));
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(Utils.FromWorldToChunk(event.getPlayer().getBlockX(), event.getPlayer().getBlockZ()));
 
         if (territory == null) return;
 

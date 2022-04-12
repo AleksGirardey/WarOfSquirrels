@@ -25,7 +25,7 @@ public class RespawnEvents {
     public void OnJoinWorld(EntityJoinWorldEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player) || !event.getEntity().isAlive()) return;
 
-        SetPlayerRespawnPoint(player);
+//        SetPlayerRespawnPoint(player);
     }
 
     @SubscribeEvent
@@ -36,9 +36,12 @@ public class RespawnEvents {
     private void SetPlayerRespawnPoint(ServerPlayer player) {
         FullPlayer fullPlayer = WarOfSquirrels.instance.getPlayerHandler().get(player.getUUID());
 
-        if (fullPlayer == null || fullPlayer.getCity() == null) return;
+        ReSpawnPoint spawnPoint;
 
-        ReSpawnPoint spawnPoint = Utils.NearestSpawnPoint(player);
+        if (fullPlayer == null || fullPlayer.getCity() == null) {
+            spawnPoint = ReSpawnPoint.DEFAULT_SPAWN;
+        } else
+            spawnPoint = Utils.NearestSpawnPoint(player);
         ServerPlayer serverPlayer = WarOfSquirrels.server.getPlayerList().getPlayer(player.getUUID());
 
         if (serverPlayer != null && spawnPoint != null) {

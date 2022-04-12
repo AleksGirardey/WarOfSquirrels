@@ -46,6 +46,8 @@ public class BastionHandler extends Handler<Bastion> {
     }
 
     public boolean deleteCity(City city) {
+        if (!bastionByCities.containsKey(city)) return true;
+
         List<Bastion> list = new ArrayList<>(bastionByCities.get(city));
 
         for (Bastion bastion : list) {
@@ -56,8 +58,8 @@ public class BastionHandler extends Handler<Bastion> {
 
     @Override
     public boolean Delete(Bastion bastion) {
-        if (!WarOfSquirrels.instance.getChunkHandler().deleteBastion(bastion)) return false;
         if (!WarOfSquirrels.instance.getCuboHandler().deleteBastion(bastion)) return false;
+        if (!WarOfSquirrels.instance.getChunkHandler().deleteBastion(bastion)) return false;
         if (!WarOfSquirrels.instance.getTerritoryHandler().delete(bastion)) return false;
 
         bastionByCities.get(bastion.getRelatedCity()).remove(bastion);

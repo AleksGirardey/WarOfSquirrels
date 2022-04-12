@@ -21,7 +21,7 @@ public class AdminTpList extends AdminCommandBuilder {
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        return false;
+        return true;
     }
 
     @Override

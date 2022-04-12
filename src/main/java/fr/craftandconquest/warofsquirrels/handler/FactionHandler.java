@@ -99,12 +99,19 @@ public class FactionHandler extends Handler<Faction> {
     public boolean Delete(Faction faction) {
         WarOfSquirrels.instance.spreadPermissionDelete(faction);
 
+        WarOfSquirrels.instance.debugLog("FD 1");
         WarOfSquirrels.instance.getInfluenceHandler().Delete(faction);
+        WarOfSquirrels.instance.debugLog("FD 2");
         WarOfSquirrels.instance.getTerritoryHandler().Delete(faction);
-        for (City city : faction.getCities().values())
+        WarOfSquirrels.instance.debugLog("FD 3");
+        for (City city : faction.getCities().values()) {
+            WarOfSquirrels.instance.debugLog("FD 3.1");
             city.SetFaction(null);
+        }
 
+        WarOfSquirrels.instance.debugLog("FD 4");
         factionMap.remove(faction.getFactionUuid());
+        WarOfSquirrels.instance.debugLog("FD 5");
 
         Save();
         return true;
@@ -161,7 +168,7 @@ public class FactionHandler extends Handler<Faction> {
         List<Diplomacy> diploA = getDiplomacy(A, false);
 
         for (Diplomacy d : diploA)
-            if (d.getTarget() == B)
+            if (d.getTarget().equals(B))
                 return true;
         return false;
     }

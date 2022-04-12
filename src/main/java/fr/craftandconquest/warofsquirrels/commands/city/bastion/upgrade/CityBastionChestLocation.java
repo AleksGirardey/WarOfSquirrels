@@ -1,4 +1,4 @@
-package fr.craftandconquest.warofsquirrels.commands.city.bastion;
+package fr.craftandconquest.warofsquirrels.commands.city.bastion.upgrade;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -29,8 +29,8 @@ public class CityBastionChestLocation extends CityBastionCommandBuilder {
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        Vector2 territoryPos = Utils.WorldToTerritoryCoordinates(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
-        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(territoryPos);
+        Vector2 territoryPos = Utils.FromWorldToTerritory(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().getFromTerritoryPos(territoryPos);
         Bastion bastion = (Bastion) territory.getFortification();
         CuboHandler handler = WarOfSquirrels.instance.getCuboHandler();
 
@@ -53,8 +53,8 @@ public class CityBastionChestLocation extends CityBastionCommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        Vector2 territoryPos = Utils.WorldToTerritoryCoordinates(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
-        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(territoryPos);
+        Vector2 territoryPos = Utils.FromWorldToTerritory(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().getFromTerritoryPos(territoryPos);
         Bastion bastion = (Bastion) territory.getFortification();
         CuboHandler handler = WarOfSquirrels.instance.getCuboHandler();
         Pair<Vector3, Vector3> points = handler.getPoints(player);

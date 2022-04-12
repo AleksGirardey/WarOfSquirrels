@@ -8,7 +8,6 @@ import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
-import fr.craftandconquest.warofsquirrels.utils.Pair;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import org.apache.logging.log4j.Logger;
@@ -142,7 +141,6 @@ public class TerritoryHandler extends Handler<Territory> {
         add("Malor");
     }};
 
-    private final Map<UUID, Territory> territoryMap;
     private final Map<Faction, List<Territory>> territoriesByFaction;
     private final Territory[][] territories;
 
@@ -153,7 +151,6 @@ public class TerritoryHandler extends Handler<Territory> {
         super("[WoS][TerritoryHandler]", logger);
         int sizeMap = WarOfSquirrels.instance.config.getConfiguration().getMapSize() /
                 WarOfSquirrels.instance.config.getConfiguration().getTerritorySize();
-        territoryMap = new HashMap<>();
         territories = new Territory[sizeMap][sizeMap];
         territoriesByFaction = new HashMap<>();
 
@@ -212,8 +209,6 @@ public class TerritoryHandler extends Handler<Territory> {
     }
 
     public boolean add(Territory territory) {
-        if (territoryMap.containsKey(territory.getUuid())) return false;
-
         if (!dataArray.contains(territory)) {
             if (dataArray.size() == 0)
                 dataArray = new ArrayList<>();
@@ -224,11 +219,11 @@ public class TerritoryHandler extends Handler<Territory> {
         int posX = territory.getPosX() + offset;
         int posZ = territory.getPosZ() + offset;
 
-        territoryMap.put(territory.getUuid(), territory);
         territories[posX][posZ] = territory;
         if (!territoriesByFaction.containsKey(territory.getFaction()))
             territoriesByFaction.put(territory.getFaction(), new ArrayList<>());
-        territoriesByFaction.get(territory.getFaction()).add(territory);
+        if (!territoriesByFaction.get(territory.getFaction()).contains(territory))
+            territoriesByFaction.get(territory.getFaction()).add(territory);
 
         return true;
     }
@@ -248,13 +243,12 @@ public class TerritoryHandler extends Handler<Territory> {
 
     @Override
     public boolean Delete(Territory territory) {
-        territoryMap.remove(territory.getUuid());
-
         int offset = (WarOfSquirrels.instance.getConfig().getMapSize() / 2) / WarOfSquirrels.instance.getConfig().getTerritorySize();
         int posX = territory.getPosX() + offset;
         int posZ = territory.getPosZ() + offset;
 
         territories[posX][posZ] = null;
+        dataArray.remove(territory);
 
         Save();
 
@@ -307,6 +301,9 @@ public class TerritoryHandler extends Handler<Territory> {
     }
 
     public List<Territory> getNeighbors(Territory territory, int range) {
+        if (range == 0) return Collections.emptyList();
+        if (range == 1) return getNeighbors(territory);
+
         List<Territory> neighbors = new ArrayList<>();
         int startingX = territory.getPosX() - range;
         int endingX = territory.getPosX() + range;
@@ -359,19 +356,28 @@ public class TerritoryHandler extends Handler<Territory> {
     }
 
     public Territory get(IFortification fortification) {
+        Vector2 territoryPos = fortification.getTerritoryPosition();
+
         return dataArray.stream()
-                .filter(t -> t.getFortificationUuid() != null && t.getFortificationUuid().equals(fortification.getUniqueId()))
-                .findFirst().orElse(null);
+                .filter(t ->
+                        (t.getFortificationUuid() != null && t.getFortificationUuid().equals(fortification.getUniqueId())) ||
+                        (t.getPosX() == territoryPos.x && t.getPosZ() == territoryPos.y))
+                .findFirst()
+                .orElse(null);
     }
 
     public Territory get(UUID uuid) {
-        return territoryMap.get(uuid);
+        return dataArray.stream().filter(territory -> territory.getUuid().equals(uuid)).findFirst().orElse(null);
     }
 
-    public Territory get(Vector2 chunkPos) {
-        Pair<Integer, Integer> pos = Utils.ChunkToTerritoryCoordinates((int) chunkPos.x, (int) chunkPos.y);
+    public Territory getFromTerritoryPos(Vector2 territory) {
+        return get((int) territory.x, (int) territory.y);
+    }
 
-        return get(pos.getKey(), pos.getValue());
+    public Territory getFromChunkPos(Vector2 chunkPos) {
+        Vector2 pos = Utils.FromChunkToTerritory((int) chunkPos.x, (int) chunkPos.y);
+
+        return getFromTerritoryPos(pos);
     }
 
     @CheckForNull
@@ -393,6 +399,10 @@ public class TerritoryHandler extends Handler<Territory> {
 
         territory.SetFaction(faction);
         territory.SetFortification(fortification);
+
+        if (!territoriesByFaction.containsKey(faction))
+            territoriesByFaction.put(faction, new ArrayList<>());
+        territoriesByFaction.get(faction).add(territory);
 
         return true;
     }
@@ -418,5 +428,6 @@ public class TerritoryHandler extends Handler<Territory> {
 
     public void updateDependencies() {
         dataArray.forEach(Territory::updateDependencies);
+        dataArray.forEach(this::add);
     }
 }

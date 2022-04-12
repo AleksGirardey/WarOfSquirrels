@@ -130,11 +130,31 @@ public class BastionUpgrade {
 
     public void SetNextTarget(UpgradeType type) {
         switch (type) {
-            case Level -> currentLevelUpgrade = LevelUpgrade.defaultLevelUpgrade.getOrDefault(level.getCurrentLevel(), null);
-            case Village -> currentVillageUpgrade = VillageUpgrade.defaultVillageUpgrade.getOrDefault(village.getCurrentLevel(),  null);
-            case Barrack -> currentBarrackUpgrade = BarrackUpgrade.defaultBarrackUpgrade.getOrDefault(barrack.getCurrentLevel(), null);
-            case Fortification -> currentFortificationUpgrade = FortificationUpgrade.defaultFortificationUpgrade.getOrDefault(fortification.getCurrentLevel(), null);
-            case Road -> currentRoadUpgrade = RoadUpgrade.defaultRoadUpgrade.getOrDefault(road.getCurrentLevel(), null);
+            case Level -> {
+                currentLevelUpgrade = LevelUpgrade.defaultLevelUpgrade.getOrDefault(level.getCurrentLevel(), null);
+                if (currentLevelUpgrade != null)
+                    currentLevelUpgrade.applyCostReduction(bastion.getCostReduction(), level.getCurrentLevel());
+            }
+            case Village -> {
+                currentVillageUpgrade = VillageUpgrade.defaultVillageUpgrade.getOrDefault(village.getCurrentLevel(),  null);
+                if (currentVillageUpgrade != null)
+                    currentVillageUpgrade.applyCostReduction(bastion.getCostReduction(), village.getCurrentLevel());
+            }
+            case Barrack -> {
+                currentBarrackUpgrade = BarrackUpgrade.defaultBarrackUpgrade.getOrDefault(barrack.getCurrentLevel(), null);
+                if (currentBarrackUpgrade != null)
+                    currentBarrackUpgrade.applyCostReduction(bastion.getCostReduction(), barrack.getCurrentLevel());
+            }
+            case Fortification -> {
+                currentFortificationUpgrade = FortificationUpgrade.defaultFortificationUpgrade.getOrDefault(fortification.getCurrentLevel(), null);
+                if (currentFortificationUpgrade != null)
+                    currentFortificationUpgrade.applyCostReduction(bastion.getCostReduction(), fortification.getCurrentLevel());
+            }
+            case Road -> {
+                currentRoadUpgrade = RoadUpgrade.defaultRoadUpgrade.getOrDefault(road.getCurrentLevel(), null);
+                if (currentRoadUpgrade != null)
+                    currentRoadUpgrade.applyCostReduction(bastion.getCostReduction(), fortification.getCurrentLevel());
+            }
         }
     }
 

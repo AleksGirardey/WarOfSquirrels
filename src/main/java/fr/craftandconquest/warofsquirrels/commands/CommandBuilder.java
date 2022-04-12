@@ -3,11 +3,11 @@ package fr.craftandconquest.warofsquirrels.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import lombok.SneakyThrows;
-import net.minecraft.Util;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -29,16 +29,25 @@ public abstract class CommandBuilder implements Command<CommandSourceStack>, IAd
 
     @SneakyThrows
     @Override
-    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    public int run(CommandContext<CommandSourceStack> context) {
         net.minecraft.world.entity.player.Player playerEntity = context.getSource().getPlayerOrException();
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
 
-        if (IsAdmin(player) || (CanDoIt(player) && SpecialCheck(player, context)))
+        if (IsAdmin(player)) {
+            player.sendMessage(ChatText.Colored("Forced command as admin", ChatFormatting.GOLD));
+            return ExecCommand(player, context);
+        }
+
+        if (!CanDoIt(player)) {
+            if (ErrorMessage() != null) {
+                player.sendMessage(ErrorMessage());
+            }
+            return -1;
+        }
+
+        if (SpecialCheck(player, context))
             return ExecCommand(player, context);
 
-        if (ErrorMessage() != null) {
-            player.sendMessage(ErrorMessage());
-        }
         return -1;
     }
 }

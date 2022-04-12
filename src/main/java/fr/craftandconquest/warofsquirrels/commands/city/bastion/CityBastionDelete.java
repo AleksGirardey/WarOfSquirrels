@@ -7,8 +7,10 @@ import fr.craftandconquest.warofsquirrels.commands.city.CityBastionCommandBuilde
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
@@ -25,10 +27,14 @@ public class CityBastionDelete extends CityBastionCommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        Vector2 territoryPos = Utils.WorldToTerritoryCoordinates(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
-        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(territoryPos);
+        Vector2 territoryPos = Utils.FromWorldToTerritory(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().getFromTerritoryPos(territoryPos);
 
         WarOfSquirrels.instance.getBastionHandler().Delete((Bastion) territory.getFortification());
+
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(ChatText.Colored(
+                "Faction " + player.getCity().getFaction().getDisplayName() + " has abandoned its control over territory '" + territory.getName() + "'",
+                ChatFormatting.GOLD));
 
         return 0;
     }

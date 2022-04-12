@@ -29,7 +29,7 @@ public interface ITerritoryExtractor {
 
     default Territory ExtractTerritory(FullPlayer player) {
         TerritoryHandler handler = WarOfSquirrels.instance.getTerritoryHandler();
-        Vector2 territoryPos = Utils.WorldToTerritoryCoordinates(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
+        Vector2 territoryPos = Utils.FromWorldToTerritory(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
 
         return handler.get((int) territoryPos.x, (int) territoryPos.y);
     }

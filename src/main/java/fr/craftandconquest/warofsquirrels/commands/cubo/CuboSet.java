@@ -4,9 +4,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.cubo.set.CuboSetCustomPerm;
-import fr.craftandconquest.warofsquirrels.commands.cubo.set.CityCuboSetInPerm;
-import fr.craftandconquest.warofsquirrels.commands.cubo.set.CityCuboSetOutPerm;
-import fr.craftandconquest.warofsquirrels.commands.cubo.set.CityCuboSetOwner;
+import fr.craftandconquest.warofsquirrels.commands.cubo.set.CuboSetInPerm;
+import fr.craftandconquest.warofsquirrels.commands.cubo.set.CuboSetOutPerm;
+import fr.craftandconquest.warofsquirrels.commands.cubo.set.CuboSetOwner;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.commands.CommandSourceStack;
@@ -14,19 +14,19 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
 public class CuboSet extends CommandBuilder {
-    private final CityCuboSetInPerm cityCuboSetInPerm = new CityCuboSetInPerm();
-    private final CityCuboSetOutPerm cityCuboSetOutPerm = new CityCuboSetOutPerm();
+    private final CuboSetInPerm cuboSetInPerm = new CuboSetInPerm();
+    private final CuboSetOutPerm cuboSetOutPerm = new CuboSetOutPerm();
     private final CuboSetCustomPerm cuboSetCustomPerm = new CuboSetCustomPerm();
-    private final CityCuboSetOwner cityCuboSetOwner = new CityCuboSetOwner();
+    private final CuboSetOwner cuboSetOwner = new CuboSetOwner();
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("set")
                 .executes(this)
-                .then(cityCuboSetInPerm.register())
-                .then(cityCuboSetOutPerm.register())
+                .then(cuboSetInPerm.register())
+                .then(cuboSetOutPerm.register())
                 .then(cuboSetCustomPerm.register())
-                .then(cityCuboSetOwner.register());
+                .then(cuboSetOwner.register());
     }
 
     @Override

@@ -232,7 +232,7 @@ public class CuboHandler extends Handler<Cubo> {
         Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(bastion);
 
         dataArray.forEach(cubo -> {
-            Vector2 pos = Utils.WorldToTerritoryCoordinates((int) cubo.getVector().getA().x, (int) cubo.getVector().getA().z);
+            Vector2 pos = Utils.FromWorldToTerritory((int) cubo.getVector().getA().x, (int) cubo.getVector().getA().z);
             if (territory.getPosX() == pos.x && territory.getPosZ() == pos.y)
                 removeList.add(cubo.getUuid());
         });

@@ -27,8 +27,8 @@ public class CityBastionName extends CityBastionCommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        Vector2 territoryPos = Utils.WorldToTerritoryCoordinates(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
-        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(territoryPos);
+        Vector2 territoryPos = Utils.FromWorldToTerritory(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().getFromTerritoryPos(territoryPos);
         Bastion bastion = (Bastion) territory.getFortification();
 
         String name = context.getArgument("name", String.class);

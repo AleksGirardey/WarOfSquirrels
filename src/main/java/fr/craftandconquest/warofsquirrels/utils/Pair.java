@@ -15,4 +15,9 @@ public class Pair<K, V> {
         key = _key;
         value = _value;
     }
+
+    @Override
+    public String toString() {
+        return "[" + key.toString() + ";" + value.toString() + "]";
+    }
 }

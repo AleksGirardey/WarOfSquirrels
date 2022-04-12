@@ -147,7 +147,7 @@ public class Territory {
 
         for (int x = posXMin; x < posXMax; ) {
             for (int z = posZMin; z < posZMax; ) {
-                ChunkPos chunkPos = Utils.WorldToChunkPos(x, z);
+                ChunkPos chunkPos = Utils.FromWorldToChunkPos(x, z);
                 BlockPos pos = chunkPos.getMiddleBlockPosition(124);
 
                 Biome.BiomeCategory category = level.getBiome(pos).getBiomeCategory();
@@ -178,7 +178,8 @@ public class Territory {
 
             if (daysBeforeReset <= 0) {
                 WarOfSquirrels.instance.getBastionHandler().Delete((Bastion) fortification);
-                reset();
+                hasFallen = false;
+//                reset();
             }
         }
     }

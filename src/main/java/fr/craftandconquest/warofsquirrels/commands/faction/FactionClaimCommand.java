@@ -59,7 +59,7 @@ public class FactionClaimCommand extends FactionCommandAssistant implements ITer
         Player entity = player.getPlayerEntity();
         Vector3 position = new Vector3(entity.getBlockX(), entity.getBlockY(), entity.getBlockZ());
 
-        WarOfSquirrels.instance.getBastionHandler().Create(territory, player.getCity(), Utils.WorldToChunk(entity.getBlockX(), entity.getBlockZ()), position);
+        WarOfSquirrels.instance.getBastionHandler().Create(territory, player.getCity(), Utils.FromWorldToChunk(entity.getBlockX(), entity.getBlockZ()), position);
 //        WarOfSquirrels.instance.getInfluenceHandler().ResetOthersInfluence(territory);
 
         WarOfSquirrels.instance.getBastionHandler().Save();

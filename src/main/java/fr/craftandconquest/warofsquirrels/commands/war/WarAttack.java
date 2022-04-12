@@ -56,7 +56,7 @@ public class WarAttack extends CityMayorOrAssistantCommandBuilder implements ITe
         Faction attacker = attackerCity.getFaction();
         Faction defender = territory.getFaction();
 
-        if (!WarOfSquirrels.instance.getFactionHandler().areAllies(attacker, defender)) {
+        if (!WarOfSquirrels.instance.getFactionHandler().areEnemies(attacker, defender)) {
             player.sendMessage(ChatText.Error("Your target is not your enemy."));
             return false;
         }
@@ -72,9 +72,14 @@ public class WarAttack extends CityMayorOrAssistantCommandBuilder implements ITe
         }
 
         for (FullPlayer p : party.toList()) {
-            if (p.getCity() != party.getLeader().getCity()
-                    && (!WarOfSquirrels.instance.getFactionHandler().areEnemies(p.getCity().getFaction(), territory.getFaction())
-                    || !WarOfSquirrels.instance.getFactionHandler().areAllies(p.getCity().getFaction(), attackerCity.getFaction()))) {
+            boolean hasFaction = p.getCity().getFaction() != null;
+            boolean sameCityAsLeader = p.getCity().equals(party.getLeader().getCity());
+            boolean sameFactionAsTarget = hasFaction && p.getCity().getFaction().equals(defender);
+            boolean isAllyToAttacker = hasFaction && WarOfSquirrels.instance.getFactionHandler().areAllies(p.getCity().getFaction(), attackerCity.getFaction());
+            boolean isEnemyToDefender = hasFaction && WarOfSquirrels.instance.getFactionHandler().areEnemies(p.getCity().getFaction(), territory.getFaction());
+
+            if (!sameCityAsLeader && (
+                    !isEnemyToDefender || !isAllyToAttacker || sameFactionAsTarget)) {
                 player.sendMessage(ChatText.Error("Your party member '" + p.getDisplayName() + "' can't participate to this war."));
                 return false;
             }

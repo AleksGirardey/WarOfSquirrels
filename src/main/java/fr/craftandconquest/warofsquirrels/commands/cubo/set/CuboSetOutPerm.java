@@ -11,7 +11,6 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
@@ -19,7 +18,7 @@ import net.minecraft.network.chat.MutableComponent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CityCuboSetInPerm extends CommandBuilder implements IPermissionExtractor, IAdminCommand {
+public class CuboSetOutPerm extends CommandBuilder implements IPermissionExtractor, IAdminCommand {
     private final String cuboNameArgument = "[CuboName]";
 
     @Override
@@ -29,7 +28,7 @@ public class CityCuboSetInPerm extends CommandBuilder implements IPermissionExtr
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("inperm").then(Commands
+        return Commands.literal("outperm").then(Commands
                 .argument(cuboNameArgument, StringArgumentType.string())
                 .then(getPermissionRegister(this)));
     }
@@ -58,9 +57,9 @@ public class CityCuboSetInPerm extends CommandBuilder implements IPermissionExtr
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(context.getArgument(cuboNameArgument, String.class));
         Permission permission = getPermission(context);
 
-        cubo.setPermissionIn(permission);
+        cubo.setPermissionOut(permission);
         WarOfSquirrels.instance.getCuboHandler().Save();
-        MutableComponent text = ChatText.Success("Inperm permissions for cubo '" + cubo.getName() + "' are now " + permission);
+        MutableComponent text = ChatText.Success("Outperm permissions for cubo '" + cubo.getName() + "' are now " + permission);
 
         player.sendMessage(text);
 

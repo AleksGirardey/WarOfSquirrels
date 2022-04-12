@@ -34,6 +34,8 @@ public class FactionListCommand extends CommandBuilder {
         for (Faction faction : factionList)
             message.append(faction.toString() + "\n");
 
+
+        player.sendMessage(message);
         return 0;
     }
 

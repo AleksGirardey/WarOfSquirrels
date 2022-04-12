@@ -3,6 +3,7 @@ package fr.craftandconquest.warofsquirrels;
 import fr.craftandconquest.warofsquirrels.commands.register.CommandRegisterManager;
 import fr.craftandconquest.warofsquirrels.events.PlayersInteractionHandler;
 import fr.craftandconquest.warofsquirrels.events.RespawnEvents;
+import fr.craftandconquest.warofsquirrels.events.ServerEvents;
 import fr.craftandconquest.warofsquirrels.events.WorldInteractionHandler;
 import fr.craftandconquest.warofsquirrels.handler.*;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
@@ -15,15 +16,19 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dynmap.DynmapCommonAPI;
+import org.dynmap.DynmapCommonAPIListener;
 
 @Mod.EventBusSubscriber(modid = WarOfSquirrels.warOfSquirrelsModId, bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod(WarOfSquirrels.warOfSquirrelsModId)
@@ -31,6 +36,7 @@ public class WarOfSquirrels {
     public static WarOfSquirrels instance;
 
     public static MinecraftServer server;
+//    public static DynmapCommonAPI dynmapCommonAPI;
 
     public static final String warOfSquirrelsModId = "wos";
     public static final String warOfSquirrelsConfigDir = "./WarOfSquirrels";
@@ -86,7 +92,8 @@ public class WarOfSquirrels {
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new RespawnEvents());
-        MinecraftForge.EVENT_BUS.register(new WorldInteractionHandler(LOGGER));
+        MinecraftForge.EVENT_BUS.register(new WorldInteractionHandler());
+        MinecraftForge.EVENT_BUS.register(new ServerEvents(LOGGER));
         MinecraftForge.EVENT_BUS.register(new PlayersInteractionHandler());
     }
 
@@ -104,9 +111,7 @@ public class WarOfSquirrels {
     @SubscribeEvent
     public void OnServerStarting(ServerStartingEvent event) {
         LOGGER.info("[WoS] Server Starting . . .");
-
         server = event.getServer();
-
         config = new Config("[WoS][Config]", LOGGER);
         updateHandler = new UpdateHandler(LOGGER);
         permissionHandler = new PermissionHandler();
@@ -133,8 +138,8 @@ public class WarOfSquirrels {
         playerHandler.updateDependencies();
         cuboHandler.updateDependencies();
         cityHandler.updateDependencies();
-        chunkHandler.updateDependencies();
         bastionHandler.updateDependencies();
+        chunkHandler.updateDependencies();
         territoryHandler.updateDependencies();
         influenceHandler.updateDependencies();
         diplomacyHandler.updateDependencies();

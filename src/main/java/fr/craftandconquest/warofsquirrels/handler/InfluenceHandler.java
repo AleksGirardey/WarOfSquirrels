@@ -11,10 +11,7 @@ import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class InfluenceHandler extends Handler<Influence> {
     private final Map<City, Map<Territory, Influence>> cityInfluenceMap;
@@ -92,10 +89,33 @@ public class InfluenceHandler extends Handler<Influence> {
 
     @Override
     public boolean Delete(Influence value) {
-        factionInfluenceMap.get(value.getFaction()).keySet().removeIf(t -> t.equals(value.getTerritory()));
+        dataArray.remove(value);
+        if (value.getFaction() != null) {
+            WarOfSquirrels.instance.debugLog("LF Faction influence to be deleted");
+            factionInfluenceMap.get(value.getFaction()).keySet().removeIf(t -> t.equals(value.getTerritory()));
+        }
+        else if (cityInfluenceMap.containsKey(value.getCity())) {
+            WarOfSquirrels.instance.debugLog("CityInfluenceMap found : " + cityInfluenceMap.get(value.getCity()).keySet());
+            cityInfluenceMap.get(value.getCity()).keySet().removeIf(t -> t.equals(value.getTerritory()));
+        }
         influences.remove(value.getUuid());
 
         Save();
+        return true;
+    }
+
+    public boolean delete(City city) {
+        List<Influence> toBeDeleted = new ArrayList<>();
+        Faction faction = city.getFaction();
+
+        if (faction != null) {
+            Delete(faction);
+        } else {
+            toBeDeleted.addAll(cityInfluenceMap.get(city).values());
+            cityInfluenceMap.remove(city);
+        }
+
+        toBeDeleted.forEach(this::Delete);
         return true;
     }
 
@@ -196,12 +216,18 @@ public class InfluenceHandler extends Handler<Influence> {
         Influence old = get(city, territory);
         Influence influence = CreateInfluence(faction, territory);
 
+        if (old == null) return;
+
         influence.setValue(old.getValue());
+
+        WarOfSquirrels.instance.debugLog("Trying to delete influence " + (old.getFaction() != null ? old.getFaction() : "null") + " - " + (old.getCity() != null ? old.getCity() : "null") + " - " + old.getTerritory());
         Delete(old);
     }
 
     public void Delete(Faction faction) {
         Map<Territory, Influence> factionInfluence = factionInfluenceMap.get(faction);
+
+        if (factionInfluence == null) return;
 
         for (Influence influence : factionInfluence.values())
             dataArray.remove(influence);

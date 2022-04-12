@@ -25,8 +25,8 @@ public class UpdateHandler {
 
         OnSaveUpdate.clear();
 
-        this.CreateDailyUpdate();
-        this.CreateSaveUpdate();
+//        this.CreateDailyUpdate();
+//        this.CreateSaveUpdate();
     }
 
     public void DailyUpdate() {
@@ -100,7 +100,7 @@ public class UpdateHandler {
     }
 
     public void CancelTask() {
-        currentDailyUpdateTimer.cancel();
-        currentSaveUpdateTimer.cancel();
+        if (currentDailyUpdateTimer != null) currentDailyUpdateTimer.cancel();
+        if (currentSaveUpdateTimer != null) currentSaveUpdateTimer.cancel();
     }
 }

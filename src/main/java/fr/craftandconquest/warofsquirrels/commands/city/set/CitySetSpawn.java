@@ -47,7 +47,7 @@ public class CitySetSpawn extends CityMayorOrAssistantCommandBuilder {
         y = player.getPlayerEntity().getBlockY();
         z = player.getPlayerEntity().getBlockZ();
 
-        ChunkPos chunkPos = Utils.WorldToChunkPos(x, z);
+        ChunkPos chunkPos = Utils.FromWorldToChunkPos(x, z);
 
         chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(chunkPos.x, chunkPos.z, player.getPlayerEntity().getCommandSenderWorld().dimension());
         chunk.setRespawnPoint(new Vector3(x, y, z));

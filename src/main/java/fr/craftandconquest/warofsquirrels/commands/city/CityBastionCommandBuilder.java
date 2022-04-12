@@ -18,19 +18,32 @@ public abstract class CityBastionCommandBuilder extends CityMayorOrAssistantComm
 
     @Override
     protected boolean CanDoIt(FullPlayer player) {
+        WarOfSquirrels.instance.debugLog("CanDoIt 1");
         if (!player.getLastDimensionKey().equals(Level.OVERWORLD)) return false;
-        Vector2 territoryPos = Utils.WorldToTerritoryCoordinates(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
-        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(territoryPos);
+        WarOfSquirrels.instance.debugLog("CanDoIt 2");
+        Vector2 territoryPos = Utils.FromWorldToTerritory(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().getFromTerritoryPos(territoryPos);
+
+        boolean isTerritoryNull = territory == null;
+        boolean territoryHasFaction = !isTerritoryNull && territory.getFaction() != null;
+        boolean territoryHasBastion = territoryHasFaction && territory.getFortification().getFortificationType().equals(IFortification.FortificationType.BASTION);
+
+        WarOfSquirrels.instance.debugLog("CanDoIt 3 [" + territoryPos + "] " + isTerritoryNull + " / " + territoryHasFaction + " / " + !territoryHasBastion);
 
         if (territory == null
                 || territory.getFaction() == null
                 || !territory.getFortification().getFortificationType().equals(IFortification.FortificationType.BASTION))
             return false;
 
-        if (territory.getFaction().equals(player.getCity().getFaction())
-                && territory.getFortification().getRelatedCity().equals(player.getCity()))
-            return super.CanDoIt(player);
+        WarOfSquirrels.instance.debugLog("CanDoIt 4");
 
+        if (territory.getFaction().equals(player.getCity().getFaction())
+                && territory.getFortification().getRelatedCity().equals(player.getCity())) {
+            WarOfSquirrels.instance.debugLog("CanDoIt 5");
+            return super.CanDoIt(player);
+        }
+
+        WarOfSquirrels.instance.debugLog("CanDoIt 6");
         return false;
     }
 }

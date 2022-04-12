@@ -20,7 +20,6 @@ import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Score;
@@ -42,6 +41,8 @@ public class War implements IChannelTarget {
         War,
         Rollback
     }
+
+    @Getter private final UUID uuid;
 
     @Getter @Setter private String tag;
     @Getter @Setter private City cityAttacker;
@@ -71,6 +72,7 @@ public class War implements IChannelTarget {
     private Objective pointsObjective;
 
     public War(City attacker, City defender, Territory territory, List<FullPlayer> attackersParty) {
+        uuid = UUID.randomUUID();
         cityAttacker = attacker;
         cityDefender = defender;
         targetTerritory = territory;
@@ -264,12 +266,12 @@ public class War implements IChannelTarget {
         defenders.forEach(f -> ClearScoreboard(f.getPlayerEntity().getScoreboard()));
         attackers.forEach(f -> ClearScoreboard(f.getPlayerEntity().getScoreboard()));
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Rollback();
-            }
-        }, WarOfSquirrels.instance.getConfig().getRollbackPhase() * 1000L);
+        defenders.clear();
+        attackers.clear();
+
+        this.state = WarState.Rollback;
+
+        WarOfSquirrels.instance.getWarHandler().delete(this);
     }
 
     public void Rollback() {
@@ -279,11 +281,15 @@ public class War implements IChannelTarget {
     protected void DeclareWinner() {
         BroadCastHandler broadCastHandler = WarOfSquirrels.instance.getBroadCastHandler();
         MutableComponent text;
+        MutableComponent influenceLost;
+        IChannelTarget influenceMessageTarget = null;
         boolean hasDefenseWon = defendersPoints.getScore() >= 1000;
 
         int pointsToRemove = 250 + Math.abs(defendersPoints.getScore() - attackersPoints.getScore());
 
         targetTerritory.setGotAttackedToday(true);
+
+        influenceLost = ChatText.Colored("Your faction lost " + pointsToRemove + " influence points on territory '", ChatFormatting.DARK_RED);
 
         if (hasDefenseWon) {
             text = ChatText.Colored(cityAttacker.displayName
@@ -293,6 +299,9 @@ public class War implements IChannelTarget {
 
             Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(cityAttacker);
             WarOfSquirrels.instance.getInfluenceHandler().get(territory.getFaction(), territory).SubInfluence(pointsToRemove);
+
+            influenceLost.append(territory.getName() + "'");
+            influenceMessageTarget = cityAttacker.getFaction();
         } else {
             text = ChatText.Colored(cityAttacker.displayName
                     + " won his attack against "
@@ -305,11 +314,15 @@ public class War implements IChannelTarget {
             targetTerritory.setGotDefeatedToday(true);
 
             if (influence.getValue() <= 0) {
+                text.append(ChatText.Colored("\n Faction " + cityAttacker.getFaction().getDisplayName() + " lost all his influence on territory '" + targetTerritory.getName() + "' and territory has fall.", ChatFormatting.GOLD));
                 targetTerritory.setHasFallen(true);
                 targetTerritory.setDaysBeforeReset(3);
             }
+            influenceLost.append(targetTerritory + "'");
         }
+
         broadCastHandler.BroadCastWorldAnnounce(text);
+        broadCastHandler.BroadCastMessage(influenceMessageTarget, null, influenceLost, true);
     }
 
     protected boolean CheckWin() {
@@ -462,7 +475,7 @@ public class War implements IChannelTarget {
 
         for (FullPlayer player : list) {
             if (player.isOnline()) {
-                Vector2 chunkPos = Utils.WorldToChunk(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
+                Vector2 chunkPos = Utils.FromWorldToChunk(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
 
                 c = WarOfSquirrels.instance.getChunkHandler().getChunk((int) chunkPos.x, (int) chunkPos.y, player.getLastDimensionKey());
 
@@ -470,8 +483,6 @@ public class War implements IChannelTarget {
                 boolean same = notNull && c.equals(chunk);
                 boolean sameFortification = notNull && c.getFortification().equals(targetTerritory.getFortification());
                 boolean inRange = notNull && inCaptureRange(player.getPlayerEntity().getBlockY(), c.getBastion());
-
-                WarOfSquirrels.instance.debugLog(notNull + " " + same + " " + sameFortification + " " + inRange);
 
                 if (notNull && same && sameFortification && inRange) {
                     if (isAttacker(player)) att++;
@@ -484,8 +495,7 @@ public class War implements IChannelTarget {
         float defRatio = def / (float) defenders.size();
 
 
-        ret = captureSpeed * (attRatio - (0.45f * defRatio));
-        WarOfSquirrels.instance.debugLog("AttRatio " + attRatio + " vs " + defRatio + " DefRatio = " + ret);
+        ret = captureSpeed * (attRatio - (0.42f * defRatio));
         return ret;
     }
 
@@ -503,7 +513,7 @@ public class War implements IChannelTarget {
 
         for (FullPlayer player : players) {
             if (player.isOnline()) {
-                Vector2 chunkPos = Utils.WorldToChunk(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
+                Vector2 chunkPos = Utils.FromWorldToChunk(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
                 Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk((int) chunkPos.x, (int) chunkPos.y, player.getLastDimensionKey());
 
                 boolean notNull = chunk != null;
@@ -573,5 +583,25 @@ public class War implements IChannelTarget {
         board.removeObjective(pointsObjective);
         board.removePlayerTeam(attackerTeam);
         board.removePlayerTeam(defenderTeam);
+    }
+
+    public boolean isCaptured(Vector3 worldPos) {
+        Vector2 chunkPos = Utils.FromWorldToChunk((int) worldPos.x, (int) worldPos.z);
+
+        for (Chunk chunk : capturedChunk) {
+            if (chunk.getPosX() == chunkPos.x && chunk.getPosZ() == chunkPos.y) return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj.getClass() != this.getClass()) return false;
+
+        War war = (War) obj;
+
+        return war.getUuid().equals(this.uuid);
     }
 }

@@ -21,7 +21,6 @@ public class CityInfo extends CommandBuilder {
     private final static CityInfo CMD_ARGS = new CityInfo(true);
 
     private final boolean args;
-    private String targetName;
 
     public CityInfo() {
         args = false;
@@ -60,7 +59,7 @@ public class CityInfo extends CommandBuilder {
         City city;
 
         if (args) {
-            targetName = context.getArgument(cityNameArgument, String.class);
+            String targetName = context.getArgument(cityNameArgument, String.class);
             city = WarOfSquirrels.instance.getCityHandler().getCity(targetName);
         }
         else {

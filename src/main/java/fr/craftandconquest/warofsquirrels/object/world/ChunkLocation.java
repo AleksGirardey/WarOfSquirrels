@@ -32,8 +32,8 @@ public class ChunkLocation {
         final ChunkLocation chunkLocation = (ChunkLocation) obj;
 
         return this.PosX == chunkLocation.PosX
-                && this.PosZ == chunkLocation.PosZ
-                && this.DimensionId.equals(chunkLocation.DimensionId);
+                && this.PosZ == chunkLocation.PosZ;
+//                && this.DimensionId.equals(chunkLocation.DimensionId);
     }
 
     public boolean equalsPosition(ChunkLocation chunkLocation) {

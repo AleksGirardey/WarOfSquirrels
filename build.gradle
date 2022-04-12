@@ -12,6 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+compileJava.options.encoding = 'UTF-8'
 
 version = '1.0'
 group = 'fr.craftandconquest.warofsquirrels' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -151,6 +152,7 @@ dependencies {
     shade fg.deobf("com.fasterxml.jackson.core:jackson-annotations:2.9.3")
     shade fg.deobf("com.fasterxml.jackson.core:jackson-databind:2.9.3")
     shade fg.deobf("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.3")
+    compileOnly("org.dynmap:DynmapCoreAPI:3.3-beta-5-all")
 
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'

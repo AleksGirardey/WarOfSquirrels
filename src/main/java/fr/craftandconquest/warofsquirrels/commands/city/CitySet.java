@@ -25,7 +25,7 @@ public class CitySet extends CityMayorOrAssistantCommandBuilder {
                 .executes(this)
                 .then(Commands.literal("help").executes(this))
                 .then(citySetSpawn.register())
-                .then(citySetHomeBlock.register())
+//                .then(citySetHomeBlock.register())
                 .then(citySetMayor.register())
                 .then(citySetAssistant.register())
                 .then(citySetResident.register())

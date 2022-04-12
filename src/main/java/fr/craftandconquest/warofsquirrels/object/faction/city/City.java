@@ -15,6 +15,7 @@ import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +37,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     @JsonProperty public String tag;
     @JsonProperty public UUID ownerUUID;
     @JsonProperty @Getter @Setter private UUID factionUuid;
+    @JsonProperty @Getter @Setter private UUID territoryUuid;
     @JsonProperty @Getter @Setter private ChestLocation upgradeChestLocation;
     @JsonProperty @Getter @Setter private boolean hasAttackedToday = false;
     @JsonProperty @Getter @Setter private Map<PermissionRelation, Permission> defaultPermission;
@@ -46,6 +48,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     @JsonIgnore private Faction faction = null;
     @JsonIgnore @Getter @Setter private Map<IPermission, Permission> customPermission = new HashMap<>();
     @JsonIgnore @Getter private final List<FullPlayer> citizens = new ArrayList<>();
+    @JsonIgnore @Getter private Territory territory;
 
     public List<FullPlayer> getAssistants() {
         return citizens.stream().filter(FullPlayer::getAssistant).collect(Collectors.toCollection(ArrayList::new));
@@ -179,11 +182,12 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
     @JsonIgnore
     public int getCostReduction() {
-        Territory target = WarOfSquirrels.instance.getTerritoryHandler().get(this);
         int base = cityUpgrade.getCostReduction();
-        int territory = target != null ? (int) target.getBiome().ratioUpgradeReduction() : 0;
+        int territoryCost = territory != null ? (int) territory.getBiome().ratioUpgradeReduction() : 0;
 
-        return base + territory;
+        WarOfSquirrels.instance.debugLog("[" + (territory != null ? territory.getName() : "NONE") + "] " + base + " + " + territoryCost);
+
+        return base + territoryCost;
     }
 
     @JsonIgnore @Override
@@ -267,7 +271,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         message.append("  Recruit(s): " + Utils.getStringFromPlayerList(getRecruits()) + "\n");
         message.append("  Tag: " + tag + "\n");
         message.append("  Chunks [" + size + "/" + rank.chunkMax + "]\n");
-        message.append("  Outpost [" + WarOfSquirrels.instance.getChunkHandler().getOutpostSize(this) + "]\n");
+        message.append("  Outpost [" + WarOfSquirrels.instance.getChunkHandler().getOutpostSize(this) + "/" + getMaxOutpost() + "]\n");
         message.append(" -= Upgrades =-\n");
         message.append("  Level [" + cityUpgrade.getLevel().getCurrentLevel() + "/4]\n");
         message.append("  Housing [" + cityUpgrade.getHousing().getCurrentLevel() + "/4]\n");
@@ -299,6 +303,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     public void updateDependencies() {
         SetOwner(WarOfSquirrels.instance.getPlayerHandler().get(ownerUUID));
         SetFaction(WarOfSquirrels.instance.getFactionHandler().get(factionUuid));
+        setTerritory(WarOfSquirrels.instance.getTerritoryHandler().get(territoryUuid));
 
         for (CustomPermission permission : customPermissionList) {
             IPermission target = permission.getTarget();
@@ -328,6 +333,12 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         cityUpgrade.VerifyLevelUp();
     }
 
+    public void setTerritory(Territory territory) {
+        this.territory = territory;
+        if (territory != null)
+            this.territoryUuid = territory.getUuid();
+    }
+
     @JsonIgnore @Override
     public Vector3 getSpawn() {
         return getHomeBlock().getRespawnPoint();
@@ -343,7 +354,12 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
     @Override
     public int getLinkedChunkSize() {
-        return 0;
+        return WarOfSquirrels.instance.getChunkHandler().getSize(this);
+    }
+
+    @Override
+    public Vector2 getTerritoryPosition() {
+        return territory != null ? new Vector2(territory.getPosX(), territory.getPosZ()) : null;
     }
 
     @Override

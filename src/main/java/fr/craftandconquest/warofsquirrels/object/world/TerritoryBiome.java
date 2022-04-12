@@ -130,7 +130,7 @@ public class TerritoryBiome {
 
     public float ratioBonusInfluenceOnMe() {
         if (biomes.contains(EBiomeType.Plains)) {
-            return isCompleteTrait() ? 1.5f : 2f;
+            return isCompleteTrait() ? 1f : 0.5f;
         }
         return 0f;
     }
@@ -153,7 +153,7 @@ public class TerritoryBiome {
         float bonus = 0f;
         if (biomes.contains(EBiomeType.Plains))
             bonus += isCompleteTrait() ? -1750 : -850;
-        if (biomes.contains(EBiomeType.Plains))
+        if (biomes.contains(EBiomeType.Mountains))
             bonus += isCompleteTrait() ? 750 : 500;
 
         return bonus;
@@ -163,10 +163,10 @@ public class TerritoryBiome {
         float ratio = 0f;
 
         if (biomes.contains(EBiomeType.Forest)) {
-            ratio += isCompleteTrait() ? 40f : 20f;
+            ratio += isCompleteTrait() ? -25f : -10f;
         }
         if (hasRiver) {
-            ratio += isRiverComplete ? 10f : 15f;
+            ratio += isRiverComplete ? -15f : -10f;
         }
         return ratio;
     }

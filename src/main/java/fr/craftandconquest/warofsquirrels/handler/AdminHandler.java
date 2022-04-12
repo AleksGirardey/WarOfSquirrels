@@ -41,7 +41,7 @@ public class AdminHandler extends Handler<AdminCubo> {
 
         cubo.setTeleporter(true);
         cubo.setRespawnPoint(new Vector3(entity.getBlockX(), entity.getBlockY(), entity.getBlockZ()));
-        cubo.setRespawnDimension(player.getLastDimensionKey().location().getPath());
+        cubo.setRespawnDimension(player.getPlayerEntity().level.dimension().location().getPath());
 
         if (add(cubo)) {
             player.sendMessage(ChatText.Success("Teleportation cubo created."));

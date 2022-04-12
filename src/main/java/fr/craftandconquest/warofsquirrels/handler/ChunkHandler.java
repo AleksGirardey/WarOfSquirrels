@@ -10,7 +10,6 @@ import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
-import fr.craftandconquest.warofsquirrels.utils.Pair;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
@@ -71,11 +70,14 @@ public class ChunkHandler extends Handler<Chunk> {
             chunksMap.put(position, chunk);
         }
 
-        if (!fortificationMap.containsKey(chunk.getFortification())) {
-            fortificationMap.put(chunk.getFortification(), new ArrayList<>());
-        }
+        if (chunk.getFortification() != null) {
+            if (!fortificationMap.containsKey(chunk.getFortification())) {
+                fortificationMap.put(chunk.getFortification(), new ArrayList<>());
+            }
 
-        fortificationMap.get(chunk.getFortification()).add(chunk);
+            if (!fortificationMap.get(chunk.getFortification()).contains(chunk))
+                fortificationMap.get(chunk.getFortification()).add(chunk);
+        }
 
         if (!dataArray.contains(chunk)) {
             if (dataArray.size() == 0)
@@ -87,24 +89,30 @@ public class ChunkHandler extends Handler<Chunk> {
     }
 
     public boolean deleteCity(City city) {
-        for (Chunk chunk : fortificationMap.get(city)) {
-            ChunkLocation chunkLocation = new ChunkLocation(chunk.getPosX(), chunk.getPosZ(), chunk.getDimension());
-            dataArray.remove(chunk);
-            chunksMap.keySet().removeIf(k -> k.equals(chunkLocation));
+        if (fortificationMap.containsKey(city)) {
+            for (Chunk chunk : fortificationMap.get(city)) {
+                ChunkLocation chunkLocation = new ChunkLocation(chunk.getPosX(), chunk.getPosZ(), chunk.getDimension());
+                dataArray.remove(chunk);
+                chunksMap.keySet().removeIf(k -> k.equals(chunkLocation));
+            }
+            fortificationMap.keySet().removeIf(fortification -> fortification.equals(city));
         }
-        fortificationMap.keySet().removeIf(c -> c.equals(city));
 
         Save();
         return true;
     }
 
     public boolean deleteBastion(Bastion bastion) {
-        for (Chunk chunk : fortificationMap.get(bastion)) {
-            ChunkLocation chunkLocation = new ChunkLocation(chunk.getPosX(), chunk.getPosZ(), chunk.getDimension());
-            dataArray.remove(chunk);
-            chunksMap.keySet().removeIf(k -> k.equals(chunkLocation));
+        if (fortificationMap.containsKey(bastion)) {
+            for (Chunk chunk : fortificationMap.get(bastion)) {
+                ChunkLocation chunkLocation = new ChunkLocation(chunk.getPosX(), chunk.getPosZ(), chunk.getDimension());
+                dataArray.remove(chunk);
+                chunksMap.keySet().removeIf(k -> k.equals(chunkLocation));
+            }
+            fortificationMap.forEach((k, v) -> WarOfSquirrels.instance.debugLog("Fmap on delete : " + k + " - " + v.size()));
+
+            fortificationMap.entrySet().removeIf(entry -> entry.getKey().equals(bastion));
         }
-        fortificationMap.keySet().removeIf(c -> c.equals(bastion));
 
         Save();
         return true;
@@ -121,11 +129,18 @@ public class ChunkHandler extends Handler<Chunk> {
         Chunk right = getChunk(location.PosX + 1, location.PosZ, location.DimensionId);
 
         Vector2 territoryPos = new Vector2(territory.getPosX(), territory.getPosZ());
+        Vector2 botTerritoryPos = null;
 
-        boolean botCorrect = bot != null && bot.getRelatedCity().equals(city) && Utils.ChunkToTerritoryCoordinatesVector(bot.getPosX(), bot.getPosZ()).equals(territoryPos);
-        boolean topCorrect = top != null && top.getRelatedCity().equals(city) && Utils.ChunkToTerritoryCoordinatesVector(top.getPosX(), top.getPosZ()).equals(territoryPos);
-        boolean rightCorrect = right != null && right.getRelatedCity().equals(city) && Utils.ChunkToTerritoryCoordinatesVector(right.getPosX(), right.getPosZ()).equals(territoryPos);
-        boolean leftCorrect = left != null && left.getRelatedCity().equals(city) && Utils.ChunkToTerritoryCoordinatesVector(left.getPosX(), left.getPosZ()).equals(territoryPos);
+        boolean botNotNull = bot != null;
+        boolean botSameCity = botNotNull && bot.getRelatedCity().equals(city);
+        if (botNotNull)
+            botTerritoryPos = Utils.FromChunkToTerritory(bot.getPosX(), bot.getPosZ());
+        boolean botSameTerritory = botNotNull && botTerritoryPos.equals(territoryPos);
+
+        boolean botCorrect = botSameCity && botSameTerritory;
+        boolean topCorrect = top != null && top.getRelatedCity().equals(city) && Utils.FromChunkToTerritory(top.getPosX(), top.getPosZ()).equals(territoryPos);
+        boolean rightCorrect = right != null && right.getRelatedCity().equals(city) && Utils.FromChunkToTerritory(right.getPosX(), right.getPosZ()).equals(territoryPos);
+        boolean leftCorrect = left != null && left.getRelatedCity().equals(city) && Utils.FromChunkToTerritory(left.getPosX(), left.getPosZ()).equals(territoryPos);
 
         return botCorrect || topCorrect || rightCorrect || leftCorrect;
     }
@@ -157,6 +172,8 @@ public class ChunkHandler extends Handler<Chunk> {
     }
 
     public Chunk getHomeBlock(IFortification fortification) {
+        if (fortificationMap.get(fortification) == null) return null;
+
         for (Chunk chunk : fortificationMap.get(fortification)) {
             if (chunk.getHomeBlock()) return chunk;
         }
@@ -209,7 +226,7 @@ public class ChunkHandler extends Handler<Chunk> {
     }
 
     public Chunk getChunk(Vector3 position, ResourceKey<Level> dimensionId) {
-        ChunkPos chunkPos = Utils.WorldToChunkPos((int) position.x, (int) position.z);
+        ChunkPos chunkPos = Utils.FromWorldToChunkPos((int) position.x, (int) position.z);
         return getChunk(chunkPos.x, chunkPos.z, dimensionId);
     }
 
@@ -244,7 +261,12 @@ public class ChunkHandler extends Handler<Chunk> {
     }
 
     public boolean exists(int posX, int posZ, ResourceKey<Level> dimension) {
-        return chunksMap.containsKey(new ChunkLocation(posX, posZ, dimension));
+        for(Chunk chunk : dataArray) {
+            WarOfSquirrels.instance.debugLog(posX + " vs " + chunk.getPosX() + " - " + posZ + " vs " + chunk.getPosZ());
+            if (chunk.getPosX() == posX && chunk.getPosZ() == posZ)
+                return true;
+        }
+        return false;
     }
 
     public boolean exists(Chunk chunk) {
@@ -286,6 +308,9 @@ public class ChunkHandler extends Handler<Chunk> {
             if (!fortificationMap.get(chunk.getFortification()).contains(chunk))
                 fortificationMap.get(chunk.getFortification()).add(chunk);
         }
+
+        fortificationMap.forEach((k, v) -> WarOfSquirrels.instance.debugLog("After UpdateDependency: " + k + " - " + v.size()));
+
         Save();
     }
 
@@ -293,11 +318,11 @@ public class ChunkHandler extends Handler<Chunk> {
         List<Chunk> outposts = getOutpostList(city);
 
         for (Chunk chunk : outposts) {
-            Pair<Integer, Integer> pair = Utils.ChunkToTerritoryCoordinates(chunk.getPosX(), chunk.getPosZ());
+            Vector2 pair = Utils.FromChunkToTerritory(chunk.getPosX(), chunk.getPosZ());
 
-            WarOfSquirrels.instance.debugLog(territory.getPosX() + " / " + pair.getKey() + " - " + territory.getPosZ() + " / " + pair.getValue());
+            WarOfSquirrels.instance.debugLog(territory.getPosX() + " / " + pair.x + " - " + territory.getPosZ() + " / " + pair.y);
 
-            if (territory.getPosX() != pair.getKey() || territory.getPosZ() != pair.getValue()) continue;
+            if (territory.getPosX() != pair.x || territory.getPosZ() != pair.y) continue;
 
             return chunk.getRespawnPoint();
         }

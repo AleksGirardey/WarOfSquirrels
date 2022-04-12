@@ -47,13 +47,22 @@ public class CityUpgrade {
         this.city = city;
 
         currentLevelUpgrade = LevelUpgrade.defaultLevelUpgrade.get(level.getCurrentLevel());
+        if (currentLevelUpgrade != null) currentLevelUpgrade.applyCostReduction(city.getCostReduction(), level.getCurrentLevel());
+
         currentHousingUpgrade = HousingUpgrade.defaultHousingUpgrade.get(housing.getCurrentLevel());
+        if (currentHousingUpgrade != null) currentHousingUpgrade.applyCostReduction(city.getCostReduction(), housing.getCurrentLevel());
+
         currentFacilityUpgrade = FacilityUpgrade.defaultFacilityUpgrade.get(facility.getCurrentLevel());
+        if (currentFacilityUpgrade != null) currentFacilityUpgrade.applyCostReduction(city.getCostReduction(), facility.getCurrentLevel());
+
         currentHeadQuarterUpgrade = HeadQuarterUpgrade.defaultHeadQuarterUpgrade.get(headQuarter.getCurrentLevel());
+        if (currentHeadQuarterUpgrade != null) currentHeadQuarterUpgrade.applyCostReduction(city.getCostReduction(), headQuarter.getCurrentLevel());
+
         currentPalaceUpgrade = PalaceUpgrade.defaultPalaceUpgrade.get(palace.getCurrentLevel());
+        if (currentPalaceUpgrade != null) currentPalaceUpgrade.applyCostReduction(city.getCostReduction(), palace.getCurrentLevel());
     }
 
-    public boolean CompleteUpgrade(UpgradeType type, IFortification fortification) {
+    public boolean CompleteUpgrade(UpgradeType type, IFortification fortification, boolean isForced) {
         Upgrade target = null;
         UpgradeInfo targetInfo = null;
 
@@ -85,9 +94,11 @@ public class CityUpgrade {
             return false;
         }
 
-        if (target.isComplete(fortification)) {
+        if (target.isComplete(fortification) || isForced) {
             targetInfo.setHasBeenComplete(true);
             targetInfo.setDaysBeforeLevelUp(target.getDelayInDays());
+            if (isForced)
+                targetInfo.setDaysBeforeLevelUp(0);
             if (target.getDelayInDays() <= 0)
                 LevelUp(type);
             return true;

@@ -26,41 +26,39 @@ import java.text.MessageFormat;
 import java.util.*;
 
 public class Utils {
+    private static final int offset = 64;
+    private static final int chunkOffset = 4;
 
-    public static Pair<Integer, Integer> WorldToChunkCoordinates(int posX, int posZ) {
-        return new Pair<>(Math.floorDiv(posX, 16), Math.floorDiv(posZ, 16));
-    }
-
-    public static Vector2 WorldToChunk(int posX, int posZ) {
-        ChunkPos pos = WorldToChunkPos(posX, posZ);
+    public static Vector2 FromWorldToChunk(int posX, int posZ) {
+        ChunkPos pos = FromWorldToChunkPos(posX, posZ);
 
         return new Vector2(pos.x, pos.z);
     }
 
-    public static ChunkPos WorldToChunkPos(int posX, int posZ) {
+    public static ChunkPos FromWorldToChunkPos(int posX, int posZ) {
         return new ChunkPos(Math.floorDiv(posX, 16), Math.floorDiv(posZ, 16));
     }
 
-    public static Vector2 ChunkToTerritoryCoordinatesVector(int posX, int posZ) {
-        int size = WarOfSquirrels.instance.getConfig().getTerritorySize() / 16;
-        return new Vector2(Math.floorDiv(posX, size), Math.floorDiv(posZ, size));
-    }
-
-    public static Pair<Integer, Integer> ChunkToTerritoryCoordinates(int posX, int posZ) {
-        int size = WarOfSquirrels.instance.getConfig().getTerritorySize() / 16;
-        return new Pair<>(Math.floorDiv(posX, size), Math.floorDiv(posZ, size));
-    }
-
-    public static Vector2 WorldToTerritoryCoordinates(int posX, int posZ) {
+    public static Vector2 FromWorldToTerritory(int posX, int posZ) {
         int size = WarOfSquirrels.instance.getConfig().getTerritorySize();
-        return new Vector2(Math.floorDiv(posX, size), Math.floorDiv(posZ, size));
+
+        return new Vector2(Math.floorDiv(posX + offset, size), Math.floorDiv(posZ + offset, size));
     }
 
-    public static Vector3 TerritoryToWorldCoordinates(int posX, int posZ) {
+    public static Vector2 FromChunkToTerritory(int chunkX, int chunkZ) {
+        int size = WarOfSquirrels.instance.getConfig().getTerritorySize() / 16;
+
+        return new Vector2(Math.floorDiv(chunkX + chunkOffset, size), Math.floorDiv(chunkZ + chunkOffset, size));
+    }
+
+    public static Vector3 FromTerritoryToWorld(int territoryX, int territoryZ) {
         int size = WarOfSquirrels.instance.getConfig().getTerritorySize();
         int half = size / 2;
 
-        return new Vector3(posX * size + half, 100, posZ * size + half);
+        int posX = territoryX * size + half;
+        int posZ = territoryZ * size + half;
+
+        return new Vector3(posX - offset, 100, posZ - offset);
     }
 
     public static boolean CanPlaceOutpost(int posX, int posZ) {
@@ -251,9 +249,9 @@ public class Utils {
 //        Vector2 territoryPos = Utils.WorldToTerritoryCoordinates(pos.getX(), pos.getZ());
         int posX = pos.getX();
         int posZ = pos.getZ();
-        ChunkPos chunkPos = Utils.WorldToChunkPos(posX, posZ);
+        ChunkPos chunkPos = Utils.FromWorldToChunkPos(posX, posZ);
         Vector2 chunkVector = new Vector2(chunkPos.x, chunkPos.z);
-        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(chunkVector);
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(chunkVector);
 
         if (territory == null) return;
 
@@ -269,7 +267,7 @@ public class Utils {
         if (territory != null) {
             message.append(MessageFormat.format("==| Territory {0} [{1};{2}] |==\n  Owner : {3}\n",
                     territory.getName(), territory.getPosX(), territory.getPosZ(),
-                    (territory.getFaction() == null ? "None" : territory.getFaction().getDisplayName())));
+                    (territory.getFaction() == null ? "None" : (territory.getFaction().getDisplayName() + (territory.isHasFallen() ? " (Has fallen)" : "")))));
             message.append("  Biome(s):\n");
             message.append(territory.getBiome().asComponent());
         }
