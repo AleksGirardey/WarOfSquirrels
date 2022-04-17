@@ -79,13 +79,15 @@ public class War implements IChannelTarget {
         target = null;
         attackers = new ArrayList<>();
         defenders = new ArrayList<>();
+        tag = SetTag();
+        state = WarState.Preparation;
+
         SetScoreboard();
+
         WarOfSquirrels.instance.getBroadCastHandler().AddTarget(this, new WarChannel(this));
         defender.getOnlinePlayers().forEach(this::AddDefender);
         attackersLimit = defenders.size() + 1;
         attackersParty.forEach(this::AddAttacker);
-        state = WarState.Preparation;
-        tag = SetTag();
 
         MutableComponent worldAnnounce = new TextComponent("The war horns roar. ");
         MutableComponent attackerName = ChatText.Colored(attacker.displayName, ChatFormatting.BLUE);
@@ -234,7 +236,6 @@ public class War implements IChannelTarget {
         this.timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                this.cancel();
                 PreLaunchWar();
             }
         }, WarOfSquirrels.instance.getConfig().getPreparationPhase() * 1000L);
@@ -248,9 +249,10 @@ public class War implements IChannelTarget {
     private void LaunchWar() {
         WarTask warTask = new WarTask();
 
-        WarOfSquirrels.instance.getBroadCastHandler().WarAnnounce(this, WarState.War);
         warTask.setWar(this);
         Capture();
+        this.timer.cancel();
+        WarOfSquirrels.instance.getBroadCastHandler().WarAnnounce(this, WarState.War);
         this.timer = new Timer();
         this.timeStart = System.currentTimeMillis();
         timer.schedule(warTask, 0, 1000);

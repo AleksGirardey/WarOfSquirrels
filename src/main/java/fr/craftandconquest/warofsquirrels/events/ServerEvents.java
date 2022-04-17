@@ -5,6 +5,7 @@ import fr.craftandconquest.warofsquirrels.handler.PlayerHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.war.War;
 import fr.craftandconquest.warofsquirrels.utils.SpawnTeleporter;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import lombok.SneakyThrows;
@@ -60,6 +61,14 @@ public class ServerEvents {
         if (player.getCity() != null) {
             broadCastHandler.AddPlayerToTarget(player.getCity(), player);
             targets.add(player.getCity().getBroadCastTarget());
+
+            if (WarOfSquirrels.instance.getWarHandler().Contains(player.getCity())) {
+                War war = WarOfSquirrels.instance.getWarHandler().getWar(player.getCity());
+
+                if (war.getCityDefender().equals(player.getCity()))
+                    war.AddDefender(player);
+            }
+
             if (player.getCity().getFaction() != null) {
                 broadCastHandler.AddPlayerToTarget(player.getCity().getFaction(), player);
                 targets.add(player.getCity().getFaction().getBroadCastTarget());
@@ -79,6 +88,9 @@ public class ServerEvents {
 
         if (player == null) return;
 
+        if (WarOfSquirrels.instance.getWarHandler().Contains(player))
+            WarOfSquirrels.instance.getWarHandler().getWar(player).RemovePlayer(player);
+
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerToWorldAnnounce(player);
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerFromTargets(player);
 
@@ -90,6 +102,7 @@ public class ServerEvents {
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnServerShuttingDown(ServerStoppingEvent event) {
+        WarOfSquirrels.instance.getWarHandler().CancelWars();
         WarOfSquirrels.instance.getUpdateHandler().CancelTask();
         WarOfSquirrels.instance.getUpdateHandler().SaveTask();
     }

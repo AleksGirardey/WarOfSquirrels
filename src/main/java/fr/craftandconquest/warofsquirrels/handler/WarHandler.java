@@ -169,10 +169,16 @@ public class WarHandler {
         boolean isCityDefender = warNotNull && war.getCityDefender().equals(chunk.getRelatedCity());
         boolean isTargetTerritory = warNotNull && war.getTargetTerritory().equals(territory);
 
-        WarOfSquirrels.instance.debugLog("[IsConcerned] " + warNotNull + " / " + isCityDefender + " / " + isTargetTerritory);
+        //WarOfSquirrels.instance.debugLog("[IsConcerned] " + warNotNull + " / " + isCityDefender + " / " + isTargetTerritory);
 
         return war != null
                 && war.getCityDefender().equals(chunk.getRelatedCity())
                 && war.getTargetTerritory().equals(territory);
+    }
+
+    public void CancelWars() {
+        for (War war : wars) {
+            war.getTimer().cancel();
+        }
     }
 }

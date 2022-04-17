@@ -220,4 +220,13 @@ public class Territory {
                 posZ,
                 faction != null ? faction.getDisplayName() : "personne", "Overworld");
     }
+
+    @JsonIgnore
+    public String getDisplayName() {
+        String prefix = "";
+
+        if (biome.isCompleteTrait()) prefix = " " + biome.getBiomePrefix();
+
+        return name + prefix;
+    }
 }

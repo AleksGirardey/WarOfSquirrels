@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.ServerChatEvent;
@@ -102,7 +103,7 @@ public class PlayersInteractionHandler {
             War war = WarOfSquirrels.instance.getWarHandler().getWar(newChunk.getRelatedCity());
 
             if (!war.isDefender(player) && !war.isAttacker(player)) {
-                //event.getEntity().setPos(new Vec3(player.lastPosition.x, player.lastPosition.y, player.lastPosition.z));
+                event.getEntity().setPos(new Vec3(player.lastPosition.x, player.lastPosition.y, player.lastPosition.z));
                 event.setResult(Event.Result.DENY);
                 player.sendMessage(ChatText.Error("You cannot walk into this battlefield."));
             }
@@ -129,7 +130,7 @@ public class PlayersInteractionHandler {
         Territory newTerritory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(new Vector2(event.getNewPos().chunk().x, event.getNewPos().chunk().z));
 
         if (oldTerritory != newTerritory) {
-            player.sendMessage(ChatText.Colored("~~| " + newTerritory.getName() + " |~~", ChatFormatting.DARK_GREEN));
+            player.sendMessage(ChatText.Colored("~~| " + newTerritory.getDisplayName() + " |~~", ChatFormatting.DARK_GREEN));
         }
 
         Chunk lastChunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), dimensionId);

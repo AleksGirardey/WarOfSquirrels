@@ -126,7 +126,7 @@ public class TerritoryBiome {
     }
 
     @JsonIgnore
-    private boolean isCompleteTrait() { return biomes.size() == 1; }
+    public boolean isCompleteTrait() { return biomes.size() == 1; }
 
     public float ratioBonusInfluenceOnMe() {
         if (biomes.contains(EBiomeType.Plains)) {
@@ -185,5 +185,21 @@ public class TerritoryBiome {
             message.append(" - ").append(EBiomeType.River.name()).append(isRiverComplete ? "(Complete)" : "").append("\n");
 
         return message;
+    }
+
+    @JsonIgnore
+    public String getBiomePrefix() {
+        EBiomeType type = biomes.get(0);
+
+        switch (type) {
+            case Forest -> { return "Forest"; }
+            case Mountains -> { return "Mountains"; }
+            case Ocean -> { return "Ocean"; }
+            case Plains -> { return "Plains"; }
+            case River -> { return "River"; }
+            case Swamp -> { return "Swamp"; }
+            case None -> { return ""; }
+        }
+        return "";
     }
 }

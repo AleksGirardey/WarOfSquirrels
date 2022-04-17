@@ -25,14 +25,11 @@ public class UpdateHandler {
 
         OnSaveUpdate.clear();
 
-//        this.CreateDailyUpdate();
-//        this.CreateSaveUpdate();
+        this.CreateDailyUpdate();
+        this.CreateSaveUpdate();
     }
 
     public void DailyUpdate() {
-//        message.withStyle(ChatFormatting.BOLD);
-//        message.withStyle(ChatFormatting.ITALIC);
-
         String prefix = "[WoS][Debug] ";
 
         LOGGER.info(prefix + "Updating City");
@@ -46,7 +43,6 @@ public class UpdateHandler {
 //        WarOfSquirrels.instance.getLoanHandler().update();
         MutableComponent message = ChatText.Colored("A new day begin..", ChatFormatting.GOLD);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
-        this.CreateDailyUpdate();
     }
 
     public void SaveTask() {
@@ -59,34 +55,34 @@ public class UpdateHandler {
 
     public void SaveUpdate() {
         SaveTask();
-
-        this.CreateSaveUpdate();
     }
 
     public void CreateDailyUpdate() {
         long delay = DelayBeforeReset();
+        long period = 1000L * 60L * 60L * 24L;
         delay *= 1000;
 
-        currentDailyUpdateTimer = new Timer();
-        currentDailyUpdateTimer.schedule(new TimerTask() {
+        currentDailyUpdateTimer = new Timer("Daily Update Timer");
+        currentDailyUpdateTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 DailyUpdate();
             }
-        }, delay);
+        }, delay, period);
     }
 
     public void CreateSaveUpdate() {
-        long delay = 60000L;
-//        long delay = 300000L;
+        long delay = 0L;
+        long period = 60000L;
+//        long period = 300000L;
 
         currentSaveUpdateTimer = new Timer();
-        currentSaveUpdateTimer.schedule(new TimerTask() {
+        currentSaveUpdateTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 SaveUpdate();
             }
-        }, delay);
+        }, delay, period);
     }
 
     public long DelayBeforeReset() {
