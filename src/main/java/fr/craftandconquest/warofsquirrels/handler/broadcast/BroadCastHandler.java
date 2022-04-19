@@ -46,8 +46,7 @@ public class BroadCastHandler {
         if (channels.containsKey(target)) {
             if (isAnnounce) channels.get(target).SendAnnounce(message);
             else if (sender != null) channels.get(target).SendMessage(sender, message);
-            else
-                LOGGER.warn("""
+            else LOGGER.warn("""
                         [WoS][BroadCastHandler] Couldn't send message :
                         \tTarget : {}
                         \tSender : NULL

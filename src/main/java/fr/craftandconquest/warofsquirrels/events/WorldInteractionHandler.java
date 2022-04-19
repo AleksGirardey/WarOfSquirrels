@@ -133,11 +133,6 @@ public class WorldInteractionHandler {
     public void OnPlayerInteractEvent(PlayerInteractEvent event) {
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
 
-        if (player.isAdminMode()) {
-            event.setResult(Event.Result.ALLOW);
-            return;
-        }
-
         enum InteractType { None, RightClickEmpty, RightClickBlock, RightClickItem, RightClickEntity }
 
         InteractType type;
@@ -161,53 +156,55 @@ public class WorldInteractionHandler {
             if (item == Items.FEATHER) {
                 Utils.displayInfoFeather(event.getPlayer(), event.getPlayer().getOnPos(), event.getWorld().dimension());
                 event.setCanceled(true);
-                return;
-            } else if (item == Items.BOW || item == Items.CROSSBOW) {
+            } else if (item == Items.BOW || item == Items.CROSSBOW || player.isAdminMode()) {
                 return;
             }
-        } else if (type == InteractType.RightClickEntity) {
-            if (WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(PermissionHandler.Rights.INTERACT,
+        }
+        if (!player.isAdminMode()) {
+            if (type == InteractType.RightClickEntity) {
+                if (WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(PermissionHandler.Rights.INTERACT,
+                        new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
+                        Chunk.DimensionToId(player.getLastDimensionKey()),
+                        player)) {
+                    return;
+                }
+
+                event.getPlayer().sendMessage(ChatText.Error("You do not have the permission to interact with this entity"), Util.NIL_UUID);
+                event.setCanceled(true);
+            } else if (type == InteractType.RightClickBlock) {
+                boolean isSwitch = false;
+
+                PlayerInteractEvent.RightClickBlock blockEvent = (PlayerInteractEvent.RightClickBlock) event;
+
+                for (Tag.Named<Block> tag : switchTags) {
+                    if (event.getWorld().getBlockState(blockEvent.getPos()).is(tag)) {
+                        isSwitch = true;
+                        break;
+                    }
+                }
+
+                if (!isSwitch) {
+                    String lastDimensionId = Chunk.DimensionToId(player.getLastDimensionKey());
+
+                    if (IsContainer(event.getWorld(), event.getPos(), null)) {
+                        if (OnPlayerContainer(event.getPlayer(), event.getPos(), lastDimensionId)) {
+                            return;
+                        }
+                    }
+                    return;
+                }
+            }
+
+            if (WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(PermissionHandler.Rights.SWITCH,
                     new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
                     Chunk.DimensionToId(player.getLastDimensionKey()),
                     player)) {
                 return;
             }
 
-            event.getPlayer().sendMessage(ChatText.Error("You do not have the permission to interact with this entity"), Util.NIL_UUID);
+            event.getPlayer().sendMessage(ChatText.Error("You do not have the permission to interact with this block"), Util.NIL_UUID);
             event.setCanceled(true);
-        } else if (type == InteractType.RightClickBlock) {
-            boolean isSwitch = false;
-
-            PlayerInteractEvent.RightClickBlock blockEvent = (PlayerInteractEvent.RightClickBlock) event;
-
-            for (Tag.Named<Block> tag : switchTags) {
-                if (event.getWorld().getBlockState(blockEvent.getPos()).is(tag)) {
-                    isSwitch = true;
-                    break;
-                }
-            }
-
-            if (!isSwitch) {
-                String lastDimensionId = Chunk.DimensionToId(player.getLastDimensionKey());
-
-                if (IsContainer(event.getWorld(), event.getPos(), null)) {
-                    if (OnPlayerContainer(event.getPlayer(), event.getPos(), lastDimensionId)) {
-                        return;
-                    }
-                }
-                return;
-            }
         }
-
-        if (WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(PermissionHandler.Rights.SWITCH,
-                new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
-                Chunk.DimensionToId(player.getLastDimensionKey()),
-                player)) {
-            return;
-        }
-
-        event.getPlayer().sendMessage(ChatText.Error("You do not have the permission to interact with this block"), Util.NIL_UUID);
-        event.setCanceled(true);
     }
 
     @OnlyIn(Dist.DEDICATED_SERVER)

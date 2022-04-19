@@ -39,8 +39,8 @@ public class WarAttack extends CityMayorOrAssistantCommandBuilder implements ITe
             return false;
         }
 
-        if (territory.getFortification().isProtected()) {
-            player.sendMessage(ChatText.Error("This territory is protected for now."));
+        if (territory.isProtected()) {
+            player.sendMessage(ChatText.Error("This territory is protected for now. (Or has fallen)"));
             return false;
         }
 

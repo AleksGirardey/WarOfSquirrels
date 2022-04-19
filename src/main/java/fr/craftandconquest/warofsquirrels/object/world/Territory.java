@@ -229,4 +229,9 @@ public class Territory {
 
         return name + prefix;
     }
+
+    @JsonIgnore
+    public boolean isProtected() {
+        return !hasFallen && fortification.isProtected();
+    }
 }

@@ -25,7 +25,7 @@ public class PartyDeleteCommand extends PartyCommandLeader {
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Party party = WarOfSquirrels.instance.getPartyHandler().getPartyFromLeader(player);
 
-        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(party, null, ChatText.Success("Votre groupe a été dissout."), true);
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(party, null, ChatText.Success("Your party has been deleted."), true);
         WarOfSquirrels.instance.getPartyHandler().RemoveParty(party);
         return 0;
     }

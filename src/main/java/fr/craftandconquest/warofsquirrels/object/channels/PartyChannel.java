@@ -14,11 +14,11 @@ public class PartyChannel extends Channel {
 
     @Override
     protected MutableComponent transformText(FullPlayer sender, MutableComponent text) {
-        return ChatText.Colored(String.format("[Groupe][%s] ", sender.getDisplayName()), ChatFormatting.GRAY);
+        return ChatText.Colored(String.format("[Party][%s] ", sender.getDisplayName()), ChatFormatting.GRAY);
     }
 
     @Override
     protected MutableComponent transformTextAnnounce(MutableComponent text) {
-        return ChatText.Colored("[Groupe] ", ChatFormatting.GOLD).append(text);
+        return ChatText.Colored("[Party] ", ChatFormatting.GOLD).append(text);
     }
 }
