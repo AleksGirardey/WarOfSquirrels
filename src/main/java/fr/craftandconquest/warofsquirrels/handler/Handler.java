@@ -70,6 +70,10 @@ public abstract class Handler<T> implements OnSaveListener {
         Logger.info(MessageFormat.format("{0} Saved {1} entries !", PrefixLogger, dataArray.size()));
     }
 
+    public void Backup() {
+
+    }
+
     protected boolean Populate() {
         dataArray.iterator().forEachRemaining(this::add);
         return true;
@@ -105,7 +109,6 @@ public abstract class Handler<T> implements OnSaveListener {
     public abstract void Log();
 
     public abstract String getConfigDir();
-
     protected abstract String getConfigPath();
 
     public abstract void spreadPermissionDelete(IPermission target);

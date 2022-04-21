@@ -16,19 +16,15 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dynmap.DynmapCommonAPI;
-import org.dynmap.DynmapCommonAPIListener;
 
 @Mod.EventBusSubscriber(modid = WarOfSquirrels.warOfSquirrelsModId, bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod(WarOfSquirrels.warOfSquirrelsModId)
@@ -36,7 +32,6 @@ public class WarOfSquirrels {
     public static WarOfSquirrels instance;
 
     public static MinecraftServer server;
-//    public static DynmapCommonAPI dynmapCommonAPI;
 
     public static final String warOfSquirrelsModId = "wos";
     public static final String warOfSquirrelsConfigDir = "./WarOfSquirrels";
