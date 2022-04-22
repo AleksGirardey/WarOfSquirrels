@@ -4,9 +4,21 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import lombok.SneakyThrows;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 public class BackUpUtils {
+    public static void DoBackUp() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String backUpDest = "./Backup " + formatter.format(new Date());
+
+        File source = new File(WarOfSquirrels.warOfSquirrelsConfigDir);
+        File destination = new File(backUpDest);
+
+        Copy(source, destination);
+    }
+
     private static void CopyDirectory(File source, File destination) {
         if (source == null || destination == null) return;
 

@@ -114,17 +114,11 @@ public class CityHandler extends Handler<City> {
     public boolean Delete(City city) {
         WarOfSquirrels.instance.spreadPermissionDelete(city);
 
-        WarOfSquirrels.instance.debugLog("CD 1");
         if (!WarOfSquirrels.instance.getInfluenceHandler().delete(city)) return false;
-        WarOfSquirrels.instance.debugLog("CD 2");
         if (!WarOfSquirrels.instance.getTerritoryHandler().delete(city)) return false;
-        WarOfSquirrels.instance.debugLog("CD 3");
         if (!WarOfSquirrels.instance.getBastionHandler().deleteCity(city)) return false;
-        WarOfSquirrels.instance.debugLog("CD 4");
         if (!WarOfSquirrels.instance.getCuboHandler().deleteCity(city)) return false;
-        WarOfSquirrels.instance.debugLog("CD 5");
         if (!WarOfSquirrels.instance.getChunkHandler().deleteCity(city)) return false;
-        WarOfSquirrels.instance.debugLog("CD 6");
 
         for (FullPlayer player : city.getCitizens()) {
             player.setAssistant(false);

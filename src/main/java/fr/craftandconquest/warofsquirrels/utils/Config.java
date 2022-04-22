@@ -19,15 +19,6 @@ import java.text.MessageFormat;
 import java.util.*;
 
 public class Config {
-    public final static List<String> configDirs;
-
-    static {
-        configDirs = new ArrayList<>();
-
-        configDirs.add(WarOfSquirrels.warOfSquirrelsConfigDir);
-        configDirs.add(WarOfSquirrels.warOfSquirrelsConfigDir + "/");
-    }
-
     private final String PrefixLogger;
 
     private File configFile;

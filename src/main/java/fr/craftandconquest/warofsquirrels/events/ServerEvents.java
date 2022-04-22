@@ -6,6 +6,7 @@ import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.war.War;
+import fr.craftandconquest.warofsquirrels.utils.BackUpUtils;
 import fr.craftandconquest.warofsquirrels.utils.SpawnTeleporter;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import lombok.SneakyThrows;
@@ -105,5 +106,7 @@ public class ServerEvents {
         WarOfSquirrels.instance.getWarHandler().CancelWars();
         WarOfSquirrels.instance.getUpdateHandler().CancelTask();
         WarOfSquirrels.instance.getUpdateHandler().SaveTask();
+
+        BackUpUtils.DoBackUp();
     }
 }
