@@ -3,6 +3,7 @@ package fr.craftandconquest.warofsquirrels.events;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
@@ -320,6 +321,10 @@ public class WorldInteractionHandler {
 
         boolean hasCubo = cubo != null;
 
-        return hasCubo || hasChunk;
+        AdminCubo adminCubo = WarOfSquirrels.instance.getAdminHandler().get(target, player.getLastDimensionKey());
+
+        boolean hasAdminCubo = adminCubo != null;
+
+        return hasCubo || hasChunk || hasAdminCubo;
     }
 }
