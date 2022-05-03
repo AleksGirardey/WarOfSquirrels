@@ -3,6 +3,7 @@ package fr.craftandconquest.warofsquirrels.events;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
@@ -13,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.monster.Monster;
@@ -30,7 +30,6 @@ import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -72,11 +71,7 @@ public class WorldInteractionHandler {
 
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
 
-        if (player.isAdminMode()) return;
-
-        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
-
-        if (chunk == null) return;
+        if (!ShouldWeCheck(player, new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()))) return;
 
         PermissionHandler.Rights rights = (WarOfSquirrels.instance.getWarHandler().Contains(player) ?
                 PermissionHandler.Rights.DESTROY_IN_WAR :
@@ -107,13 +102,7 @@ public class WorldInteractionHandler {
 
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
 
-        if (player.isAdminMode()) {
-            return;
-        }
-
-        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
-
-        if (chunk == null) return;
+        if (!ShouldWeCheck(player, new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()))) return;
 
         PermissionHandler.Rights rights = (WarOfSquirrels.instance.getWarHandler().Contains(player) ?
                 PermissionHandler.Rights.PLACE_IN_WAR :
@@ -165,9 +154,7 @@ public class WorldInteractionHandler {
             event.setCanceled(true);
         }
 
-        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
-
-        if (chunk == null) return;
+        if (!ShouldWeCheck(player, new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()))) return;
 
         if (type == InteractType.RightClickItem) {
             Item item = event.getItemStack().getItem();
@@ -238,10 +225,6 @@ public class WorldInteractionHandler {
 
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(sourcePlayer.getUUID());
 
-        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
-
-        if (chunk == null) return;
-
         boolean canFarm = WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
                 PermissionHandler.Rights.FARM,
                 new Vector3(
@@ -285,9 +268,7 @@ public class WorldInteractionHandler {
 
             if (player.isAdminMode() || !farmBlocks.contains(event.getState().getBlock())) return;
 
-            Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
-
-            if (chunk == null) return;
+            if (!ShouldWeCheck(player, new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()))) return;
 
             if (WarOfSquirrels.instance.getPermissionHandler()
                     .hasRightsTo(PermissionHandler.Rights.FARM,
@@ -326,5 +307,19 @@ public class WorldInteractionHandler {
     @SubscribeEvent
     public void OnCropsTrampled(BlockEvent.FarmlandTrampleEvent event) {
         event.setCanceled(true);
+    }
+
+    private boolean ShouldWeCheck(FullPlayer player, Vector3 target) {
+        if (player.isAdminMode()) return false;
+
+        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
+
+        boolean hasChunk = chunk != null;
+
+        Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(target);
+
+        boolean hasCubo = cubo != null;
+
+        return hasCubo || hasChunk;
     }
 }

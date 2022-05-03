@@ -558,10 +558,12 @@ public class War implements IChannelTarget {
 
                         if (this.lastAnnounceCapture == 0) {
                             float timeLeft = chunkBeingCaptured.get(chunk); // example : 55
-                            WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null,
-                                    ChatText.Success("[Capture]" + chunk.toStringShort() + "[" + (int) Math.floor(timeLeft) + "/100] Time before capture "
-                                            + Utils.toTime((int) (timeLeft / valueRemoved)) + "."),
-                                    true);
+                            if (valueRemoved >= 0) {
+                                WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null,
+                                        ChatText.Success("[Capture]" + chunk.toStringShort() + "[" + (int) Math.floor(timeLeft) + "/100] Time before capture "
+                                                + Utils.toTime((int) (timeLeft / valueRemoved)) + "."),
+                                        true);
+                            }
                         }
                         if (chunkBeingCaptured.get(chunk) <= 0) {
                             capturedChunk.add(chunk);
