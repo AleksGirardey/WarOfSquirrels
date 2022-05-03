@@ -14,6 +14,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -42,7 +43,7 @@ import java.util.List;
 public class WorldInteractionHandler {
 
     private static final List<Block> farmBlocks = new ArrayList<>();
-    private static final List<Tag.Named<Block>> switchTags = new ArrayList<>();
+    private static final List<TagKey<Block>> switchTags = new ArrayList<>();
 
     static {
         farmBlocks.add(Blocks.WHEAT);
@@ -72,6 +73,10 @@ public class WorldInteractionHandler {
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
 
         if (player.isAdminMode()) return;
+
+        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
+
+        if (chunk == null) return;
 
         PermissionHandler.Rights rights = (WarOfSquirrels.instance.getWarHandler().Contains(player) ?
                 PermissionHandler.Rights.DESTROY_IN_WAR :
@@ -106,6 +111,10 @@ public class WorldInteractionHandler {
             return;
         }
 
+        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
+
+        if (chunk == null) return;
+
         PermissionHandler.Rights rights = (WarOfSquirrels.instance.getWarHandler().Contains(player) ?
                 PermissionHandler.Rights.PLACE_IN_WAR :
                 PermissionHandler.Rights.BUILD);
@@ -133,12 +142,12 @@ public class WorldInteractionHandler {
     public void OnPlayerInteractEvent(PlayerInteractEvent event) {
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
 
-        enum InteractType { None, RightClickEmpty, RightClickBlock, RightClickItem, RightClickEntity }
+        enum InteractType { None, RightClickEmpty, RightClickBlock, RightClickItem, RightClickEntity, LeftClick }
 
         InteractType type;
 
         if (event instanceof PlayerInteractEvent.LeftClickBlock || event instanceof PlayerInteractEvent.LeftClickEmpty)
-            type = InteractType.None;
+            type = InteractType.LeftClick;
         else if (event instanceof PlayerInteractEvent.RightClickBlock)
             type = InteractType.RightClickBlock;
         else if (event instanceof PlayerInteractEvent.RightClickEmpty)
@@ -149,14 +158,23 @@ public class WorldInteractionHandler {
             type = InteractType.RightClickEntity;
         else { return; }
 
-        if (type == InteractType.None) { return; }
+        // If player exist then we are in cubo mode and we need to register the block and cancel interaction
+        if (WarOfSquirrels.instance.getCuboHandler().playerExists(player)) {
+            WarOfSquirrels.instance.getCuboHandler().set(player, new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
+                    type == InteractType.LeftClick);
+            event.setCanceled(true);
+        }
+
+        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
+
+        if (chunk == null) return;
 
         if (type == InteractType.RightClickItem) {
             Item item = event.getItemStack().getItem();
             if (item == Items.FEATHER) {
                 Utils.displayInfoFeather(event.getPlayer(), event.getPlayer().getOnPos(), event.getWorld().dimension());
                 event.setCanceled(true);
-            } else if (item == Items.BOW || item == Items.CROSSBOW || player.isAdminMode()) {
+            } else if (item == Items.BOW || item == Items.CROSSBOW || item == Items.SHIELD || player.isAdminMode()) {
                 return;
             }
         }
@@ -176,7 +194,7 @@ public class WorldInteractionHandler {
 
                 PlayerInteractEvent.RightClickBlock blockEvent = (PlayerInteractEvent.RightClickBlock) event;
 
-                for (Tag.Named<Block> tag : switchTags) {
+                for (TagKey<Block> tag : switchTags) {
                     if (event.getWorld().getBlockState(blockEvent.getPos()).is(tag)) {
                         isSwitch = true;
                         break;
@@ -194,6 +212,8 @@ public class WorldInteractionHandler {
                     return;
                 }
             }
+
+            if (type == InteractType.LeftClick) { return; }
 
             if (WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(PermissionHandler.Rights.SWITCH,
                     new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
@@ -217,6 +237,10 @@ public class WorldInteractionHandler {
         if (event.getEntityLiving() instanceof Monster) { return; }
 
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(sourcePlayer.getUUID());
+
+        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
+
+        if (chunk == null) return;
 
         boolean canFarm = WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
                 PermissionHandler.Rights.FARM,
@@ -261,6 +285,10 @@ public class WorldInteractionHandler {
 
             if (player.isAdminMode() || !farmBlocks.contains(event.getState().getBlock())) return;
 
+            Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
+
+            if (chunk == null) return;
+
             if (WarOfSquirrels.instance.getPermissionHandler()
                     .hasRightsTo(PermissionHandler.Rights.FARM,
                             new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
@@ -274,12 +302,23 @@ public class WorldInteractionHandler {
             player = WarOfSquirrels.instance.getPlayerHandler().get(toolEvent.getPlayer().getUUID());
             if (player.isAdminMode()) return;
 
-            if (toolEvent.getToolAction().equals(ToolActions.HOE_DIG) && WarOfSquirrels.instance.getPermissionHandler()
-                    .hasRightsTo(PermissionHandler.Rights.FARM,
-                            new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
-                            player.getLastDimension(), player)) return;
-            event.setCanceled(true);
-            player.sendMessage(ChatText.Error("You cannot use your hoe here."));
+            Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
+
+            if (chunk == null) return;
+
+            PermissionHandler.Rights rights;
+            if (toolEvent.getToolAction() == ToolActions.HOE_DIG)
+                rights = PermissionHandler.Rights.BUILD;
+            else if (toolEvent.getToolAction() == ToolActions.HOE_TILL)
+                rights = PermissionHandler.Rights.FARM;
+            else
+                return;
+
+            if (WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(rights,
+                                new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
+                                player.getLastDimension(), player)) return;
+                event.setCanceled(true);
+                player.sendMessage(ChatText.Error("You cannot use your hoe here."));
         }
     }
 

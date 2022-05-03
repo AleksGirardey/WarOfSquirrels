@@ -32,26 +32,37 @@ public class FactionCreateCommand extends CityMayorCommandBuilder implements ITe
         //  - La ville possède assez d'influence sur le territoire
         //  - La ville n'a pas déjà une faction
 
-        Territory territory = ExtractTerritory(player);
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(player.getCity());
         Influence influence = WarOfSquirrels.instance.getInfluenceHandler().get(player.getCity(), territory);
 
-        if (player.getCity().getFaction() == null
-                && influence.getValue() >= WarOfSquirrels.instance.getConfig().getBaseInfluenceRequired()) return true;
+        boolean hasFaction = player.getCity().getFaction() != null;
+        boolean hasEnoughInfluence = influence.getValue() >= WarOfSquirrels.instance.getConfig().getBaseInfluenceRequired();
 
-        player.sendMessage(ChatText.Error("You do not met requirements to create a faction."));
-        return false;
+        if (hasFaction) {
+            player.sendMessage(ChatText.Error("You already got a faction."));
+            return false;
+        }
+
+        if (!hasEnoughInfluence) {
+            player.sendMessage(ChatText.Error("You do not have enough influence on your capital territory"));
+            return false;
+        }
+
+        return true;
     }
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         String fName = context.getArgument(factionName, String.class);
-        Territory territory = ExtractTerritory(player);
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(player.getCity());
         Faction faction = WarOfSquirrels.instance.getFactionHandler().CreateFaction(fName, player.getCity());
 
         player.getCity().SetFaction(faction);
 
-        if (!WarOfSquirrels.instance.getTerritoryHandler().Claim(territory.getPosX(), territory.getPosZ(), faction, player.getCity()))
+        if (!WarOfSquirrels.instance.getTerritoryHandler().Claim(territory.getPosX(), territory.getPosZ(), faction, player.getCity())) {
+            WarOfSquirrels.instance.getFactionHandler().Delete(faction);
             return -1;
+    }
 
         WarOfSquirrels.instance.getInfluenceHandler().SwitchInfluence(player.getCity(), faction, territory);
 

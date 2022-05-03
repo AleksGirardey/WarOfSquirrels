@@ -35,7 +35,7 @@ public class CitySetSpawn extends CityMayorOrAssistantCommandBuilder {
             return true;
         }
         player.sendMessage(ChatText.Error("You cannot set your fortification spawn on this chunk."));
-        return true;
+        return false;
     }
     
     @Override

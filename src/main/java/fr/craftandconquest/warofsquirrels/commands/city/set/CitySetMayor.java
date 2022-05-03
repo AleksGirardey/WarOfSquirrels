@@ -65,6 +65,18 @@ public class CitySetMayor extends CityMayorCommandBuilder implements IAdminComma
         FullPlayer newMayor = WarOfSquirrels.instance.getPlayerHandler().get(context.getArgument(argumentName, String.class));
         FullPlayer oldMayor = city.getOwner();
 
+        if (hasCityArg) {
+            if (newMayor.getCity() != city) {
+                if (!newMayor.getCity().getOwner().equals(newMayor)) {
+                    newMayor.getCity().removeCitizen(newMayor, true);
+                    city.addCitizen(newMayor);
+                } else {
+                    newMayor.sendMessage(ChatText.Error("Cannot force set mayor if you are mayor"));
+                    return -1;
+                }
+            }
+        }
+
         city.SetOwner(newMayor);
         newMayor.setAssistant(false);
         oldMayor.setAssistant(true);

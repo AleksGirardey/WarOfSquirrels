@@ -8,6 +8,7 @@ import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.upgrade.bastion.*;
 import lombok.Getter;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.Container;
 
 public class BastionUpgrade {
@@ -271,5 +272,17 @@ public class BastionUpgrade {
                 .append(currentBarrackUpgrade.asString())
                 .append(currentFortificationUpgrade.asString())
                 .append(currentRoadUpgrade.asString());
+    }
+
+    public MutableComponent displayInfo() {
+        MutableComponent message = new TextComponent("");
+
+        message.append("  Level [" + getLevel().getCurrentLevel() + "/4]\n");
+        message.append("  Village [" + getVillage().getCurrentLevel() + "/4]\n");
+        message.append("  Barrack [" + getBarrack().getCurrentLevel() + "/4]\n");
+        message.append("  Fortification [" + getFortification().getCurrentLevel() + "/4]\n");
+        message.append("  Road [" + getRoad().getCurrentLevel() + "/4]\n");
+
+        return message;
     }
 }

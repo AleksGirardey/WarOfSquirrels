@@ -2,10 +2,7 @@ package fr.craftandconquest.warofsquirrels.commands.city;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import fr.craftandconquest.warofsquirrels.commands.city.bastion.CityBastionDelete;
-import fr.craftandconquest.warofsquirrels.commands.city.bastion.CityBastionList;
-import fr.craftandconquest.warofsquirrels.commands.city.bastion.CityBastionName;
-import fr.craftandconquest.warofsquirrels.commands.city.bastion.CityBastionUpgrade;
+import fr.craftandconquest.warofsquirrels.commands.city.bastion.*;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.commands.CommandSourceStack;
@@ -16,6 +13,7 @@ public class CityBastion extends CityMayorOrAssistantCommandBuilder {
     private final CityBastionDelete cityBastionDelete = new CityBastionDelete();
     private final CityBastionUpgrade cityBastionUpgrade = new CityBastionUpgrade();
     private final CityBastionName cityBastionName = new CityBastionName();
+    private final CityBastionInfo cityBastionInfo = new CityBastionInfo();
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
@@ -24,7 +22,8 @@ public class CityBastion extends CityMayorOrAssistantCommandBuilder {
                 .then(cityBastionList.register())
                 .then(cityBastionDelete.register())
                 .then(cityBastionName.register())
-                .then(cityBastionUpgrade.register());
+                .then(cityBastionUpgrade.register())
+                .then(cityBastionInfo.register());
     }
 
     @Override

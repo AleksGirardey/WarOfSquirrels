@@ -34,7 +34,8 @@ public class AdminCreateTeleporter extends AdminCommandBuilder {
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         String name = context.getArgument(argumentTeleportationName, String.class);
 
-        WarOfSquirrels.instance.getAdminHandler().CreateTeleporter(player, name);
+        if (WarOfSquirrels.instance.getAdminHandler().CreateTeleporter(player, name) != null)
+            WarOfSquirrels.instance.getAdminHandler().Save();
 
         return 0;
     }

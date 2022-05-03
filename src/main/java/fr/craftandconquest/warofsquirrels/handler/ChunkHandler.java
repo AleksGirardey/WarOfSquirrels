@@ -109,7 +109,6 @@ public class ChunkHandler extends Handler<Chunk> {
                 dataArray.remove(chunk);
                 chunksMap.keySet().removeIf(k -> k.equals(chunkLocation));
             }
-            fortificationMap.forEach((k, v) -> WarOfSquirrels.instance.debugLog("Fmap on delete : " + k + " - " + v.size()));
 
             fortificationMap.entrySet().removeIf(entry -> entry.getKey().equals(bastion));
         }
@@ -262,7 +261,6 @@ public class ChunkHandler extends Handler<Chunk> {
 
     public boolean exists(int posX, int posZ, ResourceKey<Level> dimension) {
         for(Chunk chunk : dataArray) {
-            WarOfSquirrels.instance.debugLog(posX + " vs " + chunk.getPosX() + " - " + posZ + " vs " + chunk.getPosZ());
             if (chunk.getPosX() == posX && chunk.getPosZ() == posZ)
                 return true;
         }
@@ -309,8 +307,6 @@ public class ChunkHandler extends Handler<Chunk> {
                 fortificationMap.get(chunk.getFortification()).add(chunk);
         }
 
-        fortificationMap.forEach((k, v) -> WarOfSquirrels.instance.debugLog("After UpdateDependency: " + k + " - " + v.size()));
-
         Save();
     }
 
@@ -319,8 +315,6 @@ public class ChunkHandler extends Handler<Chunk> {
 
         for (Chunk chunk : outposts) {
             Vector2 pair = Utils.FromChunkToTerritory(chunk.getPosX(), chunk.getPosZ());
-
-            WarOfSquirrels.instance.debugLog(territory.getPosX() + " / " + pair.x + " - " + territory.getPosZ() + " / " + pair.y);
 
             if (territory.getPosX() != pair.x || territory.getPosZ() != pair.y) continue;
 

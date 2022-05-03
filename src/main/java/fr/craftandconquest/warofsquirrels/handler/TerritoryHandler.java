@@ -396,6 +396,7 @@ public class TerritoryHandler extends Handler<Territory> {
         Territory territory = get(posX, posZ);
 
         if (territory == null) return false;
+        if (territory.getFortification() != null && territory.getFortification() != fortification) return false;
 
         territory.SetFaction(faction);
         territory.SetFortification(fortification);

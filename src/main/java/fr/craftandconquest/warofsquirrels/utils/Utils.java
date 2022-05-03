@@ -219,7 +219,7 @@ public class Utils {
         for (int i = 0; i < freeCityList.size(); ++i) {
             message.append(freeCityList.get(i).displayName + "");
             if (i != freeCityList.size() - 1)
-                message.append("");
+                message.append(", ");
         }
 
         return message;
@@ -273,7 +273,7 @@ public class Utils {
         }
 
         if (chunkPos != null) {
-            message.append(MessageFormat.format("==| Chunk [{0};{1}] |==\n  Owner : {2}\n",
+            message.append(MessageFormat.format("==| Chunk [{0};{1}]" + (chunk != null && chunk.getHomeBlock() ? "[HB]" : "") +" |==\n  Owner : {2}\n",
                     chunkPos.x, chunkPos.z,
                     (chunk == null ? "None" : chunk.getFortification().getDisplayName())));
         }

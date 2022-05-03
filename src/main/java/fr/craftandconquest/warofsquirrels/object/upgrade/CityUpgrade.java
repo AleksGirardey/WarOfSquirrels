@@ -99,7 +99,7 @@ public class CityUpgrade {
             targetInfo.setDaysBeforeLevelUp(target.getDelayInDays());
             if (isForced)
                 targetInfo.setDaysBeforeLevelUp(0);
-            if (target.getDelayInDays() <= 0)
+            if (targetInfo.getDaysBeforeLevelUp() <= 0)
                 LevelUp(type);
             return true;
         }

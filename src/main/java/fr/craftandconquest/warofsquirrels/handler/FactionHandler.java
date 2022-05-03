@@ -17,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class FactionHandler extends Handler<Faction> {
     private final Map<UUID, Faction> factionMap;
@@ -30,7 +29,7 @@ public class FactionHandler extends Handler<Faction> {
         factionMap = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<List<Faction>>() {
+        if (!Load(new TypeReference<>() {
         })) return;
 
         Log();
@@ -99,19 +98,13 @@ public class FactionHandler extends Handler<Faction> {
     public boolean Delete(Faction faction) {
         WarOfSquirrels.instance.spreadPermissionDelete(faction);
 
-        WarOfSquirrels.instance.debugLog("FD 1");
         WarOfSquirrels.instance.getInfluenceHandler().Delete(faction);
-        WarOfSquirrels.instance.debugLog("FD 2");
         WarOfSquirrels.instance.getTerritoryHandler().Delete(faction);
-        WarOfSquirrels.instance.debugLog("FD 3");
         for (City city : faction.getCities().values()) {
-            WarOfSquirrels.instance.debugLog("FD 3.1");
             city.SetFaction(null);
         }
 
-        WarOfSquirrels.instance.debugLog("FD 4");
         factionMap.remove(faction.getFactionUuid());
-        WarOfSquirrels.instance.debugLog("FD 5");
 
         Save();
         return true;
@@ -147,9 +140,7 @@ public class FactionHandler extends Handler<Faction> {
         List<Diplomacy> res = new ArrayList<>();
         List<Diplomacy> diplo = WarOfSquirrels.instance.getDiplomacyHandler().get(faction);
 
-
         if (diplo != null) {
-            WarOfSquirrels.instance.debugLog("FOUND " + diplo.size() + " DIPLOMACY RELATIONS");
             res.addAll(diplo.stream().filter(d -> d.isRelation() == relation).toList());
         }
         return res;
@@ -175,8 +166,8 @@ public class FactionHandler extends Handler<Faction> {
 
     public void SetCapital(Faction faction, City city) {
         faction.SetCapital(city);
-        MutableComponent message = ChatText.Colored("La nouvelle capitale de '" + faction.getDisplayName()
-                + "' est désormais la ville de '" + city.getDisplayName() + "'.", ChatFormatting.GOLD);
+        MutableComponent message = ChatText.Colored("New capital of faction '" + faction.getDisplayName()
+                + "' is now '" + city.getDisplayName() + "'.", ChatFormatting.GOLD);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
     }
@@ -201,6 +192,12 @@ public class FactionHandler extends Handler<Faction> {
                     target.getUuid(), target.getPermissionTarget(), permission));
         }
 
+    }
+
+    public void update() {
+        for (Faction faction : dataArray) {
+            faction.update();
+        }
     }
 
 //

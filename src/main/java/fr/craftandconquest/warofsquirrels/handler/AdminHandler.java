@@ -15,10 +15,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class AdminHandler extends Handler<AdminCubo> {
     protected static String DirName = "/WorldData";
@@ -52,6 +49,9 @@ public class AdminHandler extends Handler<AdminCubo> {
 
     public AdminCubo CreateProtection(FullPlayer player, String name) {
         AdminCubo cubo = CreateCubo(player, name);
+
+        cubo.setTeleporter(false);
+        cubo.setRespawnDimension(player.getPlayerEntity().level.dimension().location().getPath());
 
         if (add(cubo)) {
             player.sendMessage(ChatText.Success("Protection cubo created."));
@@ -92,6 +92,17 @@ public class AdminHandler extends Handler<AdminCubo> {
                 return cubo;
         }
         return null;
+    }
+
+    public List<AdminCubo> getAll(Vector3 block, ResourceKey<Level> dim) {
+        List<AdminCubo> list = new ArrayList<>();
+
+        for (AdminCubo cubo : dataArray) {
+            if (cubo.getVector().contains(block) && cubo.getDimensionKey() == dim)
+                list.add(cubo);
+        }
+
+        return list;
     }
 
     @Override

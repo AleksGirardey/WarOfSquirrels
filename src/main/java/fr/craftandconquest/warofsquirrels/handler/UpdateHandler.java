@@ -34,12 +34,14 @@ public class UpdateHandler {
 
         LOGGER.info(prefix + "Updating City");
         WarOfSquirrels.instance.getCityHandler().update();
-        LOGGER.info(prefix + "Updating Territory");
-        WarOfSquirrels.instance.getTerritoryHandler().update();
-        LOGGER.info(prefix + "Updating Player");
-        WarOfSquirrels.instance.getPlayerHandler().update();
         LOGGER.info(prefix + "Updating Bastion");
         WarOfSquirrels.instance.getBastionHandler().update();
+        LOGGER.info(prefix + "Updating Territory");
+        WarOfSquirrels.instance.getTerritoryHandler().update();
+        LOGGER.info(prefix + "Updating Faction");
+        WarOfSquirrels.instance.getFactionHandler().update();
+        LOGGER.info(prefix + "Updating Player");
+        WarOfSquirrels.instance.getPlayerHandler().update();
 //        WarOfSquirrels.instance.getLoanHandler().update();
         MutableComponent message = ChatText.Colored("A new day begin..", ChatFormatting.GOLD);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
@@ -59,7 +61,8 @@ public class UpdateHandler {
 
     public void CreateDailyUpdate() {
         long delay = DelayBeforeReset();
-        long period = 1000L * 60L * 60L * 24L;
+//        long period = 1000L * 60L * 60L * 24L;
+        long period = 1000L * 60L * 60L * 4L;
         delay *= 1000;
 
         currentDailyUpdateTimer = new Timer("Daily Update Timer");
@@ -73,8 +76,8 @@ public class UpdateHandler {
 
     public void CreateSaveUpdate() {
         long delay = 0L;
-        long period = 60000L;
-//        long period = 300000L;
+//        long period = 60000L;
+        long period = 300000L;
 
         currentSaveUpdateTimer = new Timer();
         currentSaveUpdateTimer.scheduleAtFixedRate(new TimerTask() {

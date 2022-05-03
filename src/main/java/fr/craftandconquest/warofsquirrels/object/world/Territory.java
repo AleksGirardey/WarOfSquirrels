@@ -150,7 +150,7 @@ public class Territory {
                 ChunkPos chunkPos = Utils.FromWorldToChunkPos(x, z);
                 BlockPos pos = chunkPos.getMiddleBlockPosition(124);
 
-                Biome.BiomeCategory category = level.getBiome(pos).getBiomeCategory();
+                Biome.BiomeCategory category = Biome.getBiomeCategory(level.getBiome(pos));
                 biomeMap.compute(category, (k,v) -> v == null ? 1 : v + 1);
 
 //                if (biomeMap.get(category) >= 335)

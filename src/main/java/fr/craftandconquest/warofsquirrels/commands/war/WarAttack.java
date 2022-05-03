@@ -16,6 +16,8 @@ import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
+import java.util.List;
+
 public class WarAttack extends CityMayorOrAssistantCommandBuilder implements ITerritoryExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
@@ -41,6 +43,23 @@ public class WarAttack extends CityMayorOrAssistantCommandBuilder implements ITe
 
         if (territory.isProtected()) {
             player.sendMessage(ChatText.Error("This territory is protected for now. (Or has fallen)"));
+            return false;
+        }
+
+        boolean canBeReached = false;
+        List<Territory> neighbors = WarOfSquirrels.instance.getTerritoryHandler().getNeighbors(territory);
+
+        for (Territory neighbor : neighbors) {
+            if (neighbor.getFaction() == null ||
+                    (territory.getFaction() != neighbor.getFaction() &&
+                            !WarOfSquirrels.instance.getDiplomacyHandler().getAllies(territory.getFaction()).contains(neighbor.getFaction()))) {
+                canBeReached = true;
+                break;
+            }
+        }
+
+        if (!canBeReached) {
+            player.sendMessage(ChatText.Error("Territory cannot be reached"));
             return false;
         }
 

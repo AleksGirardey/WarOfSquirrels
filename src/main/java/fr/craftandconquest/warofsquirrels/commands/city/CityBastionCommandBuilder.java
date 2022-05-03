@@ -13,37 +13,44 @@ import net.minecraft.world.level.Level;
 public abstract class CityBastionCommandBuilder extends CityMayorOrAssistantCommandBuilder {
     @Override
     protected MutableComponent ErrorMessage() {
-        return ChatText.Error("You need to physically the bastion to interact with it.");
+        return ChatText.Error("You need to be physically in the bastion to interact with it.");
     }
 
     @Override
     protected boolean CanDoIt(FullPlayer player) {
-        WarOfSquirrels.instance.debugLog("CanDoIt 1");
+        if (!super.CanDoIt(player)) return false;
+
         if (!player.getLastDimensionKey().equals(Level.OVERWORLD)) return false;
-        WarOfSquirrels.instance.debugLog("CanDoIt 2");
+
         Vector2 territoryPos = Utils.FromWorldToTerritory(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
         Territory territory = WarOfSquirrels.instance.getTerritoryHandler().getFromTerritoryPos(territoryPos);
 
         boolean isTerritoryNull = territory == null;
         boolean territoryHasFaction = !isTerritoryNull && territory.getFaction() != null;
+        boolean territorySameFaction = territoryHasFaction && territory.getFaction().equals(player.getCity().getFaction());
         boolean territoryHasBastion = territoryHasFaction && territory.getFortification().getFortificationType().equals(IFortification.FortificationType.BASTION);
+        boolean playerIsFactionLeader = player.getCity().getFaction().getCapital().getOwner().equals(player);
 
-        WarOfSquirrels.instance.debugLog("CanDoIt 3 [" + territoryPos + "] " + isTerritoryNull + " / " + territoryHasFaction + " / " + !territoryHasBastion);
-
-        if (territory == null
-                || territory.getFaction() == null
-                || !territory.getFortification().getFortificationType().equals(IFortification.FortificationType.BASTION))
+        if (isTerritoryNull) {
+            player.sendMessage(ChatText.Error("You are not on a claimed territory"));
             return false;
-
-        WarOfSquirrels.instance.debugLog("CanDoIt 4");
-
-        if (territory.getFaction().equals(player.getCity().getFaction())
-                && territory.getFortification().getRelatedCity().equals(player.getCity())) {
-            WarOfSquirrels.instance.debugLog("CanDoIt 5");
-            return super.CanDoIt(player);
         }
 
-        WarOfSquirrels.instance.debugLog("CanDoIt 6");
-        return false;
+        if (!territorySameFaction) {
+            player.sendMessage(ChatText.Error("Territory does not belong to your faction"));
+            return false;
+        }
+
+        if (!territoryHasBastion) {
+            player.sendMessage(ChatText.Error("Territory has no bastion to interact with"));
+            return false;
+        }
+
+        if (!playerIsFactionLeader && !territory.getFortification().getRelatedCity().equals(player.getCity())) {
+            player.sendMessage(ChatText.Error("Your rank does not allow you to interact with this bastion"));
+            return false;
+        }
+
+        return true;
     }
 }

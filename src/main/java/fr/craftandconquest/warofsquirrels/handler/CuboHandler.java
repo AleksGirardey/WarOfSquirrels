@@ -269,10 +269,6 @@ public class CuboHandler extends Handler<Cubo> {
         return getConfigDir() + JsonName;
     }
 
-    public void UpdateDependencies() {
-        dataArray.forEach(Cubo::UpdateDependencies);
-    }
-
     @Override
     public void spreadPermissionDelete(IPermission target) {
         for (Cubo cubo : dataArray) {

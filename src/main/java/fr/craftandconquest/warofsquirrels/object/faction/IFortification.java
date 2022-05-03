@@ -1,6 +1,7 @@
 package fr.craftandconquest.warofsquirrels.object.faction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
@@ -44,4 +45,6 @@ public interface IFortification {
     @JsonIgnore int getMaxChunk();
 
     @JsonIgnore int getLinkedChunkSize();
+
+    @JsonIgnore void displayInfo(FullPlayer player);
 }

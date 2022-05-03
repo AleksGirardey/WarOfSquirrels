@@ -153,9 +153,7 @@ public class CityHandler extends Handler<City> {
         List<City> cities = new ArrayList<>();
 
         for (City city : dataArray) {
-            WarOfSquirrels.instance.debugLog("Hello '" + city.getDisplayName() + "' - '" + (city.getFaction() != null) + "'");
             if (city.getFaction() != null && city.getFaction().equals(faction)) {
-                WarOfSquirrels.instance.debugLog("+1");
                 cities.add(city);
             }
         }
@@ -191,8 +189,7 @@ public class CityHandler extends Handler<City> {
             city.getCustomPermissionList()
                     .stream().filter(e -> e.getTargetUuid().equals(target.getUuid()))
                     .findFirst().get().setPermission(permission);
-        }
-        else {
+        } else {
             city.getCustomPermission().put(target, permission);
             city.getCustomPermissionList().add(new CustomPermission(target.getUuid(), target.getPermissionTarget(), permission));
         }

@@ -53,8 +53,6 @@ public class CityClaimChunk extends CityMayorOrAssistantCommandBuilder {
         int chunkSize = targetTerritory.getFortification().getLinkedChunkSize();
         int maxChunk = targetTerritory.getFortification().getMaxChunk();
 
-        WarOfSquirrels.instance.debugLog(targetTerritory + " vs " + city.getTerritory());
-
         boolean isCityTerritory = targetTerritory.equals(city.getTerritory());
         boolean doesChunkExist = chh.exists(x, z, dimensionId);
         boolean canPlaceChunk = !doesChunkExist && chh.canPlaceChunk(targetTerritory, player.getCity(), chunkLocation);

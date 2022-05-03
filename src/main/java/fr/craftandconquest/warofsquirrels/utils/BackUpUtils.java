@@ -10,11 +10,19 @@ import java.util.Objects;
 
 public class BackUpUtils {
     public static void DoBackUp() {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        String backUpDest = "./Backup " + formatter.format(new Date());
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy_HH.mm.ss");
+        String backUpDir = WarOfSquirrels.warOfSquirrelsConfigDir + "/Backup";
+        String backUpDest = backUpDir + "/" + formatter.format(new Date());
 
-        File source = new File(WarOfSquirrels.warOfSquirrelsConfigDir);
+        File dir = new File(backUpDir);
+
+        if (!dir.exists())
+            if (!dir.mkdir()) return;
+
+        File source = new File(WarOfSquirrels.warOfSquirrelsConfigDir + "/WorldData");
         File destination = new File(backUpDest);
+
+        if (!source.exists()) return;
 
         Copy(source, destination);
     }

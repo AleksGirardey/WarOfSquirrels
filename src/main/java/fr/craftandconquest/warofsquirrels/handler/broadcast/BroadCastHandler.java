@@ -141,7 +141,7 @@ public class BroadCastHandler {
         MutableComponent text = new TextComponent("");
 
         if (state == War.WarState.Preparation)
-            text.append(war.getCityAttacker().displayName + " attacks " + war.getCityDefender() + "prepare yourself for the fight. You have 2 minutes before the hostilities starts !");
+            text.append(war.getCityAttacker().displayName + " attacks " + war.getCityDefender() + " prepare yourself for the fight. You have 2 minutes before the hostilities starts !");
         else if (state == War.WarState.War)
             text.append("Let the battle... BEGIN !");
         else

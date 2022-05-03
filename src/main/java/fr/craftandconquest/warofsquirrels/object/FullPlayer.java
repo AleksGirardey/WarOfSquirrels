@@ -7,6 +7,7 @@ import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
+import fr.craftandconquest.warofsquirrels.object.scoring.Score;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class FullPlayer implements IPermission {
 
     @JsonProperty @Getter @Setter private UUID uuid;
     @JsonProperty("DisplayName") @Getter @Setter private String displayName;
-    @JsonProperty private int score;
+    @JsonProperty private Score score = new Score();
     @JsonProperty private UUID cityUuid;
     @JsonProperty @Getter @Setter private Boolean assistant;
     @JsonProperty @Getter @Setter private Boolean resident = false;

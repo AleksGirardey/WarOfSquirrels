@@ -9,6 +9,7 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.permission.*;
+import fr.craftandconquest.warofsquirrels.object.scoring.Score;
 import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
@@ -36,6 +37,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     @JsonProperty @Getter @Setter private UUID cityUuid;
     @JsonProperty @Setter public String displayName;
     @JsonProperty public String tag;
+    @JsonProperty @Getter @Setter private Score score;
     @JsonProperty public UUID ownerUUID;
     @JsonProperty @Getter @Setter private UUID factionUuid;
     @JsonProperty @Getter @Setter private UUID territoryUuid;
@@ -186,8 +188,6 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         int base = cityUpgrade.getCostReduction();
         int territoryCost = territory != null ? (int) territory.getBiome().ratioUpgradeReduction() : 0;
 
-        WarOfSquirrels.instance.debugLog("[" + (territory != null ? territory.getName() : "NONE") + "] " + base + " + " + territoryCost);
-
         return base + territoryCost;
     }
 
@@ -257,6 +257,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         return !hasAttackedToday;
     }
 
+    @Override
     public void displayInfo(FullPlayer player) {
         MutableComponent message = new TextComponent("");
 

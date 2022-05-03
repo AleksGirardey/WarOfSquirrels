@@ -9,13 +9,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITagManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +30,10 @@ public class UpgradeItem {
     @JsonProperty @Getter private String tagId = "NOTSET";
 
     @JsonIgnore @Getter @Setter private Item item;
-    @JsonIgnore @Getter @Setter private Tag.Named<Item> itemTag;
+    @JsonIgnore @Getter @Setter private TagKey<Item> itemTag;
 
     @JsonCreator
     public UpgradeItem(@JsonProperty("itemId") int id, @JsonProperty("tagId") String tagId, @JsonProperty("amount") int amount) {
-//        WarOfSquirrels.instance.debugLog("Creating Upgrade item with : " + id + " ; " + tagId + " ; " + amount);
         this.amount = amount;
         setItemId(id);
         setTagId(tagId);
@@ -43,9 +44,9 @@ public class UpgradeItem {
         itemId = Item.getId(item);
     }
 
-    public UpgradeItem(Tag.Named<Item> _tag) {
+    public UpgradeItem(TagKey<Item> _tag) {
         itemTag = _tag;
-        tagId = itemTag.getName().toString();
+        tagId = itemTag.location().toString();
     }
 
     public boolean is(ItemStack stack) {
@@ -63,7 +64,7 @@ public class UpgradeItem {
         if (id.equals("NOTSET")) return;
 
         tagId = id;
-        itemTag = ItemTags.bind(id);
+        itemTag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(id));
     }
 
     @JsonIgnore public List<Item> getItems() {
@@ -72,13 +73,17 @@ public class UpgradeItem {
             list = new ArrayList<>();
             list.add(item);
         } else {
-            list = itemTag.getValues();
+            ITagManager<Item> tagManager = ForgeRegistries.ITEMS.tags();
+
+            if (tagManager == null)
+                list = new ArrayList<>();
+            else
+                list = tagManager.getTag(itemTag).stream().toList();
         }
-//        WarOfSquirrels.LOGGER.info("[WoS][Debug] Looking for items : " + list);
         return list;
     }
 
     public MutableComponent asString() {
-        return item == null ? new TranslatableComponent(itemTag.getName().toString()) : new TranslatableComponent(item.getDescriptionId()); //+ "." + item.getRegistryName()
+        return item == null ? new TranslatableComponent(itemTag.location().toString()) : new TranslatableComponent(item.getDescriptionId()); //+ "." + item.getRegistryName()
     }
 }

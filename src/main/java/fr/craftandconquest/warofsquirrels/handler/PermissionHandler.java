@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -43,7 +44,7 @@ public class PermissionHandler {
     }
 
     private static final List<Item> authorizedItems = new ArrayList<>();
-    private static final List<Tag.Named<Item>> authorizedItemsTag = new ArrayList<>();
+    private static final List<TagKey<Item>> authorizedItemsTag = new ArrayList<>();
 
     static {
         authorizedItems.add(Items.LADDER);
@@ -61,7 +62,6 @@ public class PermissionHandler {
 
     public boolean hasRightsTo(Rights rights, Object... objects) {
         ResourceKey<Level> dimension = Chunk.IdToDimension((String) objects[1]);
-        WarOfSquirrels.instance.debugLog("Checking rights [" + rights + "]");
         return switch (rights) {
             case SET_HOMEBLOCK -> hasRightsToSetHomeBlock((FullPlayer) objects[0], (Chunk) objects[1]);
             case PLACE_IN_WAR -> hasRightsToPlaceInWar((Vector3) objects[0], dimension, (FullPlayer) objects[2], (BlockState) objects[3], (BlockPos) objects[4]);
@@ -220,6 +220,8 @@ public class PermissionHandler {
             return null;
 
         if (targetWar.getCityDefender().equals(player.getCity())) {
+
+
             if (isAuthorized(block.getBlock()) && !WarOfSquirrels.instance.getChunkHandler().getChunk(blockPos.getX(), blockPos.getZ(), player.getLastDimensionKey()).equals(targetWar.getCityDefender().getHomeBlock()))
                 return new Permission(true, true, true, true, true);
             else
@@ -309,7 +311,7 @@ public class PermissionHandler {
             if (stack.is(item)) return true;
         }
 
-        for (Tag.Named<Item> tag : authorizedItemsTag) {
+        for (TagKey<Item> tag : authorizedItemsTag) {
             if (stack.is(tag)) return true;
         }
 

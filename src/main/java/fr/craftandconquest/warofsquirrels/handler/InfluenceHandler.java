@@ -91,11 +91,9 @@ public class InfluenceHandler extends Handler<Influence> {
     public boolean Delete(Influence value) {
         dataArray.remove(value);
         if (value.getFaction() != null) {
-            WarOfSquirrels.instance.debugLog("LF Faction influence to be deleted");
             factionInfluenceMap.get(value.getFaction()).keySet().removeIf(t -> t.equals(value.getTerritory()));
         }
         else if (cityInfluenceMap.containsKey(value.getCity())) {
-            WarOfSquirrels.instance.debugLog("CityInfluenceMap found : " + cityInfluenceMap.get(value.getCity()).keySet());
             cityInfluenceMap.get(value.getCity()).keySet().removeIf(t -> t.equals(value.getTerritory()));
         }
         influences.remove(value.getUuid());
@@ -111,8 +109,10 @@ public class InfluenceHandler extends Handler<Influence> {
         if (faction != null) {
             Delete(faction);
         } else {
-            toBeDeleted.addAll(cityInfluenceMap.get(city).values());
-            cityInfluenceMap.remove(city);
+            if (cityInfluenceMap.containsKey(city)) {
+                toBeDeleted.addAll(cityInfluenceMap.get(city).values());
+                cityInfluenceMap.remove(city);
+            }
         }
 
         toBeDeleted.forEach(this::Delete);
@@ -220,7 +220,6 @@ public class InfluenceHandler extends Handler<Influence> {
 
         influence.setValue(old.getValue());
 
-        WarOfSquirrels.instance.debugLog("Trying to delete influence " + (old.getFaction() != null ? old.getFaction() : "null") + " - " + (old.getCity() != null ? old.getCity() : "null") + " - " + old.getTerritory());
         Delete(old);
     }
 

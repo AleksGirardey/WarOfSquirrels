@@ -20,6 +20,8 @@ import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Score;
@@ -188,21 +190,33 @@ public class War implements IChannelTarget {
         // Nothing for the moment
     }
 
+    public void AddPoints(int points, Score total) {
+        int score = total.getScore();
+
+        score = Math.min(score + points, 1000);
+
+        total.setScore(score);
+    }
+
     public void AddDefenderPoints(int points) {
-        this.defendersPoints.add(points);
+        AddPoints(points, defendersPoints);
+    }
+
+    public void AddAttackerPoints(int points) {
+        AddPoints(points, attackersPoints);
     }
 
     public void AddDefenderKillPoints() {
-        this.defendersPoints.add(166 / (3 * attackers.size()));
+        AddDefenderPoints(166 / (3 * attackers.size()));
     }
 
     public void AddAttackerKillPoints() {
-        this.attackersPoints.add(166 / (3 * defenders.size()));
+        AddAttackerPoints(166 / (3 * defenders.size()));
     }
 
     public void AddAttackerTargetKillPoints() {
         if (!targetDead) {
-            this.attackersPoints.add(650);
+            AddAttackerPoints(650);
             targetDead = true;
         } else {
             AddAttackerKillPoints();
@@ -210,11 +224,11 @@ public class War implements IChannelTarget {
     }
 
     public void ForceWinAttacker() {
-        this.attackersPoints.add(1000);
+        AddAttackerPoints(1000);
     }
 
     public void ForceWinDefender() {
-        this.defendersPoints.add(1000);
+        AddDefenderPoints(1000);
     }
 
     public void AddAttackerCapturePoints() {
@@ -224,7 +238,7 @@ public class War implements IChannelTarget {
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null,
                 ChatText.Colored("Chunk captured for a total of " + result + " points.", ChatFormatting.GOLD), true);
-        attackersPoints.add(result);
+        AddAttackerPoints(result);
     }
 
     private void LaunchPreparation() {
@@ -503,8 +517,8 @@ public class War implements IChannelTarget {
 
     private boolean inCaptureRange(int y, Bastion bastion) {
         int ySpawn = (int) WarOfSquirrels.instance.getChunkHandler().getHomeBlock(bastion).getRespawnPoint().y;
-
-        return y <= ySpawn + 40 && y >= ySpawn - 40;
+        return true;
+//        return y <= ySpawn + 40 && y >= ySpawn - 40;
     }
 
     protected void UpdateCapture() {
@@ -524,35 +538,41 @@ public class War implements IChannelTarget {
                 boolean notCaptured = notNull && !capturedChunk.contains(chunk);
                 boolean notHomeblock = notNull && !chunk.getHomeBlock();
                 boolean notOutpost = notNull && !chunk.getOutpost();
+                boolean hasBeenHighlighted = false;
 
-//                WarOfSquirrels.instance.debugLog("[UpdateCapture] " + att.getLastChunkX() + ";" + att.getLastChunkZ());
-//                WarOfSquirrels.instance.debugLog("[UpdateCapture] " + notNull + " - " + sameFortification + " - " + notInUpdated + " - " + notCaptured + " - " + notHomeblock + " - "+ notOutpost + " - ");
+                if (notNull && sameFortification && notCaptured && notHomeblock && notOutpost) {
+                    hasBeenHighlighted = true;
 
-                if (notNull && sameFortification && notInUpdated && notCaptured && notHomeblock && notOutpost) {
-                    updated.add(chunk);
-                    float valueRemoved = Capture(chunk);
+                    player.getPlayerEntity().addEffect(new MobEffectInstance(MobEffects.GLOWING, -1));
 
-                    if (chunkBeingCaptured.containsKey(chunk)) {
-                        chunkBeingCaptured.compute(chunk, (c, val) -> Utils.clamp( Objects.requireNonNullElse(val, 100f) - valueRemoved, 0, 100));
-                    }
-                    else {
-                        chunkBeingCaptured.put(chunk, Utils.clamp( 100 - valueRemoved, 0, 100));
-                        lastAnnounceCapture = 0;
-                    }
+                    if (notInUpdated) {
+                        updated.add(chunk);
+                        float valueRemoved = Capture(chunk);
 
-                    if (this.lastAnnounceCapture == 0) {
-                        float timeLeft = chunkBeingCaptured.get(chunk); // example : 55
-                        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null,
-                                ChatText.Success("[Capture]" + chunk.toStringShort() + "[" + (int) Math.floor(timeLeft) + "/100] Time before capture "
-                                        + Utils.toTime((int) (timeLeft / valueRemoved)) + "."),
-                                true);
-                    }
-                    if (chunkBeingCaptured.get(chunk) <= 0) {
-                        capturedChunk.add(chunk);
-                        chunkBeingCaptured.remove(chunk);
-                        AddAttackerCapturePoints();
+                        if (chunkBeingCaptured.containsKey(chunk)) {
+                            chunkBeingCaptured.compute(chunk, (c, val) -> Utils.clamp(Objects.requireNonNullElse(val, 100f) - valueRemoved, 0, 100));
+                        } else {
+                            chunkBeingCaptured.put(chunk, Utils.clamp(100 - valueRemoved, 0, 100));
+                            lastAnnounceCapture = 0;
+                        }
+
+                        if (this.lastAnnounceCapture == 0) {
+                            float timeLeft = chunkBeingCaptured.get(chunk); // example : 55
+                            WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null,
+                                    ChatText.Success("[Capture]" + chunk.toStringShort() + "[" + (int) Math.floor(timeLeft) + "/100] Time before capture "
+                                            + Utils.toTime((int) (timeLeft / valueRemoved)) + "."),
+                                    true);
+                        }
+                        if (chunkBeingCaptured.get(chunk) <= 0) {
+                            capturedChunk.add(chunk);
+                            chunkBeingCaptured.remove(chunk);
+                            AddAttackerCapturePoints();
+                        }
                     }
                 }
+
+                if (!hasBeenHighlighted)
+                    player.getPlayerEntity().removeEffect(MobEffects.GLOWING);
             }
         }
         if (this.lastAnnounceCapture == 0)

@@ -9,6 +9,7 @@ import fr.craftandconquest.warofsquirrels.handler.*;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.object.config.ConfigData;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
+import fr.craftandconquest.warofsquirrels.utils.BackUpUtils;
 import fr.craftandconquest.warofsquirrels.utils.Config;
 import lombok.Getter;
 import net.minecraft.core.Registry;
@@ -108,6 +109,9 @@ public class WarOfSquirrels {
         LOGGER.info("[WoS] Server Starting . . .");
         server = event.getServer();
         config = new Config("[WoS][Config]", LOGGER);
+
+        BackUpUtils.DoBackUp();
+
         updateHandler = new UpdateHandler(LOGGER);
         permissionHandler = new PermissionHandler();
         playerHandler = new PlayerHandler(LOGGER);

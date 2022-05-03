@@ -136,7 +136,7 @@ public class Config {
                 10, // sayDistance;
 
                 /* World Config */
-                5120, // mapSize;
+                5120, // mapSize; // World border set to 5120 and center in -65 -65
                 0,
                 0,
                 512, // territorySize;

@@ -3,8 +3,10 @@ package fr.craftandconquest.warofsquirrels.object.faction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.ChestLocation;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.object.scoring.Score;
 import fr.craftandconquest.warofsquirrels.object.upgrade.BastionUpgrade;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
@@ -14,6 +16,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 
 import java.util.UUID;
 
@@ -39,6 +43,8 @@ public class Bastion implements IFortification {
     private BastionUpgrade bastionUpgrade;
 
     @JsonProperty @Getter @Setter private ChestLocation upgradeChestLocation;
+
+    @JsonProperty @Getter @Setter private Score score;
 
     @JsonIgnore @Getter
     private City city;
@@ -175,5 +181,17 @@ public class Bastion implements IFortification {
     @Override
     public String toString() {
         return name + " " + territoryPosition;
+    }
+
+    @Override
+    public void displayInfo(FullPlayer player) {
+        MutableComponent message = new TextComponent("");
+
+        int size = WarOfSquirrels.instance.getChunkHandler().getSize(this);
+
+        message.append("--==| " + getDisplayName() + " |==--\n");
+        message.append("  Chunks [" + size + "/" + getMaxChunk() + "]");
+        message.append("\n -= Upgrades =-\n");
+        message.append(bastionUpgrade.displayInfo());
     }
 }

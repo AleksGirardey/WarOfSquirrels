@@ -29,7 +29,7 @@ public class AdminTpList extends AdminCommandBuilder {
         List<AdminCubo> list = WarOfSquirrels.instance.getAdminHandler().getAllTp();
         MutableComponent message = ChatText.Success("");
 
-        message.append("== Admin Tp list ==");
+        message.append("== Admin Tp list ==\n");
 
         for (AdminCubo adminCubo : list) {
             message.append(" - " + adminCubo.getName() + "\n");
