@@ -26,7 +26,6 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = WarOfSquirrels.warOfSquirrelsModId, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ServerEvents {
     private final Logger logger;
-
     public ServerEvents(Logger logger) { this.logger = logger; }
 
     @OnlyIn(Dist.DEDICATED_SERVER)

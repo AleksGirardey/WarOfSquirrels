@@ -37,23 +37,6 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = WarOfSquirrels.warOfSquirrelsModId, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class PlayersInteractionHandler {
 
-//    @OnlyIn(Dist.DEDICATED_SERVER)
-//    @SubscribeEvent
-//    public void OnPlayerReSpawn(PlayerEvent.PlayerRespawnEvent event) {
-//        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
-//
-//        if (player.getCity() == null) return;
-//
-//        ReSpawnPoint spawnPoint = Utils.NearestSpawnPoint(event.getPlayer());
-//        ServerPlayer serverPlayer = WarOfSquirrels.server.getPlayerList().getPlayer(player.getUuid());
-//
-//        if (serverPlayer != null) {
-//            WarOfSquirrels.LOGGER.info("[WoS][Debug] Setting SpawnPoint on " + spawnPoint.position);
-//            serverPlayer.setRespawnPosition(spawnPoint.dimension, spawnPoint.position, 0f, true, false);
-////        event.getPlayer().teleportTo(spawnPoint.position.getX(), spawnPoint.position.getY(), spawnPoint.position.getZ());
-//        }
-//    }
-
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
@@ -184,10 +167,6 @@ public class PlayersInteractionHandler {
     public void OnPvPDamage(LivingHurtEvent event) {
         if (!(event.getEntity() instanceof Player target) || !(event.getSource().getEntity() instanceof Player))
             return;
-
-        if (event.getSource().getEntity() != null)
-            WarOfSquirrels.LOGGER.info("[Damage] " + event.getSource().getEntity().toString());
-
         FullPlayer fullPlayerTarget = WarOfSquirrels.instance.getPlayerHandler().get(target.getUUID());
 
         if (WarOfSquirrels.instance.getPlayerHandler().isInReincarnation(fullPlayerTarget))
