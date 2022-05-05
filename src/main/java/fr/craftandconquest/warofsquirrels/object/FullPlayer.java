@@ -135,6 +135,7 @@ public class FullPlayer implements IPermission {
         setResident(false);
     }
 
+    @JsonIgnore
     public boolean isInWar() {
         return WarOfSquirrels.instance.getWarHandler().Contains(this);
     }
