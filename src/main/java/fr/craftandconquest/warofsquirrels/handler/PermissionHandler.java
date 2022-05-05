@@ -209,11 +209,10 @@ public class PermissionHandler {
     }
 
     private Permission checkWarPermission(War targetWar, War playerWar, Faction targetFaction, Faction playerFaction, FullPlayer player, BlockState block, BlockPos blockPos) {
-        boolean playerInWar = WarOfSquirrels.instance.getWarHandler().Contains(player);
 
         if (block == null) return null;
 
-        if (!playerInWar || playerFaction == null)
+        if (!player.isInWar() || playerFaction == null)
             return new Permission(false, false, false, false, false);
 
         if (!targetWar.equals(playerWar))
