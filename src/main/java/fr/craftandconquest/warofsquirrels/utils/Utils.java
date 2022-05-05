@@ -83,7 +83,7 @@ public class Utils {
         Vec3 spawnPoint;
         Vector3 spawn;
 
-        if (WarOfSquirrels.instance.getWarHandler().Contains(player)) {
+        if (player.isInWar()) {
             War war = WarOfSquirrels.instance.getWarHandler().getWar(player);
 
             if (war.isAttacker(player))

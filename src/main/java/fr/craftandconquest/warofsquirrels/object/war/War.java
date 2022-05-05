@@ -52,7 +52,7 @@ public class War implements IChannelTarget {
     @Getter @Setter private int attackersLimit;
     @Getter @Setter private long timeStart;
     @Getter @Setter private FullPlayer target;
-    @Getter @Setter private boolean targetDead = false;
+    @Getter @Setter private boolean targetAlreadyDead = false;
     @Getter @Setter private Score attackersPoints;
     @Getter @Setter private Score defendersPoints;
 
@@ -212,9 +212,9 @@ public class War implements IChannelTarget {
     }
 
     public void AddAttackerTargetKillPoints() {
-        if (!targetDead) {
+        if (!targetAlreadyDead) {
             AddAttackerPoints(650);
-            targetDead = true;
+            targetAlreadyDead = true;
         } else {
             AddAttackerKillPoints();
         }

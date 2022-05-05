@@ -10,7 +10,7 @@ import net.minecraft.commands.CommandSourceStack;
 public class ChatWar extends ChatCommand {
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        if (WarOfSquirrels.instance.getWarHandler().Contains(player)) return true;
+        if (player.isInWar()) return true;
 
         player.sendMessage(ChatText.Error("You do not belong to a war."));
         return false;

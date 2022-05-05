@@ -88,7 +88,7 @@ public class ServerEvents {
 
         if (player == null) return;
 
-        if (WarOfSquirrels.instance.getWarHandler().Contains(player))
+        if (player.isInWar())
             WarOfSquirrels.instance.getWarHandler().getWar(player).RemovePlayer(player);
 
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerToWorldAnnounce(player);

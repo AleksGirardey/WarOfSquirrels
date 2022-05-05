@@ -87,7 +87,7 @@ public class WorldInteractionHandler {
 
         if (!ShouldWeCheck(player, new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()))) return;
 
-        PermissionHandler.Rights rights = (WarOfSquirrels.instance.getWarHandler().Contains(player) ?
+        PermissionHandler.Rights rights = (player.isInWar() ?
                 PermissionHandler.Rights.DESTROY_IN_WAR :
                 PermissionHandler.Rights.BUILD);
 
@@ -118,7 +118,7 @@ public class WorldInteractionHandler {
 
         if (!ShouldWeCheck(player, new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()))) return;
 
-        PermissionHandler.Rights rights = (WarOfSquirrels.instance.getWarHandler().Contains(player) ?
+        PermissionHandler.Rights rights = (player.isInWar() ?
                 PermissionHandler.Rights.PLACE_IN_WAR :
                 PermissionHandler.Rights.BUILD);
 

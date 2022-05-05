@@ -23,3 +23,7 @@ run
 
 # Files from Forge MDK
 forge*changelog.txt
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
+gradle/wrapper/gradle-wrapper.properties
+run/logs/debug.log
+run/logs/latest.log
