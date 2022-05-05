@@ -239,21 +239,11 @@ public class ChunkHandler extends Handler<Chunk> {
 //        return chunksMap.getOrDefault(new ChunkLocation(posX, posZ, dimensionId), null);
     }
 
-    public List<Chunk> getChunks(City city) {
+    public List<Chunk> getChunks(IFortification fortification) {
         List<Chunk> list = new ArrayList<>();
 
         for (Chunk chunk : dataArray) {
-            if (chunk.getFortificationUuid().equals(city.getCityUuid()))
-                list.add(chunk);
-        }
-        return list;
-    }
-
-    public List<Chunk> getChunks(Bastion bastion) {
-        List<Chunk> list = new ArrayList<>();
-
-        for (Chunk chunk : dataArray) {
-            if (chunk.getFortificationUuid().equals(bastion.getUniqueId()))
+            if (chunk.getFortificationUuid().equals(fortification.getUniqueId()))
                 list.add(chunk);
         }
         return list;
