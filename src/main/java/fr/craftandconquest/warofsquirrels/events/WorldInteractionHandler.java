@@ -25,6 +25,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -45,6 +47,7 @@ public class WorldInteractionHandler {
     private static final List<Block> farmBlocks = new ArrayList<>();
     private static final List<TagKey<Block>> switchTags = new ArrayList<>();
     private static final List<Item> overpassSwitchItems = new ArrayList<>();
+    private static final List<Item> overpassSwitchItemsInWar = new ArrayList<>();
 
     static {
         farmBlocks.add(Blocks.WHEAT);
@@ -66,8 +69,13 @@ public class WorldInteractionHandler {
         switchTags.add(BlockTags.WOODEN_BUTTONS);
 
         overpassSwitchItems.add(Items.POTION);
+        overpassSwitchItems.add(Items.SPLASH_POTION);
         overpassSwitchItems.add(Items.ENDER_PEARL);
-        overpassSwitchItems.add(Items.WATER_BUCKET);
+
+        overpassSwitchItemsInWar.addAll(overpassSwitchItems);
+        overpassSwitchItemsInWar.add(Items.WATER_BUCKET);
+        overpassSwitchItemsInWar.add(Items.LAVA_BUCKET);
+        overpassSwitchItemsInWar.add(Items.BUCKET);
     }
 
     @OnlyIn(Dist.DEDICATED_SERVER)
@@ -175,6 +183,10 @@ public class WorldInteractionHandler {
     private void OnPlayerInteract(FullPlayer player, PlayerInteractEvent event, InteractType type) {
         if (type == InteractType.LeftClick) { return; }
         if (type == InteractType.RightClickEntity) {
+            PlayerInteractEvent.EntityInteract eventEntity = (PlayerInteractEvent.EntityInteract) event;
+
+            if (eventEntity.getEntity() instanceof Player) return;
+
             if (WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(PermissionHandler.Rights.INTERACT,
                     new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
                     Chunk.DimensionToId(player.getLastDimensionKey()),
@@ -199,16 +211,24 @@ public class WorldInteractionHandler {
             if (!isSwitch) {
                 String lastDimensionId = Chunk.DimensionToId(player.getLastDimensionKey());
 
-                if (IsContainer(event.getWorld(), event.getPos(), null)) {
-                    if (OnPlayerContainer(event.getPlayer(), event.getPos(), lastDimensionId)) {
-                        return;
+                WarOfSquirrels.instance.debugLog("It's not a switch");
+
+                if (IsContainer(blockEvent.getWorld(), blockEvent.getPos(), null)) {
+                    WarOfSquirrels.instance.debugLog("It's a container");
+                    if (!OnPlayerContainer(event.getPlayer(), event.getPos(), lastDimensionId)) {
+                        WarOfSquirrels.instance.debugLog("He can't open !");
+                        event.setCanceled(true);
                     }
+                    return;
                 }
                 return;
             }
         }
 
-        if (CanOverpassSwitchPermission(event.getItemStack())) return;
+        boolean chunkInWar = WarOfSquirrels.instance.getWarHandler().Contains(WarOfSquirrels.instance.getChunkHandler().getChunk(
+                new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()), event.getWorld().dimension()).getRelatedCity());
+
+        if (CanOverpassSwitchPermission(event.getItemStack(), chunkInWar)) return;
 
         if (WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(PermissionHandler.Rights.SWITCH,
                 new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
@@ -221,10 +241,12 @@ public class WorldInteractionHandler {
         event.setCanceled(true);
     }
 
-    private boolean CanOverpassSwitchPermission(ItemStack itemStack) {
+    private boolean CanOverpassSwitchPermission(ItemStack itemStack, boolean isInWar) {
         if (itemStack.isEdible()) return true;
 
-        for (Item itemAllowed : overpassSwitchItems) {
+        List<Item> targetList = isInWar ? overpassSwitchItemsInWar : overpassSwitchItems;
+
+        for (Item itemAllowed : targetList) {
             if (itemStack.is(itemAllowed)) return true;
         }
 
@@ -272,7 +294,9 @@ public class WorldInteractionHandler {
     public static boolean IsContainer(Level world, BlockPos pos, @Nullable BlockState state) {
         if (state == null)
             state = world.getBlockState(pos);
-        return state.getBlock() instanceof Container;
+
+        WarOfSquirrels.instance.debugLog("Trying to check if there is a container on : " + pos + " with blockentity : " + world.getBlockEntity(pos));
+        return state.getBlock() instanceof Container || world.getBlockEntity(pos) instanceof BaseContainerBlockEntity;
     }
 
     @OnlyIn(Dist.DEDICATED_SERVER)
@@ -300,9 +324,7 @@ public class WorldInteractionHandler {
             player = WarOfSquirrels.instance.getPlayerHandler().get(toolEvent.getPlayer().getUUID());
             if (player.isAdminMode()) return;
 
-            Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
-
-            if (chunk == null) return;
+            if (!ShouldWeCheck(player, new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()))) return;
 
             PermissionHandler.Rights rights;
             if (toolEvent.getToolAction() == ToolActions.HOE_DIG)
@@ -329,7 +351,10 @@ public class WorldInteractionHandler {
     private boolean ShouldWeCheck(FullPlayer player, Vector3 target) {
         if (player.isAdminMode()) return false;
 
-        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), player.getLastDimensionKey());
+        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(new Vector3(
+                player.getPlayerEntity().getBlockX(),
+                player.getPlayerEntity().getBlockY(),
+                player.getPlayerEntity().getBlockZ()), player.getLastDimensionKey());
 
         boolean hasChunk = chunk != null;
 

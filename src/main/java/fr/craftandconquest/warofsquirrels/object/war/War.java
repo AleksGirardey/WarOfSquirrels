@@ -103,6 +103,7 @@ public class War implements IChannelTarget {
 
     public void SetWarChunks() {
         warChunks.addAll(WarOfSquirrels.instance.getChunkHandler().getChunks(targetTerritory.getFortification()));
+        warChunks.removeIf(Chunk::getHomeBlock);
     }
 
     public void SetScoreboard() {
@@ -483,7 +484,7 @@ public class War implements IChannelTarget {
 
             if (att.size() > 0) {
                 for (int i = att.size() - 1; i >= 0; --i) {
-                    if (att.get(i).getLastChunkX() == chunk.getPosX() && att.get(i).getLastChunkZ() == chunk.getPosZ()) {
+                    if (att.get(i).getCurrentChunk().x == chunk.getPosX() && att.get(i).getCurrentChunk().y == chunk.getPosZ()) {
                         ++attOnChunk;
                         GlowPlayer(att.get(i));
                         att.remove(i);
@@ -493,7 +494,7 @@ public class War implements IChannelTarget {
 
             if (def.size() > 0) {
                 for (int i = def.size() - 1; i >= 0; --i) {
-                    if (def.get(i).getLastChunkX() == chunk.getPosX() && att.get(i).getLastChunkZ() == chunk.getPosZ()) {
+                    if (def.get(i).getCurrentChunk().x == chunk.getPosX() && def.get(i).getCurrentChunk().y == chunk.getPosZ()) {
                         ++defOnChunk;
                         GlowPlayer(def.get(i));
                         def.remove(i);
@@ -528,10 +529,14 @@ public class War implements IChannelTarget {
 
             if (chunkBeingCaptured.get(chunk) != null && chunkBeingCaptured.get(chunk).getKey() <= 0f) {
                 capturedChunk.add(chunk);
-                warChunks.remove(chunk);
+
                 chunkBeingCaptured.remove(chunk);
                 AddAttackerCapturePoints();
             }
+        }
+
+        for (Chunk ch: capturedChunk) {
+            warChunks.remove(ch);
         }
 
         if (this.lastAnnounceCapture == 0)
@@ -540,7 +545,7 @@ public class War implements IChannelTarget {
     }
 
     private void GlowPlayer(FullPlayer player) {
-        player.getPlayerEntity().addEffect(new MobEffectInstance(MobEffects.GLOWING, 2));
+        player.getPlayerEntity().addEffect(new MobEffectInstance(MobEffects.GLOWING, 1000));
         if (!glowPlayers.contains(player))
             glowPlayers.add(player);
     }

@@ -8,6 +8,8 @@ import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
 import fr.craftandconquest.warofsquirrels.object.scoring.Score;
+import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -82,6 +84,11 @@ public class FullPlayer implements IPermission {
     @JsonIgnore
     public ResourceKey<Level> getLastDimensionKey() {
         return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation("minecraft", lastDimension));
+    }
+
+    @JsonIgnore
+    public Vector2 getCurrentChunk() {
+        return Utils.FromWorldToChunk(getPlayerEntity().getBlockX(), getPlayerEntity().getBlockZ());
     }
 
     public void update() {
