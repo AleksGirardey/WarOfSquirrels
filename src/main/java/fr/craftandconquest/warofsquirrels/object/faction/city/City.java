@@ -6,6 +6,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.permission.*;
@@ -37,7 +38,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     @JsonProperty @Getter @Setter private UUID cityUuid;
     @JsonProperty @Setter public String displayName;
     @JsonProperty public String tag;
-    @JsonProperty @Getter @Setter private Score score;
+    @JsonProperty @Getter @Setter private Score score = new Score();
     @JsonProperty public UUID ownerUUID;
     @JsonProperty @Getter @Setter private UUID factionUuid;
     @JsonProperty @Getter @Setter private UUID territoryUuid;
@@ -375,5 +376,15 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         City city = (City) obj;
 
         return city.getUuid().equals(this.cityUuid);
+    }
+
+    @Override
+    public void updateScore() {
+        List<Bastion> bastions = WarOfSquirrels.instance.getBastionHandler().get(this);
+
+        for (Bastion bastion : bastions) {
+            score.AddScore(bastion.getScore().getGlobalScore());
+            bastion.getScore().ResetScore();
+        }
     }
 }

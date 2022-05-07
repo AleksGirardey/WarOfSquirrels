@@ -3,12 +3,13 @@ package fr.craftandconquest.warofsquirrels.object.faction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.object.scoring.IScoreUpdater;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 
 import java.util.UUID;
 
-public interface IFortification {
+public interface IFortification extends IScoreUpdater {
     enum FortificationType {
         CITY,
         BASTION

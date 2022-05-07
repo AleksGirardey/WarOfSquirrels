@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.admin.AdminCommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.arguments.TerritoryArgumentType;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
@@ -21,16 +22,22 @@ public class AdminTerritoryTp extends AdminCommandBuilder {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("tp")
-                .then(Commands.argument("territory", StringArgumentType.string())
+                .then(Commands.argument("territory", new TerritoryArgumentType())
                         .executes(this));
     }
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        String name = StringArgumentType.getString(context, "territory");
+        Territory territory = context.getArgument("territory", Territory.class);
+/*        String name = StringArgumentType.getString(context, "territory");
 
         if (WarOfSquirrels.instance.getTerritoryHandler().get(name) == null) {
             player.sendMessage(ChatText.Error("Territory '" + name + "' does not exist"));
+            return false;
+        }*/
+
+        if (territory == null) {
+            player.sendMessage(ChatText.Error("Territory does not exist"));
             return false;
         }
 
@@ -39,9 +46,10 @@ public class AdminTerritoryTp extends AdminCommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        String name = StringArgumentType.getString(context, "territory");
-
-        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(name);
+        Territory territory = context.getArgument("territory", Territory.class);
+//        String name = StringArgumentType.getString(context, "territory");
+//
+//        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(name);
         SpawnTeleporter tp = new SpawnTeleporter(Utils.FromTerritoryToWorld(territory.getPosX(), territory.getPosZ()));
         ResourceKey<Level> dim = Level.OVERWORLD;
         ServerLevel level = WarOfSquirrels.server.getLevel(dim);

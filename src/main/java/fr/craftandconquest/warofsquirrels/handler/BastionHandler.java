@@ -132,4 +132,9 @@ public class BastionHandler extends Handler<Bastion> {
             add(bastion);
         }
     }
+
+    public void updateScore() {
+        for (Bastion bastion : dataArray)
+            bastion.updateScore();
+    }
 }

@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 
 import java.util.*;
 
@@ -31,12 +30,11 @@ public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
     @JsonProperty @Getter @Setter private String displayName;
     @JsonIgnore @Getter private City capital;
     @JsonIgnore @Getter private Map<String, City> cities = new HashMap<>();
-
     @JsonIgnore @Getter @Setter private Map<IPermission, Permission> customPermission = new HashMap<>();
     @Getter @Setter private Map<PermissionRelation, Permission> defaultPermission;
     @Getter @Setter private List<CustomPermission> customPermissionList = new ArrayList<>();
 
-    @Setter private Score score;
+    @JsonProperty @Setter private Score score = new Score();
 
     public Faction(String displayName, City capital) {
         this.factionUuid = UUID.randomUUID();
@@ -181,6 +179,18 @@ public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
 
     @Override
     public void updateScore() {
+        List<FullPlayer> players = new ArrayList<>();
 
+        for (City city : cities.values()) {
+            score.AddScore(city.getScore().getTodayScore());
+            city.getScore().UpdateScore();
+            players.addAll(city.getCitizens());
+        }
+
+        int scoreToPlayers = Math.round(score.getTodayScore() * 0.2f);
+
+        for (FullPlayer player : players) {
+            player.getScore().AddScore(scoreToPlayers);
+        }
     }
 }

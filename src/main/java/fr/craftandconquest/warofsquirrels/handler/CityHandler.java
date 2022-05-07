@@ -224,4 +224,9 @@ public class CityHandler extends Handler<City> {
         for (City city : dataArray)
             city.Update();
     }
+
+    public void updateScore() {
+        for (City city : dataArray)
+            city.updateScore();
+    }
 }

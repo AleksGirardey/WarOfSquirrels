@@ -321,6 +321,9 @@ public class War implements IChannelTarget {
             influence.SubInfluence(pointsToRemove + WarOfSquirrels.instance.getTerritoryHandler().getDamageFromEnemy(targetTerritory, cityAttacker.getFaction()));
 
             targetTerritory.setGotDefeatedToday(true);
+            targetTerritory.getFortification().getScore().RemoveScoreLifePoints(Math.abs(defendersPoints.getScore() - attackersPoints.getScore()));
+
+            // ToDo: Vol de score
 
             if (influence.getValue() <= 0) {
                 text.append(ChatText.Colored("\n Faction " + cityAttacker.getFaction().getDisplayName() + " lost all his influence on territory '" + targetTerritory.getName() + "' and territory has fall.", ChatFormatting.GOLD));

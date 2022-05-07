@@ -19,11 +19,15 @@ public class Score {
 
     public void AddScoreLifePoints(int lifePoints) {
         if (scoreLifePoints + lifePoints >= 800) {
-            scoreLifePoints = 800;
             AddScore(scoreLifePoints + lifePoints - 800);
+            scoreLifePoints = 800;
         } else {
             scoreLifePoints += lifePoints;
         }
+    }
+
+    public void RemoveScoreLifePoints(int lifePoints) {
+        scoreLifePoints = Math.max(0, scoreLifePoints - lifePoints);
     }
 
     public void UpdateScore() {

@@ -31,7 +31,7 @@ public class FullPlayer implements IPermission {
 
     @JsonProperty @Getter @Setter private UUID uuid;
     @JsonProperty("DisplayName") @Getter @Setter private String displayName;
-    @JsonProperty private Score score = new Score();
+    @JsonProperty @Getter @Setter private Score score = new Score();
     @JsonProperty private UUID cityUuid;
     @JsonProperty @Getter @Setter private Boolean assistant;
     @JsonProperty @Getter @Setter private Boolean resident = false;

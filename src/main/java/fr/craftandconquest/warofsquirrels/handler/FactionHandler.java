@@ -200,6 +200,11 @@ public class FactionHandler extends Handler<Faction> {
         }
     }
 
+    public void updateScore() {
+        for (Faction faction: dataArray)
+            faction.updateScore();
+    }
+
 //
 //    public void             setNeutral(Faction A, Faction B) {
 //        List<Diplomacy>     list = new ArrayList<>();

@@ -29,18 +29,17 @@ public class UpdateHandler {
         this.CreateSaveUpdate();
     }
 
-    public void DailyUpdate() {
-        String prefix = "[WoS][Debug] ";
+    public void ScoreUpdate() {
+        WarOfSquirrels.instance.getBastionHandler().updateScore();
+        WarOfSquirrels.instance.getCityHandler().updateScore();
+        WarOfSquirrels.instance.getFactionHandler().updateScore();
+    }
 
-        LOGGER.info(prefix + "Updating City");
+    public void DailyUpdate() {
         WarOfSquirrels.instance.getCityHandler().update();
-        LOGGER.info(prefix + "Updating Bastion");
         WarOfSquirrels.instance.getBastionHandler().update();
-        LOGGER.info(prefix + "Updating Territory");
         WarOfSquirrels.instance.getTerritoryHandler().update();
-        LOGGER.info(prefix + "Updating Faction");
         WarOfSquirrels.instance.getFactionHandler().update();
-        LOGGER.info(prefix + "Updating Player");
         WarOfSquirrels.instance.getPlayerHandler().update();
 //        WarOfSquirrels.instance.getLoanHandler().update();
         MutableComponent message = ChatText.Colored("A new day begin..", ChatFormatting.GOLD);

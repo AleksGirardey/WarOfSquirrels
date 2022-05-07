@@ -44,7 +44,7 @@ public class Bastion implements IFortification {
 
     @JsonProperty @Getter @Setter private ChestLocation upgradeChestLocation;
 
-    @JsonProperty @Getter @Setter private Score score;
+    @JsonProperty @Getter @Setter private Score score = new Score();
 
     @JsonIgnore @Getter
     private City city;
@@ -193,5 +193,11 @@ public class Bastion implements IFortification {
         message.append("  Chunks [" + size + "/" + getMaxChunk() + "]");
         message.append("\n -= Upgrades =-\n");
         message.append(bastionUpgrade.displayInfo());
+    }
+
+    @Override
+    public void updateScore() {
+        score.AddScoreLifePoints(100);
+        score.UpdateScore();
     }
 }
