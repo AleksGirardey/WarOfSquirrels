@@ -104,4 +104,9 @@ public class CityTpHome extends CityCommandBuilder implements ITerritoryExtracto
     protected MutableComponent ErrorMessage() {
         return ChatText.Error("You cannot perform this command");
     }
+
+    @Override
+    public boolean suggestionIsGlobalWarTarget() { return false; }
+    @Override
+    public boolean suggestionIsFactionWarTarget() { return false; }
 }

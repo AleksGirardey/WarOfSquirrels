@@ -29,9 +29,7 @@ public class CityInfo extends CommandBuilder implements ICityExtractor {
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("info")
-                .executes(CMD_NO_ARGS)
-                .then(getArgumentRegister().executes(CMD_ARGS));
+        return Commands.literal("info").executes(CMD_NO_ARGS).then(getArgumentRegister().executes(CMD_ARGS));
     }
 
     @Override
@@ -42,6 +40,10 @@ public class CityInfo extends CommandBuilder implements ICityExtractor {
             city = getArgument(context);
         } else {
             city = player.getCity();
+        }
+
+        if (city == null) {
+            player.sendMessage(ChatText.Error("You do not belong to a city or the one in argument doesn't exist."));
         }
 
         return city != null;

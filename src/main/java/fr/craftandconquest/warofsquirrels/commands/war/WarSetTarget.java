@@ -5,12 +5,15 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.extractor.IPlayerExtractor;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.war.War;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-public class WarSetTarget extends CityAssistantCommandBuilder {
+import java.util.List;
+
+public class WarSetTarget extends CityAssistantCommandBuilder implements IPlayerExtractor {
     private final String playerArgumentName = "[Player]";
 
     @Override
@@ -33,4 +36,7 @@ public class WarSetTarget extends CityAssistantCommandBuilder {
         WarOfSquirrels.instance.getWarHandler().getWar(player).setTarget(context.getArgument(playerArgumentName, FullPlayer.class));
         return 0;
     }
+
+    @Override
+    public List<PlayerExtractorType> getTargetSuggestionTypes() { return List.of(PlayerExtractorType.CITIZENS); }
 }

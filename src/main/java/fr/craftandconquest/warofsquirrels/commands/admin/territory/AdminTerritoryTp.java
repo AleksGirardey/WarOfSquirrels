@@ -55,4 +55,7 @@ public class AdminTerritoryTp extends AdminCommandBuilder implements ITerritoryE
 
         return 0;
     }
+
+    @Override public boolean suggestionIsGlobalWarTarget() { return false; }
+    @Override public boolean suggestionIsFactionWarTarget() { return false; }
 }

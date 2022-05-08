@@ -3,7 +3,6 @@ package fr.craftandconquest.warofsquirrels.commands.war;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.extractor.ITerritoryExtractor;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
@@ -15,8 +14,6 @@ import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-
-import java.util.List;
 
 public class WarAttack extends CityMayorOrAssistantCommandBuilder implements ITerritoryExtractor {
     @Override
@@ -46,17 +43,7 @@ public class WarAttack extends CityMayorOrAssistantCommandBuilder implements ITe
             return false;
         }
 
-        boolean canBeReached = false;
-        List<Territory> neighbors = WarOfSquirrels.instance.getTerritoryHandler().getNeighbors(territory);
-
-        for (Territory neighbor : neighbors) {
-            if (neighbor.getFaction() == null ||
-                    (territory.getFaction() != neighbor.getFaction() &&
-                            !WarOfSquirrels.instance.getDiplomacyHandler().getAllies(territory.getFaction()).contains(neighbor.getFaction()))) {
-                canBeReached = true;
-                break;
-            }
-        }
+        boolean canBeReached = territory.canBeReached();
 
         if (!canBeReached) {
             player.sendMessage(ChatText.Error("Territory cannot be reached"));
@@ -125,4 +112,7 @@ public class WarAttack extends CityMayorOrAssistantCommandBuilder implements ITe
             return 0;
         return -1;
     }
+
+    @Override public boolean suggestionIsGlobalWarTarget() { return false; }
+    @Override public boolean suggestionIsFactionWarTarget() { return true; }
 }

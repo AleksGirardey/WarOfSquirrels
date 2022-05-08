@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.extractor.IWarExtractor;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
 import fr.craftandconquest.warofsquirrels.object.war.War;
@@ -14,12 +15,11 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
-public class WarInfo extends CommandBuilder {
+public class WarInfo extends CommandBuilder implements IWarExtractor {
     private static final WarInfo CMD_NO_ARGS = new WarInfo(false);
     private static final WarInfo CMD_ARGS = new WarInfo(true);
 
     private final boolean args;
-    private String targetName;
 
     public WarInfo() {
         args = false;
@@ -33,32 +33,18 @@ public class WarInfo extends CommandBuilder {
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("info")
                 .executes(CMD_NO_ARGS)
-                .then(Commands
-                        .argument("cityTargetName", StringArgumentType.string())
-                        .executes(CMD_ARGS));
+                .then(getArgumentRegister().executes(CMD_ARGS));
     }
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         War war;
-        String targetName;
 
         if (args) {
-            targetName = context.getArgument("cityTargetName", String.class);
-            AttackTarget target = WarOfSquirrels.instance.getCityHandler().getCity(targetName);
-
-            if (target == null) {
-                //            target = WarOfSquirrels.instance.getBastionHandler().getBastion(targetName);
-//                if (target == null)
-                return false;
-            }
-            war = WarOfSquirrels.instance.getWarHandler().getWar(target);
+            war = getArgument(context);
         } else {
             war = WarOfSquirrels.instance.getWarHandler().getWar(player);
-            targetName = player.getDisplayName();
         }
-
-        this.targetName = targetName;
         return war != null;
     }
 
@@ -67,10 +53,7 @@ public class WarInfo extends CommandBuilder {
         War war;
 
         if (args) {
-            String targetName = context.getArgument("cityTargetName", String.class);
-            AttackTarget target = WarOfSquirrels.instance.getCityHandler().getCity(targetName);
-
-            war = WarOfSquirrels.instance.getWarHandler().getWar(target);
+            war = getArgument(context);
         } else {
             war = WarOfSquirrels.instance.getWarHandler().getWar(player);
         }
@@ -82,7 +65,6 @@ public class WarInfo extends CommandBuilder {
 
     @Override
     protected MutableComponent ErrorMessage() {
-        return ChatText.Error("The target '" + targetName + "' is not participating to a war")
-                .withStyle(ChatFormatting.BOLD);
+        return null;
     }
 }

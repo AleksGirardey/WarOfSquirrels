@@ -1,11 +1,10 @@
 package fr.craftandconquest.warofsquirrels.commands.city.bastion;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityBastionCommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.city.CityInfo;
+import fr.craftandconquest.warofsquirrels.commands.extractor.IBastionExtractor;
 import fr.craftandconquest.warofsquirrels.commands.extractor.ITerritoryExtractor;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
@@ -13,11 +12,9 @@ import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-public class CityBastionInfo extends CityBastionCommandBuilder implements ITerritoryExtractor {
-    private final String territoryNameArgument = "territory";
-
-    private final static CityInfo CMD_NO_ARGS = new CityInfo(false);
-    private final static CityInfo CMD_ARGS = new CityInfo(true);
+public class CityBastionInfo extends CityBastionCommandBuilder implements ITerritoryExtractor, IBastionExtractor {
+    private final static CityBastionInfo CMD_NO_ARGS = new CityBastionInfo(false);
+    private final static CityBastionInfo CMD_ARGS = new CityBastionInfo(true);
 
     private final boolean args;
 
@@ -65,8 +62,14 @@ public class CityBastionInfo extends CityBastionCommandBuilder implements ITerri
             territory = ExtractTerritory(player);
         }
 
-        territory.getFortification().displayInfo(player);
+        if (territory.getFortification() != null)
+            territory.getFortification().displayInfo(player);
+        else
+            player.sendMessage(ChatText.Error("Territory does not have any fortification."));
 
         return 0;
     }
+
+    @Override public boolean suggestionIsGlobalWarTarget() { return false; }
+    @Override public boolean suggestionIsFactionWarTarget() { return false; }
 }

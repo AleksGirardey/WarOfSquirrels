@@ -5,6 +5,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityCommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.extractor.ICityExtractor;
+import fr.craftandconquest.warofsquirrels.commands.extractor.IWarExtractor;
 import fr.craftandconquest.warofsquirrels.handler.FactionHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
@@ -16,22 +18,19 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
-public class WarJoin extends CityCommandBuilder {
+public class WarJoin extends CityCommandBuilder implements ICityExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("join").then(
-                Commands.argument("cityName", StringArgumentType.string())
-                        .executes(this));
+        return Commands.literal("join").then(getArgumentRegister().executes(this));
     }
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        String cityName = context.getArgument("cityName", String.class);
-        City city = WarOfSquirrels.instance.getCityHandler().getCity(cityName);
+        City city = getArgument(context);
         City playerCity = player.getCity();
 
         if (city == null) {
-            player.sendMessage(ChatText.Error("The city '" + cityName + "' does not exist")
+            player.sendMessage(ChatText.Error("The city '" + getRawArgument(context) + "' does not exist")
                     .withStyle(ChatFormatting.BOLD));
             return false;
         }
@@ -39,7 +38,7 @@ public class WarJoin extends CityCommandBuilder {
         War war = WarOfSquirrels.instance.getWarHandler().getWar(city);
 
         if (war == null) {
-            player.sendMessage(ChatText.Error("The city '" + cityName + "' is not at war")
+            player.sendMessage(ChatText.Error("The city '" + getRawArgument(context) + "' is not at war")
                     .withStyle(ChatFormatting.BOLD));
             return false;
         }
@@ -57,8 +56,7 @@ public class WarJoin extends CityCommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        String cityName = context.getArgument("cityName", String.class);
-        City city = WarOfSquirrels.instance.getCityHandler().getCity(cityName);
+        City city = getArgument(context);
         City playerCity = player.getCity();
         War war = WarOfSquirrels.instance.getWarHandler().getWar(city);
 
@@ -75,5 +73,10 @@ public class WarJoin extends CityCommandBuilder {
     @Override
     protected MutableComponent ErrorMessage() {
         return ChatText.Error("You cannot join this war.").withStyle(ChatFormatting.BOLD);
+    }
+
+    @Override
+    public boolean isSuggestionFactionRestricted() {
+        return true;
     }
 }

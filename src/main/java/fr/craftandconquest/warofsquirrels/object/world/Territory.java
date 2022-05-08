@@ -17,7 +17,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -215,10 +214,10 @@ public class Territory {
 
     @Override
     public String toString() {
-        return String.format("[%d;%d] Possédé par %s dans la dimension d'id %s",
+        return String.format("[%d;%d] Owned by %s in dimension %s",
                 posX,
                 posZ,
-                faction != null ? faction.getDisplayName() : "personne", "Overworld");
+                faction != null ? faction.getDisplayName() : "no one", "Overworld");
     }
 
     @JsonIgnore
@@ -232,6 +231,21 @@ public class Territory {
 
     @JsonIgnore
     public boolean isProtected() {
-        return !hasFallen && fortification.isProtected();
+        return !hasFallen && fortification != null && fortification.isProtected();
+    }
+
+    @JsonIgnore
+    public boolean canBeReached() {
+        List<Territory> neighbors = WarOfSquirrels.instance.getTerritoryHandler().getNeighbors(this);
+
+        for (Territory neighbor : neighbors) {
+            if (neighbor.getFaction() == null ||
+                    (this.getFaction() != neighbor.getFaction() &&
+                            !WarOfSquirrels.instance.getDiplomacyHandler().getAllies(this.getFaction()).contains(neighbor.getFaction()))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -74,4 +74,14 @@ public class FactionClaimCommand extends FactionCommandAssistant implements ITer
     protected MutableComponent ErrorMessage() {
         return ChatText.Error("");
     }
+
+    @Override
+    public boolean suggestionIsGlobalWarTarget() {
+        return false;
+    }
+
+    @Override
+    public boolean suggestionIsFactionWarTarget() {
+        return false;
+    }
 }

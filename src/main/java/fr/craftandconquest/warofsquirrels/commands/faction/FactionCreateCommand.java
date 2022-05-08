@@ -79,4 +79,14 @@ public class FactionCreateCommand extends CityMayorCommandBuilder implements ITe
         WarOfSquirrels.instance.getTerritoryHandler().Save();
         return 0;
     }
+
+    @Override
+    public boolean suggestionIsGlobalWarTarget() {
+        return false;
+    }
+
+    @Override
+    public boolean suggestionIsFactionWarTarget() {
+        return false;
+    }
 }

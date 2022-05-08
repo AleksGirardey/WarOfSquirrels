@@ -117,6 +117,14 @@ public class BastionHandler extends Handler<Bastion> {
         return null;
     }
 
+    public Bastion get(String name) {
+        for (Bastion bastion : dataArray) {
+            if (bastion.getName().equals(name))
+                return bastion;
+        }
+        return null;
+    }
+
     public List<Bastion> get(City city) {
         return bastionByCities.getOrDefault(city, Collections.emptyList());
     }

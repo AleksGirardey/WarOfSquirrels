@@ -130,4 +130,7 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
     protected MutableComponent ErrorMessage() {
         return ChatText.Error("You cannot create a city.");
     }
+
+    @Override public boolean suggestionIsGlobalWarTarget() { return false; }
+    @Override public boolean suggestionIsFactionWarTarget() { return false; }
 }
