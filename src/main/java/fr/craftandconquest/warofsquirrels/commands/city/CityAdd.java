@@ -10,6 +10,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
+import java.util.List;
+
 public class CityAdd extends CityMayorOrAssistantCommandBuilder implements IPlayerExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
@@ -45,5 +47,10 @@ public class CityAdd extends CityMayorOrAssistantCommandBuilder implements IPlay
         FullPlayer target = getPlayer(context);
         player.getCity().addCitizen(target);
         return 0;
+    }
+
+    @Override
+    public List<PlayerExtractorType> getTargetSuggestionTypes() {
+        return List.of(PlayerExtractorType.CITY_LESS);
     }
 }

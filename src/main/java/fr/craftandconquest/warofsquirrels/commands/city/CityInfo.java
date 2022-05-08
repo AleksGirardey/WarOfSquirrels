@@ -1,10 +1,9 @@
 package fr.craftandconquest.warofsquirrels.commands.city;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.extractor.ICityExtractor;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
@@ -14,9 +13,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
 
-public class CityInfo extends CommandBuilder {
-    private final String cityNameArgument = "[City]";
-
+public class CityInfo extends CommandBuilder implements ICityExtractor {
     private final static CityInfo CMD_NO_ARGS = new CityInfo(false);
     private final static CityInfo CMD_ARGS = new CityInfo(true);
 
@@ -34,19 +31,15 @@ public class CityInfo extends CommandBuilder {
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("info")
                 .executes(CMD_NO_ARGS)
-                .then(Commands
-                        .argument(cityNameArgument, StringArgumentType.string())
-                        .executes(CMD_ARGS));
+                .then(getArgumentRegister().executes(CMD_ARGS));
     }
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        String target;
         City city;
 
         if (args) {
-            target = context.getArgument(cityNameArgument, String.class);
-            city = WarOfSquirrels.instance.getCityHandler().getCity(target);
+            city = getArgument(context);
         } else {
             city = player.getCity();
         }
@@ -58,13 +51,10 @@ public class CityInfo extends CommandBuilder {
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         City city;
 
-        if (args) {
-            String targetName = context.getArgument(cityNameArgument, String.class);
-            city = WarOfSquirrels.instance.getCityHandler().getCity(targetName);
-        }
-        else {
+        if (args)
+            city = getArgument(context);
+        else
             city = player.getCity();
-        }
 
         city.displayInfo(player);
 
@@ -76,4 +66,7 @@ public class CityInfo extends CommandBuilder {
         return ChatText.Error("This command requires an argument if you do not belong to a city")
                 .withStyle(ChatFormatting.BOLD);
     }
+
+    @Override
+    public boolean isSuggestionFactionRestricted() { return false; }
 }

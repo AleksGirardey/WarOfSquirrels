@@ -9,10 +9,11 @@ import fr.craftandconquest.warofsquirrels.object.invitation.PartyInvitation;
 import fr.craftandconquest.warofsquirrels.object.war.Party;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
+
+import java.util.List;
 
 public class PartyInviteCommand extends PartyCommandLeader implements IPlayerExtractor {
     @Override
@@ -26,9 +27,9 @@ public class PartyInviteCommand extends PartyCommandLeader implements IPlayerExt
         MutableComponent message;
 
         if (target == null)
-            message = ChatText.Error("Le joueur '" + getRawPlayer(context).getDisplayName() + "' n'existe pas ou n'est pas connecté.");
+            message = ChatText.Error("Player '" + getRawPlayer(context).getDisplayName() + "' doesn't exist nor connected.");
         else if (WarOfSquirrels.instance.getPartyHandler().getFromPlayer(target) != null)
-            message = ChatText.Error("Le joueur appartient déjà à un groupe.");
+            message = ChatText.Error("Player already belongs to a party.");
         else
             return true;
 
@@ -42,9 +43,9 @@ public class PartyInviteCommand extends PartyCommandLeader implements IPlayerExt
         Party party = WarOfSquirrels.instance.getPartyHandler().getPartyFromLeader(player);
 
         MutableComponent messageToParty =
-                ChatText.Colored(target.getDisplayName() + " a été invité à rejoindre votre groupe.", ChatFormatting.GOLD);
+                ChatText.Colored(target.getDisplayName() + " has been invited to your party.", ChatFormatting.GOLD);
         MutableComponent messageToTarget =
-                ChatText.Colored(player.getDisplayName() + " vous a invité à rejoindre son groupe.", ChatFormatting.GOLD);
+                ChatText.Colored(player.getDisplayName() + " invited you to join his party.", ChatFormatting.GOLD);
 
         WarOfSquirrels.instance.getInvitationHandler().CreateInvitation(new PartyInvitation(target, player, party));
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(party, null, messageToParty, true);
@@ -55,5 +56,10 @@ public class PartyInviteCommand extends PartyCommandLeader implements IPlayerExt
     @Override
     protected MutableComponent ErrorMessage() {
         return null;
+    }
+
+    @Override
+    public List<PlayerExtractorType> getTargetSuggestionTypes() {
+        return List.of(PlayerExtractorType.ALL);
     }
 }

@@ -13,6 +13,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
+import java.util.List;
+
 public class PartyRemoveCommand extends PartyCommandLeader implements IPlayerExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
@@ -29,11 +31,11 @@ public class PartyRemoveCommand extends PartyCommandLeader implements IPlayerExt
         MutableComponent message;
 
         if (target == null)
-            message = ChatText.Error("Le joueur '" + getRawPlayer(context) + "' n'existe pas.");
+            message = ChatText.Error("Player '" + getRawPlayer(context) + "' does not exist.");
         else if (!party.contains(player))
-            message = ChatText.Error("Le joueur n'appartient pas à votre groupe.");
+            message = ChatText.Error("Player do not belong to your party.");
         else if (target == player)
-            message = ChatText.Error("Vous ne pouvez pas vous exclure de votre propre groupe.");
+            message = ChatText.Error("you cannot exclude yourself from the party.");
         else
             return true;
 
@@ -47,9 +49,9 @@ public class PartyRemoveCommand extends PartyCommandLeader implements IPlayerExt
         Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
 
         MutableComponent messageToParty =
-                ChatText.Colored(target.getDisplayName() + " a été expulsé de votre groupe.", ChatFormatting.GOLD);
+                ChatText.Colored(target.getDisplayName() + " has been kicked from the party.", ChatFormatting.GOLD);
         MutableComponent messageToTarget =
-                ChatText.Colored("Vous avez été expulsé de votre groupe", ChatFormatting.GOLD);
+                ChatText.Colored("You got kicked from your party.", ChatFormatting.GOLD);
 
         party.remove(target);
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerFromTarget(party, target);
@@ -62,5 +64,10 @@ public class PartyRemoveCommand extends PartyCommandLeader implements IPlayerExt
     @Override
     protected MutableComponent ErrorMessage() {
         return null;
+    }
+
+    @Override
+    public List<PlayerExtractorType> getTargetSuggestionTypes() {
+        return List.of(PlayerExtractorType.PARTY);
     }
 }

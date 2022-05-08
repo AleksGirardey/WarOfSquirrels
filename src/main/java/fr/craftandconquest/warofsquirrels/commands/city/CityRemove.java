@@ -10,6 +10,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
+import java.util.List;
+
 public class CityRemove extends CityMayorOrAssistantCommandBuilder implements IPlayerExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
@@ -34,5 +36,10 @@ public class CityRemove extends CityMayorOrAssistantCommandBuilder implements IP
 
         player.getCity().removeCitizen(target, true);
         return 0;
+    }
+
+    @Override
+    public List<PlayerExtractorType> getTargetSuggestionTypes() {
+        return List.of(PlayerExtractorType.CITIZENS);
     }
 }

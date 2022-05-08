@@ -9,6 +9,9 @@ import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class AdminWhitelistCity extends AdminCommandBuilder implements IPlayerExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
@@ -34,5 +37,10 @@ public class AdminWhitelistCity extends AdminCommandBuilder implements IPlayerEx
                 + (target.isWhitelistCityCreator() ? "TRUE" : "FALSE")));
 
         return 0;
+    }
+
+    @Override
+    public List<PlayerExtractorType> getTargetSuggestionTypes() {
+        return List.of(PlayerExtractorType.CITY_LESS);
     }
 }

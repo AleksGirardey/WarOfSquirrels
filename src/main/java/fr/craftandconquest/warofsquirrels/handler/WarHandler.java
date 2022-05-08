@@ -47,8 +47,9 @@ public class WarHandler {
     public War getWar(String name) {
         for (War war : wars) {
             if (war.getCityDefender().getDisplayName().equals(name) ||
-            war.getCityAttacker().getDisplayName().equals(name) ||
-            war.getTag().equals(name)) return war;
+                    war.getCityAttacker().getDisplayName().equals(name) ||
+                    war.getTag().equals(name))
+                return war;
         }
         return null;
     }
@@ -181,4 +182,6 @@ public class WarHandler {
             war.getTimer().cancel();
         }
     }
+
+    public List<War> getAll() { return wars; }
 }

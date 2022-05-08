@@ -13,13 +13,14 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
+import java.util.List;
+
 public class CitySetResident extends CityMayorOrAssistantCommandBuilder implements IPlayerExtractor, IAdminCommand {
     public CitySetResident() {}
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("resident")
-                .then(getPlayerRegister().executes(this));
+        return Commands.literal("resident").then(getPlayerRegister().executes(this));
     }
 
     @Override
@@ -27,38 +28,33 @@ public class CitySetResident extends CityMayorOrAssistantCommandBuilder implemen
         if (player.isAdminMode()) return true;
 
         FullPlayer argument = getPlayer(context);
-        WarOfSquirrels.LOGGER.info("SET RESIDENT 1");
 
         if (argument == null) {
             player.sendMessage(ChatText.Error("Player doest not exist"));
             return false;
         }
 
-        WarOfSquirrels.LOGGER.info("SET RESIDENT 2");
-
         return argument.getCity().equals(player.getCity()) && !player.getCity().getOwner().equals(argument);
     }
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        WarOfSquirrels.LOGGER.info("SET RESIDENT 11");
         FullPlayer newResident = getPlayer(context);
-        WarOfSquirrels.LOGGER.info("SET RESIDENT 12");
 
         newResident.setResident(true);
-        WarOfSquirrels.LOGGER.info("SET RESIDENT 13");
 
         if (newResident.getAssistant()) {
-            WarOfSquirrels.LOGGER.info("SET RESIDENT 13");
             newResident.setAssistant(false);
         }
 
         MutableComponent message = ChatText.Colored(newResident.getDisplayName() + " is now resident in " + player.getCity().getDisplayName() + ".", ChatFormatting.GOLD);
-            WarOfSquirrels.LOGGER.info("SET RESIDENT 14");
-
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(newResident.getCity(), null, message, true);
-            WarOfSquirrels.LOGGER.info("SET RESIDENT 15");
 
         return 0;
+    }
+
+    @Override
+    public List<PlayerExtractorType> getTargetSuggestionTypes() {
+        return List.of(PlayerExtractorType.ASSISTANT, PlayerExtractorType.RECRUIT);
     }
 }

@@ -1,12 +1,11 @@
 package fr.craftandconquest.warofsquirrels.commands.city.set;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
-import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantCommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.extractor.IPlayerExtractor;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
@@ -14,18 +13,13 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
-public class CitySetRecruit extends CityMayorOrAssistantCommandBuilder implements IAdminCommand {
-    public CitySetRecruit() {
-    }
+import java.util.List;
 
-    private final String argumentName = "[PlayerName]";
-
+public class CitySetRecruit extends CityMayorOrAssistantCommandBuilder implements IAdminCommand, IPlayerExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("recruit")
-                .then(Commands
-                        .argument(argumentName, StringArgumentType.string())
-                        .executes(this));
+                .then(getPlayerRegister().executes(this));
     }
 
     @Override
@@ -37,14 +31,14 @@ public class CitySetRecruit extends CityMayorOrAssistantCommandBuilder implement
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (IsAdmin(player)) return true;
 
-        FullPlayer argument = GetPlayerFromArguments(context);
+        FullPlayer argument = getPlayer(context);
 
         return argument.getCity() == player.getCity() && player.getCity().getOwner() != argument;
     }
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer newRecruit = GetPlayerFromArguments(context);
+        FullPlayer newRecruit = getPlayer(context);
 
         newRecruit.setResident(false);
 
@@ -58,7 +52,8 @@ public class CitySetRecruit extends CityMayorOrAssistantCommandBuilder implement
         return 0;
     }
 
-    private FullPlayer GetPlayerFromArguments(CommandContext<CommandSourceStack> context) {
-        return WarOfSquirrels.instance.getPlayerHandler().get(context.getArgument(argumentName, String.class));
+    @Override
+    public List<PlayerExtractorType> getTargetSuggestionTypes() {
+        return List.of(PlayerExtractorType.ASSISTANT, PlayerExtractorType.RESIDENT);
     }
 }
