@@ -1,5 +1,6 @@
 package fr.craftandconquest.warofsquirrels.commands.admin;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
@@ -8,9 +9,18 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
 public class AdminForceDailyUpdate extends AdminCommandBuilder{
+    private final String argumentName = "count";
+    private final boolean hasArgs;
+    public AdminForceDailyUpdate() { hasArgs = false; }
+    public AdminForceDailyUpdate(boolean _hasArgs) { hasArgs = _hasArgs; }
+
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("forcedailyupdate").executes(this);
+        return Commands.literal("forcedailyupdate")
+                .executes(this)
+                .then(Commands
+                        .argument(argumentName, IntegerArgumentType.integer(1, 100))
+                        .executes(new AdminForceDailyUpdate(true)));
     }
 
     @Override
@@ -20,7 +30,15 @@ public class AdminForceDailyUpdate extends AdminCommandBuilder{
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        WarOfSquirrels.instance.getUpdateHandler().DailyUpdate();
+        int count = 1;
+
+        if (hasArgs) {
+            count = IntegerArgumentType.getInteger(context, argumentName);
+        }
+
+        for (int index = 0; index < count; ++index) {
+            WarOfSquirrels.instance.getUpdateHandler().DailyUpdate();
+        }
 
         return 0;
     }

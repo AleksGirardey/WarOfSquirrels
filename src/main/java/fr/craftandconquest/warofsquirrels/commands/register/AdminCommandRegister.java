@@ -19,7 +19,8 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
     private final AdminTp adminTp = new AdminTp();
     private final AdminWhitelist adminWhitelist = new AdminWhitelist();
     private final AdminTerritory adminTerritory = new AdminTerritory();
-    private final AdminSetSpawn adminSetSpawn = new AdminSetSpawn();
+
+    private final AdminSet adminSet = new AdminSet();
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -30,7 +31,7 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
                 .then(adminTp.register())
                 .then(adminWhitelist.register())
                 .then(adminTerritory.register())
-                .then(adminSetSpawn.register())
+                .then(adminSet.register())
                 .executes(this));
     }
 

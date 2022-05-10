@@ -26,7 +26,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Territory {
-
     @JsonProperty @Getter @Setter private UUID uuid;
     @JsonProperty @Getter @Setter private String name;
     @JsonProperty @Getter @Setter private int posX;
@@ -151,13 +150,6 @@ public class Territory {
 
                 Biome.BiomeCategory category = Biome.getBiomeCategory(level.getBiome(pos));
                 biomeMap.compute(category, (k,v) -> v == null ? 1 : v + 1);
-
-//                if (biomeMap.get(category) >= 335)
-//                    WarOfSquirrels.instance.debugLog(category.getName() + " = " + biomeMap.get(category));
-
-//                if (posX == 0 && posZ == 0) {
-//                    WarOfSquirrels.instance.debugLog(category.getName() + " = " + biomeMap.get(category));
-//                }
 
                 z += 16;
             }

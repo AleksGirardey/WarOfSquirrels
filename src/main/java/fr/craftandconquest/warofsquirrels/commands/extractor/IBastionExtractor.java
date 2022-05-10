@@ -15,6 +15,7 @@ import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IBastionExtractor {
@@ -34,7 +35,7 @@ public interface IBastionExtractor {
 
     default SuggestionProvider<CommandSourceStack> getBastionSuggestions() {
         return (context, builder) -> {
-            List<Bastion> bastions = WarOfSquirrels.instance.getBastionHandler().getAll();
+            List<Bastion> bastions = new ArrayList<>(WarOfSquirrels.instance.getBastionHandler().getAll());
 
             for (Bastion bastion : bastions) {
                 builder.suggest(bastion.getName());

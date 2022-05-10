@@ -10,6 +10,7 @@ import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IFactionExtractor {
@@ -29,7 +30,7 @@ public interface IFactionExtractor {
 
     default SuggestionProvider<CommandSourceStack> getSuggestions() {
         return ((context, builder) -> {
-            List<Faction> factions = WarOfSquirrels.instance.getFactionHandler().getAll();
+            List<Faction> factions = new ArrayList<>(WarOfSquirrels.instance.getFactionHandler().getAll());
 
             for (Faction faction : factions) {
                 builder.suggest(faction.getDisplayName());

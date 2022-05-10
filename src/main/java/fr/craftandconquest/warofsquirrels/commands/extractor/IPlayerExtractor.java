@@ -61,7 +61,7 @@ public interface IPlayerExtractor {
                 switch (type) {
                     case ALL -> players.addAll(WarOfSquirrels.instance.getPlayerHandler().getAll());
                     case CITY_LESS -> {
-                        List<FullPlayer> all = WarOfSquirrels.instance.getPlayerHandler().getAll();
+                        List<FullPlayer> all = new ArrayList<>(WarOfSquirrels.instance.getPlayerHandler().getAll());
                         all.removeIf(p -> p.getCity() != null);
                         players.addAll(all);
                     }

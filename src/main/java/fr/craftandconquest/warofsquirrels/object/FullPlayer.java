@@ -23,6 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import java.util.Date;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -40,6 +41,7 @@ public class FullPlayer implements IPermission {
     @JsonProperty @Getter @Setter private String lastDimension;
     @JsonProperty @Getter @Setter private int remainingTp;
     @JsonProperty @Getter @Setter private boolean whitelistCityCreator = false;
+    @JsonProperty @Getter @Setter private Date cityJoinDate;
 
     /* -- Extra Fields -- */
     @Getter @Setter private int lastChunkX = 10000;

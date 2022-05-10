@@ -17,6 +17,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -57,14 +58,16 @@ public interface ITerritoryExtractor {
             FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
             List<Territory> territories;
 
-            territories = WarOfSquirrels.instance.getTerritoryHandler().getAll();
+            territories = new ArrayList<>(WarOfSquirrels.instance.getTerritoryHandler().getAll());
 
             if (suggestionIsFactionWarTarget()) {
-                territories.removeIf(territory -> territory.canBeReached() && !territory.isProtected() && player != null && player.getCity() != null && player.getCity().getFaction() != null
-                        && territory.getFaction() != null && WarOfSquirrels.instance.getDiplomacyHandler().getEnemies(player.getCity().getFaction()).contains(territory.getFaction()));
+                territories.removeIf(territory -> !territory.canBeReached()
+                        || territory.isProtected()
+                        || !(player != null && player.getCity() != null && player.getCity().getFaction() != null
+                        && territory.getFaction() != null && WarOfSquirrels.instance.getDiplomacyHandler().getEnemies(player.getCity().getFaction()).contains(territory.getFaction())));
             }
             if (suggestionIsGlobalWarTarget())
-                territories.removeIf(territory -> territory.canBeReached() && !territory.isProtected());
+                territories.removeIf(territory -> !territory.canBeReached() || territory.isProtected());
 
             return territorySuggestions(territories, builder);
         };

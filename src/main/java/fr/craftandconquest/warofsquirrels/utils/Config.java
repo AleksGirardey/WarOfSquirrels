@@ -135,6 +135,9 @@ public class Config {
                 15, // shoutDistance;
                 10, // sayDistance;
 
+                /* Scoring */
+                18, // daysNeededToWinFactionScore;
+
                 /* World Config */
                 5120, // mapSize; // World border set to 5120 and center in -65 -65
                 0,

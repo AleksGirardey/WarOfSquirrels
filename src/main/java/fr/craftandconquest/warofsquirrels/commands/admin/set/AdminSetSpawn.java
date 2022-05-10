@@ -1,8 +1,9 @@
-package fr.craftandconquest.warofsquirrels.commands.admin;
+package fr.craftandconquest.warofsquirrels.commands.admin.set;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.commands.admin.AdminCommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.config.ConfigData;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;

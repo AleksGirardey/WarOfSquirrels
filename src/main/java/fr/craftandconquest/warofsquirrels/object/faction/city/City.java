@@ -27,7 +27,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -87,6 +86,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
         player.setAssistant(false);
         player.setResident(false);
+        player.setCityJoinDate(new Date());
 
         MutableComponent messageToTarget = new TextComponent("You joined " + displayName + ".")
                 .withStyle(ChatFormatting.GREEN);
@@ -239,9 +239,6 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     public List<FullPlayer> getOnlinePlayers() {
         List<FullPlayer> onlinePlayers = new ArrayList<>();
         MinecraftServer server = WarOfSquirrels.server;
-
-//        if (server.getPlayerList().getPlayer(owner.getUuid()) != null)
-//            onlinePlayers.add(owner);
 
         for (FullPlayer player : citizens) {
             if (server.getPlayerList().getPlayer(player.getUuid()) != null)

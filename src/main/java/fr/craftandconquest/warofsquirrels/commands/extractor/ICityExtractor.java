@@ -13,6 +13,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -41,11 +42,11 @@ public interface ICityExtractor {
                 Player playerEntity = context.getSource().getPlayerOrException();
                 FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
                 if (player.getCity() != null && player.getCity().getFaction() != null)
-                    cities = WarOfSquirrels.instance.getCityHandler().getCities(player.getCity().getFaction());
+                    cities = new ArrayList<>(WarOfSquirrels.instance.getCityHandler().getCities(player.getCity().getFaction()));
                 else
-                    cities = WarOfSquirrels.instance.getCityHandler().getAll();
+                    cities = new ArrayList<>(WarOfSquirrels.instance.getCityHandler().getAll());
             } else
-                cities = WarOfSquirrels.instance.getCityHandler().getAll();
+                cities = new ArrayList<>(WarOfSquirrels.instance.getCityHandler().getAll());
 
             return suggestions(builder, cities);
         });

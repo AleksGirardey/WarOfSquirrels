@@ -489,7 +489,7 @@ public class War implements IChannelTarget {
                 for (int i = att.size() - 1; i >= 0; --i) {
                     if (att.get(i).getCurrentChunk().x == chunk.getPosX() && att.get(i).getCurrentChunk().y == chunk.getPosZ()) {
                         ++attOnChunk;
-                        GlowPlayer(att.get(i));
+//                        GlowPlayer(att.get(i));
                         att.remove(i);
                     }
                 }
@@ -499,7 +499,7 @@ public class War implements IChannelTarget {
                 for (int i = def.size() - 1; i >= 0; --i) {
                     if (def.get(i).getCurrentChunk().x == chunk.getPosX() && def.get(i).getCurrentChunk().y == chunk.getPosZ()) {
                         ++defOnChunk;
-                        GlowPlayer(def.get(i));
+//                        GlowPlayer(def.get(i));
                         def.remove(i);
                     }
                 }
@@ -548,13 +548,14 @@ public class War implements IChannelTarget {
     }
 
     private void GlowPlayer(FullPlayer player) {
-        player.getPlayerEntity().addEffect(new MobEffectInstance(MobEffects.GLOWING, 1000));
-        if (!glowPlayers.contains(player))
+        if (!glowPlayers.contains(player)) {
+            player.getPlayerEntity().addEffect(new MobEffectInstance(MobEffects.GLOWING, 1000));
             glowPlayers.add(player);
+        }
     }
 
     private void CleanGlowPlayer(FullPlayer player) {
-        if (glowPlayers.contains(player))
+        if (glowPlayers.contains(player) && WarOfSquirrels.server.getPlayerList().getPlayer(player.getUuid()) != null)
             player.getPlayerEntity().removeEffect(MobEffects.GLOWING);
     }
 

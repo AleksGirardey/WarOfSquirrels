@@ -26,7 +26,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -211,12 +210,9 @@ public class WorldInteractionHandler {
             if (!isSwitch) {
                 String lastDimensionId = Chunk.DimensionToId(player.getLastDimensionKey());
 
-                WarOfSquirrels.instance.debugLog("It's not a switch");
-
                 if (IsContainer(blockEvent.getWorld(), blockEvent.getPos(), null)) {
-                    WarOfSquirrels.instance.debugLog("It's a container");
                     if (!OnPlayerContainer(event.getPlayer(), event.getPos(), lastDimensionId)) {
-                        WarOfSquirrels.instance.debugLog("He can't open !");
+                        player.sendMessage(ChatText.Error("You do not have permission to open this container."));
                         event.setCanceled(true);
                     }
                     return;
@@ -295,7 +291,6 @@ public class WorldInteractionHandler {
         if (state == null)
             state = world.getBlockState(pos);
 
-        WarOfSquirrels.instance.debugLog("Trying to check if there is a container on : " + pos + " with blockentity : " + world.getBlockEntity(pos));
         return state.getBlock() instanceof Container || world.getBlockEntity(pos) instanceof BaseContainerBlockEntity;
     }
 

@@ -39,6 +39,9 @@ public class ConfigData {
     @Setter
     private int sayDistance;
 
+    /* Scoring */
+    @Getter @Setter private int daysNeededToWinFactionScore;
+
     /* World Config */
     @Getter
     @Setter

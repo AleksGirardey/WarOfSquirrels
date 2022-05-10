@@ -9,6 +9,7 @@ import fr.craftandconquest.warofsquirrels.object.war.War;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IWarExtractor {
@@ -28,7 +29,7 @@ public interface IWarExtractor {
 
     default SuggestionProvider<CommandSourceStack> getSuggestions() {
         return ((context, builder) -> {
-            List<War> wars = WarOfSquirrels.instance.getWarHandler().getAll();
+            List<War> wars = new ArrayList<>(WarOfSquirrels.instance.getWarHandler().getAll());
 
             for (War war : wars) {
                 builder.suggest(war.getCityAttacker().getDisplayName());
