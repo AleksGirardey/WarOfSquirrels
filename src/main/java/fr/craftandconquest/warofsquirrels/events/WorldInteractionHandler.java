@@ -166,6 +166,8 @@ public class WorldInteractionHandler {
 
         if (type == InteractType.RightClickItem) {
             Item item = event.getItemStack().getItem();
+            if (item.isEdible()) return;
+
             if (item == Items.FEATHER) {
                 Utils.displayInfoFeather(event.getPlayer(), event.getPlayer().getOnPos(), event.getWorld().dimension());
                 event.setCanceled(true);
@@ -238,7 +240,7 @@ public class WorldInteractionHandler {
     }
 
     private boolean CanOverpassSwitchPermission(ItemStack itemStack, boolean isInWar) {
-        if (itemStack.isEdible()) return true;
+//        if (itemStack.isEdible()) return true;
 
         List<Item> targetList = isInWar ? overpassSwitchItemsInWar : overpassSwitchItems;
 
