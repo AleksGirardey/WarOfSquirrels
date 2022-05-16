@@ -219,8 +219,9 @@ public class PermissionHandler {
 
         if (targetWar.getCityDefender().equals(player.getCity())) {
 
+            Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(blockPos.getX(), blockPos.getZ(), player.getLastDimensionKey());
 
-            if (isAuthorized(block.getBlock()) && !WarOfSquirrels.instance.getChunkHandler().getChunk(blockPos.getX(), blockPos.getZ(), player.getLastDimensionKey()).equals(targetWar.getCityDefender().getHomeBlock()))
+            if (isAuthorized(block.getBlock()) && chunk != null && !chunk.equals(targetWar.getCityDefender().getHomeBlock()))
                 return new Permission(true, true, true, true, true);
             else
                 return new Permission(false, true, true, false, false);

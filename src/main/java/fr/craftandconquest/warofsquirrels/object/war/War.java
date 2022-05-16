@@ -70,6 +70,10 @@ public class War implements IChannelTarget {
 
     private final List<Chunk> warChunks = new ArrayList<>();
     private final List<FullPlayer> glowPlayers = new ArrayList<>();
+
+    private int lastGlowPlayer = 4;
+    private List<FullPlayer> attackerCapturing = new ArrayList<>();
+
     public War(City attacker, City defender, Territory territory, List<FullPlayer> attackersParty) {
         uuid = UUID.randomUUID();
         cityAttacker = attacker;
@@ -321,7 +325,7 @@ public class War implements IChannelTarget {
             influence.SubInfluence(pointsToRemove + WarOfSquirrels.instance.getTerritoryHandler().getDamageFromEnemy(targetTerritory, cityAttacker.getFaction()));
 
             targetTerritory.setGotDefeatedToday(true);
-            targetTerritory.getFortification().getScore().RemoveScoreLifePoints(Math.abs(defendersPoints.getScore() - attackersPoints.getScore()));
+            //targetTerritory.getFortification().getScore().RemoveScoreLifePoints(Math.abs(defendersPoints.getScore() - attackersPoints.getScore()));
 
             // ToDo: Vol de score
 
@@ -452,11 +456,17 @@ public class War implements IChannelTarget {
         player.sendMessage(message);
 
         chunkBeingCaptured.forEach((chunk, pair) -> {
-            if (pair.getValue() != 0f)
-                player.sendMessage(ChatText.Success(chunk.toStringShort() + "[~"
-                        + (chunk.getPosX() * 16) + ";~"
-                        + (chunk.getPosZ() * 16) + "][" + (int) Math.floor(pair.getKey()) + "/100] "
-                        + Utils.toTime((int) (pair.getKey() / pair.getValue()))));
+            if (pair.getValue() != 0f) {
+                float valueToRemove = (pair.getKey() / pair.getValue());
+                String toTime = Utils.toTime((int) valueToRemove);
+
+                if (valueToRemove > 0 || pair.getValue() < 100f) {
+                    player.sendMessage(ChatText.Success(chunk.toStringShort() + "[~"
+                            + (chunk.getPosX() * 16) + ";~"
+                            + (chunk.getPosZ() * 16) + "][" + (int) Math.floor(pair.getKey()) + "/100] "
+                            + toTime));
+                }
+            }
         });
     }
 
@@ -478,8 +488,7 @@ public class War implements IChannelTarget {
         List<FullPlayer> att = new ArrayList<>(attackers);
         List<FullPlayer> def = new ArrayList<>(defenders);
 
-        att.forEach(this::CleanGlowPlayer);
-        def.forEach(this::CleanGlowPlayer);
+        attackerCapturing.clear();
 
         for (Chunk chunk : warChunks) {
             int attOnChunk = 0;
@@ -489,6 +498,7 @@ public class War implements IChannelTarget {
                 for (int i = att.size() - 1; i >= 0; --i) {
                     if (att.get(i).getCurrentChunk().x == chunk.getPosX() && att.get(i).getCurrentChunk().y == chunk.getPosZ()) {
                         ++attOnChunk;
+                        attackerCapturing.add(att.get(i));
 //                        GlowPlayer(att.get(i));
                         att.remove(i);
                     }
@@ -499,10 +509,16 @@ public class War implements IChannelTarget {
                 for (int i = def.size() - 1; i >= 0; --i) {
                     if (def.get(i).getCurrentChunk().x == chunk.getPosX() && def.get(i).getCurrentChunk().y == chunk.getPosZ()) {
                         ++defOnChunk;
-//                        GlowPlayer(def.get(i));
                         def.remove(i);
                     }
                 }
+            }
+
+            if (lastGlowPlayer <= 0) {
+                attackerCapturing.forEach(this::GlowPlayer);
+                lastGlowPlayer = 4;
+            } else {
+                --lastGlowPlayer;
             }
 
             if (attOnChunk == 0 && defOnChunk == 0) continue;
@@ -548,15 +564,7 @@ public class War implements IChannelTarget {
     }
 
     private void GlowPlayer(FullPlayer player) {
-        if (!glowPlayers.contains(player)) {
-            player.getPlayerEntity().addEffect(new MobEffectInstance(MobEffects.GLOWING, 1000));
-            glowPlayers.add(player);
-        }
-    }
-
-    private void CleanGlowPlayer(FullPlayer player) {
-        if (glowPlayers.contains(player) && WarOfSquirrels.server.getPlayerList().getPlayer(player.getUuid()) != null)
-            player.getPlayerEntity().removeEffect(MobEffects.GLOWING);
+        player.getPlayerEntity().addEffect(new MobEffectInstance(MobEffects.GLOWING, 1000));
     }
 
     public void UpdateTimer(int secondsLeft) {

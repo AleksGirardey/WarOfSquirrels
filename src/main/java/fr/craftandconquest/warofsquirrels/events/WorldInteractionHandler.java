@@ -11,8 +11,12 @@ import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.commands.arguments.ComponentArgument;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
+import net.minecraft.server.commands.TitleCommand;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -29,6 +33,7 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -348,10 +353,7 @@ public class WorldInteractionHandler {
     private boolean ShouldWeCheck(FullPlayer player, Vector3 target) {
         if (player.isAdminMode()) return false;
 
-        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(new Vector3(
-                player.getPlayerEntity().getBlockX(),
-                player.getPlayerEntity().getBlockY(),
-                player.getPlayerEntity().getBlockZ()), player.getLastDimensionKey());
+        Chunk chunk = WarOfSquirrels.instance.getChunkHandler().getChunk(target, player.getLastDimensionKey());
 
         boolean hasChunk = chunk != null;
 
