@@ -69,10 +69,11 @@ public class War implements IChannelTarget {
     private Objective pointsObjective;
 
     private final List<Chunk> warChunks = new ArrayList<>();
-    private final List<FullPlayer> glowPlayers = new ArrayList<>();
 
-    private int lastGlowPlayer = 4;
-    private List<FullPlayer> attackerCapturing = new ArrayList<>();
+    private int lastGlowPlayer = 15;
+    private final List<FullPlayer> attackerCapturing = new ArrayList<>();
+
+    private Timer glowTimer;
 
     public War(City attacker, City defender, Territory territory, List<FullPlayer> attackersParty) {
         uuid = UUID.randomUUID();
@@ -102,9 +103,29 @@ public class War implements IChannelTarget {
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(worldAnnounce);
 
         SetTarget();
+        StartGlowingTimer();
         LaunchPreparation();
     }
 
+    public void StartGlowingTimer() {
+        glowTimer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (lastGlowPlayer <= 0) {
+                    attackerCapturing.forEach(this::GlowPlayer);
+                    lastGlowPlayer = 15;
+                } else {
+                    --lastGlowPlayer;
+                }
+            }
+
+            private void GlowPlayer(FullPlayer player) {
+                player.getPlayerEntity().addEffect(new MobEffectInstance(MobEffects.GLOWING, 1000));
+            }
+        }, 0, 1000);
+    }
+    
     public void SetWarChunks() {
         warChunks.addAll(WarOfSquirrels.instance.getChunkHandler().getChunks(targetTerritory.getFortification()));
         warChunks.removeIf(Chunk::getHomeBlock);
@@ -301,6 +322,7 @@ public class War implements IChannelTarget {
         int pointsToRemove = 250 + Math.abs(defendersPoints.getScore() - attackersPoints.getScore());
 
         targetTerritory.setGotAttackedToday(true);
+        glowTimer.cancel();
 
         influenceLost = ChatText.Colored("Your faction lost " + pointsToRemove + " influence points on territory '", ChatFormatting.DARK_RED);
 
@@ -499,7 +521,6 @@ public class War implements IChannelTarget {
                     if (att.get(i).getCurrentChunk().x == chunk.getPosX() && att.get(i).getCurrentChunk().y == chunk.getPosZ()) {
                         ++attOnChunk;
                         attackerCapturing.add(att.get(i));
-//                        GlowPlayer(att.get(i));
                         att.remove(i);
                     }
                 }
@@ -512,13 +533,6 @@ public class War implements IChannelTarget {
                         def.remove(i);
                     }
                 }
-            }
-
-            if (lastGlowPlayer <= 0) {
-                attackerCapturing.forEach(this::GlowPlayer);
-                lastGlowPlayer = 4;
-            } else {
-                --lastGlowPlayer;
             }
 
             if (attOnChunk == 0 && defOnChunk == 0) continue;
@@ -561,10 +575,6 @@ public class War implements IChannelTarget {
         if (this.lastAnnounceCapture == 0)
             this.lastAnnounceCapture = 30;
         this.lastAnnounceCapture -= 1;
-    }
-
-    private void GlowPlayer(FullPlayer player) {
-        player.getPlayerEntity().addEffect(new MobEffectInstance(MobEffects.GLOWING, 1000));
     }
 
     public void UpdateTimer(int secondsLeft) {
