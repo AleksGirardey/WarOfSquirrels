@@ -36,12 +36,12 @@ public abstract class FactionSetDiplomacy extends FactionCommandAssistant implem
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        return player.getCity().getFaction() != getFaction(player, context);
+        return player.getCity().getFaction() != getFaction(context);
     }
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        Faction faction = getFaction(player, context);
+        Faction faction = getFaction(context);
         Permission permission;
 
         if (hasArgs)

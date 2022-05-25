@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.admin.*;
+import fr.craftandconquest.warofsquirrels.commands.admin.points.AdminPoints;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
@@ -19,8 +20,8 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
     private final AdminTp adminTp = new AdminTp();
     private final AdminWhitelist adminWhitelist = new AdminWhitelist();
     private final AdminTerritory adminTerritory = new AdminTerritory();
-
     private final AdminSet adminSet = new AdminSet();
+    private final AdminPoints adminPoints = new AdminPoints();
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -32,6 +33,7 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
                 .then(adminWhitelist.register())
                 .then(adminTerritory.register())
                 .then(adminSet.register())
+                .then(adminPoints.register())
                 .executes(this));
     }
 

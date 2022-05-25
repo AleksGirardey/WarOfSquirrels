@@ -5,7 +5,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -20,7 +19,7 @@ public interface IFactionExtractor {
         return context.getArgument(factionNameArgument, String.class);
     }
 
-    default Faction getFaction(FullPlayer player, CommandContext<CommandSourceStack> context) {
+    default Faction getFaction(CommandContext<CommandSourceStack> context) {
         return WarOfSquirrels.instance.getFactionHandler().get(getRawFaction(context));
     }
 
