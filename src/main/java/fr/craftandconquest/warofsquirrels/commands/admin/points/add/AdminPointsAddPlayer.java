@@ -17,7 +17,9 @@ public class AdminPointsAddPlayer extends AdminCommandBuilder implements IPlayer
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("player").then(Commands.argument(amountArgument, IntegerArgumentType.integer()));
+        return Commands.literal("player")
+                .then(Commands.argument(amountArgument, IntegerArgumentType.integer())
+                        .then(getPlayerRegister().executes(this)));
     }
 
     @Override

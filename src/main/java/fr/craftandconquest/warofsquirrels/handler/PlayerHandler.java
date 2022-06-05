@@ -40,6 +40,11 @@ public class PlayerHandler extends Handler<FullPlayer> {
             player.update();
     }
 
+    public void updateScore() {
+        for (FullPlayer player : dataArray)
+            player.updateScore();
+    }
+
     public void updateDependencies() {
         for (FullPlayer player : dataArray)
             player.updateDependencies();

@@ -28,15 +28,12 @@ public class CitySetMayor extends CityMayorCommandBuilder implements IAdminComma
     public CitySetMayor() {}
 
     private boolean hasCityArg;
-    private final String argumentCityName = "[CityName]";
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("mayor")
                 .then(getPlayerRegister().executes(CMD_NO_CITY)
-                        .then(Commands
-                                .argument(argumentCityName, StringArgumentType.string())
-                                .executes(CMD_CITY)));
+                        .then(getArgumentRegister().executes(CMD_CITY)));
     }
 
     @Override
@@ -58,20 +55,26 @@ public class CitySetMayor extends CityMayorCommandBuilder implements IAdminComma
         if (!hasCityArg)
             city = player.getCity();
         else
-            city = WarOfSquirrels.instance.getCityHandler().getCity(context.getArgument(argumentCityName, String.class));
+            city = getArgument(context);
         FullPlayer newMayor = getPlayer(context);
         FullPlayer oldMayor = city.getOwner();
 
         if (hasCityArg) {
-            if (newMayor.getCity() != null && newMayor.getCity() != city) {
-                if (!newMayor.getCity().getOwner().equals(newMayor)) {
-                    newMayor.getCity().removeCitizen(newMayor, true);
-                    city.addCitizen(newMayor);
-                } else {
-                    newMayor.sendMessage(ChatText.Error("Cannot force set mayor if you are mayor"));
+            boolean newMayorHasCity = newMayor.getCity() != null;
+            boolean newMayorSameCity = newMayorHasCity && newMayor.getCity() == city;
+
+            if (newMayorHasCity) {
+                if (newMayor.getCity().getOwner().equals(newMayor)) {
+                    newMayor.sendMessage(ChatText.Success("You cannot leave your mayor position"));
                     return -1;
                 }
+
+                if (!newMayorSameCity) {
+                    newMayor.getCity().removeCitizen(newMayor, true);
+                }
             }
+
+            city.addCitizen(newMayor);
         }
 
         city.SetOwner(newMayor);
@@ -88,6 +91,6 @@ public class CitySetMayor extends CityMayorCommandBuilder implements IAdminComma
 
     @Override
     public List<PlayerExtractorType> getTargetSuggestionTypes() {
-        return List.of(PlayerExtractorType.CITIZENS);
+        return hasCityArg ? List.of(PlayerExtractorType.ALL) : List.of(PlayerExtractorType.CITIZENS);
     }
 }

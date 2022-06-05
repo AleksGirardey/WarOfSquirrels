@@ -16,7 +16,7 @@ public interface IWarExtractor {
     String warNameArgument = "WarName";
 
     default String getRawArgument(CommandContext<CommandSourceStack> context) {
-        return context.getArgument(warNameArgument, String.class);
+        return StringArgumentType.getString(context, warNameArgument);
     }
 
     default War getArgument(CommandContext<CommandSourceStack> context) {
@@ -34,6 +34,7 @@ public interface IWarExtractor {
             for (War war : wars) {
                 builder.suggest(war.getCityAttacker().getDisplayName());
                 builder.suggest(war.getCityDefender().getDisplayName());
+                builder.suggest(war.getTag());
             }
 
             return builder.buildFuture();

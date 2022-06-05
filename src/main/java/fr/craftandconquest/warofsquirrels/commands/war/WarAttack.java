@@ -28,10 +28,17 @@ public class WarAttack extends CityMayorOrAssistantCommandBuilder implements ITe
         Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
         Territory territory = getTerritory(context);
 
+        if (party == null) {
+            player.sendMessage(ChatText.Error("You need a party to attack. (/party create)"));
+            return false;
+        }
+
         if (territory == null) {
             player.sendMessage(ChatText.Error("Territory does not exist."));
             return false;
         }
+
+        if (IsAdmin(player)) return true;
 
         if (WarOfSquirrels.instance.getConfig().isPeaceTime()) {
             player.sendMessage(ChatText.Error("You cannot declare war in time of peace !"));
@@ -47,11 +54,6 @@ public class WarAttack extends CityMayorOrAssistantCommandBuilder implements ITe
 
         if (!canBeReached) {
             player.sendMessage(ChatText.Error("Territory cannot be reached"));
-            return false;
-        }
-
-        if (party == null) {
-            player.sendMessage(ChatText.Error("You need a party to attack. (/party create)"));
             return false;
         }
 
@@ -74,6 +76,11 @@ public class WarAttack extends CityMayorOrAssistantCommandBuilder implements ITe
 
         if (!attackerCity.canAttack()) {
             player.sendMessage(ChatText.Error("Your city cannot attack today."));
+            return false;
+        }
+
+        if (territory.getFortification().getRelatedCity().getOnlinePlayers().size() < 4) {
+            player.sendMessage(ChatText.Error("There isn't enough people to defend."));
             return false;
         }
 

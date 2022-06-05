@@ -7,6 +7,7 @@ import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
+import fr.craftandconquest.warofsquirrels.object.scoring.IScoreUpdater;
 import fr.craftandconquest.warofsquirrels.object.scoring.Score;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
@@ -23,12 +24,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class FullPlayer implements IPermission {
+public class FullPlayer implements IPermission, IScoreUpdater {
 
     @JsonProperty @Getter @Setter private UUID uuid;
     @JsonProperty("DisplayName") @Getter @Setter private String displayName;
@@ -140,5 +142,23 @@ public class FullPlayer implements IPermission {
     @JsonIgnore
     public boolean isInWar() {
         return WarOfSquirrels.instance.getWarHandler().Contains(this);
+    }
+
+    @JsonIgnore
+    public boolean hasPassEnoughTimeInCity() {
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(cityJoinDate);
+        calendar.add(Calendar.DATE, 18);
+
+        Date extended = calendar.getTime();
+        Date current = new Date();
+
+        return current.after(extended);
+    }
+
+    @Override
+    public void updateScore() {
+        score.UpdateScore();
     }
 }

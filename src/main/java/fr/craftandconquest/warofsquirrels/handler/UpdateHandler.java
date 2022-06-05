@@ -33,6 +33,7 @@ public class UpdateHandler {
         WarOfSquirrels.instance.getBastionHandler().updateScore();
         WarOfSquirrels.instance.getCityHandler().updateScore();
         WarOfSquirrels.instance.getFactionHandler().updateScore();
+        WarOfSquirrels.instance.getPlayerHandler().updateScore();
     }
 
     public void DailyUpdate() {
@@ -42,6 +43,8 @@ public class UpdateHandler {
         WarOfSquirrels.instance.getFactionHandler().update();
         WarOfSquirrels.instance.getPlayerHandler().update();
 //        WarOfSquirrels.instance.getLoanHandler().update();
+
+        ScoreUpdate();
         MutableComponent message = ChatText.Colored("A new day begin..", ChatFormatting.GOLD);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
     }

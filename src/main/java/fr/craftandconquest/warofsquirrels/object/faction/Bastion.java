@@ -44,7 +44,7 @@ public class Bastion implements IFortification {
 
     @JsonProperty @Getter @Setter private ChestLocation upgradeChestLocation;
 
-    @JsonProperty @Getter @Setter private Score score = new Score();
+    @JsonProperty @Setter private Score score = new Score();
 
     @JsonIgnore @Getter
     private City city;
@@ -200,4 +200,7 @@ public class Bastion implements IFortification {
         score.AddScoreLifePoints(100);
         score.UpdateScore();
     }
+
+    @JsonIgnore @Override
+    public Score getScore() { return score; }
 }

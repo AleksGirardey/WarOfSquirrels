@@ -37,7 +37,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     @JsonProperty @Getter @Setter private UUID cityUuid;
     @JsonProperty @Setter public String displayName;
     @JsonProperty public String tag;
-    @JsonProperty @Getter @Setter private Score score = new Score();
+    @JsonProperty @Setter private Score score = new Score();
     @JsonProperty public UUID ownerUUID;
     @JsonProperty @Getter @Setter private UUID factionUuid;
     @JsonProperty @Getter @Setter private UUID territoryUuid;
@@ -373,6 +373,12 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         City city = (City) obj;
 
         return city.getUuid().equals(this.cityUuid);
+    }
+
+    @JsonIgnore
+    @Override
+    public Score getScore() {
+        return score;
     }
 
     @Override

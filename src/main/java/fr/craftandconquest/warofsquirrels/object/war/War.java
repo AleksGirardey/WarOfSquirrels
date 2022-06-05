@@ -6,6 +6,7 @@ import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.channels.WarChannel;
+import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.Influence;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
@@ -40,7 +41,6 @@ public class War implements IChannelTarget {
     }
 
     @Getter private final UUID uuid;
-
     @Getter @Setter private String tag;
     @Getter @Setter private City cityAttacker;
     @Getter @Setter private City cityDefender;
@@ -102,14 +102,17 @@ public class War implements IChannelTarget {
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(worldAnnounce);
 
+        WarOfSquirrels.instance.debugLog("Setting target");
         SetTarget();
+        WarOfSquirrels.instance.debugLog("Start glow timer");
         StartGlowingTimer();
+        WarOfSquirrels.instance.debugLog("Launch preparation");
         LaunchPreparation();
     }
 
     public void StartGlowingTimer() {
         glowTimer = new Timer();
-        timer.schedule(new TimerTask() {
+        glowTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 if (lastGlowPlayer <= 0) {
@@ -347,9 +350,44 @@ public class War implements IChannelTarget {
             influence.SubInfluence(pointsToRemove + WarOfSquirrels.instance.getTerritoryHandler().getDamageFromEnemy(targetTerritory, cityAttacker.getFaction()));
 
             targetTerritory.setGotDefeatedToday(true);
-            //targetTerritory.getFortification().getScore().RemoveScoreLifePoints(Math.abs(defendersPoints.getScore() - attackersPoints.getScore()));
+            targetTerritory.getFortification().getScore().RemoveScoreLifePoints(Math.abs(defendersPoints.getScore() - attackersPoints.getScore()));
 
-            // ToDo: Vol de score
+            fr.craftandconquest.warofsquirrels.object.scoring.Score attackerFactionScore = cityAttacker.getFaction().getScore();
+            fr.craftandconquest.warofsquirrels.object.scoring.Score defenderFactionScore = cityDefender.getFaction().getScore();
+
+            if (attackerFactionScore.getGlobalScore() < defenderFactionScore.getGlobalScore()) {
+                float clampDefScore = Math.max(defenderFactionScore.getGlobalScore(), 1f);
+                float clampAtkScore = Math.max(attackerFactionScore.getGlobalScore(), 1f);
+                float ratioScore = Math.min(3, clampDefScore / clampAtkScore);
+                int pointsRound = Math.round((attackersPoints.getScore() - defendersPoints.getScore()) * ratioScore);
+                int scoreStolen = Math.min(pointsRound, defenderFactionScore.getGlobalScore());
+                int scoreSplitFull = Math.round(scoreStolen * 0.65f);
+                int scoreSplitReduce = Math.round(scoreStolen * 0.3f);
+
+                for (FullPlayer attacker : attackers) {
+                    Faction attackerF = attacker.getCity().getFaction();
+                    int scoreGiven;
+
+                    if (attackerF.equals(cityAttacker.getFaction())) {
+                        if (attacker.hasPassEnoughTimeInCity()) {
+                            scoreGiven = scoreSplitFull;
+                        } else {
+                            scoreGiven = scoreSplitReduce;
+                        }
+                    } else
+                        scoreGiven = scoreSplitReduce;
+
+                    attacker.getScore().AddScore(scoreGiven);
+                    attacker.sendMessage(ChatText.Success("You won '" + scoreGiven + "' score from this war."));
+                }
+
+                attackerFactionScore.AddWarScore(scoreStolen);
+                defenderFactionScore.AddWarScore(-scoreStolen);
+                WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(cityAttacker.getFaction(), null,
+                        ChatText.Colored("You stole '" + scoreStolen + "' score from faction '" + cityDefender.getFaction() + "'", ChatFormatting.GOLD), true);
+                WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(cityDefender.getFaction(), null,
+                        ChatText.Colored("You got stolen '" + scoreStolen + "' score by faction '" + cityAttacker.getFaction() + "'", ChatFormatting.GOLD), true);
+            }
 
             if (influence.getValue() <= 0) {
                 text.append(ChatText.Colored("\n Faction " + cityAttacker.getFaction().getDisplayName() + " lost all his influence on territory '" + targetTerritory.getName() + "' and territory has fall.", ChatFormatting.GOLD));

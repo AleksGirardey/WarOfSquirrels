@@ -10,12 +10,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Score {
     @JsonProperty @Getter @Setter private int todayScore = 0;
+    @JsonProperty @Getter @Setter private int todayWarScore = 0;
     @JsonProperty @Getter @Setter private int globalScore = 0;
     @JsonProperty @Getter @Setter private int scoreLifePoints = 0;
 
     public void AddScore(int points) {
         todayScore += points;
     }
+    public void AddWarScore(int points) { todayWarScore += points; }
 
     public void AddScoreLifePoints(int lifePoints) {
         if (scoreLifePoints + lifePoints >= 800) {
@@ -32,11 +34,14 @@ public class Score {
 
     public void UpdateScore() {
         globalScore += todayScore;
+        globalScore += todayWarScore;
         todayScore = 0;
+        todayWarScore = 0;
     }
 
     public void ResetScore() {
         todayScore = 0;
+        todayWarScore = 0;
         globalScore = 0;
     }
 

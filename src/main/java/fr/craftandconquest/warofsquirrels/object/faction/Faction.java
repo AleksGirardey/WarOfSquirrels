@@ -180,17 +180,24 @@ public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
     @Override
     public void updateScore() {
         List<FullPlayer> players = new ArrayList<>();
+        int todayWarScore = 0;
+        int todayScore = 0;
 
         for (City city : cities.values()) {
-            score.AddScore(city.getScore().getTodayScore());
+            todayScore = city.getScore().getTodayScore();
+            todayWarScore = city.getScore().getTodayWarScore();
             city.getScore().UpdateScore();
             players.addAll(city.getCitizens());
         }
 
-        int scoreToPlayers = Math.round(score.getTodayScore() * 0.2f);
+        int ratioPlayers = Math.min(players.size() / 20, 1);
+        int scoreToPlayers = Math.round(score.getTodayScore() * 0.2f) / ratioPlayers;
 
         for (FullPlayer player : players) {
             player.getScore().AddScore(scoreToPlayers);
         }
+
+        score.AddScore(todayScore + todayWarScore);
+        score.UpdateScore();
     }
 }

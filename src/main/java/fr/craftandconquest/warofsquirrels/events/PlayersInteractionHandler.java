@@ -186,8 +186,36 @@ public class PlayersInteractionHandler {
         WarOfSquirrels.instance.getPlayerHandler().SetReincarnation(fullPlayerTarget);
         WarHandler warHandler = WarOfSquirrels.instance.getWarHandler();
 
+        int ratio = 0;
+        int cap = 0;
+
         if (warHandler.Contains(fullPlayerTarget) && warHandler.Contains(fullPlayerKiller)) {
             WarOfSquirrels.instance.getWarHandler().AddPoints(fullPlayerKiller, fullPlayerTarget);
+            ratio = 15;
+            cap = 4;
+        } else {
+            ratio = 10;
+            cap = 3;
+        }
+
+        int scoreTarget = Math.max(fullPlayerTarget.getScore().getGlobalScore(), 1);
+        int scoreKiller = Math.max(fullPlayerKiller.getScore().getGlobalScore(), 1);
+
+        if (scoreKiller >= scoreTarget) return;
+
+        boolean targetHasCity = fullPlayerTarget.getCity() != null;
+        boolean targetHasFaction = targetHasCity && fullPlayerTarget.getCity().getFaction() != null;
+        boolean killerHasCity = fullPlayerKiller.getCity() != null;
+        boolean killerHasFaction = killerHasCity && fullPlayerKiller.getCity().getFaction() != null;
+
+        boolean areEnemies = targetHasFaction && killerHasFaction && WarOfSquirrels.instance.getDiplomacyHandler().getEnemies(
+                fullPlayerKiller.getCity().getFaction()).contains(fullPlayerTarget.getCity().getFaction());
+
+        if (areEnemies) {
+            int score = ratio * Math.min(cap, (scoreTarget / scoreKiller));
+
+            fullPlayerKiller.getScore().AddScore(score);
+            fullPlayerKiller.sendMessage(ChatText.Success("You won '" + score + "' score by killing '" + fullPlayerTarget.getDisplayName() + "'"));
         }
     }
 
