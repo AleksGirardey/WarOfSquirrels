@@ -16,7 +16,6 @@ public class WarTask extends TimerTask {
         secondsLeft--;
 
         war.UpdateCapture();
-        war.UpdateTimer(secondsLeft);
 
         if (beforeMinutes == 0) {
             war.AddDefenderPoints(33);

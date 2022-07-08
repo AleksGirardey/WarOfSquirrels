@@ -140,8 +140,8 @@ public class WarHandler {
             player.sendMessage(ChatText.Success("--=== Battles [" + wars.size() + "] ===--"));
 
             for (War war : wars)
-                player.sendMessage(ChatText.Success(war.getCityAttacker().getDisplayName() + " [" + war.getAttackersPoints().getScore() + "] vs. "
-                        + war.getCityDefender().getDisplayName() + " [" + war.getDefendersPoints().getScore() + "]"));
+                player.sendMessage(ChatText.Success(war.getCityAttacker().getDisplayName() + " [" + war.getAttackersPoints() + "] vs. "
+                        + war.getCityDefender().getDisplayName() + " [" + war.getDefendersPoints() + "]"));
         } else
             player.sendMessage(ChatText.Success("There is no battles at this moment."));
     }

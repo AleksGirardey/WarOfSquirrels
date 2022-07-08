@@ -41,7 +41,8 @@ public class WarOfSquirrels {
 
     private final CommandRegisterManager commandRegisterManager;
 
-    private final static ResourceLocation SpawnDimension = new ResourceLocation("minecraft", "craftandconquest/spawn");
+    public final static String modRegistryKey = "craftandconquest";
+    private final static ResourceLocation SpawnDimension = new ResourceLocation("minecraft",  modRegistryKey + "/spawn");
     public static final ResourceKey<Level> SPAWN = ResourceKey.create(Registry.DIMENSION_REGISTRY, SpawnDimension);
     @Getter
     private Boolean isModInit = false;
