@@ -151,13 +151,19 @@ public class WarHandler {
 
         if (!war.getState().equals(War.WarState.War)) return;
 
-        if (war.isDefender(killer) && war.isAttacker(victim))
+        if (war.isDefender(killer) && war.isAttacker(victim)) {
             war.AddDefenderKillPoints();
+            killer.setWarPlayerKillCount(killer.getWarPlayerKillCount() + 1);
+        }
         else if (war.isAttacker(killer) && war.isDefender(victim)) {
-            if (war.isTarget(victim))
+            if (war.isTarget(victim)) {
                 war.AddAttackerTargetKillPoints();
-            else
+                killer.setWarTargetKillCount(killer.getWarTargetKillCount() + 1);
+            }
+            else {
                 war.AddAttackerKillPoints();
+                killer.setWarPlayerKillCount(killer.getWarPlayerKillCount() + 1);
+            }
         }
     }
 

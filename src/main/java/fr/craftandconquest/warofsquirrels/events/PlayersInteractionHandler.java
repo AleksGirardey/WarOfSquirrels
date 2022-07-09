@@ -177,7 +177,6 @@ public class PlayersInteractionHandler {
     @SubscribeEvent
     public void OnPvPDeath(LivingDeathEvent event) {
         if (!(event.getEntity() instanceof Player target)) return;
-
         if (!(event.getSource().getEntity() instanceof Player killer)) return;
 
         FullPlayer fullPlayerTarget = WarOfSquirrels.instance.getPlayerHandler().get(target.getUUID());
@@ -189,11 +188,14 @@ public class PlayersInteractionHandler {
         int ratio = 0;
         int cap = 0;
 
-        if (warHandler.Contains(fullPlayerTarget) && warHandler.Contains(fullPlayerKiller)) {
+        boolean isKillInWar = warHandler.Contains(fullPlayerTarget) && warHandler.Contains(fullPlayerKiller);
+
+        if (isKillInWar) {
             WarOfSquirrels.instance.getWarHandler().AddPoints(fullPlayerKiller, fullPlayerTarget);
             ratio = 15;
             cap = 4;
         } else {
+            Utils.IncrementKillCount(fullPlayerTarget, fullPlayerKiller);
             ratio = 10;
             cap = 3;
         }

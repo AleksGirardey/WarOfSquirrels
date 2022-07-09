@@ -398,13 +398,16 @@ public class War implements IChannelTarget {
     public boolean RemovePlayer(FullPlayer player) {
         City city = player.getCity();
 
-        if (attackers.contains(player))
+        if (attackers.contains(player)) {
             attackers.remove(player);
-        else if (defenders.contains(player) && city != cityDefender) {
+            warDisplay.RemoveAttacker(player);
+        } else if (defenders.contains(player) && city != cityDefender) {
             defenders.remove(player);
             --attackersLimit;
+            warDisplay.RemoveDefender(player);
         } else
             return false;
+
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null,
                 ChatText.Colored(player.getDisplayName()
                         + " left the battlefield [" + attackers.size() + "/" + attackersLimit + "]", ChatFormatting.GOLD),

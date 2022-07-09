@@ -45,11 +45,21 @@ public class FullPlayer implements IPermission, IScoreUpdater {
     @JsonProperty @Getter @Setter private boolean whitelistCityCreator = false;
     @JsonProperty @Getter @Setter private Date cityJoinDate;
 
+    // Data
+    @JsonProperty @Getter @Setter private long playTimeInMillis = 0L;
+    @JsonProperty @Getter @Setter private int deathCount = 0;
+
+    @JsonProperty @Getter @Setter private int monsterKillCount = 0;
+    @JsonProperty @Getter @Setter private int mobKillCount = 0;
+    @JsonProperty @Getter @Setter private int freeForAllPlayerKillCount = 0;
+    @JsonProperty @Getter @Setter private int warPlayerKillCount = 0;
+    @JsonProperty @Getter @Setter private int warTargetKillCount = 0;
+
     /* -- Extra Fields -- */
     @Getter @Setter private int lastChunkX = 10000;
     @Getter @Setter private int lastChunkZ = 10000;
     @Getter @Setter private boolean reincarnation;
-
+    @JsonIgnore @Getter @Setter private long connectionTimestamp = -1;
 
     @JsonIgnore @Getter @Setter private boolean adminMode;
     @JsonIgnore @Getter private City city;

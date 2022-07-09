@@ -11,6 +11,7 @@ import net.minecraft.server.bossevents.CustomBossEvent;
 import net.minecraft.server.bossevents.CustomBossEvents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 import net.minecraft.world.scores.Team;
@@ -34,7 +35,7 @@ public class WarDisplay {
         events = WarOfSquirrels.server.getCustomBossEvents();
         scoreboard = WarOfSquirrels.server.getScoreboard();
 
-        warKey = war.getCityAttacker().getDisplayName() + "_" + war.getCityDefender().getDisplayName();
+        warKey = (war.getCityAttacker().getDisplayName() + "_" + war.getCityDefender().getDisplayName()).toLowerCase();
 
         City attacker = war.getCityAttacker();
         City defender = war.getCityDefender();
@@ -53,7 +54,7 @@ public class WarDisplay {
         PlayerTeam team = scoreboard.addPlayerTeam(teamName);
 
         team.setColor(color);
-        team.setPlayerPrefix(new TextComponent(prefix));
+        team.setPlayerPrefix(new TextComponent("[" + prefix + "] "));
         team.setCollisionRule(Team.CollisionRule.PUSH_OTHER_TEAMS);
         team.setAllowFriendlyFire(false);
         team.setDisplayName(new TextComponent(displayName));
@@ -75,28 +76,41 @@ public class WarDisplay {
     public void UpdateScore() {
         int score = targetWar.getAttackersPoints();
         attackerPointsBar.setValue(score);
-        attackerPointsBar.setName(new TextComponent(targetWar.getCityAttacker().getDisplayName() + "[" + score + "]"));
+        attackerPointsBar.setName(new TextComponent(targetWar.getCityAttacker().getDisplayName() + " [" + score + "]"));
 
         score = targetWar.getDefendersPoints();
         defenderPointsBar.setValue(score);
-        defenderPointsBar.setName(new TextComponent(targetWar.getCityDefender().getDisplayName() + "[" + score + "]"));
+        defenderPointsBar.setName(new TextComponent(targetWar.getCityDefender().getDisplayName() + " [" + score + "]"));
     }
 
     public void AddAttacker(FullPlayer player) {
-        AddPlayer((ServerPlayer) player.getPlayerEntity());
+        AddPlayer(player.getPlayerEntity(), attackerTeam);
+    }
 
-        scoreboard.addPlayerToTeam(player.getPlayerEntity().getScoreboardName(), attackerTeam);
+    public void RemoveAttacker(FullPlayer player) {
+        RemovePlayer(player.getPlayerEntity(), attackerTeam);
     }
 
     public void AddDefender(FullPlayer player) {
-        AddPlayer((ServerPlayer) player.getPlayerEntity());
-
-        scoreboard.addPlayerToTeam(player.getPlayerEntity().getScoreboardName(), defenderTeam);
+        AddPlayer(player.getPlayerEntity(), defenderTeam);
     }
 
-    private void AddPlayer(ServerPlayer player) {
-        attackerPointsBar.addPlayer(player);
-        defenderPointsBar.addPlayer(player);
+    public void RemoveDefender(FullPlayer player) {
+        RemovePlayer(player.getPlayerEntity(), defenderTeam);
+    }
+
+    private void RemovePlayer(Player player, PlayerTeam team) {
+        attackerPointsBar.removePlayer((ServerPlayer) player);
+        defenderPointsBar.removePlayer((ServerPlayer) player);
+
+        scoreboard.removePlayerFromTeam(player.getScoreboardName(), team);
+    }
+
+    private void AddPlayer(Player player, PlayerTeam team) {
+        attackerPointsBar.addPlayer((ServerPlayer) player);
+        defenderPointsBar.addPlayer((ServerPlayer) player);
+
+        scoreboard.addPlayerToTeam(player.getScoreboardName(), team);
     }
 
     public void UpdatePlayers() {

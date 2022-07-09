@@ -112,6 +112,8 @@ public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
                 message.append(", ");
         }
 
+        message.append("\n Score (Upcoming): " + score);
+
         message.append("\n Permissions:\n").append(displayPermissions());
 
         player.sendMessage(message);
@@ -190,8 +192,9 @@ public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
             players.addAll(city.getCitizens());
         }
 
-        int ratioPlayers = Math.min(players.size() / 20, 1);
-        int scoreToPlayers = Math.round(score.getTodayScore() * 0.2f) / ratioPlayers;
+        float ratioPlayers = Math.min(players.size() / 20f, 1f);
+        WarOfSquirrels.instance.debugLog("[" + displayName + "] RatioPlayers: " + ratioPlayers);
+        int scoreToPlayers = Math.round((score.getTodayScore() * 0.2f) / ratioPlayers);
 
         for (FullPlayer player : players) {
             player.getScore().AddScore(scoreToPlayers);

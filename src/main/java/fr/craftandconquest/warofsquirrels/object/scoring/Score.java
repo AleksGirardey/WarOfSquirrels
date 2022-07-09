@@ -48,4 +48,9 @@ public class Score {
     public void ResetScoreLifePoints() {
         scoreLifePoints = 0;
     }
+
+    @Override
+    public String toString() {
+        return globalScore + " (Normal: " + (todayScore >= 0 ? "+" : "") + todayScore +")(War: " + todayWarScore + ")";
+    }
 }

@@ -78,6 +78,8 @@ public class ServerEvents {
         logger.info(String.format("[WoS][WorldInteraction][PlayerLoggedIn] Player %s added to %s channels",
                 player.getDisplayName(), targets.size()));
 
+        player.setConnectionTimestamp(System.currentTimeMillis());
+
         // Ajouter les canaux de support et d'admin
     }
 
@@ -94,6 +96,8 @@ public class ServerEvents {
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerToWorldAnnounce(player);
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerFromTargets(player);
 
+        UpdatePlayTime(player);
+
         logger.info(String.format("[WoS][WorldInteraction][PlayerLoggedOut] Player %s removed from all channels",
                 player.getDisplayName()));
     }
@@ -102,10 +106,22 @@ public class ServerEvents {
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnServerShuttingDown(ServerStoppingEvent event) {
+        List<FullPlayer> players = WarOfSquirrels.instance.getPlayerHandler().getAll();
+
+        for (FullPlayer player : players) {
+            if (player.isOnline())
+                UpdatePlayTime(player);
+        }
+
         WarOfSquirrels.instance.getWarHandler().CancelWars();
         WarOfSquirrels.instance.getUpdateHandler().CancelTask();
         WarOfSquirrels.instance.getUpdateHandler().SaveTask();
 
         BackUpUtils.DoBackUp();
+    }
+
+    private void UpdatePlayTime(FullPlayer player) {
+        player.setPlayTimeInMillis(player.getPlayTimeInMillis() + (System.currentTimeMillis() - player.getConnectionTimestamp()));
+        player.setConnectionTimestamp(-1L);
     }
 }

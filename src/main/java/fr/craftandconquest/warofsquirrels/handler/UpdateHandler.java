@@ -30,9 +30,13 @@ public class UpdateHandler {
     }
 
     public void ScoreUpdate() {
+        WarOfSquirrels.instance.debugLog("== Bastion Update Score ==");
         WarOfSquirrels.instance.getBastionHandler().updateScore();
+        WarOfSquirrels.instance.debugLog("== City Update Score ==");
         WarOfSquirrels.instance.getCityHandler().updateScore();
+        WarOfSquirrels.instance.debugLog("== Faction Update Score ==");
         WarOfSquirrels.instance.getFactionHandler().updateScore();
+        WarOfSquirrels.instance.debugLog("== Player Update Score ==");
         WarOfSquirrels.instance.getPlayerHandler().updateScore();
     }
 

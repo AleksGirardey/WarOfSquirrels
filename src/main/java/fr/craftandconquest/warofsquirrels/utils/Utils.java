@@ -129,6 +129,23 @@ public class Utils {
         return player.getDisplayName();
     }
 
+    public static String getPlayTime(long value) {
+        int time = (int) value;
+        int hoursInMillis = 60 * 60 * 1000;
+        int minInMillis = 60 * 1000;
+        int secInMillis = 1000;
+
+        int hours = time / hoursInMillis;
+        time = time % hoursInMillis;
+
+        int min = time / minInMillis;
+        time = time % minInMillis;
+
+        int sec = time / secInMillis;
+
+        return (hours > 0 ? hours + "h " : "") + (min > 0 ? min + "min " : (hours > 0 ? "00min " : "")) + sec + "sec";
+    }
+
     public static String toTime(int value) {
         int minutes, seconds;
         String res = "";
@@ -297,6 +314,18 @@ public class Utils {
         }
 
         player.sendMessage(message, Util.NIL_UUID);
+    }
+
+    public static void IncrementKillCount(FullPlayer target, FullPlayer killer) {
+        if (target.getCity() != null && killer.getCity() != null) {
+            if (target.getCity().equals(killer.getCity()) ||
+                    (target.getCity().getFaction() != null
+                            && killer.getCity().getFaction() != null
+                            && target.getCity().getFaction().equals(killer.getCity().getFaction())))
+                return;
+        }
+
+        killer.setFreeForAllPlayerKillCount(killer.getFreeForAllPlayerKillCount() + 1);
     }
 
     public static float clamp(float val, float min, float max) {

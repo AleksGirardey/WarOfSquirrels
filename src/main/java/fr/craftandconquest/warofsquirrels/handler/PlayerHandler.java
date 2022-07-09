@@ -166,7 +166,7 @@ public class PlayerHandler extends Handler<FullPlayer> {
             public void run() {
                 CancelReincarnation(player);
             }
-        }, WarOfSquirrels.instance.getConfig().getReincarnationTime() * 1000);
+        }, WarOfSquirrels.instance.getConfig().getReincarnationTime() * 1000L);
 
         return timer;
     }

@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -35,12 +36,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.common.ToolActions;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.core.jmx.Server;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -279,6 +282,30 @@ public class WorldInteractionHandler {
         if (!canFarm) {
             event.setCanceled(true);
             player.sendMessage(ChatText.Error("You have no right to interact with this entity."));
+        }
+    }
+
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    @SubscribeEvent
+    public void OnLivingDeath(LivingDeathEvent event) {
+        FullPlayer player;
+
+        if (event.getEntity() instanceof ServerPlayer) {
+            player = WarOfSquirrels.instance.getPlayerHandler().get(event.getEntity().getUUID());
+
+            player.setDeathCount(player.getDeathCount() + 1);
+            return;
+        }
+
+        if (!(event.getSource().getEntity() instanceof ServerPlayer sourcePlayer)) return;
+
+        player = WarOfSquirrels.instance.getPlayerHandler().get(sourcePlayer.getUUID());
+
+        if (event.getEntityLiving() instanceof Monster) {
+            player.setMonsterKillCount(player.getMonsterKillCount() + 1);
+        }
+        else if (event.getEntityLiving() instanceof Mob) {
+            player.setMobKillCount(player.getMobKillCount() + 1);
         }
     }
 
