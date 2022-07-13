@@ -5,5 +5,6 @@ public enum BroadCastTarget {
     FACTION,
     WAR,
     GENERAL,
-    PARTY
+    PARTY,
+    GUILD,
 }

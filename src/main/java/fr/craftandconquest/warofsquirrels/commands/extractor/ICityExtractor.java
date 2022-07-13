@@ -54,7 +54,7 @@ public interface ICityExtractor {
 
     default CompletableFuture<Suggestions> suggestions(SuggestionsBuilder builder, List<City> cities) {
         for (City city : cities) {
-            builder.suggest(city.displayName);
+            builder.suggest(city.getDisplayName());
         }
 
         return builder.buildFuture();

@@ -19,7 +19,7 @@ public interface IFortification extends IScoreUpdater {
 
     @JsonIgnore String getDisplayName();
 
-    @JsonIgnore UUID getUniqueId();
+    @JsonIgnore UUID getUuid();
 
     @JsonIgnore Faction getFaction();
 

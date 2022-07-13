@@ -40,12 +40,12 @@ public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
         this.factionUuid = UUID.randomUUID();
         this.displayName = displayName;
         this.capital = capital;
-        this.capitalUuid = capital.getCityUuid();
+        this.capitalUuid = capital.getUuid();
     }
 
     public void SetCapital(City city) {
         this.capital = city;
-        this.capitalUuid = city.getCityUuid();
+        this.capitalUuid = city.getUuid();
     }
 
     public void addCity(City city) {
@@ -138,6 +138,11 @@ public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
     }
 
     @Override
+    public EPermissionType getPermissionType() {
+        return EPermissionType.FACTION;
+    }
+
+    @Override
     public BroadCastTarget getBroadCastTarget() {
         return BroadCastTarget.FACTION;
     }
@@ -159,7 +164,7 @@ public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
 
     @Override
     public String toString() {
-        return String.format("[%s] %s", displayName, capital.displayName);
+        return String.format("[%s] %s", displayName, capital.getDisplayName());
     }
 
     @Override

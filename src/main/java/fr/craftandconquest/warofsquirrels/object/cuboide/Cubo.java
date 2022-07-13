@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.PlayerHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.faction.Guild;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
@@ -32,6 +33,12 @@ public class Cubo {
     @Getter
     @Setter
     private UUID cityUuid;
+
+    @JsonProperty
+    @Getter
+    @Setter
+    private UUID guildUuid;
+
     @JsonProperty
     @Getter
     @Setter
@@ -67,6 +74,10 @@ public class Cubo {
     @JsonIgnore
     @Getter
     private City city;
+
+    @JsonIgnore
+    @Getter
+    private Guild guild;
     @JsonIgnore
     @Getter
     private Cubo parent;
@@ -116,7 +127,12 @@ public class Cubo {
 
     public void setCity(City city) {
         this.city = city;
-        this.cityUuid = city.getUniqueId();
+        this.cityUuid = city != null ? city.getUuid() : null;
+    }
+
+    public void setGuild(Guild guild) {
+        this.guild = guild;
+        this.guildUuid = guild != null ? guild.getUuid() : null;
     }
 
     public void setParent(Cubo parent) {
@@ -132,7 +148,7 @@ public class Cubo {
     public void SpreadPermissionDelete(IPermission target) {
         if (target instanceof FullPlayer) {
             customInList.remove(target);
-            customInListUuid.remove(((FullPlayer) target).getUuid());
+            customInListUuid.remove(target.getUuid());
         }
     }
 

@@ -1,6 +1,5 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.FakePlayer;
@@ -29,8 +28,7 @@ public class PlayerHandler extends Handler<FullPlayer> {
         reincarnation = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<List<FullPlayer>>() {
-        })) return;
+        if (!Load()) return;
 
         Log();
     }

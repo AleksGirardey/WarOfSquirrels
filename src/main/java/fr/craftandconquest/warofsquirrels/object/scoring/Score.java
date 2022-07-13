@@ -51,6 +51,6 @@ public class Score {
 
     @Override
     public String toString() {
-        return globalScore + " (Normal: " + (todayScore >= 0 ? "+" : "") + todayScore +")(War: " + todayWarScore + ")";
+        return globalScore + " (Normal: " + (todayScore >= 0 ? "+" : "") + todayScore +")(War: " + (todayWarScore >= 0 ? "+" : "") + todayWarScore + ")";
     }
 }

@@ -68,7 +68,7 @@ public class FactionCreateCommand extends CityMayorCommandBuilder implements ITe
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(ChatText.Colored(
                 player.getDisplayName() + " has formed the nation '" + fName +
-                        "' and set '" + player.getCity().displayName + "' as capital", ChatFormatting.GOLD));
+                        "' and set '" + player.getCity().getDisplayName() + "' as capital", ChatFormatting.GOLD));
 
         WarOfSquirrels.instance.getBroadCastHandler().AddTarget(faction, new FactionChannel(faction));
         for (FullPlayer p : player.getCity().getCitizens())

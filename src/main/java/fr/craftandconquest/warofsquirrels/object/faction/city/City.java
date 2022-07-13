@@ -9,6 +9,7 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
+import fr.craftandconquest.warofsquirrels.object.faction.Upgradable;
 import fr.craftandconquest.warofsquirrels.object.permission.*;
 import fr.craftandconquest.warofsquirrels.object.scoring.Score;
 import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
@@ -33,15 +34,12 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class City implements IPermission, IFortification, IChannelTarget, AttackTarget {
-    @JsonProperty @Getter @Setter private UUID cityUuid;
-    @JsonProperty @Setter public String displayName;
+public class City extends Upgradable implements IPermission, IFortification, IChannelTarget, AttackTarget {
     @JsonProperty public String tag;
     @JsonProperty @Setter private Score score = new Score();
     @JsonProperty public UUID ownerUUID;
     @JsonProperty @Getter @Setter private UUID factionUuid;
     @JsonProperty @Getter @Setter private UUID territoryUuid;
-    @JsonProperty @Getter @Setter private ChestLocation upgradeChestLocation;
     @JsonProperty @Getter @Setter private boolean hasAttackedToday = false;
     @JsonProperty @Getter @Setter private Map<PermissionRelation, Permission> defaultPermission;
     @JsonProperty @Getter @Setter private List<CustomPermission> customPermissionList = new ArrayList<>();
@@ -107,13 +105,13 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         player.reset();
 
         player.sendMessage(ChatText.Error(isKicked ?
-                "You got expelled of " + displayName + "." : "You left " + displayName));
+                "You got expelled from " + displayName + "." : "You left " + displayName));
 
         MutableComponent messageToCity = ChatText.Error(player.getDisplayName() + (isKicked ?
                 " got expelled from the city." : " left the city."));
 
-        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null, messageToCity, true);
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerFromTarget(this, player);
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null, messageToCity, true);
 
         return true;
     }
@@ -147,11 +145,6 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     }
 
     @Override
-    public UUID getUuid() {
-        return cityUuid;
-    }
-
-    @Override
     public PermissionTarget getPermissionTarget() {
         return PermissionTarget.CITY;
     }
@@ -162,6 +155,11 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     }
 
     @Override
+    public EPermissionType getPermissionType() {
+        return EPermissionType.CITY;
+    }
+
+    @Override
     public BroadCastTarget getBroadCastTarget() {
         return BroadCastTarget.CITY;
     }
@@ -169,11 +167,6 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
     @Override
     public String toString() {
         return String.format("[%s] %s", tag, displayName);
-    }
-
-    @Override
-    public UUID getUniqueId() {
-        return cityUuid;
     }
 
     @Override
@@ -284,6 +277,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         player.sendMessage(message);
     }
 
+    @Override
     public String displayPermissions() {
         StringBuilder permissionsAsString = new StringBuilder();
 
@@ -300,6 +294,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
         return permissionsAsString.toString();
     }
 
+    @Override
     public void updateDependencies() {
         SetOwner(WarOfSquirrels.instance.getPlayerHandler().get(ownerUUID));
         SetFaction(WarOfSquirrels.instance.getFactionHandler().get(factionUuid));
@@ -315,8 +310,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
         cityUpgrade.Populate(this);
 
-        if (upgradeChestLocation != null)
-            upgradeChestLocation.update();
+        super.updateDependencies();
     }
 
     public boolean register(FullPlayer player) {
@@ -372,7 +366,7 @@ public class City implements IPermission, IFortification, IChannelTarget, Attack
 
         City city = (City) obj;
 
-        return city.getUuid().equals(this.cityUuid);
+        return city.getUuid().equals(this.getUuid());
     }
 
     @JsonIgnore

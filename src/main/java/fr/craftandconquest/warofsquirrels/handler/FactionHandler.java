@@ -1,6 +1,5 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Diplomacy;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
@@ -29,8 +28,7 @@ public class FactionHandler extends Handler<Faction> {
         factionMap = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<>() {
-        })) return;
+        if (!Load()) return;
 
         Log();
     }

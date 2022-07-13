@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
+import fr.craftandconquest.warofsquirrels.commands.extractor.IFactionExtractor;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
@@ -14,10 +15,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
-public class FactionInfoCommand extends CommandBuilder {
+public class FactionInfoCommand extends CommandBuilder implements IFactionExtractor {
     private static final FactionInfoCommand withArgCmd = new FactionInfoCommand(true);
-
-    private final String argumentName = "[Faction]";
 
     public FactionInfoCommand() {
         this(false);
@@ -31,10 +30,8 @@ public class FactionInfoCommand extends CommandBuilder {
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("info")
-                .executes(this)
-                .then(Commands.argument(argumentName, StringArgumentType.string())
-                        .executes(withArgCmd));
+        return Commands.literal("info").executes(this)
+                .then(getFactionRegister().executes(withArgCmd));
     }
 
     @Override
@@ -42,7 +39,7 @@ public class FactionInfoCommand extends CommandBuilder {
         Faction faction;
 
         if (withArg) {
-            faction = WarOfSquirrels.instance.getFactionHandler().get(context.getArgument(argumentName, String.class));
+            faction = getFaction(context);
         } else {
             faction = player.getCity() != null ? player.getCity().getFaction() : null;
         }
@@ -55,7 +52,7 @@ public class FactionInfoCommand extends CommandBuilder {
         Faction faction;
 
         if (withArg) {
-            faction = WarOfSquirrels.instance.getFactionHandler().get(context.getArgument(argumentName, String.class));
+            faction = getFaction(context);
         } else {
             faction = player.getCity().getFaction();
         }

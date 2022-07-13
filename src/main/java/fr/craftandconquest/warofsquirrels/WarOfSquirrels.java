@@ -78,6 +78,8 @@ public class WarOfSquirrels {
     @Getter private AdminHandler adminHandler;
     @Getter private BastionHandler bastionHandler;
 
+    @Getter private GuildHandler guildHandler;
+
     public Config config;
 
     public WarOfSquirrels() {
@@ -131,6 +133,7 @@ public class WarOfSquirrels {
         broadCastHandler = new BroadCastHandler(LOGGER);
         adminHandler = new AdminHandler(LOGGER);
         bastionHandler = new BastionHandler(LOGGER);
+        guildHandler = new GuildHandler(LOGGER);
 
         AddSaveListeners();
 

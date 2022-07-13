@@ -116,7 +116,7 @@ public class BroadCastHandler {
     public void cityInvitation(FullPlayer receiver, FullPlayer sender, City city) {
         String invitationMessage = sender.getDisplayName() +
                 " invited you to join " +
-                city.displayName +
+                city.getDisplayName() +
                 ". Use /accept or /refuse to respond.";
         String cityMessage = receiver.getDisplayName() + " has been invited to join your city.";
         receiver.sendMessage(new TextComponent(invitationMessage));
@@ -141,7 +141,7 @@ public class BroadCastHandler {
         MutableComponent text = new TextComponent("");
 
         if (state == War.WarState.Preparation)
-            text.append(war.getCityAttacker().displayName + " attacks " + war.getCityDefender() + " prepare yourself for the fight. You have 2 minutes before the hostilities starts !");
+            text.append(war.getCityAttacker().getDisplayName() + " attacks " + war.getCityDefender() + " prepare yourself for the fight. You have 2 minutes before the hostilities starts !");
         else if (state == War.WarState.War)
             text.append("Let the battle... BEGIN !");
         else

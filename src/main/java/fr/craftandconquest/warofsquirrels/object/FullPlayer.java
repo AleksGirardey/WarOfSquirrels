@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
+import fr.craftandconquest.warofsquirrels.object.faction.Guild;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionTarget;
@@ -36,7 +37,9 @@ public class FullPlayer implements IPermission, IScoreUpdater {
     @JsonProperty("DisplayName") @Getter @Setter private String displayName;
     @JsonProperty @Getter @Setter private Score score = new Score();
     @JsonProperty private UUID cityUuid;
+    @JsonProperty private UUID guildUuid;
     @JsonProperty @Getter @Setter private Boolean assistant;
+    @JsonProperty @Getter @Setter private Boolean assistantGuild;
     @JsonProperty @Getter @Setter private Boolean resident = false;
     @JsonProperty @Getter @Setter private int balance;
     @JsonProperty @Getter @Setter private boolean fake = false;
@@ -63,17 +66,23 @@ public class FullPlayer implements IPermission, IScoreUpdater {
 
     @JsonIgnore @Getter @Setter private boolean adminMode;
     @JsonIgnore @Getter private City city;
+    @JsonIgnore @Getter private Guild guild;
     @JsonIgnore public Vector3 lastPosition;
     @JsonIgnore @Getter @Setter private BroadCastTarget chatTarget;
 
     public void setCity(City city) {
-        cityUuid = city != null ? city.getCityUuid() : null;
+        cityUuid = city != null ? city.getUuid() : null;
         this.city = city;
     }
 
+    public void setGuild(Guild guild) {
+        guildUuid = guild != null ? guild.getUuid() : null;
+        this.guild = guild;
+    }
+
     public void updateDependencies() {
-        if (cityUuid != null)
-            WarOfSquirrels.instance.getCityHandler().getCity(cityUuid).register(this);
+        if (cityUuid != null) WarOfSquirrels.instance.getCityHandler().getCity(cityUuid).register(this);
+        if (guildUuid != null) WarOfSquirrels.instance.getGuildHandler().get(uuid).register(this);
     }
 
     @JsonIgnore
@@ -88,6 +97,16 @@ public class FullPlayer implements IPermission, IScoreUpdater {
     @Override
     public String getPermissionDisplayName() {
         return "P:" + getDisplayName();
+    }
+
+    @Override
+    public String displayPermissions() {
+        return "";
+    }
+
+    @Override
+    public EPermissionType getPermissionType() {
+        return EPermissionType.PLAYER;
     }
 
     @JsonIgnore

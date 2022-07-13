@@ -88,17 +88,14 @@ public class War implements IChannelTarget {
         attackersParty.forEach(this::AddAttacker);
 
         MutableComponent worldAnnounce = new TextComponent("The war horns roar. ");
-        MutableComponent attackerName = ChatText.Colored(attacker.displayName, ChatFormatting.BLUE);
-        MutableComponent defenderName = ChatText.Colored(defender.displayName, ChatFormatting.RED);
+        MutableComponent attackerName = ChatText.Colored(attacker.getDisplayName(), ChatFormatting.BLUE);
+        MutableComponent defenderName = ChatText.Colored(defender.getDisplayName(), ChatFormatting.RED);
         worldAnnounce.append(attackerName).append(" is attacking ").append(defenderName).append(" on territory ").append(targetTerritory.getName());
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(worldAnnounce);
 
-        WarOfSquirrels.instance.debugLog("Setting target");
         SetTarget();
-        WarOfSquirrels.instance.debugLog("Start glow timer");
         StartGlowingTimer();
-        WarOfSquirrels.instance.debugLog("Launch preparation");
         LaunchPreparation();
     }
 
@@ -109,14 +106,14 @@ public class War implements IChannelTarget {
             public void run() {
                 if (lastGlowPlayer <= 0) {
                     attackerCapturing.forEach(this::GlowPlayer);
-                    lastGlowPlayer = 15;
+                    lastGlowPlayer = 20;
                 } else {
                     --lastGlowPlayer;
                 }
             }
 
             private void GlowPlayer(FullPlayer player) {
-                player.getPlayerEntity().addEffect(new MobEffectInstance(MobEffects.GLOWING, 1000));
+                player.getPlayerEntity().addEffect(new MobEffectInstance(MobEffects.GLOWING, (int) (8 / WarOfSquirrels.server.getAverageTickTime())));
             }
         }, 0, 1000);
     }
@@ -140,8 +137,8 @@ public class War implements IChannelTarget {
     }
 
     private String SetTag() {
-        return cityAttacker.displayName.substring(0, 3) +
-                cityDefender.displayName.substring(0, 3);
+        return cityAttacker.getDisplayName().substring(0, 3) +
+                cityDefender.getDisplayName().substring(0, 3);
     }
 
     public void AddAttacker(FullPlayer player) {
@@ -265,9 +262,9 @@ public class War implements IChannelTarget {
         influenceLost = ChatText.Colored("Your faction lost " + pointsToRemove + " influence points on territory '", ChatFormatting.DARK_RED);
 
         if (hasDefenseWon) {
-            text = ChatText.Colored(cityAttacker.displayName
+            text = ChatText.Colored(cityAttacker.getDisplayName()
                     + " failed to win his attack against "
-                    + cityDefender.displayName
+                    + cityDefender.getDisplayName()
                     + "(" + attackersPoints + " - " + defendersPoints, ChatFormatting.GOLD);
 
             Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(cityAttacker);
@@ -276,9 +273,9 @@ public class War implements IChannelTarget {
             influenceLost.append(territory.getName() + "'");
             influenceMessageTarget = cityAttacker.getFaction();
         } else {
-            text = ChatText.Colored(cityAttacker.displayName
+            text = ChatText.Colored(cityAttacker.getDisplayName()
                     + " won his attack against "
-                    + cityDefender.displayName
+                    + cityDefender.getDisplayName()
                     + "(" + attackersPoints + " - " + defendersPoints, ChatFormatting.GOLD);
 
             Influence influence = WarOfSquirrels.instance.getInfluenceHandler().get(targetTerritory.getFaction(), targetTerritory);
@@ -453,8 +450,8 @@ public class War implements IChannelTarget {
     public void displayInfo(FullPlayer player) {
         MutableComponent message = new TextComponent("===| " + this.tag + " |===\n");
 
-        message.append(ChatText.Colored("Attackers [" + cityAttacker.displayName + "] : " + Utils.getStringFromPlayerList(attackers), ChatFormatting.BLUE));
-        message.append(ChatText.Colored("\nDefenders [" + cityDefender.displayName + "] : " + Utils.getStringFromPlayerList(defenders), ChatFormatting.RED));
+        message.append(ChatText.Colored("Attackers [" + cityAttacker.getDisplayName() + "] : " + Utils.getStringFromPlayerList(attackers), ChatFormatting.BLUE));
+        message.append(ChatText.Colored("\nDefenders [" + cityDefender.getDisplayName() + "] : " + Utils.getStringFromPlayerList(defenders), ChatFormatting.RED));
         message.append(ChatText.Colored("\nTarget : " + this.target.getDisplayName(), ChatFormatting.GOLD));
         message.append(ChatText.Colored("\nPhase : " + this.GetPhase() + " (time left : " + this.TimeLeft() + ")", ChatFormatting.WHITE));
         message.append(ChatText.Colored("\n===[" + cityAttacker.tag + "] "

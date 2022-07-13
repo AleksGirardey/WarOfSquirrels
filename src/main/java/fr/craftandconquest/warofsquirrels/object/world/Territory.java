@@ -55,7 +55,7 @@ public class Territory {
     public void SetFortification(IFortification fortification) {
         this.fortification = fortification;
         if (fortification != null)
-            this.fortificationUuid = fortification.getUniqueId();
+            this.fortificationUuid = fortification.getUuid();
     }
 
     public void SetFaction(Faction faction) {

@@ -1,11 +1,11 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.cuboide.VectorCubo;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
+import fr.craftandconquest.warofsquirrels.object.faction.Guild;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
@@ -15,7 +15,6 @@ import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.network.chat.MutableComponent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
@@ -36,8 +35,7 @@ public class CuboHandler extends Handler<Cubo> {
         super("[WoS][CuboHandler]", logger);
 
         if (!Init()) return;
-        if (!Load(new TypeReference<List<Cubo>>() {
-        })) return;
+        if (!Load()) return;
 
         Log();
     }
@@ -218,8 +216,21 @@ public class CuboHandler extends Handler<Cubo> {
         List<UUID> removeList = new ArrayList<>();
 
         dataArray.forEach(c -> {
-            if (c.getCity().equals(city))
+            if (c.getCity() != null && c.getCity().equals(city))
                 removeList.add(c.getUuid());
+        });
+
+        removeList.forEach(uuid -> Delete(getCubo(uuid)));
+        Save();
+        return true;
+    }
+
+    public boolean deleteGuild(Guild guild) {
+        List<UUID> removeList = new ArrayList<>();
+
+        dataArray.forEach(cubo -> {
+            if (cubo.getGuild() != null && cubo.getGuild().equals(guild))
+                removeList.add(cubo.getUuid());
         });
 
         removeList.forEach(uuid -> Delete(getCubo(uuid)));

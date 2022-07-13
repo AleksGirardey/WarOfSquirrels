@@ -15,6 +15,19 @@ public interface IPermission {
     @JsonIgnore
     String getPermissionDisplayName();
 
+    @JsonIgnore
+    String displayPermissions();
+
+    @JsonIgnore
+    EPermissionType getPermissionType();
+
+    enum EPermissionType {
+        PLAYER,
+        CITY,
+        FACTION,
+        GUILD,
+    }
+
     static IPermission getPermissionFromName(String entityName) {
         if (WarOfSquirrels.instance.getPlayerHandler().get(entityName) != null)
             return WarOfSquirrels.instance.getPlayerHandler().get(entityName);

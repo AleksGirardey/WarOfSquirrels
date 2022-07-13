@@ -85,13 +85,13 @@ public abstract class Handler<T> implements OnSaveListener {
         return dataArray;
     }
 
-    protected boolean Load(TypeReference<List<T>> typeReference) {
+    protected boolean Load() {
         String errorMessage = MessageFormat.format("{0} Couldn't load Json data.", PrefixLogger);
         ObjectMapper mapper = new ObjectMapper();
 
         try {
             if (new BufferedReader(new FileReader(getConfigPath())).readLine() != null) {
-                dataArray = mapper.readValue(configFile, typeReference);
+                dataArray = mapper.readValue(configFile, new TypeReference<List<T>>(){});
                 if (!Populate()) {
                     Logger.error(errorMessage + " (Populate)");
                     return false;

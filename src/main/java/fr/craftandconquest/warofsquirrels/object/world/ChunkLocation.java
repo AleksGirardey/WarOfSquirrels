@@ -11,6 +11,10 @@ public class ChunkLocation {
     public int PosZ;
     public ResourceKey<Level> DimensionId;
 
+    public ChunkLocation(Chunk chunk) {
+        this(chunk.getPosX(), chunk.getPosZ(), chunk.getDimension());
+    }
+
     public ChunkLocation(int posX, int posZ, ResourceKey<Level> dimensionId) {
         this.PosX = posX;
         this.PosZ = posZ;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
+import fr.craftandconquest.warofsquirrels.object.faction.Guild;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
@@ -24,14 +25,18 @@ public class Chunk {
     @JsonProperty @Getter @Setter private int posZ;
     @JsonProperty @Getter @Setter private String name;
     @JsonProperty @Getter @Setter private Boolean homeBlock = false;
+    @JsonProperty @Getter @Setter private Boolean guildHomeBlock = false;
     @JsonProperty @Getter @Setter private Boolean outpost = false;
+    @JsonProperty @Getter @Setter private Boolean isGuild = false;
     @JsonProperty @Getter @Setter private Vector3 respawnPoint;
     @JsonProperty @Getter private String dimensionId;
     @JsonIgnore @Getter private ResourceKey<Level> dimension;
 
     @JsonProperty @Getter @Setter private UUID fortificationUuid;
+    @JsonProperty @Getter @Setter private UUID guildUuid;
     @JsonIgnore @Getter private City city;
     @JsonIgnore @Getter private Bastion bastion;
+    @JsonIgnore @Getter private Guild guild;
 
     public Chunk(double x, double z, UUID cityUuid, ResourceKey<Level> dimension) {
         this(x, z, WarOfSquirrels.instance.getCityHandler().getCity(cityUuid), dimension);
@@ -41,7 +46,7 @@ public class Chunk {
     public Chunk(double x, double z, IFortification fortification, ResourceKey<Level> dimension) {
         posX = (int) x;
         posZ = (int) z;
-        this.fortificationUuid = fortification.getUniqueId();
+        this.fortificationUuid = fortification.getUuid();
         setFortification();
         this.dimension = dimension;
         this.dimensionId = DimensionToId(dimension);
@@ -72,13 +77,18 @@ public class Chunk {
         dimensionId = dim.location().getPath();
     }
 
+    public void setGuild(Guild guild) {
+        guildUuid = guild != null ? guild.getUuid() : null;
+        this.guild = guild;
+    }
+
     public void setCity(City city) {
-        fortificationUuid = city.getUuid();
+        fortificationUuid = city != null ? city.getUuid() : null;
         this.city = city;
     }
 
     public void setBastion(Bastion bastion) {
-        fortificationUuid = bastion.getBastionUuid();
+        fortificationUuid = bastion != null ? bastion.getBastionUuid() : null;
         this.bastion = bastion;
     }
 
@@ -87,7 +97,7 @@ public class Chunk {
 
         message.append("[Chunk]");
 
-        if (city != null) message.append(" The city ").append(String.format("'%s'", city.displayName));
+        if (city != null) message.append(" The city ").append(String.format("'%s'", city.getDisplayName()));
         if (bastion != null) message.append(" The bastion ").append(String.format("'%s'", bastion.getDisplayName()));
 
         message.append(String.format(" has claim a new %s ", homeBlock ?

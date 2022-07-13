@@ -1,6 +1,5 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
@@ -27,7 +26,7 @@ public class BastionHandler extends Handler<Bastion> {
         bastionByCities = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<>() {})) return;
+        if (!Load()) return;
 
         Log();
     }
@@ -59,7 +58,7 @@ public class BastionHandler extends Handler<Bastion> {
     @Override
     public boolean Delete(Bastion bastion) {
         if (!WarOfSquirrels.instance.getCuboHandler().deleteBastion(bastion)) return false;
-        if (!WarOfSquirrels.instance.getChunkHandler().deleteBastion(bastion)) return false;
+        if (!WarOfSquirrels.instance.getChunkHandler().delete(bastion)) return false;
         if (!WarOfSquirrels.instance.getTerritoryHandler().delete(bastion)) return false;
 
         bastionByCities.get(bastion.getRelatedCity()).remove(bastion);

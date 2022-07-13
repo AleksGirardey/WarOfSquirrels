@@ -1,6 +1,5 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Diplomacy;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
@@ -8,7 +7,6 @@ import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import org.apache.logging.log4j.Logger;
 
-import javax.xml.validation.Validator;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,7 +22,7 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
         super("[WoS][DiplomacyHandler]", logger);
 
         if (!Init()) return;
-        if (!Load(new TypeReference<>() {})) return;
+        if (!Load()) return;
 
         Log();
     }

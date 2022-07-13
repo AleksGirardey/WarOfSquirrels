@@ -234,7 +234,7 @@ public class Utils {
         message.append(ChatText.Success("=== Free cities [" + freeCityList.size() + "] ===\n"));
 
         for (int i = 0; i < freeCityList.size(); ++i) {
-            message.append(freeCityList.get(i).displayName + "");
+            message.append(freeCityList.get(i).getDisplayName() + "");
             if (i != freeCityList.size() - 1)
                 message.append(", ");
         }

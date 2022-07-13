@@ -1,6 +1,5 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
@@ -30,14 +29,14 @@ public class CityHandler extends Handler<City> {
         cityMap = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<>() {})) return;
+        if (!Load()) return;
 
         Log();
     }
 
     @Override
     public boolean add(City city) {
-        if (cityMap.containsKey(city.getCityUuid())) return false;
+        if (cityMap.containsKey(city.getUuid())) return false;
 
         if (!dataArray.contains(city)) {
             if (dataArray.size() == 0)
@@ -45,15 +44,15 @@ public class CityHandler extends Handler<City> {
             dataArray.add(city);
         }
 
-        cityMap.put(city.getCityUuid(), city);
+        cityMap.put(city.getUuid(), city);
         return true;
     }
 
     public City CreateCity(String name, String tag, FullPlayer owner, Territory territory) {
         City city = new City();
 
-        city.setCityUuid(UUID.randomUUID());
-        city.displayName = name;
+        city.setUuid(UUID.randomUUID());
+        city.setDisplayName(name);
         city.tag = tag;
         city.setTerritory(territory);
         city.SetOwner(owner);
@@ -98,7 +97,7 @@ public class CityHandler extends Handler<City> {
 
     public City getCity(String cityName) {
         for (City city : dataArray) {
-            if (city.displayName.equals(cityName))
+            if (city.getDisplayName().equals(cityName))
                 return city;
         }
         return null;
@@ -108,8 +107,6 @@ public class CityHandler extends Handler<City> {
         return cityMap.get(uuid);
     }
 
-//    public List<City> getAll() { return dataArray; }
-
     @Override
     public boolean Delete(City city) {
         WarOfSquirrels.instance.spreadPermissionDelete(city);
@@ -118,7 +115,7 @@ public class CityHandler extends Handler<City> {
         if (!WarOfSquirrels.instance.getTerritoryHandler().delete(city)) return false;
         if (!WarOfSquirrels.instance.getBastionHandler().deleteCity(city)) return false;
         if (!WarOfSquirrels.instance.getCuboHandler().deleteCity(city)) return false;
-        if (!WarOfSquirrels.instance.getChunkHandler().deleteCity(city)) return false;
+        if (!WarOfSquirrels.instance.getChunkHandler().delete(city)) return false;
 
         for (FullPlayer player : city.getCitizens()) {
             player.setAssistant(false);
@@ -126,7 +123,7 @@ public class CityHandler extends Handler<City> {
             player.setCity(null);
         }
 
-        cityMap.remove(city.getCityUuid());
+        cityMap.remove(city.getUuid());
         city.getOwner().setCity(null);
         dataArray.remove(city);
 

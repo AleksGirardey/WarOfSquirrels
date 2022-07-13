@@ -155,19 +155,19 @@ public class TerritoryHandler extends Handler<Territory> {
         territoriesByFaction = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<>() {})) return;
+        if (!Load()) return;
 
         Log();
     }
 
     @Override
-    protected boolean Load(TypeReference<List<Territory>> typeReference) {
+    protected boolean Load() {
         String errorMessage = String.format("%s Couldn't load Json data.", PrefixLogger);
         ObjectMapper mapper = new ObjectMapper();
 
         try {
             if (new BufferedReader(new FileReader(getConfigPath())).readLine() != null) {
-                dataArray = mapper.readValue(configFile, typeReference);
+                dataArray = mapper.readValue(configFile, new TypeReference<>(){});
                 if (!Populate()) {
                     Logger.error(errorMessage + " (Populate)");
                     return false;
@@ -360,7 +360,7 @@ public class TerritoryHandler extends Handler<Territory> {
 
         return dataArray.stream()
                 .filter(t ->
-                        (t.getFortificationUuid() != null && t.getFortificationUuid().equals(fortification.getUniqueId())) ||
+                        (t.getFortificationUuid() != null && t.getFortificationUuid().equals(fortification.getUuid())) ||
                         (t.getPosX() == territoryPos.x && t.getPosZ() == territoryPos.y))
                 .findFirst()
                 .orElse(null);

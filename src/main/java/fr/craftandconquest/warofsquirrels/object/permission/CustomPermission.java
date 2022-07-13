@@ -28,6 +28,7 @@ public class CustomPermission {
             case PLAYER -> WarOfSquirrels.instance.getPlayerHandler().get(targetUuid);
             case CITY -> WarOfSquirrels.instance.getCityHandler().getCity(targetUuid);
             case FACTION -> WarOfSquirrels.instance.getFactionHandler().get(targetUuid);
+            case GUILD -> WarOfSquirrels.instance.getGuildHandler().get(targetUuid);
         };
     }
 }

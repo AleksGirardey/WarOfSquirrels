@@ -120,8 +120,8 @@ public class WarHandler {
         List<String> list = new ArrayList<>();
 
         for (War war : wars) {
-            list.add(war.getCityAttacker().displayName);
-            list.add(war.getCityDefender().displayName);
+            list.add(war.getCityAttacker().getDisplayName());
+            list.add(war.getCityDefender().getDisplayName());
         }
         return list;
     }

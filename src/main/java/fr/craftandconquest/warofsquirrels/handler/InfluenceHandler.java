@@ -1,6 +1,5 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
@@ -28,8 +27,7 @@ public class InfluenceHandler extends Handler<Influence> {
         influences = new HashMap<>();
 
         if (!Init()) return;
-        if (!Load(new TypeReference<>() {
-        })) return;
+        if (!Load()) return;
 
         Log();
     }

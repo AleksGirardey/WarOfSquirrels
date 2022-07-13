@@ -55,7 +55,7 @@ public class Influence {
     public void SetCity(City city) {
         this.city = city;
         if (city != null)
-            this.cityUuid = city.getUniqueId();
+            this.cityUuid = city.getUuid();
     }
 
     public void SetFaction(Faction faction) {

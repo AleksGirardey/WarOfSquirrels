@@ -20,13 +20,13 @@ public class CityChannel extends Channel {
     @Override
     public MutableComponent transformText(FullPlayer sender, MutableComponent text) {
         return ChatText.Colored(String.format("[%s][%s] ",
-                        sender.getCity().displayName, Utils.getDisplayNameWithRank(sender)), ChatFormatting.DARK_AQUA)
+                        sender.getCity().getDisplayName(), Utils.getDisplayNameWithRank(sender)), ChatFormatting.DARK_AQUA)
                 .append(text);
     }
 
     @Override
     protected MutableComponent transformTextAnnounce(MutableComponent text) {
-        return ChatText.Colored(String.format("[%s] ", city.displayName), ChatFormatting.GOLD)
+        return ChatText.Colored(String.format("[%s] ", city.getDisplayName()), ChatFormatting.GOLD)
                 .append(text);
     }
 }
