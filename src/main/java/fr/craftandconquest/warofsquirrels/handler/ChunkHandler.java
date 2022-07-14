@@ -2,8 +2,7 @@ package fr.craftandconquest.warofsquirrels.handler;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
-import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
-import fr.craftandconquest.warofsquirrels.object.faction.Guild;
+import fr.craftandconquest.warofsquirrels.object.faction.guild.Guild;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;

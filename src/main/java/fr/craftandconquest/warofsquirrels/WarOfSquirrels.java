@@ -7,6 +7,8 @@ import fr.craftandconquest.warofsquirrels.events.ServerEvents;
 import fr.craftandconquest.warofsquirrels.events.WorldInteractionHandler;
 import fr.craftandconquest.warofsquirrels.handler.*;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
+import fr.craftandconquest.warofsquirrels.handler.guild.GuildBranchHandler;
+import fr.craftandconquest.warofsquirrels.handler.guild.GuildHandler;
 import fr.craftandconquest.warofsquirrels.object.config.ConfigData;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.utils.BackUpUtils;
@@ -36,6 +38,7 @@ public class WarOfSquirrels {
 
     public static final String warOfSquirrelsModId = "wos";
     public static final String warOfSquirrelsConfigDir = "./WarOfSquirrels";
+    public static final String configDirName = "GameData";
 
     public static final Logger LOGGER = LogManager.getLogger();
 
@@ -79,6 +82,8 @@ public class WarOfSquirrels {
     @Getter private BastionHandler bastionHandler;
 
     @Getter private GuildHandler guildHandler;
+    @Getter private GuildBranchHandler guildBranchHandler;
+    @Getter private GuildShopHandler guildShopHandler;
 
     public Config config;
 
@@ -134,6 +139,8 @@ public class WarOfSquirrels {
         adminHandler = new AdminHandler(LOGGER);
         bastionHandler = new BastionHandler(LOGGER);
         guildHandler = new GuildHandler(LOGGER);
+        guildBranchHandler = new GuildBranchHandler(LOGGER);
+        guildShopHandler = new GuildShopHandler(LOGGER);
 
         AddSaveListeners();
 
@@ -146,6 +153,9 @@ public class WarOfSquirrels {
         territoryHandler.updateDependencies();
         influenceHandler.updateDependencies();
         diplomacyHandler.updateDependencies();
+        guildShopHandler.updateDependencies();
+        guildBranchHandler.updateDependencies();
+        guildHandler.updateDependencies();
 
         LOGGER.info("[WoS] Handlers created ! ");
     }

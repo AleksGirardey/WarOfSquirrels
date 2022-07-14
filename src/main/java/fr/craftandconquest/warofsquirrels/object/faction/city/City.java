@@ -6,6 +6,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.IUpdate;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class City extends Upgradable implements IPermission, IFortification, IChannelTarget, AttackTarget {
+public class City extends Upgradable implements IPermission, IFortification, IChannelTarget, AttackTarget, IUpdate {
     @JsonProperty public String tag;
     @JsonProperty @Setter private Score score = new Score();
     @JsonProperty public UUID ownerUUID;
@@ -322,7 +323,8 @@ public class City extends Upgradable implements IPermission, IFortification, ICh
         return true;
     }
 
-    public void Update() {
+    @Override
+    public void update() {
         hasAttackedToday = false;
         cityUpgrade.VerifyLevelUp();
     }

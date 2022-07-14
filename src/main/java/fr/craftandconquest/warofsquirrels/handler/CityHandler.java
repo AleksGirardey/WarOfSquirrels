@@ -19,33 +19,8 @@ import java.text.MessageFormat;
 import java.util.*;
 
 public class CityHandler extends Handler<City> {
-    private final Map<UUID, City> cityMap;
-
-    protected static String DirName = "/WorldData";
-    protected static String JsonName = "/CityHandler.json";
-
     public CityHandler(Logger logger) {
         super("[WoS][CityHandler]", logger);
-        cityMap = new HashMap<>();
-
-        if (!Init()) return;
-        if (!Load()) return;
-
-        Log();
-    }
-
-    @Override
-    public boolean add(City city) {
-        if (cityMap.containsKey(city.getUuid())) return false;
-
-        if (!dataArray.contains(city)) {
-            if (dataArray.size() == 0)
-                dataArray = new ArrayList<>();
-            dataArray.add(city);
-        }
-
-        cityMap.put(city.getUuid(), city);
-        return true;
     }
 
     public City CreateCity(String name, String tag, FullPlayer owner, Territory territory) {
@@ -68,7 +43,6 @@ public class CityHandler extends Handler<City> {
         if (!add(city))
             return null;
 
-        LogCityCreation(city);
         return city;
     }
 
@@ -79,20 +53,8 @@ public class CityHandler extends Handler<City> {
     }
 
     @Override
-    public String getConfigDir() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
-    }
-
-    @Override
-    protected String getConfigPath() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName + JsonName;
-    }
-
-    @Override
     public void spreadPermissionDelete(IPermission target) {
-        for (City city : cityMap.values()) {
-            city.getCustomPermission().remove(target);
-        }
+        dataArray.forEach(city -> city.getCustomPermission().remove(target));
     }
 
     public City getCity(String cityName) {
@@ -101,10 +63,6 @@ public class CityHandler extends Handler<City> {
                 return city;
         }
         return null;
-    }
-
-    public City getCity(UUID uuid) {
-        return cityMap.get(uuid);
     }
 
     @Override
@@ -117,15 +75,10 @@ public class CityHandler extends Handler<City> {
         if (!WarOfSquirrels.instance.getCuboHandler().deleteCity(city)) return false;
         if (!WarOfSquirrels.instance.getChunkHandler().delete(city)) return false;
 
-        for (FullPlayer player : city.getCitizens()) {
-            player.setAssistant(false);
-            player.setResident(false);
-            player.setCity(null);
-        }
-
-        cityMap.remove(city.getUuid());
+        city.getCitizens().forEach(this::RemoveCitizen);
         city.getOwner().setCity(null);
-        dataArray.remove(city);
+
+        super.Delete(city);
 
         return true;
     }
@@ -139,11 +92,9 @@ public class CityHandler extends Handler<City> {
 
     public void RemoveCitizen(FullPlayer player) {
         player.getCity().removeCitizen(player, false);
+        player.setAssistant(false);
+        player.setResident(false);
         player.setCity(null);
-    }
-
-    private void LogCityCreation(City city) {
-        Logger.info(PrefixLogger + city + " created");
     }
 
     public List<City> getCities(Faction faction) {
@@ -170,7 +121,7 @@ public class CityHandler extends Handler<City> {
     }
 
     public List<String> getAssistants(UUID uuid) {
-        List<FullPlayer> assistants = getAssistants(cityMap.get(uuid));
+        List<FullPlayer> assistants = getAssistants(get(uuid));
         List<String> res = new ArrayList<>();
 
         for (FullPlayer player : assistants) {
@@ -185,7 +136,7 @@ public class CityHandler extends Handler<City> {
             city.getCustomPermission().replace(target, permission);
             city.getCustomPermissionList()
                     .stream().filter(e -> e.getTargetUuid().equals(target.getUuid()))
-                    .findFirst().get().setPermission(permission);
+                    .findFirst().orElseThrow().setPermission(permission);
         } else {
             city.getCustomPermission().put(target, permission);
             city.getCustomPermissionList().add(new CustomPermission(target.getUuid(), target.getPermissionTarget(), permission));
@@ -211,15 +162,8 @@ public class CityHandler extends Handler<City> {
         return cities;
     }
 
-    public void updateDependencies() {
-        for (City city : cityMap.values())
-            city.updateDependencies();
-        Save();
-    }
-
     public void update() {
-        for (City city : dataArray)
-            city.Update();
+        dataArray.forEach(City::update);
     }
 
     public void updateScore() {

@@ -1,21 +1,21 @@
-package fr.craftandconquest.warofsquirrels.handler;
+package fr.craftandconquest.warofsquirrels.handler.guild;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.handler.Handler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.IUpdate;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
-import fr.craftandconquest.warofsquirrels.object.faction.Guild;
+import fr.craftandconquest.warofsquirrels.object.faction.guild.Guild;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
 import java.util.*;
 
-public class GuildHandler extends Handler<Guild> {
-
+public class GuildHandler extends Handler<Guild> implements IUpdate {
     private final Map<Faction, List<Guild>> guildByFaction;
     private final Map<UUID, Guild> guildMap;
 
-    protected static String DirName = "/WorldData";
     protected static String JsonName = "/GuildHandler.json";
     public GuildHandler(Logger logger) {
         super("GuildHandler", logger);
@@ -67,13 +67,8 @@ public class GuildHandler extends Handler<Guild> {
     }
 
     @Override
-    public String getConfigDir() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
-    }
-
-    @Override
-    protected String getConfigPath() {
-        return getConfigDir() + JsonName;
+    protected String getDirName() {
+        return super.getDirName() + "/Faction/Guild";
     }
 
     @Override
@@ -82,11 +77,8 @@ public class GuildHandler extends Handler<Guild> {
             guild.getCustomPermission().remove(target);
     }
 
-    public Guild get(String targetName) {
-        return dataArray.stream().filter(g -> g.getDisplayName().equals(targetName)).findFirst().orElse(null);
-    }
-
-    public Guild get(UUID uuid) {
-        return dataArray.stream().filter(g -> g.getUuid().equals(uuid)).findFirst().orElse(null);
+    @Override
+    public void update() {
+        dataArray.forEach(Guild::update);
     }
 }

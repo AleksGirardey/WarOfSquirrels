@@ -2,6 +2,9 @@ package fr.craftandconquest.warofsquirrels.handler;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.object.IUpdate;
+import fr.craftandconquest.warofsquirrels.object.RegistryObject;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.utils.OnSaveListener;
 import org.apache.logging.log4j.Logger;
@@ -11,23 +14,36 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public abstract class Handler<T> implements OnSaveListener {
+public abstract class UpdatableHandler<U extends T> extends Handler<U> implements IUpdate {
+    protected UpdatableHandler(String prefix, Logger logger) {
+        super(prefix, logger);
+    }
+
+    public void update() {
+        dataArray.forEach(IUpdate::update);
+    }
+}
+
+public abstract class Handler<T extends RegistryObject> implements OnSaveListener {
     protected String PrefixLogger;
-
     protected Logger Logger;
+    protected File configFile;
 
     protected List<T> dataArray;
-
-    protected File configFile;
+    protected final Map<UUID, T> dataMap = new HashMap<>();
 
     protected Handler(String prefix, Logger logger) {
         PrefixLogger = prefix;
         Logger = logger;
         dataArray = new ArrayList<>();
         if (!Setup()) System.exit(-1);
+
+        if (!Init()) return;
+        if (!Load()) return;
+
+        Log();
     }
 
     protected boolean Setup() {
@@ -70,16 +86,29 @@ public abstract class Handler<T> implements OnSaveListener {
         Logger.info(MessageFormat.format("{0} Saved {1} entries !", PrefixLogger, dataArray.size()));
     }
 
-    public void Backup() {
-
-    }
-
     protected boolean Populate() {
         dataArray.iterator().forEachRemaining(this::add);
         return true;
     }
 
-    protected abstract boolean add(T value);
+    protected boolean add(T value) {
+        boolean added = false;
+
+        if (!dataArray.contains(value)) {
+            dataArray.add(value);
+            added = true;
+        }
+
+        if (!dataMap.containsKey(value.getUuid())) {
+            dataMap.put(value.getUuid(), value);
+            added = true;
+        }
+
+        if (added)
+            Save();
+
+        return added;
+    }
 
     public List<T> getAll() {
         return dataArray;
@@ -104,12 +133,31 @@ public abstract class Handler<T> implements OnSaveListener {
         return true;
     }
 
-    public abstract boolean Delete(T value);
+    public void updateDependencies() {
+        dataArray.forEach(RegistryObject::updateDependencies);
+    }
+
+    public T get(UUID uuid) {
+        return dataMap.getOrDefault(uuid, null);
+    }
+    public T get(String name) { return dataArray.stream().filter(value -> value.getDisplayName().equals(name)).findFirst().orElse(null); }
+
+    public boolean Delete(T value) {
+        dataMap.remove(value.getUuid());
+        dataArray.remove(value);
+
+        Save();
+
+        return true;
+    }
 
     public abstract void Log();
 
-    public abstract String getConfigDir();
-    protected abstract String getConfigPath();
+    protected String getJsonName() { return this.getClass().getSimpleName() + ".json"; }
+    protected String getDirName() { return WarOfSquirrels.configDirName; }
+
+    protected String getConfigDir() { return WarOfSquirrels.warOfSquirrelsConfigDir + "/" + getDirName(); }
+    protected String getConfigPath() { return getConfigDir() + "/" + getJsonName(); }
 
     public abstract void spreadPermissionDelete(IPermission target);
 

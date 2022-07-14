@@ -1,4 +1,4 @@
-package fr.craftandconquest.warofsquirrels.object.faction;
+package fr.craftandconquest.warofsquirrels.object.faction.guild;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,6 +6,8 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.IUpdate;
+import fr.craftandconquest.warofsquirrels.object.faction.Upgradable;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.*;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
@@ -18,17 +20,19 @@ import net.minecraft.network.chat.TextComponent;
 
 import java.util.*;
 
-public class Guild extends Upgradable implements IPermission, IChannelTarget {
+public class Guild extends Upgradable implements IPermission, IChannelTarget, IUpdate {
     @JsonProperty @Getter @Setter private String tag;
     @JsonProperty @Getter @Setter private UUID ownerUuid;
     @JsonProperty @Getter @Setter private UUID cityHeadQuarterUuid;
+    @JsonProperty @Getter @Setter private List<UUID> branchListUuid = new ArrayList<>();
 
-    @JsonProperty @Getter @Setter private Map<PermissionRelation, Permission> defaultPermission;
+    @JsonProperty @Getter @Setter private Map<PermissionRelation, Permission> defaultPermission = new HashMap<>();
     @JsonProperty @Getter @Setter private List<CustomPermission> customPermissionList = new ArrayList<>();
 
     // Data not registered
     @JsonIgnore @Getter private FullPlayer owner;
     @JsonIgnore @Getter private City cityHeadQuarter;
+    @JsonIgnore @Getter private final List<GuildBranch> branches = new ArrayList<>();
     @JsonIgnore @Getter @Setter private List<FullPlayer> members = new ArrayList<>();
     @JsonIgnore @Getter @Setter private Map<IPermission, Permission> customPermission = new HashMap<>();
 
@@ -117,6 +121,12 @@ public class Guild extends Upgradable implements IPermission, IChannelTarget {
         if (cityHeadQuarterUuid != null) setCityHeadQuarter(WarOfSquirrels.instance.getCityHandler().getCity(cityHeadQuarterUuid));
         if (ownerUuid != null) setOwner(WarOfSquirrels.instance.getPlayerHandler().get(ownerUuid));
 
+        for (UUID branchUuid : branchListUuid) {
+            GuildBranch branch = WarOfSquirrels.instance.getGuildBranchHandler().get(branchUuid);
+            if (branch == null || !AddBranch(branch))
+                WarOfSquirrels.instance.debugLog("Couldn't add guild branch : " + branchUuid);
+        }
+
         for (CustomPermission permission : customPermissionList) {
             IPermission target = permission.getTarget();
 
@@ -139,6 +149,22 @@ public class Guild extends Upgradable implements IPermission, IChannelTarget {
     // Setter
 
     @JsonIgnore
+    public boolean AddBranch(GuildBranch branch) {
+        boolean added = false;
+        if (!branchListUuid.contains(branch.getUuid())) {
+            branchListUuid.add(branch.getUuid());
+            added = true;
+        }
+
+        if (!branches.contains(branch)) {
+            branches.add(branch);
+            added = true;
+        }
+
+        return added;
+    }
+
+    @JsonIgnore
     public void setOwner(FullPlayer target) {
         ownerUuid = target != null ? target.getUuid() : null;
         owner = target;
@@ -148,5 +174,10 @@ public class Guild extends Upgradable implements IPermission, IChannelTarget {
     public void setCityHeadQuarter(City city) {
         cityHeadQuarterUuid = (city != null ? city.getUuid() : null);
         cityHeadQuarter = city;
+    }
+
+    @Override
+    public void update() {
+
     }
 }
