@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.PlayerHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.RegistryObject;
 import fr.craftandconquest.warofsquirrels.object.faction.guild.Guild;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
@@ -20,15 +21,7 @@ import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class Cubo {
-    @JsonProperty
-    @Getter
-    @Setter
-    private UUID uuid;
-    @JsonProperty
-    @Getter
-    @Setter
-    private String name;
+public class Cubo extends RegistryObject {
     @JsonProperty
     @Getter
     @Setter
@@ -106,12 +99,13 @@ public class Cubo {
         customInListUuid.put(player.getUuid(), permission);
     }
 
-    public void UpdateDependencies() {
+    @Override
+    public void updateDependencies() {
         WarOfSquirrels wos = WarOfSquirrels.instance;
         PlayerHandler playerHandler = wos.getPlayerHandler();
 
-        this.city = wos.getCityHandler().getCity(cityUuid);
-        this.parent = wos.getCuboHandler().getCubo(parentUuid);
+        this.city = wos.getCityHandler().get(cityUuid);
+        this.parent = wos.getCuboHandler().get(parentUuid);
         this.owner = playerHandler.get(ownerUuid);
         this.inList = new ArrayList<>();
 
@@ -157,13 +151,12 @@ public class Cubo {
     }
 
     public MutableComponent display() {
-        return ChatText.Success(name + " " + vector);
+        return ChatText.Success(displayName + " " + vector);
     }
 
     @Override
     public String toString() {
         return String.format("[Cubo][New] Cubo set as '%s' with parent '%s' owned by '%s'.",
-                name, parent == null ? "NO_PARENT" : parent.name, owner.getDisplayName());
+                displayName, parent == null ? "NO_PARENT" : parent.displayName, owner.getDisplayName());
     }
-
 }

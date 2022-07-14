@@ -23,47 +23,28 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ChunkHandler extends Handler<Chunk> {
-    private final Map<ChunkLocation, Chunk> chunksMap;
-    private final Map<IFortification, List<Chunk>> fortificationMap;
-    private final Map<Guild, List<Chunk>> guildMap;
-
-    public static String DirName = "/WorldData";
-    protected static String JsonName = "/ChunkHandler.json";
+    private final Map<ChunkLocation, Chunk> chunksMap = new HashMap<>();
+    private final Map<IFortification, List<Chunk>> fortificationMap = new HashMap<>();
+    private final Map<Guild, List<Chunk>> guildMap = new HashMap<>();
 
     public ChunkHandler(Logger logger) {
         super("[WoS][ChunkHandler]", logger);
-        chunksMap = new HashMap<>();
-        fortificationMap = new HashMap<>();
-        guildMap = new HashMap<>();
-
-        if (!Init()) return;
-        if (!Load()) return;
-
-        Log();
-    }
-
-    @Override
-    protected boolean Populate() {
-        dataArray.iterator().forEachRemaining(this::add);
-        return true;
     }
 
     @Override
     public boolean Delete(Chunk chunk) {
+        super.Delete(chunk);
+
         ChunkLocation chunkLocation = new ChunkLocation(chunk.getPosX(), chunk.getPosZ(), chunk.getDimension());
 
-        dataArray.remove(chunk);
         chunksMap.entrySet().removeIf(entry -> entry.getKey().equals(chunkLocation));
         fortificationMap.get(chunk.getFortification()).remove(chunk);
         return true;
     }
 
-    private void LogChunkCreation(Chunk chunk) {
-        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(chunk.getRelatedCity(), null, chunk.creationLogText(), true);
-        Logger.info(PrefixLogger + " Chunk created at " + chunk);
-    }
-
+    @Override
     public boolean add(Chunk chunk) {
+        super.add(chunk);
         ChunkLocation position = new ChunkLocation(chunk.getPosX(), chunk.getPosZ(), chunk.getDimension());
 
         if (!chunksMap.containsKey(position)) {
@@ -89,13 +70,12 @@ public class ChunkHandler extends Handler<Chunk> {
                 guildMap.get(guild).add(chunk);
         }
 
-        if (!dataArray.contains(chunk)) {
-            if (dataArray.size() == 0)
-                dataArray = new ArrayList<>();
-            dataArray.add(chunk);
-        }
-
         return true;
+    }
+
+    private void LogChunkCreation(Chunk chunk) {
+        WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(chunk.getRelatedCity(), null, chunk.creationLogText(), true);
+        Logger.info(PrefixLogger + " Chunk created at " + chunk);
     }
 
     public boolean delete(IFortification fortification) {
@@ -227,19 +207,7 @@ public class ChunkHandler extends Handler<Chunk> {
     }
 
     @Override
-    public String getConfigDir() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
-    }
-
-    @Override
-    protected String getConfigPath() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName + JsonName;
-    }
-
-    @Override
-    public void spreadPermissionDelete(IPermission target) {
-        // Nothing To Do
-    }
+    public void spreadPermissionDelete(IPermission target) {}
 
     public Chunk getChunk(Vector3 position, ResourceKey<Level> dimensionId) {
         ChunkPos chunkPos = Utils.FromWorldToChunkPos((int) position.x, (int) position.z);
@@ -290,7 +258,7 @@ public class ChunkHandler extends Handler<Chunk> {
     public Chunk CreateChunk(int posX, int posZ, IFortification fortification, ResourceKey<Level> dimension, String name) {
         Chunk chunk = new Chunk(posX, posZ, fortification, dimension);
 
-        chunk.setName(name);
+        chunk.setDisplayName(name);
         chunk.setFortification();
 
         add(chunk);
@@ -303,6 +271,7 @@ public class ChunkHandler extends Handler<Chunk> {
         return CreateChunk(posX, posZ, fortification, dimension, String.format("Chunk[%d;%d]", posX, posZ));
     }
 
+    @Override
     public void updateDependencies() {
         for (Chunk chunk : dataArray) {
             chunk.updateDependencies();
@@ -328,5 +297,10 @@ public class ChunkHandler extends Handler<Chunk> {
             return chunk.getRespawnPoint();
         }
         return city.getHomeBlock().getRespawnPoint();
+    }
+
+    @Override
+    protected String getDirName() {
+        return super.getDirName() + "/World";
     }
 }

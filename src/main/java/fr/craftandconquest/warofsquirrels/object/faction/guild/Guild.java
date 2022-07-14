@@ -118,7 +118,7 @@ public class Guild extends Upgradable implements IPermission, IChannelTarget, IU
 
     @Override
     public void updateDependencies() {
-        if (cityHeadQuarterUuid != null) setCityHeadQuarter(WarOfSquirrels.instance.getCityHandler().getCity(cityHeadQuarterUuid));
+        if (cityHeadQuarterUuid != null) setCityHeadQuarter(WarOfSquirrels.instance.getCityHandler().get(cityHeadQuarterUuid));
         if (ownerUuid != null) setOwner(WarOfSquirrels.instance.getPlayerHandler().get(ownerUuid));
 
         for (UUID branchUuid : branchListUuid) {

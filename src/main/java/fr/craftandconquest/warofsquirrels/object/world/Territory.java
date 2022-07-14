@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.InfluenceHandler;
+import fr.craftandconquest.warofsquirrels.object.IUpdate;
+import fr.craftandconquest.warofsquirrels.object.RegistryObject;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
@@ -25,9 +27,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class Territory {
-    @JsonProperty @Getter @Setter private UUID uuid;
-    @JsonProperty @Getter @Setter private String name;
+public class Territory extends RegistryObject implements IUpdate {
     @JsonProperty @Getter @Setter private int posX;
     @JsonProperty @Getter @Setter private int posZ;
     @JsonProperty @Getter         private UUID factionUuid;
@@ -43,7 +43,7 @@ public class Territory {
 
     public Territory(String name, int posX, int posZ, Faction faction, IFortification fortification) {
         this.uuid = UUID.randomUUID();
-        this.name = name;
+        this.displayName = name;
         this.posX = posX;
         this.posZ = posZ;
         SetFaction(faction);
@@ -61,7 +61,7 @@ public class Territory {
     public void SetFaction(Faction faction) {
         this.faction = faction;
         if (faction != null)
-            this.factionUuid = faction.getFactionUuid();
+            this.factionUuid = faction.getUuid();
     }
 
     public void SpreadInfluence() {
@@ -159,6 +159,7 @@ public class Territory {
         biome = new TerritoryBiome(biomeMap);
     }
 
+    @Override
     public void update() {
         if (!hasFallen) {
             SpreadInfluence();
@@ -175,11 +176,12 @@ public class Territory {
         }
     }
 
+    @Override
     public void updateDependencies() {
         if (factionUuid != null)
             faction = WarOfSquirrels.instance.getFactionHandler().get(factionUuid);
         if (fortificationUuid != null) {
-            fortification = WarOfSquirrels.instance.getCityHandler().getCity(fortificationUuid);
+            fortification = WarOfSquirrels.instance.getCityHandler().get(fortificationUuid);
             if (fortification == null)
                 fortification = WarOfSquirrels.instance.getBastionHandler().get(fortificationUuid);
         }
@@ -218,7 +220,7 @@ public class Territory {
 
         if (biome.isCompleteTrait()) prefix = " " + biome.getBiomePrefix();
 
-        return name + prefix;
+        return displayName + prefix;
     }
 
     @JsonIgnore

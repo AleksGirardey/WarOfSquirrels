@@ -25,19 +25,10 @@ import java.util.stream.Collectors;
 
 public class CuboHandler extends Handler<Cubo> {
     private final Map<FullPlayer, Pair<Vector3, Vector3>> points = new HashMap<>();
-    private final Map<UUID, Cubo> cuboMap = new HashMap<>();
     private final Map<String, Cubo> cuboMapFromName = new HashMap<>();
-
-    protected static String DirName = "/WorldData";
-    protected static String JsonName = "/CuboHandler.json";
 
     public CuboHandler(Logger logger) {
         super("[WoS][CuboHandler]", logger);
-
-        if (!Init()) return;
-        if (!Load()) return;
-
-        Log();
     }
 
     public Cubo CreateCubo(FullPlayer player, String name) {
@@ -55,7 +46,7 @@ public class CuboHandler extends Handler<Cubo> {
         cubo = new Cubo();
         cubo.setUuid(UUID.randomUUID());
         cubo.setCity(city);
-        cubo.setName(name);
+        cubo.setDisplayName(name);
         cubo.setOwner(player);
         cubo.setPermissionIn(new Permission(true, true, true, true, true));
         cubo.setPermissionOut(new Permission(false, false, false, false, false));
@@ -78,13 +69,10 @@ public class CuboHandler extends Handler<Cubo> {
 
     @Override
     protected boolean add(Cubo value) {
-        if (!dataArray.contains(value))
-            dataArray.add(value);
+        super.add(value);
 
-        if (!cuboMap.containsKey(value.getUuid()))
-            cuboMap.put(value.getUuid(), value);
-        if (!cuboMapFromName.containsKey(value.getName()))
-            cuboMapFromName.put(value.getName(), value);
+        if (!cuboMapFromName.containsKey(value.getDisplayName()))
+            cuboMapFromName.put(value.getDisplayName(), value);
 
         return true;
     }
@@ -99,29 +87,18 @@ public class CuboHandler extends Handler<Cubo> {
 
     @Override
     public boolean Delete(Cubo value) {
-        if (!dataArray.contains(value)) return false;
+        super.Delete(value);
 
-        dataArray.remove(value);
-        cuboMap.remove(value.getUuid());
-        cuboMapFromName.remove(value.getName());
+        cuboMapFromName.remove(value.getDisplayName());
         return true;
-    }
-
-    public void updateDependencies() {
-        for (Cubo cubo : dataArray)
-            cubo.UpdateDependencies();
     }
 
     public Cubo getCubo(String name) {
         return cuboMapFromName.get(name);
     }
 
-    public Cubo getCubo(UUID uuid) {
-        return cuboMap.get(uuid);
-    }
-
     public List<Cubo> getCubo(City city) {
-        List<Cubo> result = new ArrayList<Cubo>();
+        List<Cubo> result = new ArrayList<>();
 
         for (Cubo c : dataArray) {
             if (c.getOwner().getCity() == city)
@@ -220,7 +197,7 @@ public class CuboHandler extends Handler<Cubo> {
                 removeList.add(c.getUuid());
         });
 
-        removeList.forEach(uuid -> Delete(getCubo(uuid)));
+        removeList.forEach(uuid -> Delete(get(uuid)));
         Save();
         return true;
     }
@@ -233,7 +210,7 @@ public class CuboHandler extends Handler<Cubo> {
                 removeList.add(cubo.getUuid());
         });
 
-        removeList.forEach(uuid -> Delete(getCubo(uuid)));
+        removeList.forEach(uuid -> Delete(get(uuid)));
         Save();
         return true;
     }
@@ -248,7 +225,7 @@ public class CuboHandler extends Handler<Cubo> {
                 removeList.add(cubo.getUuid());
         });
 
-        removeList.forEach(uuid -> Delete(getCubo(uuid)));
+        removeList.forEach(uuid -> Delete(get(uuid)));
         Save();
         return true;
     }
@@ -258,7 +235,7 @@ public class CuboHandler extends Handler<Cubo> {
         List<Cubo> cubos = getCubo(player);
 
         for (Cubo c : cubos) {
-            names.add(c.getName());
+            names.add(c.getDisplayName());
         }
 
         return names;
@@ -266,18 +243,7 @@ public class CuboHandler extends Handler<Cubo> {
 
     @Override
     public void Log() {
-        Logger.info(MessageFormat.format("{0} Cubo generated : {1}",
-                PrefixLogger, dataArray.size()));
-    }
-
-    @Override
-    public String getConfigDir() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
-    }
-
-    @Override
-    protected String getConfigPath() {
-        return getConfigDir() + JsonName;
+        Logger.info(MessageFormat.format("{0} Cubo generated : {1}", PrefixLogger, dataArray.size()));
     }
 
     @Override
@@ -285,5 +251,10 @@ public class CuboHandler extends Handler<Cubo> {
         for (Cubo cubo : dataArray) {
             cubo.SpreadPermissionDelete(target);
         }
+    }
+
+    @Override
+    protected String getDirName() {
+        return super.getDirName() + "/Faction";
     }
 }

@@ -30,7 +30,7 @@ public class AdminTpLink extends AdminCommandBuilder {
         AdminCubo first = WarOfSquirrels.instance.getAdminHandler().get(firstName);
         AdminCubo second = WarOfSquirrels.instance.getAdminHandler().get(secondName);
 
-        if (first != null && first.isTeleporter() && second != null && second.isTeleporter()) return true;
+        if (first != null && first.isTeleport() && second != null && second.isTeleport()) return true;
 
         player.sendMessage(ChatText.Error("Wrong argument"));
 

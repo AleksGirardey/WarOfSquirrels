@@ -15,11 +15,8 @@ import org.apache.logging.log4j.Logger;
 import java.text.MessageFormat;
 import java.util.*;
 
-public class BastionHandler extends Handler<Bastion> {
+public class BastionHandler extends UpdatableHandler<Bastion> {
     private final Map<City, List<Bastion>> bastionByCities;
-
-    protected static String DirName = "/WorldData";
-    protected static String JsonName = "/BastionHandler.json";
 
     public BastionHandler(Logger logger) {
         super("[WoS][BastionHandler]", logger);
@@ -72,25 +69,14 @@ public class BastionHandler extends Handler<Bastion> {
         Logger.info(MessageFormat.format("{0} Bastions generated : {1}",
                 PrefixLogger, dataArray.size()));
     }
-
-    @Override
-    public String getConfigDir() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
-    }
-
-    @Override
-    protected String getConfigPath() {
-        return getConfigDir() + JsonName;
-    }
-
     @Override
     public void spreadPermissionDelete(IPermission target) { }
 
     public Bastion Create(Territory territory, City city, Vector2 chunkPosition, Vector3 playerPosition) {
         Bastion bastion = new Bastion();
 
-        bastion.setBastionUuid(UUID.randomUUID());
-        bastion.setName(territory.getName() + "'s bastion");
+        bastion.setUuid(UUID.randomUUID());
+        bastion.setDisplayName(territory.getDisplayName() + "'s bastion");
         bastion.SetCity(city);
         bastion.setProtected(true);
         bastion.setTerritoryPosition(new Vector2(territory.getPosX(), territory.getPosZ()));
@@ -108,29 +94,8 @@ public class BastionHandler extends Handler<Bastion> {
         return bastion;
     }
 
-    public Bastion get(UUID uuid) {
-        for (Bastion bastion : dataArray) {
-            if (bastion.getBastionUuid().equals(uuid))
-                return bastion;
-        }
-        return null;
-    }
-
-    public Bastion get(String name) {
-        for (Bastion bastion : dataArray) {
-            if (bastion.getName().equals(name))
-                return bastion;
-        }
-        return null;
-    }
-
     public List<Bastion> get(City city) {
         return bastionByCities.getOrDefault(city, Collections.emptyList());
-    }
-
-    public void update() {
-        for (Bastion bastion : dataArray)
-            bastion.update();
     }
 
     public void updateDependencies() {
@@ -143,5 +108,10 @@ public class BastionHandler extends Handler<Bastion> {
     public void updateScore() {
         for (Bastion bastion : dataArray)
             bastion.updateScore();
+    }
+
+    @Override
+    protected String getDirName() {
+        return super.getDirName() + "/Faction/City";
     }
 }

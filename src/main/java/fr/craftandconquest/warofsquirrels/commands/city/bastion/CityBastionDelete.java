@@ -33,7 +33,7 @@ public class CityBastionDelete extends CityBastionCommandBuilder {
         WarOfSquirrels.instance.getBastionHandler().Delete((Bastion) territory.getFortification());
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(ChatText.Colored(
-                "Faction " + player.getCity().getFaction().getDisplayName() + " has abandoned its control over territory '" + territory.getName() + "'",
+                "Faction " + player.getCity().getFaction().getDisplayName() + " has abandoned its control over territory '" + territory.getDisplayName() + "'",
                 ChatFormatting.GOLD));
 
         return 0;

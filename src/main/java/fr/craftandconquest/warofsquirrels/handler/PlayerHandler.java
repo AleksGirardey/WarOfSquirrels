@@ -13,29 +13,12 @@ import org.apache.logging.log4j.Logger;
 import java.text.MessageFormat;
 import java.util.*;
 
-public class PlayerHandler extends Handler<FullPlayer> {
-
-    private static final String DirName = "/WorldData";
-    private static final String JsonName = "/PlayerHandler.json";
-
-    private final Map<String, FullPlayer> playersByName;
-
-    private final Map<FullPlayer, Timer> reincarnation;
+public class PlayerHandler extends UpdatableHandler<FullPlayer> {
+    private final Map<String, FullPlayer> playersByName = new HashMap<>();
+    private final Map<FullPlayer, Timer> reincarnation = new HashMap<>();
 
     public PlayerHandler(Logger logger) {
         super("[WoS][PlayerHandler]", logger);
-        playersByName = new HashMap<>();
-        reincarnation = new HashMap<>();
-
-        if (!Init()) return;
-        if (!Load()) return;
-
-        Log();
-    }
-
-    public void update() {
-        for(FullPlayer player : dataArray)
-            player.update();
     }
 
     public void updateScore() {
@@ -43,18 +26,9 @@ public class PlayerHandler extends Handler<FullPlayer> {
             player.updateScore();
     }
 
-    public void updateDependencies() {
-        for (FullPlayer player : dataArray)
-            player.updateDependencies();
-    }
-
     @Override
-    protected boolean Populate() {
-        dataArray.iterator().forEachRemaining(this::add);
-        return true;
-    }
-
     public boolean add(FullPlayer player) {
+        super.add(player);
         if (playersByName.containsKey(player.getDisplayName())) return false;
 
         playersByName.put(player.getDisplayName(), player);
@@ -69,9 +43,9 @@ public class PlayerHandler extends Handler<FullPlayer> {
         player.setAssistant(false);
         player.setBalance(WarOfSquirrels.instance.config.getConfiguration().getStartBalance());
         player.lastPosition = new Vector3(
-                (int) playerEntity.getOnPos().getX(),
-                (int) playerEntity.getOnPos().getY(),
-                (int) playerEntity.getOnPos().getZ());
+                playerEntity.getOnPos().getX(),
+                playerEntity.getOnPos().getY(),
+                playerEntity.getOnPos().getZ());
         player.setLastDimension(playerEntity.getCommandSenderWorld().dimension().location().getPath());
 
         player.setChatTarget(BroadCastTarget.GENERAL);
@@ -107,6 +81,7 @@ public class PlayerHandler extends Handler<FullPlayer> {
 
     @Override
     public boolean Delete(FullPlayer player) {
+        super.Delete(player);
         if (player.getCity() != null)
             if (!player.getCity().removeCitizen(player, false))
                 return false;
@@ -124,36 +99,18 @@ public class PlayerHandler extends Handler<FullPlayer> {
 
     @Override
     public void Log() {
-        Logger.info(MessageFormat.format("{0} Players generated : {1}",
-                PrefixLogger, dataArray.size()));
+        Logger.info(MessageFormat.format("{0} Players generated : {1}", PrefixLogger, dataArray.size()));
     }
 
     @Override
-    public String getConfigDir() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
-    }
-
-    @Override
-    protected String getConfigPath() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName + JsonName;
-    }
-
-    @Override
-    public void spreadPermissionDelete(IPermission target) {
-        // Nothing to do;
-    }
+    public void spreadPermissionDelete(IPermission target) { }
 
     private void LogPlayerCreation(FullPlayer player) {
-        Logger.info(MessageFormat.format("{0} Player {1}({2}) created",
-                PrefixLogger, player.getDisplayName(), player.getUuid()));
+        Logger.info(MessageFormat.format("{0} Player {1}({2}) created", PrefixLogger, player.getDisplayName(), player.getUuid()));
     }
 
     public boolean exists(UUID playerUuid) {
-        return exists(playerUuid, false);
-    }
-
-    public boolean exists(UUID playerUuid, boolean log) {
-        return get(playerUuid, log) != null;
+        return get(playerUuid) != null;
     }
 
     public Timer newReincarnation(FullPlayer player) {
@@ -185,19 +142,6 @@ public class PlayerHandler extends Handler<FullPlayer> {
     public void CancelReincarnation(FullPlayer player) {
         player.setReincarnation(false);
         reincarnation.remove(player);
-    }
-
-    public FullPlayer get(UUID uuid) {
-        return get(uuid, false);
-    }
-
-    public FullPlayer get(UUID uuid, boolean log) {
-        for (FullPlayer player : dataArray) {
-            if (player.getUuid().equals(uuid))
-                return player;
-        }
-
-        return null;
     }
 
     public FullPlayer get(String displayName) {

@@ -54,7 +54,7 @@ public class FactionClaimCommand extends FactionCommandAssistant implements ITer
         int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
 
         MutableComponent message = ChatText.Colored("Faction '" + territory.getFaction().getDisplayName() + "'"
-                + " claimed territory  '" + territory.getName() + "'", ChatFormatting.GOLD);
+                + " claimed territory  '" + territory.getDisplayName() + "'", ChatFormatting.GOLD);
 
         Player entity = player.getPlayerEntity();
         Vector3 position = new Vector3(entity.getBlockX(), entity.getBlockY(), entity.getBlockZ());

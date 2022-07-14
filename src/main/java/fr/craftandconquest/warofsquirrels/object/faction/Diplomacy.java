@@ -3,6 +3,7 @@ package fr.craftandconquest.warofsquirrels.object.faction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.object.RegistryObject;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,11 +15,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class Diplomacy {
-    @JsonProperty
-    @Getter
-    @Setter
-    private UUID uuid;
+public class Diplomacy extends RegistryObject {
     @JsonProperty
     @Getter
     private UUID factionUuid;
@@ -44,20 +41,21 @@ public class Diplomacy {
         this.faction = faction;
 
         if (faction != null)
-            factionUuid = faction.getFactionUuid();
+            factionUuid = faction.getUuid();
     }
 
     public void SetTarget(Faction target) {
         this.target = target;
 
         if (target != null)
-            targetUuid = target.getFactionUuid();
+            targetUuid = target.getUuid();
     }
 
     public void SetPermission(Permission permission) {
         this.permission = permission;
     }
 
+    @Override
     public void updateDependencies() {
         if (factionUuid != null) faction = WarOfSquirrels.instance.getFactionHandler().get(factionUuid);
         if (targetUuid != null) target = WarOfSquirrels.instance.getFactionHandler().get(targetUuid);

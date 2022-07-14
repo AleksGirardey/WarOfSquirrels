@@ -6,6 +6,8 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.IUpdate;
+import fr.craftandconquest.warofsquirrels.object.RegistryObject;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.*;
 import fr.craftandconquest.warofsquirrels.object.scoring.IScoreUpdater;
@@ -23,11 +25,8 @@ import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
-
-    @JsonProperty @Getter private UUID factionUuid;
+public class Faction extends RegistryObject implements IPermission, IChannelTarget, IScoreUpdater, IUpdate {
     @JsonProperty @Getter @Setter private UUID capitalUuid;
-    @JsonProperty @Getter @Setter private String displayName;
     @JsonIgnore @Getter private City capital;
     @JsonIgnore @Getter private Map<String, City> cities = new HashMap<>();
     @JsonIgnore @Getter @Setter private Map<IPermission, Permission> customPermission = new HashMap<>();
@@ -37,7 +36,7 @@ public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
     @JsonProperty @Setter private Score score = new Score();
 
     public Faction(String displayName, City capital) {
-        this.factionUuid = UUID.randomUUID();
+        this.uuid = UUID.randomUUID();
         this.displayName = displayName;
         this.capital = capital;
         this.capitalUuid = capital.getUuid();
@@ -53,8 +52,9 @@ public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
             cities.put(city.getDisplayName(), city);
     }
 
+    @Override
     public void updateDependencies() {
-        this.capital = WarOfSquirrels.instance.getCityHandler().getCity(this.capitalUuid);
+        this.capital = WarOfSquirrels.instance.getCityHandler().get(this.capitalUuid);
 
         for (CustomPermission permission : customPermissionList) {
             IPermission target = permission.getTarget();
@@ -88,7 +88,7 @@ public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
                 .filter(t -> t.getFaction().equals(this)).toList();
 
         for (int i = 0; i < territories.size(); ++i) {
-            message.append(territories.get(i).getName());
+            message.append(territories.get(i).getDisplayName());
             if (i != territories.size() - 1)
                 message.append(", ");
         }
@@ -148,11 +148,6 @@ public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
     }
 
     @Override
-    public UUID getUuid() {
-        return factionUuid;
-    }
-
-    @Override
     public PermissionTarget getPermissionTarget() {
         return PermissionTarget.FACTION;
     }
@@ -174,7 +169,7 @@ public class Faction implements IPermission, IChannelTarget, IScoreUpdater {
 
         Faction faction = (Faction) obj;
 
-        return faction.getUuid().equals(this.factionUuid);
+        return faction.getUuid().equals(this.uuid);
     }
 
     public void update() {

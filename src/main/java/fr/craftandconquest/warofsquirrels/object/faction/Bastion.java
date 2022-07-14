@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.IUpdate;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.scoring.Score;
 import fr.craftandconquest.warofsquirrels.object.upgrade.BastionUpgrade;
@@ -22,13 +23,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class Bastion extends Upgradable implements IFortification {
-    @JsonProperty @Getter @Setter
-    private UUID bastionUuid;
-
-    @JsonProperty @Getter @Setter
-    private String name;
-
+public class Bastion extends Upgradable implements IFortification, IUpdate {
     @JsonProperty @Setter
     private Vector2 territoryPosition;
 
@@ -55,14 +50,6 @@ public class Bastion extends Upgradable implements IFortification {
     @Override
     public Faction getFaction() {
         return this.city.getFaction();
-    }
-
-    @Override
-    public String getDisplayName() { return name; }
-
-    @Override
-    public UUID getUuid() {
-        return bastionUuid;
     }
 
     @Override
@@ -156,13 +143,15 @@ public class Bastion extends Upgradable implements IFortification {
         return base + territory;
     }
 
+    @Override
     public void update() {
         isProtected = false;
         bastionUpgrade.VerifyLevelUp();
     }
 
+    @Override
     public void updateDependencies() {
-        city = WarOfSquirrels.instance.getCityHandler().getCity(cityUuid);
+        city = WarOfSquirrels.instance.getCityHandler().get(cityUuid);
 
         bastionUpgrade.Populate(this);
 
@@ -177,7 +166,7 @@ public class Bastion extends Upgradable implements IFortification {
 
     @Override
     public String toString() {
-        return name + " " + territoryPosition;
+        return displayName + " " + territoryPosition;
     }
 
     @Override

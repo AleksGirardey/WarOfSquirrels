@@ -26,7 +26,7 @@ public class AdminTpDelete extends AdminCommandBuilder {
         String name = context.getArgument(tpNameArgument, String.class);
         AdminCubo cubo = WarOfSquirrels.instance.getAdminHandler().get(name);
 
-        if (cubo != null && cubo.isTeleporter()) return true;
+        if (cubo != null && cubo.isTeleport()) return true;
 
         player.sendMessage(ChatText.Error("Wrong argument"));
 

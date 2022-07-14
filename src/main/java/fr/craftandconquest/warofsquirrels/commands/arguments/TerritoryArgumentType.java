@@ -39,7 +39,7 @@ public final class TerritoryArgumentType implements ArgumentType<Territory>  {
 //        return builder.buildFuture();
 
         List<Territory> territories = WarOfSquirrels.instance.getTerritoryHandler().getAll();
-        List<String> names = new ArrayList<>(territories.stream().map(Territory::getName).toList());
+        List<String> names = new ArrayList<>(territories.stream().map(Territory::getDisplayName).toList());
 
         return SharedSuggestionProvider.suggest(names, builder);
     }

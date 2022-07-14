@@ -75,7 +75,7 @@ public interface ITerritoryExtractor {
 
     private CompletableFuture<Suggestions> territorySuggestions(List<Territory> territories, SuggestionsBuilder builder) {
         for (Territory territory : territories) {
-            builder.suggest(territory.getName());
+            builder.suggest(territory.getDisplayName());
         }
         return builder.buildFuture();
     }

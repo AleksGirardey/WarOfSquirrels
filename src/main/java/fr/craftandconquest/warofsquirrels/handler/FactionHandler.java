@@ -17,44 +17,9 @@ import org.apache.logging.log4j.Logger;
 import java.text.MessageFormat;
 import java.util.*;
 
-public class FactionHandler extends Handler<Faction> {
-    private final Map<UUID, Faction> factionMap;
-
-    protected static String DirName = "/WorldData";
-    protected static String JsonName = "/FactionHandler.json";
-
+public class FactionHandler extends UpdatableHandler<Faction> {
     public FactionHandler(Logger logger) {
         super("[WoS][FactionHandler]", logger);
-        factionMap = new HashMap<>();
-
-        if (!Init()) return;
-        if (!Load()) return;
-
-        Log();
-    }
-
-    public void updateDependencies() {
-        factionMap.values().forEach(Faction::updateDependencies);
-    }
-
-    @Override
-    protected boolean Populate() {
-        dataArray.iterator().forEachRemaining(this::add);
-        return true;
-    }
-
-    public boolean add(Faction faction) {
-        if (factionMap.containsKey(faction.getFactionUuid())) return false;
-
-        if (!dataArray.contains(faction)) {
-            if (dataArray.size() == 0) dataArray = new ArrayList<Faction>();
-
-            dataArray.add(faction);
-        }
-
-        factionMap.put(faction.getFactionUuid(), faction);
-
-        return true;
     }
 
     public Faction CreateFaction(String name, City capital) {
@@ -75,25 +40,13 @@ public class FactionHandler extends Handler<Faction> {
         return faction;
     }
 
-    public Faction get(UUID uuid) {
-        return factionMap.get(uuid);
-    }
-
     public Faction get(String name) {
-        for (Faction faction : factionMap.values()) {
-            if (faction.getDisplayName().equals(name))
-                return faction;
-        }
-
-        return null;
-    }
-
-    public List<Faction> getAll() {
-        return dataArray;
+        return dataArray.stream().filter(f -> f.getDisplayName().equals(name)).findFirst().orElse(null);
     }
 
     @Override
     public boolean Delete(Faction faction) {
+        super.Delete(faction);
         WarOfSquirrels.instance.spreadPermissionDelete(faction);
 
         WarOfSquirrels.instance.getInfluenceHandler().Delete(faction);
@@ -102,32 +55,17 @@ public class FactionHandler extends Handler<Faction> {
             city.SetFaction(null);
         }
 
-        factionMap.remove(faction.getFactionUuid());
-
         Save();
         return true;
     }
 
     @Override
     public void Log() {
-        Logger.info(MessageFormat.format("{0} Factions generated : {1}",
-                PrefixLogger, dataArray.size()));
+        Logger.info(MessageFormat.format("{0} Factions generated : {1}", PrefixLogger, dataArray.size()));
     }
 
     @Override
-    public String getConfigDir() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
-    }
-
-    @Override
-    protected String getConfigPath() {
-        return getConfigDir() + JsonName;
-    }
-
-    @Override
-    public void spreadPermissionDelete(IPermission target) {
-        // Nothing To Do
-    }
+    public void spreadPermissionDelete(IPermission target) {}
 
     private void LogFactionCreation(Faction faction) {
         Logger.info(PrefixLogger + faction + " created");
@@ -192,15 +130,14 @@ public class FactionHandler extends Handler<Faction> {
 
     }
 
-    public void update() {
-        for (Faction faction : dataArray) {
-            faction.update();
-        }
-    }
-
     public void updateScore() {
         for (Faction faction: dataArray)
             faction.updateScore();
+    }
+
+    @Override
+    protected String getDirName() {
+        return super.getDirName() + "/Faction";
     }
 
 //

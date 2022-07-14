@@ -66,7 +66,7 @@ public class CuboSetCustomPerm extends CommandBuilder implements IPermissionExtr
 
         cubo.AddPlayerCustomPermission(target, permission);
         WarOfSquirrels.instance.getCuboHandler().Save();
-        MutableComponent text = ChatText.Success("Custom permissions for player '" + target.getDisplayName() + "' on cubo '" + cubo.getName() + "' are now " + permission);
+        MutableComponent text = ChatText.Success("Custom permissions for player '" + target.getDisplayName() + "' on cubo '" + cubo.getDisplayName() + "' are now " + permission);
 
         player.sendMessage(text);
 

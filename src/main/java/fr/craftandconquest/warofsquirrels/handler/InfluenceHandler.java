@@ -1,6 +1,5 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.Influence;
@@ -10,35 +9,22 @@ import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InfluenceHandler extends Handler<Influence> {
-    private final Map<City, Map<Territory, Influence>> cityInfluenceMap;
-    private final Map<Faction, Map<Territory, Influence>> factionInfluenceMap;
-    private final Map<UUID, Influence> influences;
-
-    private static final String DirName = "/WorldData";
-    private static final String JsonName = "/InfluenceHandler.json";
+    private final Map<City, Map<Territory, Influence>> cityInfluenceMap = new HashMap<>();
+    private final Map<Faction, Map<Territory, Influence>> factionInfluenceMap = new HashMap<>();
 
     public InfluenceHandler(Logger logger) {
         super("[WoS][InfluenceHandler]", logger);
-        cityInfluenceMap = new HashMap<>();
-        factionInfluenceMap = new HashMap<>();
-        influences = new HashMap<>();
-
-        if (!Init()) return;
-        if (!Load()) return;
-
-        Log();
     }
 
     @Override
     protected boolean add(Influence value) {
-        if (!dataArray.contains(value)) {
-            dataArray.add(value);
-        }
-        if (!influences.containsKey(value.getUuid()))
-            influences.put(value.getUuid(), value);
+        super.add(value);
 
         if (value.getFaction() != null)
             return AddFactionInfluence(value);
@@ -87,14 +73,14 @@ public class InfluenceHandler extends Handler<Influence> {
 
     @Override
     public boolean Delete(Influence value) {
-        dataArray.remove(value);
+        super.Delete(value);
+
         if (value.getFaction() != null) {
             factionInfluenceMap.get(value.getFaction()).keySet().removeIf(t -> t.equals(value.getTerritory()));
         }
         else if (cityInfluenceMap.containsKey(value.getCity())) {
             cityInfluenceMap.get(value.getCity()).keySet().removeIf(t -> t.equals(value.getTerritory()));
         }
-        influences.remove(value.getUuid());
 
         Save();
         return true;
@@ -128,23 +114,7 @@ public class InfluenceHandler extends Handler<Influence> {
     }
 
     @Override
-    public String getConfigDir() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
-    }
-
-    @Override
-    protected String getConfigPath() {
-        return getConfigDir() + JsonName;
-    }
-
-    @Override
-    public void spreadPermissionDelete(IPermission target) {
-        // Nothing To Do
-    }
-
-    public Influence get(UUID uuid) {
-        return influences.get(uuid);
-    }
+    public void spreadPermissionDelete(IPermission target) {}
 
     public Influence get(Faction faction, Territory territory) {
         if (factionInfluenceMap.get(faction) != null)
@@ -207,7 +177,7 @@ public class InfluenceHandler extends Handler<Influence> {
         }
 
         Logger.debug(String.format("%s[Influence] Influence généré sur le territoire '%s' : %d (%d)",
-                PrefixLogger, influence.getTerritory().getName(), influenceGenerated, influence.getValue()));
+                PrefixLogger, influence.getTerritory().getDisplayName(), influenceGenerated, influence.getValue()));
     }
 
     public void SwitchInfluence(City city, Faction faction, Territory territory) {
@@ -237,11 +207,17 @@ public class InfluenceHandler extends Handler<Influence> {
         return dataArray.stream().filter(influence -> influence.getTerritory().equals(territory)).toList();
     }
 
+    @Override
     public void updateDependencies() {
         dataArray.forEach(i-> {
             i.updateDependencies();
             add(i);
         });
+    }
+
+    @Override
+    protected String getDirName() {
+        return super.getDirName() + "/Faction";
     }
 }
 

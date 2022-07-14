@@ -38,7 +38,7 @@ public interface IBastionExtractor {
             List<Bastion> bastions = new ArrayList<>(WarOfSquirrels.instance.getBastionHandler().getAll());
 
             for (Bastion bastion : bastions) {
-                builder.suggest(bastion.getName());
+                builder.suggest(bastion.getDisplayName());
             }
             return builder.buildFuture();
         };

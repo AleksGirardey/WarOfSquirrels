@@ -44,7 +44,7 @@ public class AdminTp extends AdminCommandBuilder {
         AdminCubo cubo = WarOfSquirrels.instance.getAdminHandler().get(name);
         City city = WarOfSquirrels.instance.getCityHandler().getCity(name);
 
-        if (cubo != null && cubo.isTeleporter()) return true;
+        if (cubo != null && cubo.isTeleport()) return true;
         if (city != null) return true;
 
         player.sendMessage(ChatText.Error("Wrong argument"));

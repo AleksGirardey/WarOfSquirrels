@@ -28,7 +28,7 @@ public class AdminTpSetSpawn extends AdminCommandBuilder {
         String name = context.getArgument(argumentTpName, String.class);
         AdminCubo cubo = WarOfSquirrels.instance.getAdminHandler().get(name);
 
-        if (cubo != null && cubo.isTeleporter()) return true;
+        if (cubo != null && cubo.isTeleport()) return true;
 
         player.sendMessage(ChatText.Error("Wrong argument"));
 

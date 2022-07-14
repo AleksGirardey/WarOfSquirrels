@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 import java.text.MessageFormat;
 import java.util.*;
 
-public class CityHandler extends Handler<City> {
+public class CityHandler extends UpdatableHandler<City> {
     public CityHandler(Logger logger) {
         super("[WoS][CityHandler]", logger);
     }
@@ -162,12 +162,13 @@ public class CityHandler extends Handler<City> {
         return cities;
     }
 
-    public void update() {
-        dataArray.forEach(City::update);
-    }
-
     public void updateScore() {
         for (City city : dataArray)
             city.updateScore();
+    }
+
+    @Override
+    protected String getDirName() {
+        return super.getDirName() + "/Faction/City";
     }
 }

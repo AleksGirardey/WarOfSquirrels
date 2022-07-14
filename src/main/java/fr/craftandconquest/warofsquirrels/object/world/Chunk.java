@@ -3,13 +3,16 @@ package fr.craftandconquest.warofsquirrels.object.world;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.object.RegistryObject;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.guild.Guild;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -20,27 +23,28 @@ import net.minecraft.world.level.Level;
 
 import java.util.UUID;
 
-public class Chunk {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Chunk extends RegistryObject {
     @JsonProperty @Getter @Setter private int posX;
     @JsonProperty @Getter @Setter private int posZ;
-    @JsonProperty @Getter @Setter private String name;
     @JsonProperty @Getter @Setter private Boolean homeBlock = false;
     @JsonProperty @Getter @Setter private Boolean guildHomeBlock = false;
     @JsonProperty @Getter @Setter private Boolean outpost = false;
     @JsonProperty @Getter @Setter private Boolean isGuild = false;
     @JsonProperty @Getter @Setter private Vector3 respawnPoint;
     @JsonProperty @Getter private String dimensionId;
-    @JsonIgnore @Getter private ResourceKey<Level> dimension;
-
     @JsonProperty @Getter @Setter private UUID fortificationUuid;
     @JsonProperty @Getter @Setter private UUID guildUuid;
+
+    @JsonIgnore @Getter private ResourceKey<Level> dimension;
     @JsonIgnore @Getter private City city;
     @JsonIgnore @Getter private Bastion bastion;
     @JsonIgnore @Getter private Guild guild;
 
     public Chunk(double x, double z, UUID cityUuid, ResourceKey<Level> dimension) {
-        this(x, z, WarOfSquirrels.instance.getCityHandler().getCity(cityUuid), dimension);
-        name = String.format("%s%d%d", city.getDisplayName(), posX, posZ);
+        this(x, z, WarOfSquirrels.instance.getCityHandler().get(cityUuid), dimension);
+        displayName = String.format("%s%d%d", city.getDisplayName(), posX, posZ);
     }
 
     public Chunk(double x, double z, IFortification fortification, ResourceKey<Level> dimension) {
@@ -50,9 +54,8 @@ public class Chunk {
         setFortification();
         this.dimension = dimension;
         this.dimensionId = DimensionToId(dimension);
+        displayName = String.format("%s%d%d", fortification.getDisplayName(), posX, posZ);
     }
-
-    public Chunk() { }
 
     @JsonIgnore
     public IFortification getFortification() {
@@ -61,7 +64,7 @@ public class Chunk {
 
     @JsonIgnore
     public void setFortification() {
-        city = WarOfSquirrels.instance.getCityHandler().getCity(fortificationUuid);
+        city = WarOfSquirrels.instance.getCityHandler().get(fortificationUuid);
         bastion = WarOfSquirrels.instance.getBastionHandler().get(fortificationUuid);
     }
 
@@ -88,7 +91,7 @@ public class Chunk {
     }
 
     public void setBastion(Bastion bastion) {
-        fortificationUuid = bastion != null ? bastion.getBastionUuid() : null;
+        fortificationUuid = bastion != null ? bastion.getUuid() : null;
         this.bastion = bastion;
     }
 
@@ -103,7 +106,7 @@ public class Chunk {
         message.append(String.format(" has claim a new %s ", homeBlock ?
                         "HomeBlock" : (outpost ?
                         "Outpost" : "Chunk")))
-                .append(name != null ? "'" + name + "' " : "")
+                .append(displayName != null ? "'" + displayName + "' " : "")
                 .append(String.format("at [%d;%d]", posX, posZ));
 
         if (homeBlock || outpost)
@@ -143,6 +146,7 @@ public class Chunk {
         return dimension.location().getPath();
     }
 
+    @Override
     public void updateDependencies() {
         setFortification();
     }

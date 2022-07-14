@@ -1,6 +1,5 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Diplomacy;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
@@ -12,35 +11,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DiplomacyHandler extends Handler<Diplomacy> {
-    private Map<UUID, Diplomacy> diplomacyByUuid = new HashMap<>();
-    private Map<Faction, List<Diplomacy>> diplomacyMap = new HashMap<>();
-
-    private static final String DirName = "/WorldData";
-    private static final String JsonName = "/DiplomacyHandler.json";
+    private final Map<Faction, List<Diplomacy>> diplomacyMap = new HashMap<>();
 
     public DiplomacyHandler(Logger logger) {
         super("[WoS][DiplomacyHandler]", logger);
-
-        if (!Init()) return;
-        if (!Load()) return;
-
-        Log();
-    }
-
-    @Override
-    protected boolean Populate() {
-        dataArray.iterator().forEachRemaining(this::add);
-        return true;
     }
 
     @Override
     protected boolean add(Diplomacy value) {
-        if (!dataArray.contains(value)) {
-            dataArray.add(value);
-        }
-
-        if (!diplomacyByUuid.containsKey(value.getUuid()))
-            diplomacyByUuid.put(value.getUuid(), value);
+        super.add(value);
 
         if (!diplomacyMap.containsKey(value.getFaction()))
             diplomacyMap.put(value.getFaction(), new ArrayList<>());
@@ -52,17 +31,9 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
 
     @Override
     public boolean Delete(Diplomacy value) {
-        return Delete(value, true);
-    }
+        super.Delete(value);
 
-    public boolean Delete(Diplomacy value, boolean save) {
-        if (!dataArray.contains(value)) return false;
-
-        dataArray.remove(value);
-        diplomacyByUuid.remove(value.getUuid());
         diplomacyMap.get(value.getFaction()).remove(value);
-
-        if (save) Save();
 
         return true;
     }
@@ -73,7 +44,7 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
         List<Diplomacy> toBeRemoved = diplomacyMap.get(faction);
 
         for (Diplomacy diplomacy : toBeRemoved)
-            Delete(diplomacy, false);
+            Delete(diplomacy);
 
         diplomacyMap.keySet().removeIf(f -> f.equals(faction));
         Save();
@@ -130,14 +101,12 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
         Save();
     }
 
-    public Diplomacy get(UUID uuid) {
-        return diplomacyByUuid.get(uuid);
-    }
-
     public List<Diplomacy> get(Faction faction) {
         return diplomacyMap.get(faction);
     }
 
+
+    @Override
     public void updateDependencies() {
         dataArray.forEach(Diplomacy::updateDependencies);
         Populate();
@@ -150,17 +119,10 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
     }
 
     @Override
-    public String getConfigDir() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
+    protected String getDirName() {
+        return super.getDirName() + "/Faction";
     }
 
     @Override
-    protected String getConfigPath() {
-        return getConfigDir() + JsonName;
-    }
-
-    @Override
-    public void spreadPermissionDelete(IPermission target) {
-        // Nothing to do
-    }
+    public void spreadPermissionDelete(IPermission target) {}
 }

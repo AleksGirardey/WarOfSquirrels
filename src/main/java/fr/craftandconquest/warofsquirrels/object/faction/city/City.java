@@ -125,7 +125,7 @@ public class City extends Upgradable implements IPermission, IFortification, ICh
     public void SetFaction(Faction faction) {
         this.faction = faction;
         if (faction != null) {
-            this.factionUuid = faction.getFactionUuid();
+            this.factionUuid = faction.getUuid();
             faction.addCity(this);
         }
     }

@@ -283,7 +283,7 @@ public class Utils {
 
         if (territory != null) {
             message.append(MessageFormat.format("==| Territory {0} [{1};{2}] |==\n  Owner : {3}\n",
-                    territory.getName(), territory.getPosX(), territory.getPosZ(),
+                    territory.getDisplayName(), territory.getPosX(), territory.getPosZ(),
                     (territory.getFaction() == null ? "None" : (territory.getFaction().getDisplayName() + (territory.isHasFallen() ? " (Has fallen)" : "")))));
             message.append("  Biome(s):\n");
             message.append(territory.getBiome().asComponent());
@@ -310,7 +310,7 @@ public class Utils {
         }
 
         if (cubo != null) {
-            message.append("==| Cubo '" + cubo.getName() + "' [" + cubo.getOwner().getDisplayName() + "] |==");
+            message.append("==| Cubo '" + cubo.getDisplayName() + "' [" + cubo.getOwner().getDisplayName() + "] |==");
         }
 
         player.sendMessage(message, Util.NIL_UUID);

@@ -31,10 +31,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class FullPlayer implements IPermission, IScoreUpdater {
-
-    @JsonProperty @Getter @Setter private UUID uuid;
-    @JsonProperty("DisplayName") @Getter @Setter private String displayName;
+public class FullPlayer extends RegistryObject implements IPermission, IScoreUpdater, IUpdate {
     @JsonProperty @Getter @Setter private Score score = new Score();
     @JsonProperty private UUID cityUuid;
     @JsonProperty private UUID guildUuid;
@@ -80,8 +77,9 @@ public class FullPlayer implements IPermission, IScoreUpdater {
         this.guild = guild;
     }
 
+    @Override
     public void updateDependencies() {
-        if (cityUuid != null) WarOfSquirrels.instance.getCityHandler().getCity(cityUuid).register(this);
+        if (cityUuid != null) WarOfSquirrels.instance.getCityHandler().get(cityUuid).register(this);
         if (guildUuid != null) WarOfSquirrels.instance.getGuildHandler().get(uuid).register(this);
     }
 
@@ -124,6 +122,7 @@ public class FullPlayer implements IPermission, IScoreUpdater {
         return Utils.FromWorldToChunk(getPlayerEntity().getBlockX(), getPlayerEntity().getBlockZ());
     }
 
+    @Override
     public void update() {
         if (city != null) {
             switch (city.getCityUpgrade().getPalace().getCurrentLevel()) {

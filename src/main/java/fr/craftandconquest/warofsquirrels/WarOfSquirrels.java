@@ -9,6 +9,7 @@ import fr.craftandconquest.warofsquirrels.handler.*;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.handler.guild.GuildBranchHandler;
 import fr.craftandconquest.warofsquirrels.handler.guild.GuildHandler;
+import fr.craftandconquest.warofsquirrels.handler.guild.GuildShopHandler;
 import fr.craftandconquest.warofsquirrels.object.config.ConfigData;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.utils.BackUpUtils;

@@ -59,7 +59,7 @@ public class CuboSetInPerm extends CommandBuilder implements IPermissionExtracto
 
         cubo.setPermissionIn(permission);
         WarOfSquirrels.instance.getCuboHandler().Save();
-        MutableComponent text = ChatText.Success("Inperm permissions for cubo '" + cubo.getName() + "' are now " + permission);
+        MutableComponent text = ChatText.Success("Inperm permissions for cubo '" + cubo.getDisplayName() + "' are now " + permission);
 
         player.sendMessage(text);
 

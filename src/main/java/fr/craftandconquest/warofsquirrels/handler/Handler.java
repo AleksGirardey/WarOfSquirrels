@@ -3,7 +3,6 @@ package fr.craftandconquest.warofsquirrels.handler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.IUpdate;
 import fr.craftandconquest.warofsquirrels.object.RegistryObject;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.utils.OnSaveListener;
@@ -15,16 +14,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
-
-public abstract class UpdatableHandler<U extends T> extends Handler<U> implements IUpdate {
-    protected UpdatableHandler(String prefix, Logger logger) {
-        super(prefix, logger);
-    }
-
-    public void update() {
-        dataArray.forEach(IUpdate::update);
-    }
-}
 
 public abstract class Handler<T extends RegistryObject> implements OnSaveListener {
     protected String PrefixLogger;
@@ -143,10 +132,14 @@ public abstract class Handler<T extends RegistryObject> implements OnSaveListene
     public T get(String name) { return dataArray.stream().filter(value -> value.getDisplayName().equals(name)).findFirst().orElse(null); }
 
     public boolean Delete(T value) {
+        return Delete(value, false);
+    }
+    public boolean Delete(T value, boolean save) {
         dataMap.remove(value.getUuid());
         dataArray.remove(value);
 
-        Save();
+        if (save)
+            Save();
 
         return true;
     }

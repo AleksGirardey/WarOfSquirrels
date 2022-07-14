@@ -30,7 +30,7 @@ public class AdminTerritoryList extends AdminCommandBuilder {
 
         List<Territory> list = WarOfSquirrels.instance.getTerritoryHandler().getAll();
 
-        list.forEach(t -> message.append("  ["+ t.getPosX() + ";" + t.getPosZ() + "] " + t.getName()).append("\n"));
+        list.forEach(t -> message.append("  ["+ t.getPosX() + ";" + t.getPosZ() + "] " + t.getDisplayName()).append("\n"));
 
         player.sendMessage(message);
 

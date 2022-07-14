@@ -59,7 +59,7 @@ public class CityClaimRename extends CityMayorOrAssistantCommandBuilder {
         int z = player.getPlayerEntity().chunkPosition().z;
         ResourceKey<Level> dimensionId = player.getPlayerEntity().getCommandSenderWorld().dimension();
 
-        handler.getChunk(x, z, dimensionId).setName(name);
+        handler.getChunk(x, z, dimensionId).setDisplayName(name);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(
                 player.getCity(), null,

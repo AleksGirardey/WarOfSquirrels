@@ -32,7 +32,7 @@ public class AdminTpList extends AdminCommandBuilder {
         message.append("== Admin Tp list ==\n");
 
         for (AdminCubo adminCubo : list) {
-            message.append(" - " + adminCubo.getName() + "\n");
+            message.append(" - " + adminCubo.getDisplayName() + "\n");
         }
 
         player.sendMessage(message);

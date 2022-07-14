@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class TerritoryHandler extends Handler<Territory> {
+public class TerritoryHandler extends UpdatableHandler<Territory> {
     private final static List<String> defaultTerritoryName = new ArrayList<>() {{
         add("Elyphis");
         add("Oberon");
@@ -144,15 +144,13 @@ public class TerritoryHandler extends Handler<Territory> {
     private final Map<Faction, List<Territory>> territoriesByFaction;
     private final Territory[][] territories;
 
-    protected static String DirName = "/WorldData";
-    protected static String JsonName = "/TerritoryHandler.json";
-
     public TerritoryHandler(Logger logger) {
-        super("[WoS][TerritoryHandler]", logger);
         int sizeMap = WarOfSquirrels.instance.config.getConfiguration().getMapSize() /
                 WarOfSquirrels.instance.config.getConfiguration().getTerritorySize();
         territories = new Territory[sizeMap][sizeMap];
         territoriesByFaction = new HashMap<>();
+        this.PrefixLogger = "";
+        this.Logger = logger;
 
         if (!Init()) return;
         if (!Load()) return;
@@ -243,12 +241,12 @@ public class TerritoryHandler extends Handler<Territory> {
 
     @Override
     public boolean Delete(Territory territory) {
+        super.Delete(territory);
         int offset = (WarOfSquirrels.instance.getConfig().getMapSize() / 2) / WarOfSquirrels.instance.getConfig().getTerritorySize();
         int posX = territory.getPosX() + offset;
         int posZ = territory.getPosZ() + offset;
 
         territories[posX][posZ] = null;
-        dataArray.remove(territory);
 
         Save();
 
@@ -256,7 +254,7 @@ public class TerritoryHandler extends Handler<Territory> {
     }
 
     public void LogTerritoryCreation(Territory territory) {
-        Logger.info(PrefixLogger + " " + territory.getName() + " created" + (territory.getBiome().isHasRiver() ? " with river." : ""));
+        Logger.info(PrefixLogger + " " + territory.getDisplayName() + " created" + (territory.getBiome().isHasRiver() ? " with river." : ""));
     }
 
     @Override
@@ -272,16 +270,6 @@ public class TerritoryHandler extends Handler<Territory> {
 
         Logger.info(MessageFormat.format("{0} Ecart type river : {1}",
                 PrefixLogger, v));
-    }
-
-    @Override
-    public String getConfigDir() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
-    }
-
-    @Override
-    protected String getConfigPath() {
-        return getConfigDir() + JsonName;
     }
 
     @Override
@@ -351,7 +339,7 @@ public class TerritoryHandler extends Handler<Territory> {
 
     public Territory get(String name) {
         return dataArray.stream()
-                .filter(t -> t.getName().equals(name))
+                .filter(t -> t.getDisplayName().equals(name))
                 .findFirst().orElse(null);
     }
 
@@ -364,10 +352,6 @@ public class TerritoryHandler extends Handler<Territory> {
                         (t.getPosX() == territoryPos.x && t.getPosZ() == territoryPos.y))
                 .findFirst()
                 .orElse(null);
-    }
-
-    public Territory get(UUID uuid) {
-        return dataArray.stream().filter(territory -> territory.getUuid().equals(uuid)).findFirst().orElse(null);
     }
 
     public Territory getFromTerritoryPos(Vector2 territory) {
@@ -421,14 +405,19 @@ public class TerritoryHandler extends Handler<Territory> {
         return true;
     }
 
+    @Override
     public void update() {
         dataArray.stream().filter(t -> t.getFortification() != null).forEach(Territory::update);
-
-//        for (Territory territory : dataArray) territory.update();
     }
 
+    @Override
     public void updateDependencies() {
         dataArray.forEach(Territory::updateDependencies);
         dataArray.forEach(this::add);
+    }
+
+    @Override
+    protected String getDirName() {
+        return super.getDirName() + "/World";
     }
 }

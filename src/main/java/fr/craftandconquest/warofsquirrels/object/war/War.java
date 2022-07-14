@@ -90,7 +90,7 @@ public class War implements IChannelTarget {
         MutableComponent worldAnnounce = new TextComponent("The war horns roar. ");
         MutableComponent attackerName = ChatText.Colored(attacker.getDisplayName(), ChatFormatting.BLUE);
         MutableComponent defenderName = ChatText.Colored(defender.getDisplayName(), ChatFormatting.RED);
-        worldAnnounce.append(attackerName).append(" is attacking ").append(defenderName).append(" on territory ").append(targetTerritory.getName());
+        worldAnnounce.append(attackerName).append(" is attacking ").append(defenderName).append(" on territory ").append(targetTerritory.getDisplayName());
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(worldAnnounce);
 
@@ -270,7 +270,7 @@ public class War implements IChannelTarget {
             Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(cityAttacker);
             WarOfSquirrels.instance.getInfluenceHandler().get(territory.getFaction(), territory).SubInfluence(pointsToRemove);
 
-            influenceLost.append(territory.getName() + "'");
+            influenceLost.append(territory.getDisplayName() + "'");
             influenceMessageTarget = cityAttacker.getFaction();
         } else {
             text = ChatText.Colored(cityAttacker.getDisplayName()
@@ -322,7 +322,7 @@ public class War implements IChannelTarget {
             }
 
             if (influence.getValue() <= 0) {
-                text.append(ChatText.Colored("\n Faction " + cityAttacker.getFaction().getDisplayName() + " lost all his influence on territory '" + targetTerritory.getName() + "' and territory has fall.", ChatFormatting.GOLD));
+                text.append(ChatText.Colored("\n Faction " + cityAttacker.getFaction().getDisplayName() + " lost all his influence on territory '" + targetTerritory.getDisplayName() + "' and territory has fall.", ChatFormatting.GOLD));
                 targetTerritory.setHasFallen(true);
                 targetTerritory.setDaysBeforeReset(3);
             }

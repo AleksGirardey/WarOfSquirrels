@@ -39,7 +39,7 @@ public class ServerEvents {
 
         FullPlayer player;
 
-        if (!playerHandler.exists(playerEntity.getUUID(), true)) {
+        if (!playerHandler.exists(playerEntity.getUUID())) {
             player = playerHandler.CreatePlayer(playerEntity);
             SpawnTeleporter sp = new SpawnTeleporter(WarOfSquirrels.instance.getConfig().getServerSpawn());
             ServerLevel level = WarOfSquirrels.server.getLevel(WarOfSquirrels.SPAWN);

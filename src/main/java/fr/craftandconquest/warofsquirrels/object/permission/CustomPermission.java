@@ -26,7 +26,7 @@ public class CustomPermission {
     public IPermission getTarget() {
         return switch (type) {
             case PLAYER -> WarOfSquirrels.instance.getPlayerHandler().get(targetUuid);
-            case CITY -> WarOfSquirrels.instance.getCityHandler().getCity(targetUuid);
+            case CITY -> WarOfSquirrels.instance.getCityHandler().get(targetUuid);
             case FACTION -> WarOfSquirrels.instance.getFactionHandler().get(targetUuid);
             case GUILD -> WarOfSquirrels.instance.getGuildHandler().get(targetUuid);
         };

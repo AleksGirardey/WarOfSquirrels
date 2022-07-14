@@ -33,7 +33,7 @@ public class CityBastionName extends CityBastionCommandBuilder {
 
         String name = context.getArgument("name", String.class);
 
-        bastion.setName(name);
+        bastion.setDisplayName(name);
 
         player.sendMessage(ChatText.Success("Your bastion has been rename '" + name + "'"));
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.object.RegistryObject;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import lombok.AllArgsConstructor;
@@ -13,8 +14,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 @AllArgsConstructor
-public class Influence {
-    @JsonProperty @Getter @Setter private UUID uuid;
+public class Influence extends RegistryObject {
     @JsonProperty @Getter @Setter private UUID factionUuid;
     @JsonProperty @Getter @Setter private UUID cityUuid;
     @JsonProperty @Getter @Setter private UUID territoryUuid;
@@ -61,7 +61,7 @@ public class Influence {
     public void SetFaction(Faction faction) {
         this.faction = faction;
         this.factionUuid = faction != null
-                ? faction.getFactionUuid()
+                ? faction.getUuid()
                 : null;
     }
 
@@ -80,8 +80,9 @@ public class Influence {
         this.value = Math.max(value - influence, 0);
     }
 
+    @Override
     public void updateDependencies() {
-        if (cityUuid != null) city = WarOfSquirrels.instance.getCityHandler().getCity(cityUuid);
+        if (cityUuid != null) city = WarOfSquirrels.instance.getCityHandler().get(cityUuid);
         if (factionUuid != null) faction = WarOfSquirrels.instance.getFactionHandler().get(factionUuid);
         if (territoryUuid != null) territory = WarOfSquirrels.instance.getTerritoryHandler().get(territoryUuid);
     }
@@ -99,6 +100,6 @@ public class Influence {
     @Override
     public String toString() {
         return String.format("[Influence] %s influence le territoire %s à hauteur de %d influence.",
-                faction != null ? faction.getDisplayName() : city != null ? city.getDisplayName() : "none", territory.getName(), value);
+                faction != null ? faction.getDisplayName() : city != null ? city.getDisplayName() : "none", territory.getDisplayName(), value);
     }
 }

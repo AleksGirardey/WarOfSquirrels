@@ -35,7 +35,7 @@ public class AdminHandler extends Handler<AdminCubo> {
         AdminCubo cubo = CreateCubo(player, name);
         Player entity = player.getPlayerEntity();
 
-        cubo.setTeleporter(true);
+        cubo.setTeleport(true);
         cubo.setRespawnPoint(new Vector3(entity.getBlockX(), entity.getBlockY(), entity.getBlockZ()));
         cubo.setRespawnDimension(player.getPlayerEntity().level.dimension().location().getPath());
 
@@ -49,7 +49,7 @@ public class AdminHandler extends Handler<AdminCubo> {
     public AdminCubo CreateProtection(FullPlayer player, String name) {
         AdminCubo cubo = CreateCubo(player, name);
 
-        cubo.setTeleporter(false);
+        cubo.setTeleport(false);
         cubo.setRespawnDimension(player.getPlayerEntity().level.dimension().location().getPath());
 
         if (add(cubo)) {
@@ -65,14 +65,14 @@ public class AdminHandler extends Handler<AdminCubo> {
         AdminCubo cubo = new AdminCubo();
 
         cubo.setUuid(UUID.randomUUID());
-        cubo.setName(name);
+        cubo.setDisplayName(name);
         cubo.setVector(vector);
 
         return cubo;
     }
 
     public List<AdminCubo> getAllTp() {
-        return super.getAll().stream().filter(AdminCubo::isTeleporter).toList();
+        return super.getAll().stream().filter(AdminCubo::isTeleport).toList();
     }
 
     public AdminCubo get(String name) {
@@ -109,15 +109,15 @@ public class AdminHandler extends Handler<AdminCubo> {
         if (!dataArray.contains(value))
             dataArray.add(value);
 
-        if (!adminCuboMap.containsKey(value.getName()))
-            adminCuboMap.put(value.getName(), value);
+        if (!adminCuboMap.containsKey(value.getDisplayName()))
+            adminCuboMap.put(value.getDisplayName(), value);
 
         return true;
     }
 
     @Override
     public boolean Delete(AdminCubo value) {
-        adminCuboMap.remove(value.getName());
+        adminCuboMap.remove(value.getDisplayName());
         dataArray.remove(value);
         return true;
     }
