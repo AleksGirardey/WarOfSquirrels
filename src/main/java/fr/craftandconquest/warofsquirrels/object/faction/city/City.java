@@ -13,7 +13,7 @@ import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.Upgradable;
 import fr.craftandconquest.warofsquirrels.object.permission.*;
 import fr.craftandconquest.warofsquirrels.object.scoring.Score;
-import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
+import fr.craftandconquest.warofsquirrels.object.upgrade.city.CityUpgrade;
 import fr.craftandconquest.warofsquirrels.object.war.AttackTarget;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
@@ -293,6 +293,11 @@ public class City extends Upgradable implements IPermission, IFortification, ICh
                 permissionsAsString.append("  ").append(k.getPermissionDisplayName()).append(" ").append(v.toString()).append("\n"));
 
         return permissionsAsString.toString();
+    }
+
+    @Override
+    public int Size() {
+        return citizens.size();
     }
 
     @Override

@@ -2,8 +2,7 @@ package fr.craftandconquest.warofsquirrels.object.upgrade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
+import fr.craftandconquest.warofsquirrels.object.faction.Upgradable;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import lombok.Getter;
@@ -44,7 +43,7 @@ public abstract class Upgrade {
     }
 
     @JsonIgnore protected abstract String getUpgradeName();
-    @JsonIgnore public abstract boolean isComplete(IFortification fortification);
+    @JsonIgnore public abstract boolean isComplete(Upgradable target);
     @JsonIgnore protected abstract Map<UpgradeItem, Integer> getDefaultValues(int level);
 
     @JsonIgnore protected String getExtraRequirements() {

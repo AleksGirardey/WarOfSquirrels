@@ -6,7 +6,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityBastionCommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
-import fr.craftandconquest.warofsquirrels.object.upgrade.BastionUpgrade;
+import fr.craftandconquest.warofsquirrels.object.upgrade.bastion.BastionUpgrade;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;

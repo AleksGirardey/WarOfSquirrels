@@ -6,7 +6,7 @@ import fr.craftandconquest.warofsquirrels.commands.city.upgrade.CityUpgradeCompl
 import fr.craftandconquest.warofsquirrels.commands.city.upgrade.CityUpgradeFill;
 import fr.craftandconquest.warofsquirrels.commands.city.upgrade.CityUpgradeInfo;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
-import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
+import fr.craftandconquest.warofsquirrels.object.upgrade.city.CityUpgrade;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;

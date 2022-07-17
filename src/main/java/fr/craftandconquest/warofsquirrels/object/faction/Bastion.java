@@ -7,7 +7,7 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.IUpdate;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.scoring.Score;
-import fr.craftandconquest.warofsquirrels.object.upgrade.BastionUpgrade;
+import fr.craftandconquest.warofsquirrels.object.upgrade.bastion.BastionUpgrade;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;

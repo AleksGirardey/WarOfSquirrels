@@ -8,7 +8,7 @@ import fr.craftandconquest.warofsquirrels.object.permission.CustomPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
-import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
+import fr.craftandconquest.warofsquirrels.object.upgrade.city.CityUpgrade;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.network.chat.MutableComponent;

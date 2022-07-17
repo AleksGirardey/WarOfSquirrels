@@ -8,7 +8,7 @@ import fr.craftandconquest.warofsquirrels.commands.city.bastion.upgrade.CityBast
 import fr.craftandconquest.warofsquirrels.commands.city.bastion.upgrade.CityBastionUpgradeFill;
 import fr.craftandconquest.warofsquirrels.commands.city.bastion.upgrade.CityBastionUpgradeInfo;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
-import fr.craftandconquest.warofsquirrels.object.upgrade.BastionUpgrade;
+import fr.craftandconquest.warofsquirrels.object.upgrade.bastion.BastionUpgrade;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;

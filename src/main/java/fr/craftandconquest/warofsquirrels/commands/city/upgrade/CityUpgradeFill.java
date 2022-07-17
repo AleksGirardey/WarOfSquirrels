@@ -6,7 +6,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
-import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
+import fr.craftandconquest.warofsquirrels.object.upgrade.city.CityUpgrade;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import lombok.AllArgsConstructor;
 import net.minecraft.commands.CommandSourceStack;

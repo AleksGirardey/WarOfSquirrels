@@ -4,7 +4,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
-import fr.craftandconquest.warofsquirrels.object.upgrade.BastionUpgrade;
+import fr.craftandconquest.warofsquirrels.object.upgrade.bastion.BastionUpgrade;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;

@@ -1,11 +1,11 @@
-package fr.craftandconquest.warofsquirrels.object.upgrade;
+package fr.craftandconquest.warofsquirrels.object.upgrade.city;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
-import fr.craftandconquest.warofsquirrels.object.upgrade.city.*;
+import fr.craftandconquest.warofsquirrels.object.upgrade.Upgrade;
+import fr.craftandconquest.warofsquirrels.object.upgrade.UpgradeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -62,7 +62,7 @@ public class CityUpgrade {
         if (currentPalaceUpgrade != null) currentPalaceUpgrade.applyCostReduction(city.getCostReduction(), palace.getCurrentLevel());
     }
 
-    public boolean CompleteUpgrade(UpgradeType type, IFortification fortification, boolean isForced) {
+    public boolean CompleteUpgrade(UpgradeType type, boolean isForced) {
         Upgrade target = null;
         UpgradeInfo targetInfo = null;
 
@@ -94,7 +94,7 @@ public class CityUpgrade {
             return false;
         }
 
-        if (target.isComplete(fortification) || isForced) {
+        if (target.isComplete(city) || isForced) {
             targetInfo.setHasBeenComplete(true);
             targetInfo.setDaysBeforeLevelUp(target.getDelayInDays());
             if (isForced)
@@ -141,7 +141,7 @@ public class CityUpgrade {
         }
 
         if (target == null) return 0;
-         return target.fill(container);
+        return target.fill(container);
     }
 
     public void SetNextTarget(UpgradeType type) {

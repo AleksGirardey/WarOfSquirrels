@@ -9,6 +9,8 @@ import lombok.Setter;
 public abstract class Upgradable extends RegistryObject {
     @JsonProperty @Getter @Setter protected ChestLocation upgradeChestLocation;
 
+    public abstract int Size();
+
     @Override
     public void updateDependencies() {
         if (upgradeChestLocation != null)

@@ -20,7 +20,7 @@ import net.minecraft.network.chat.TextComponent;
 
 import java.util.*;
 
-public class Guild extends Upgradable implements IPermission, IChannelTarget, IUpdate {
+public class Guild extends Upgradable implements IPermission, IChannelTarget, IUpdate, IEstablishment {
     @JsonProperty @Getter @Setter private String tag;
     @JsonProperty @Getter @Setter private UUID ownerUuid;
     @JsonProperty @Getter @Setter private UUID cityHeadQuarterUuid;
@@ -102,6 +102,22 @@ public class Guild extends Upgradable implements IPermission, IChannelTarget, IU
         return true;
     }
 
+    @JsonIgnore
+    public boolean AddBranch(GuildBranch branch) {
+        boolean added = false;
+        if (!branchListUuid.contains(branch.getUuid())) {
+            branchListUuid.add(branch.getUuid());
+            added = true;
+        }
+
+        if (!branches.contains(branch)) {
+            branches.add(branch);
+            added = true;
+        }
+
+        return added;
+    }
+
     public boolean register(FullPlayer player) {
         if (members.contains(player)) return false;
 
@@ -114,6 +130,11 @@ public class Guild extends Upgradable implements IPermission, IChannelTarget, IU
     @Override
     public BroadCastTarget getBroadCastTarget() {
         return BroadCastTarget.GUILD;
+    }
+
+    @Override
+    public int Size() {
+        return getMembers().size();
     }
 
     @Override
@@ -147,23 +168,6 @@ public class Guild extends Upgradable implements IPermission, IChannelTarget, IU
     public String toString() { return String.format("[Guild][%s] %s", tag, displayName); }
 
     // Setter
-
-    @JsonIgnore
-    public boolean AddBranch(GuildBranch branch) {
-        boolean added = false;
-        if (!branchListUuid.contains(branch.getUuid())) {
-            branchListUuid.add(branch.getUuid());
-            added = true;
-        }
-
-        if (!branches.contains(branch)) {
-            branches.add(branch);
-            added = true;
-        }
-
-        return added;
-    }
-
     @JsonIgnore
     public void setOwner(FullPlayer target) {
         ownerUuid = target != null ? target.getUuid() : null;
@@ -179,5 +183,36 @@ public class Guild extends Upgradable implements IPermission, IChannelTarget, IU
     @Override
     public void update() {
 
+    }
+
+    @Override
+    public EstablishmentType getEstablishmentType() {
+        return EstablishmentType.HeadQuarter;
+    }
+
+    @Override
+    public List<IEstablishment> getSubEstablishment() {
+        return branches.stream().map(branch -> (IEstablishment) branch).toList();
+    }
+
+    public void displayInfo(FullPlayer player) {
+        MutableComponent message = new TextComponent("");
+
+        //CityRank rank = WarOfSquirrels.instance.getConfig().getCityRankMap().get(cityUpgrade.getLevel().getCurrentLevel());
+
+//        int size = WarOfSquirrels.instance.getChunkHandler().getSize(this);
+
+        message.append("--==| " + displayName + " [" + members.size() + "] |==--\n");
+        message.append("  Faction: " + cityHeadQuarter.getFaction().getDisplayName() + "\n");
+        message.append("  HeadQuarter: " + cityHeadQuarter.getDisplayName() + "\n");
+        message.append("  Guild master: " + owner.getDisplayName() + "\n");
+//        message.append("  Assistant(s): " + Utils.getStringFromPlayerList(getAssistants()) + "\n");
+//        message.append("  Resident(s): " + Utils.getStringFromPlayerList(getResidents()) + "\n");
+//        message.append("  Recruit(s): " + Utils.getStringFromPlayerList(getRecruits()) + "\n");
+        message.append("  Tag: " + tag + "\n");
+        message.append("  Permissions:\n" + displayPermissions());
+
+        message.withStyle(ChatFormatting.BLUE);
+        player.sendMessage(message);
     }
 }

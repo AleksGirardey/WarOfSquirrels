@@ -3,8 +3,7 @@ package fr.craftandconquest.warofsquirrels.object.upgrade.city;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
+import fr.craftandconquest.warofsquirrels.object.faction.Upgradable;
 import fr.craftandconquest.warofsquirrels.object.upgrade.Upgrade;
 import fr.craftandconquest.warofsquirrels.object.upgrade.UpgradeItem;
 import lombok.Getter;
@@ -90,8 +89,8 @@ public class LevelUpgrade extends Upgrade {
     }
 
     @Override
-    public boolean isComplete(IFortification fortification) {
-        return fortification.getRelatedCity().getSize() >= minPeople && hasCompleteItems();
+    public boolean isComplete(Upgradable target) {
+        return target.Size() >= minPeople && hasCompleteItems();
     }
 
     @Override

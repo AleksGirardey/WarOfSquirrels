@@ -3,9 +3,9 @@ package fr.craftandconquest.warofsquirrels.object.world;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.object.faction.guild.IEstablishment;
 import fr.craftandconquest.warofsquirrels.object.RegistryObject;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
-import fr.craftandconquest.warofsquirrels.object.faction.guild.Guild;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
@@ -29,18 +29,17 @@ public class Chunk extends RegistryObject {
     @JsonProperty @Getter @Setter private int posX;
     @JsonProperty @Getter @Setter private int posZ;
     @JsonProperty @Getter @Setter private Boolean homeBlock = false;
-    @JsonProperty @Getter @Setter private Boolean guildHomeBlock = false;
     @JsonProperty @Getter @Setter private Boolean outpost = false;
     @JsonProperty @Getter @Setter private Boolean isGuild = false;
     @JsonProperty @Getter @Setter private Vector3 respawnPoint;
     @JsonProperty @Getter private String dimensionId;
     @JsonProperty @Getter @Setter private UUID fortificationUuid;
-    @JsonProperty @Getter @Setter private UUID guildUuid;
+    @JsonProperty @Getter @Setter private UUID establishmentUuid;
 
     @JsonIgnore @Getter private ResourceKey<Level> dimension;
     @JsonIgnore @Getter private City city;
     @JsonIgnore @Getter private Bastion bastion;
-    @JsonIgnore @Getter private Guild guild;
+    @JsonIgnore @Getter private IEstablishment establishment;
 
     public Chunk(double x, double z, UUID cityUuid, ResourceKey<Level> dimension) {
         this(x, z, WarOfSquirrels.instance.getCityHandler().get(cityUuid), dimension);
@@ -68,6 +67,17 @@ public class Chunk extends RegistryObject {
         bastion = WarOfSquirrels.instance.getBastionHandler().get(fortificationUuid);
     }
 
+    @JsonIgnore
+    public void setEstablishment() {
+        establishment = WarOfSquirrels.instance.getGuildHandler().get(establishmentUuid);
+
+        if (establishment == null) {
+            establishment = WarOfSquirrels.instance.getGuildBranchHandler().get(establishmentUuid);
+            if (establishment == null)
+                establishment = WarOfSquirrels.instance.getGuildShopHandler().get(establishmentUuid);
+        }
+    }
+
     @JsonProperty
     public void setDimensionId(String id) {
         dimensionId = id;
@@ -80,9 +90,9 @@ public class Chunk extends RegistryObject {
         dimensionId = dim.location().getPath();
     }
 
-    public void setGuild(Guild guild) {
-        guildUuid = guild != null ? guild.getUuid() : null;
-        this.guild = guild;
+    public void setEstablishment(IEstablishment establishment) {
+        establishmentUuid = establishment != null ? establishment.getUuid() : null;
+        this.establishment = establishment;
     }
 
     public void setCity(City city) {
@@ -149,6 +159,7 @@ public class Chunk extends RegistryObject {
     @Override
     public void updateDependencies() {
         setFortification();
+        setEstablishment();
     }
 
     @JsonIgnore

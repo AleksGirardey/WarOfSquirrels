@@ -43,7 +43,7 @@ public class GuildHandler extends UpdatableHandler<Guild> implements IUpdate {
         WarOfSquirrels.instance.spreadPermissionDelete(value);
 
         if (!WarOfSquirrels.instance.getCuboHandler().deleteGuild(value)) return false;
-        if (!WarOfSquirrels.instance.getChunkHandler().deleteGuild(value)) return false;
+        if (!WarOfSquirrels.instance.getChunkHandler().deleteEstablishment(value)) return false;
 
         for (FullPlayer player : value.getMembers()) {
             player.setGuild(null);
@@ -67,5 +67,16 @@ public class GuildHandler extends UpdatableHandler<Guild> implements IUpdate {
     public void spreadPermissionDelete(IPermission target) {
         for (Guild guild : dataArray)
             guild.getCustomPermission().remove(target);
+    }
+
+    public List<Guild> getAll(Faction faction) { return guildByFaction.get(faction); }
+
+    public Collection<String> getAllAsCollection() {
+        List<String> guilds = new ArrayList<>();
+
+        for (Guild guild : dataArray)
+            guilds.add(guild.getDisplayName());
+
+        return guilds;
     }
 }

@@ -1,11 +1,9 @@
 package fr.craftandconquest.warofsquirrels.commands.admin.territory;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.admin.AdminCommandBuilder;
-import fr.craftandconquest.warofsquirrels.commands.arguments.TerritoryArgumentType;
 import fr.craftandconquest.warofsquirrels.commands.extractor.ITerritoryExtractor;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
@@ -17,8 +15,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-
-import java.util.List;
 
 public class AdminTerritoryTp extends AdminCommandBuilder implements ITerritoryExtractor {
     @Override

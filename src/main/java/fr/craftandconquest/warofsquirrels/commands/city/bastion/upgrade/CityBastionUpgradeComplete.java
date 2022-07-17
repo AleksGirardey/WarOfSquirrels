@@ -6,7 +6,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityBastionCommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
-import fr.craftandconquest.warofsquirrels.object.upgrade.BastionUpgrade;
+import fr.craftandconquest.warofsquirrels.object.upgrade.bastion.BastionUpgrade;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
@@ -35,7 +35,7 @@ public class CityBastionUpgradeComplete extends CityBastionCommandBuilder {
         Vector2 territoryPos = Utils.FromWorldToTerritory(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
         Territory territory = WarOfSquirrels.instance.getTerritoryHandler().getFromTerritoryPos(territoryPos);
         Bastion bastion = (Bastion) territory.getFortification();
-        boolean complete = bastion.getBastionUpgrade().CompleteUpgrade(upgradeType, bastion);
+        boolean complete = bastion.getBastionUpgrade().CompleteUpgrade(upgradeType);
 
         if (complete) {
             WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(bastion.getRelatedCity(), null,

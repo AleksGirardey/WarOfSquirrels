@@ -3,7 +3,7 @@ package fr.craftandconquest.warofsquirrels.object.upgrade.bastion;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
+import fr.craftandconquest.warofsquirrels.object.faction.Upgradable;
 import fr.craftandconquest.warofsquirrels.object.upgrade.Upgrade;
 import fr.craftandconquest.warofsquirrels.object.upgrade.UpgradeItem;
 import net.minecraft.tags.ItemTags;
@@ -77,7 +77,7 @@ public class VillageUpgrade extends Upgrade {
     }
 
     @Override
-    public boolean isComplete(IFortification fortification) {
+    public boolean isComplete(Upgradable target) {
         return hasCompleteItems();
     }
 

@@ -6,7 +6,7 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
-import fr.craftandconquest.warofsquirrels.object.upgrade.CityUpgrade;
+import fr.craftandconquest.warofsquirrels.object.upgrade.city.CityUpgrade;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import lombok.AllArgsConstructor;
 import net.minecraft.commands.CommandSourceStack;
@@ -30,7 +30,7 @@ public class CityUpgradeComplete extends CityMayorOrAssistantCommandBuilder {
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         City city = player.getCity();
-        boolean complete = city.getCityUpgrade().CompleteUpgrade(upgradeType, city, player.isAdminMode());
+        boolean complete = city.getCityUpgrade().CompleteUpgrade(upgradeType, player.isAdminMode());
 
         if (complete) {
             WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(

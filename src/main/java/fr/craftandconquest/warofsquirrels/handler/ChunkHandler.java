@@ -5,6 +5,7 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.guild.Guild;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.object.faction.guild.IEstablishment;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
 import fr.craftandconquest.warofsquirrels.object.world.ChunkLocation;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 public class ChunkHandler extends Handler<Chunk> {
     private final Map<ChunkLocation, Chunk> chunksMap = new HashMap<>();
     private final Map<IFortification, List<Chunk>> fortificationMap = new HashMap<>();
-    private final Map<Guild, List<Chunk>> guildMap = new HashMap<>();
+    private final Map<IEstablishment, List<Chunk>> establishmentMap = new HashMap<>();
 
     public ChunkHandler(Logger logger) {
         super("[WoS][ChunkHandler]", logger);
@@ -60,14 +61,14 @@ public class ChunkHandler extends Handler<Chunk> {
                 fortificationMap.get(chunk.getFortification()).add(chunk);
         }
 
-        if (chunk.getIsGuild()) {
-            Guild guild = chunk.getGuild();
+        if (chunk.getIsGuild() && chunk.getEstablishment() != null) {
+            IEstablishment establishment = chunk.getEstablishment();
 
-            if (!guildMap.containsKey(guild))
-                guildMap.put(guild, new ArrayList<>());
+            if (!establishmentMap.containsKey(establishment))
+                establishmentMap.put(establishment, new ArrayList<>());
 
-            if (!guildMap.get(guild).contains(chunk))
-                guildMap.get(guild).add(chunk);
+            if (!establishmentMap.get(establishment).contains(chunk))
+                establishmentMap.get(establishment).add(chunk);
         }
 
         return true;
@@ -83,7 +84,7 @@ public class ChunkHandler extends Handler<Chunk> {
             for (Chunk chunk : fortificationMap.get(fortification)) {
                 ChunkLocation chunkLocation = new ChunkLocation(chunk.getPosX(), chunk.getPosZ(), chunk.getDimension());
                 dataArray.remove(chunk);
-                guildMap.forEach(((guild, chunks) -> chunks.remove(chunk)));
+                establishmentMap.forEach(((guild, chunks) -> chunks.remove(chunk)));
                 chunksMap.keySet().removeIf(k -> k.equals(chunkLocation));
             }
             fortificationMap.keySet().removeIf(f -> f.equals(fortification));
@@ -93,10 +94,14 @@ public class ChunkHandler extends Handler<Chunk> {
         return true;
     }
 
-    public boolean deleteGuild(Guild guild) {
-        List<Chunk> toDelete = guildMap.get(guild);
+    public boolean deleteEstablishment(IEstablishment establishment) {
+        List<IEstablishment> subEstablishment = establishment.getSubEstablishment();
 
-        guildMap.remove(guild);
+        subEstablishment.forEach(this::deleteEstablishment);
+
+        List<Chunk> toDelete = establishmentMap.get(establishment);
+
+        establishmentMap.remove(establishment);
 
         for (Chunk chunk : toDelete) {
             fortificationMap.get(chunk.getFortification()).remove(chunk);
@@ -144,6 +149,10 @@ public class ChunkHandler extends Handler<Chunk> {
         return Collections.emptyList();
     }
 
+    public int getSize(IEstablishment establishment) {
+        return establishmentMap.getOrDefault(establishment, Collections.emptyList()).size();
+    }
+
     public int getSize(IFortification fortification) {
         int chunksValue = 0;
         int outpostValue = 0;
@@ -162,7 +171,7 @@ public class ChunkHandler extends Handler<Chunk> {
 
     public Chunk getHomeBlock(Guild guild) {
         for (Chunk chunk : fortificationMap.get(guild.getCityHeadQuarter()))
-            if (chunk.getGuildHomeBlock()) return chunk;
+            if (chunk.getHomeBlock() && chunk.getIsGuild()) return chunk;
 
         return null;
     }

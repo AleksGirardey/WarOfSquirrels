@@ -1,11 +1,10 @@
-package fr.craftandconquest.warofsquirrels.object.upgrade;
+package fr.craftandconquest.warofsquirrels.object.upgrade.bastion;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
-import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
-import fr.craftandconquest.warofsquirrels.object.upgrade.bastion.*;
+import fr.craftandconquest.warofsquirrels.object.upgrade.Upgrade;
+import fr.craftandconquest.warofsquirrels.object.upgrade.UpgradeInfo;
 import lombok.Getter;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
@@ -50,7 +49,7 @@ public class BastionUpgrade {
         currentRoadUpgrade = RoadUpgrade.defaultRoadUpgrade.get(road.getCurrentLevel());
     }
 
-    public boolean CompleteUpgrade(UpgradeType type, IFortification fortification) {
+    public boolean CompleteUpgrade(UpgradeType type) {
         Upgrade target = null;
         UpgradeInfo targetInfo = null;
 
@@ -79,7 +78,7 @@ public class BastionUpgrade {
 
         if (target == null) return false;
 
-        if (target.isComplete(fortification)) {
+        if (target.isComplete(bastion)) {
             targetInfo.setHasBeenComplete(true);
             targetInfo.setDaysBeforeLevelUp(target.getDelayInDays());
             if (target.getDelayInDays() <= 0)
@@ -199,7 +198,7 @@ public class BastionUpgrade {
 
     @JsonIgnore
     public int getInfluenceGeneratedCloseNeighbour(boolean onNeutral) {
-        int fromVillage = 0;
+        int fromVillage;
         int fromRoad = 0;
 
         switch (village.getCurrentLevel()) {
