@@ -38,7 +38,7 @@ public class CityAdd extends CityMayorOrAssistantCommandBuilder implements IPlay
 
         if (ret) return true;
 
-        player.sendMessage(message);
+        player.sendMessage(message, true);
         return false;
     }
 

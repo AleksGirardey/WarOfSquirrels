@@ -21,11 +21,11 @@ public class AdminCreateFakePlayer extends AdminCommandBuilder {
         return Commands.literal("fakePlayer")
                 .executes(context -> {
                     ServerPlayer player = context.getSource().getPlayerOrException();
-                    player.sendMessage(ChatText.Colored("== Fake Player List ==", ChatFormatting.GRAY), Util.NIL_UUID);
+                    player.sendSystemMessage(ChatText.Colored("== Fake Player List ==", ChatFormatting.GRAY));
 
                     WarOfSquirrels.instance.getPlayerHandler().getAll().forEach(p -> {
                         if (p.isFake())
-                            player.sendMessage(ChatText.Colored(p.getDisplayName(), ChatFormatting.GRAY), Util.NIL_UUID);
+                            player.sendSystemMessage(ChatText.Colored(p.getDisplayName(), ChatFormatting.GRAY));
                     });
 
                     return 0;
@@ -39,7 +39,7 @@ public class AdminCreateFakePlayer extends AdminCommandBuilder {
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         String name = context.getArgument(argumentName, String.class);
         if (WarOfSquirrels.instance.getPlayerHandler().contains(name)) {
-            player.sendMessage(ChatText.Error("Player already got this name"));
+            player.sendMessage(ChatText.Error("Player already got this name"), true);
             return false;
         }
         return true;

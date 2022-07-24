@@ -1,8 +1,6 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
 import fr.craftandconquest.warofsquirrels.object.faction.Diplomacy;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
@@ -12,14 +10,17 @@ import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class FactionHandler extends UpdatableHandler<Faction> {
     public FactionHandler(Logger logger) {
@@ -121,7 +122,7 @@ public class FactionHandler extends UpdatableHandler<Faction> {
     }
 
     public void SetDefaultPermission(PermissionRelation relation, Permission permission, Faction faction) {
-        MutableComponent message = new TextComponent("Permission " + relation + " is now set to " + permission);
+        MutableComponent message = MutableComponent.create(ComponentContents.EMPTY).append("Permission " + relation + " is now set to " + permission);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(faction, null, message, true);
         faction.getDefaultPermission().replace(relation, permission);

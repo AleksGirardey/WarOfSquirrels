@@ -1,9 +1,7 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
-import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.CustomPermission;
@@ -13,8 +11,8 @@ import fr.craftandconquest.warofsquirrels.object.permission.PermissionRelation;
 import fr.craftandconquest.warofsquirrels.object.upgrade.city.CityUpgrade;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -158,7 +156,7 @@ public class CityHandler extends UpdatableHandler<City> {
     }
 
     public void SetDefaultPermission(PermissionRelation relation, Permission permission, City city) {
-        MutableComponent message = new TextComponent("Permission " + relation + " is now set to " + permission);
+        MutableComponent message = MutableComponent.create(ComponentContents.EMPTY).append("Permission " + relation + " is now set to " + permission);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(city, null, message, true);
         city.getDefaultPermission().replace(relation, permission);

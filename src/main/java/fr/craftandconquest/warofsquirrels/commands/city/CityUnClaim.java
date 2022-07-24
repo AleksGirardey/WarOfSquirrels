@@ -39,7 +39,7 @@ public class CityUnClaim extends CityMayorOrAssistantCommandBuilder {
             ret = false;
         }
 
-        player.sendMessage(message);
+        player.sendMessage(message, true);
         return ret;
     }
 

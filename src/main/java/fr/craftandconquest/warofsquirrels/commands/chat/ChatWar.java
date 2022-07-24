@@ -12,7 +12,7 @@ public class ChatWar extends ChatCommand {
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (player.isInWar()) return true;
 
-        player.sendMessage(ChatText.Error("You do not belong to a war."));
+        player.sendMessage(ChatText.Error("You do not belong to a war."), true);
         return false;
     }
 

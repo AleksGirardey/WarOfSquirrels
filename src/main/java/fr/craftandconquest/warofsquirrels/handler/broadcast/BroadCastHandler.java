@@ -10,11 +10,11 @@ import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.war.Party;
 import fr.craftandconquest.warofsquirrels.object.war.War;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
@@ -96,8 +96,7 @@ public class BroadCastHandler {
     }
 
     public void partyChannel(Party party, String message, ChatFormatting color) {
-        MutableComponent text = new TextComponent(message)
-                .withStyle(color == null ? ChatFormatting.YELLOW : color);
+        MutableComponent text = ChatText.Colored(message, color == null ? ChatFormatting.YELLOW : color);
 
         for (FullPlayer p : party.toList())
             p.sendMessage(text);
@@ -105,9 +104,8 @@ public class BroadCastHandler {
 
     public void partyInvitation(FullPlayer sender, FullPlayer receiver) {
         String partyMessage = receiver.getDisplayName() + " has been invited to your party.";
-        MutableComponent receiverMessage = new TextComponent(sender.getDisplayName()
-                + " invited you to join his party. Type /accept or /refuse to respond.")
-                .withStyle(ChatFormatting.YELLOW);
+        MutableComponent receiverMessage = ChatText.Colored(sender.getDisplayName()
+                + " invited you to join his party. Type /accept or /refuse to respond.", ChatFormatting.YELLOW);
 
         partyChannel(WarOfSquirrels.instance.getPartyHandler().getFromPlayer(sender), partyMessage, ChatFormatting.YELLOW);
         receiver.sendMessage(receiverMessage);
@@ -119,8 +117,8 @@ public class BroadCastHandler {
                 city.getDisplayName() +
                 ". Use /accept or /refuse to respond.";
         String cityMessage = receiver.getDisplayName() + " has been invited to join your city.";
-        receiver.sendMessage(new TextComponent(invitationMessage));
-        BroadCastMessage(sender.getCity(), sender, new TextComponent(cityMessage), true);
+        receiver.sendMessage(MutableComponent.create(ComponentContents.EMPTY).append(invitationMessage));
+        BroadCastMessage(sender.getCity(), sender, MutableComponent.create(ComponentContents.EMPTY).append(cityMessage), true);
     }
 
 
@@ -128,8 +126,8 @@ public class BroadCastHandler {
     public void allianceInvitation(Faction factionSender, Faction factionReceiver) {
         FullPlayer factionLeader = factionReceiver.getCapital().getOwner();
         List<FullPlayer> assistants = factionReceiver.getCapital().getAssistants();
-        MutableComponent toSender = new TextComponent(factionReceiver.getDisplayName() + " has been invited to be your ally.").withStyle(ChatFormatting.GOLD);
-        MutableComponent toReceiver = new TextComponent("The faction " + factionSender.getDisplayName() + " want to be your ally. Use /accept or /refuse to respond.").withStyle(ChatFormatting.GOLD);
+        MutableComponent toSender = ChatText.Colored(factionReceiver.getDisplayName() + " has been invited to be your ally.", ChatFormatting.GOLD);
+        MutableComponent toReceiver = ChatText.Colored("The faction " + factionSender.getDisplayName() + " want to be your ally. Use /accept or /refuse to respond.", ChatFormatting.GOLD);
 
         factionLeader.sendMessage(toReceiver);
         for (FullPlayer player : assistants) player.sendMessage(toReceiver);
@@ -138,7 +136,7 @@ public class BroadCastHandler {
     }
 
     public void WarAnnounce(War war, War.WarState state) {
-        MutableComponent text = new TextComponent("");
+        MutableComponent text = MutableComponent.create(ComponentContents.EMPTY);
 
         if (state == War.WarState.Preparation)
             text.append(war.getCityAttacker().getDisplayName() + " attacks " + war.getCityDefender() + " prepare yourself for the fight. You have 2 minutes before the hostilities starts !");

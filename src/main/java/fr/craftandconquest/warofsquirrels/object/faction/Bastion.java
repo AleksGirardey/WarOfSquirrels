@@ -16,8 +16,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 
 import java.util.UUID;
 
@@ -176,7 +176,7 @@ public class Bastion extends Upgradable implements IFortification, IUpdate {
 
     @Override
     public void displayInfo(FullPlayer player) {
-        MutableComponent message = new TextComponent("");
+        MutableComponent message = MutableComponent.create(ComponentContents.EMPTY);
 
         int size = WarOfSquirrels.instance.getChunkHandler().getSize(this);
 

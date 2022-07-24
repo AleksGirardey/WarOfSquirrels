@@ -12,7 +12,7 @@ public class ChatParty extends ChatCommand {
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player) != null) return true;
 
-        player.sendMessage(ChatText.Error("You do not belong to a party."));
+        player.sendMessage(ChatText.Error("You do not belong to a party."), true);
         return false;
     }
 

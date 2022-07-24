@@ -34,7 +34,7 @@ public abstract class CommandBuilder implements Command<CommandSourceStack>, IAd
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
 
         if (IsAdmin(player)) {
-            player.sendMessage(ChatText.Colored("Forced command as admin", ChatFormatting.GOLD));
+            player.sendMessage(ChatText.Colored("Forced command as admin", ChatFormatting.GOLD), true);
             return ExecCommand(player, context);
         }
 

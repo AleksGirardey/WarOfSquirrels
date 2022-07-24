@@ -3,11 +3,14 @@ package fr.craftandconquest.warofsquirrels.object.world;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,40 +20,71 @@ import java.util.Map;
 @NoArgsConstructor
 public class TerritoryBiome {
     @JsonIgnore public static int riverChunkCount;
-    @JsonIgnore private static final Map<Biome.BiomeCategory, EBiomeType> biomeMapping = new HashMap<>();
+    @JsonIgnore private static final Map<ResourceKey<Biome>, EBiomeType> biomeMapping = new HashMap<>();
 
     static {
         /* Plains */
-        biomeMapping.put(Biome.BiomeCategory.PLAINS, EBiomeType.Plains);
-        biomeMapping.put(Biome.BiomeCategory.SAVANNA, EBiomeType.Plains);
-        biomeMapping.put(Biome.BiomeCategory.DESERT, EBiomeType.Plains);
-        biomeMapping.put(Biome.BiomeCategory.MUSHROOM, EBiomeType.Plains);
+        biomeMapping.put(Biomes.PLAINS, EBiomeType.Plains);
+        biomeMapping.put(Biomes.SUNFLOWER_PLAINS, EBiomeType.Plains);
+        biomeMapping.put(Biomes.SNOWY_PLAINS, EBiomeType.Plains);
+        biomeMapping.put(Biomes.SAVANNA, EBiomeType.Plains);
+        biomeMapping.put(Biomes.DESERT, EBiomeType.Plains);
+        biomeMapping.put(Biomes.MUSHROOM_FIELDS, EBiomeType.Plains);
+        biomeMapping.put(Biomes.MEADOW, EBiomeType.Plains);
 
         /* Mountain */
-        biomeMapping.put(Biome.BiomeCategory.EXTREME_HILLS, EBiomeType.Mountains);
-        biomeMapping.put(Biome.BiomeCategory.MESA, EBiomeType.Mountains);
-        biomeMapping.put(Biome.BiomeCategory.ICY, EBiomeType.Mountains);
-        biomeMapping.put(Biome.BiomeCategory.MOUNTAIN, EBiomeType.Mountains);
+        biomeMapping.put(Biomes.BADLANDS, EBiomeType.Mountains);
+        biomeMapping.put(Biomes.ERODED_BADLANDS, EBiomeType.Mountains);
+        biomeMapping.put(Biomes.WOODED_BADLANDS, EBiomeType.Mountains);
+        biomeMapping.put(Biomes.ICE_SPIKES, EBiomeType.Mountains);
+        biomeMapping.put(Biomes.SAVANNA_PLATEAU, EBiomeType.Mountains);
+        biomeMapping.put(Biomes.WINDSWEPT_HILLS, EBiomeType.Mountains);
+        biomeMapping.put(Biomes.WINDSWEPT_GRAVELLY_HILLS, EBiomeType.Mountains);
+        biomeMapping.put(Biomes.WINDSWEPT_FOREST, EBiomeType.Mountains);
+        biomeMapping.put(Biomes.WINDSWEPT_SAVANNA, EBiomeType.Mountains);
+        biomeMapping.put(Biomes.SNOWY_SLOPES, EBiomeType.Mountains);
+        biomeMapping.put(Biomes.FROZEN_PEAKS, EBiomeType.Mountains);
+        biomeMapping.put(Biomes.JAGGED_PEAKS, EBiomeType.Mountains);
+        biomeMapping.put(Biomes.STONY_PEAKS, EBiomeType.Mountains);
 
         /* Forest */
-        biomeMapping.put(Biome.BiomeCategory.JUNGLE, EBiomeType.Forest);
-        biomeMapping.put(Biome.BiomeCategory.FOREST, EBiomeType.Forest);
-        biomeMapping.put(Biome.BiomeCategory.TAIGA, EBiomeType.Forest);
+        biomeMapping.put(Biomes.JUNGLE, EBiomeType.Forest);
+        biomeMapping.put(Biomes.SPARSE_JUNGLE, EBiomeType.Forest);
+        biomeMapping.put(Biomes.BAMBOO_JUNGLE, EBiomeType.Forest);
+        biomeMapping.put(Biomes.FOREST, EBiomeType.Forest);
+        biomeMapping.put(Biomes.FLOWER_FOREST, EBiomeType.Forest);
+        biomeMapping.put(Biomes.BIRCH_FOREST, EBiomeType.Forest);
+        biomeMapping.put(Biomes.DARK_FOREST, EBiomeType.Forest);
+        biomeMapping.put(Biomes.OLD_GROWTH_BIRCH_FOREST, EBiomeType.Forest);
+        biomeMapping.put(Biomes.OLD_GROWTH_PINE_TAIGA, EBiomeType.Forest);
+        biomeMapping.put(Biomes.OLD_GROWTH_SPRUCE_TAIGA, EBiomeType.Forest);
+        biomeMapping.put(Biomes.TAIGA, EBiomeType.Forest);
+        biomeMapping.put(Biomes.SNOWY_TAIGA, EBiomeType.Forest);
+        biomeMapping.put(Biomes.GROVE, EBiomeType.Forest);
 
         /* Ocean */
-        biomeMapping.put(Biome.BiomeCategory.BEACH, EBiomeType.Ocean);
-        biomeMapping.put(Biome.BiomeCategory.OCEAN, EBiomeType.Ocean);
+        biomeMapping.put(Biomes.BEACH, EBiomeType.Ocean);
+        biomeMapping.put(Biomes.SNOWY_BEACH, EBiomeType.Ocean);
+        biomeMapping.put(Biomes.STONY_SHORE, EBiomeType.Ocean);
+        biomeMapping.put(Biomes.OCEAN, EBiomeType.Ocean);
+        biomeMapping.put(Biomes.DEEP_OCEAN, EBiomeType.Ocean);
+        biomeMapping.put(Biomes.COLD_OCEAN, EBiomeType.Ocean);
+        biomeMapping.put(Biomes.WARM_OCEAN, EBiomeType.Ocean);
+        biomeMapping.put(Biomes.FROZEN_OCEAN, EBiomeType.Ocean);
+        biomeMapping.put(Biomes.LUKEWARM_OCEAN, EBiomeType.Ocean);
+        biomeMapping.put(Biomes.DEEP_LUKEWARM_OCEAN, EBiomeType.Ocean);
+        biomeMapping.put(Biomes.DEEP_COLD_OCEAN, EBiomeType.Ocean);
+        biomeMapping.put(Biomes.DEEP_FROZEN_OCEAN, EBiomeType.Ocean);
 
         /* Swamp */
-        biomeMapping.put(Biome.BiomeCategory.SWAMP, EBiomeType.Swamp);
+        biomeMapping.put(Biomes.SWAMP, EBiomeType.Swamp);
+        biomeMapping.put(Biomes.MANGROVE_SWAMP, EBiomeType.Swamp);
 
         /* River */
-        biomeMapping.put(Biome.BiomeCategory.RIVER, EBiomeType.River);
+        biomeMapping.put(Biomes.RIVER, EBiomeType.River);
+        biomeMapping.put(Biomes.FROZEN_RIVER, EBiomeType.River);
 
         /* None */
-        biomeMapping.put(Biome.BiomeCategory.THEEND, EBiomeType.None);
-        biomeMapping.put(Biome.BiomeCategory.NETHER, EBiomeType.None);
-        biomeMapping.put(Biome.BiomeCategory.UNDERGROUND, EBiomeType.None);
     }
 
     enum EBiomeType {
@@ -80,7 +114,7 @@ public class TerritoryBiome {
         Populate();
     }
 
-    public TerritoryBiome(Map<Biome.BiomeCategory, Integer> biomeMap) {
+    public TerritoryBiome(Map<ResourceKey<Biome>, Integer> biomeMap) {
         biomes = new ArrayList<>();
         serializedBiomes = new ArrayList<>();
 
@@ -89,8 +123,8 @@ public class TerritoryBiome {
         int max = biomeMap.values().stream().mapToInt(value -> value).sum();
         int minValueToBeComplete = 132;
 
-        for (Map.Entry<Biome.BiomeCategory, Integer> biomeEntry : biomeMap.entrySet()) {
-            EBiomeType type = biomeMapping.get(biomeEntry.getKey());
+        for (Map.Entry<ResourceKey<Biome>, Integer> biomeEntry : biomeMap.entrySet()) {
+            EBiomeType type = biomeMapping.getOrDefault(biomeEntry.getKey(), EBiomeType.None);
 
             groupedMap.compute(type, (k, v) -> v = (v == null ? biomeEntry.getValue() : v + biomeEntry.getValue()));
         }
@@ -176,7 +210,7 @@ public class TerritoryBiome {
     }
 
     public MutableComponent asComponent() {
-        MutableComponent message = new TextComponent("");
+        MutableComponent message = MutableComponent.create(ComponentContents.EMPTY);
 
         for (EBiomeType type : biomes) {
             message.append(" - ").append(type.name()).append(isCompleteTrait() ? "(Complete)" : "").append("\n");

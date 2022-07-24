@@ -12,7 +12,6 @@ import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -37,15 +36,15 @@ public class PlayersInteractionHandler {
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
-        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
+        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getEntity().getUUID());
         if (player != null)
             player.setLastDimension(event.getTo().location().getPath());
     }
 
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
-    public void OnPlayerMove(LivingEvent.LivingUpdateEvent event) {
-        if (event.getEntityLiving() == null || !(event.getEntityLiving() instanceof Player playerEntity)) {
+    public void OnPlayerMove(LivingEvent.LivingTickEvent event) {
+        if (event.getEntity() == null || !(event.getEntity() instanceof Player playerEntity)) {
             return;
         }
 
@@ -225,7 +224,9 @@ public class PlayersInteractionHandler {
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnChatEvent(ServerChatEvent event) {
-        Component message = new TextComponent(event.getMessage());
+        if (event.getPlayer() == null) return;
+
+        Component message = event.getComponent();
         FullPlayer sender = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
 
         IChannelTarget target = null;
@@ -248,11 +249,11 @@ public class PlayersInteractionHandler {
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnPlayerBreakSpeed(PlayerEvent.BreakSpeed event) {
-        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
+        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getEntity().getUUID());
 
         if (!player.getLastDimensionKey().equals(Level.OVERWORLD)) return;
 
-        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(Utils.FromWorldToChunk(event.getPlayer().getBlockX(), event.getPlayer().getBlockZ()));
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(Utils.FromWorldToChunk(event.getEntity().getBlockX(), event.getEntity().getBlockZ()));
 
         if (territory == null) return;
 

@@ -11,7 +11,7 @@ public class ChatFaction extends ChatCommand {
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (player.getCity() != null && player.getCity().getFaction() != null) return true;
 
-        player.sendMessage(ChatText.Error("You do not belong to a faction."));
+        player.sendMessage(ChatText.Error("You do not belong to a faction."), true);
         return false;
     }
 

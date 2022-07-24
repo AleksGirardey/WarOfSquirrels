@@ -22,7 +22,7 @@ public class PouetCommand extends CommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        player.sendMessage(ChatText.Colored("pouet", ChatFormatting.GOLD));
+        player.sendMessage(ChatText.Colored("pouet", ChatFormatting.GOLD), true);
         return 0;
     }
 

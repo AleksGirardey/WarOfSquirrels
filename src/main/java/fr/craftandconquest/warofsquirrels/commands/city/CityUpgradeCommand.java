@@ -9,8 +9,8 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.upgrade.city.CityUpgrade;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 
 public class CityUpgradeCommand extends CityMayorOrAssistantCommandBuilder {
     /** Info **/
@@ -66,7 +66,7 @@ public class CityUpgradeCommand extends CityMayorOrAssistantCommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        MutableComponent message = new TextComponent("");
+        MutableComponent message = MutableComponent.create(ComponentContents.EMPTY);
 
         message.append("""
                 /.. upgrade info [UpgradeType]

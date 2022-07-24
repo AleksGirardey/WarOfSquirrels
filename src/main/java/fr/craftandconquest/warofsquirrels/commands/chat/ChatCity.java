@@ -11,7 +11,7 @@ public class ChatCity extends ChatCommand {
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (player.getCity() != null) return true;
 
-        player.sendMessage(ChatText.Error("You do not belong to a city."));
+        player.sendMessage(ChatText.Error("You do not belong to a city."), true);
         return false;
     }
 

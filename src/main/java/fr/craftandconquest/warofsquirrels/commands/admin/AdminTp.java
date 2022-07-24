@@ -47,7 +47,7 @@ public class AdminTp extends AdminCommandBuilder {
         if (cubo != null && cubo.isTeleport()) return true;
         if (city != null) return true;
 
-        player.sendMessage(ChatText.Error("Wrong argument"));
+        player.sendMessage(ChatText.Error("Wrong argument"), true);
 
         return false;
     }
@@ -74,7 +74,7 @@ public class AdminTp extends AdminCommandBuilder {
         ServerLevel level = WarOfSquirrels.server.getLevel(dim);
 
         if (level == null) {
-            player.sendMessage(ChatText.Error("Error while teleporting player"));
+            player.sendMessage(ChatText.Error("Error while teleporting player"), true);
             return 0;
         }
 

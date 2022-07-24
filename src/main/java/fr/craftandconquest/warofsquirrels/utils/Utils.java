@@ -14,8 +14,8 @@ import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
@@ -255,7 +255,7 @@ public class Utils {
     }
 
     public static MutableComponent SplitToStack(int amount) {
-        MutableComponent message = new TextComponent("");
+        MutableComponent message = MutableComponent.create(ComponentContents.EMPTY);
         int stacks = amount / 64;
         int blocks = amount % 64;
 
@@ -325,7 +325,7 @@ public class Utils {
             message.append("==| Cubo '" + cubo.getDisplayName() + "' [" + cubo.getOwner().getDisplayName() + "] |==");
         }
 
-        player.sendMessage(message, Util.NIL_UUID);
+        player.sendSystemMessage(message);
     }
 
     public static void IncrementKillCount(FullPlayer target, FullPlayer killer) {

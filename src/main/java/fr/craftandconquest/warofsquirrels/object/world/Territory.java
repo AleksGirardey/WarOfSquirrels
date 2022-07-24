@@ -15,15 +15,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -132,7 +130,7 @@ public class Territory extends RegistryObject implements IUpdate {
     }
 
     private void SetBiomeMap() {
-        Map<Biome.BiomeCategory, Integer> biomeMap = new HashMap<>();
+        Map<ResourceKey<Biome>, Integer> biomeMap = new HashMap<>();
         int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
         int posXMin = posX * territorySize;
         int posXMax = posXMin + territorySize;
@@ -148,8 +146,12 @@ public class Territory extends RegistryObject implements IUpdate {
                 ChunkPos chunkPos = Utils.FromWorldToChunkPos(x, z);
                 BlockPos pos = chunkPos.getMiddleBlockPosition(124);
 
-                Biome.BiomeCategory category = Biome.getBiomeCategory(level.getBiome(pos));
-                biomeMap.compute(category, (k,v) -> v == null ? 1 : v + 1);
+                Optional<ResourceKey<Biome>> opt = level.getBiomeManager().getNoiseBiomeAtPosition(pos).unwrapKey();
+
+                if (opt.isPresent()) {
+                    ResourceKey<Biome> category = opt.get();
+                    biomeMap.compute(category, (k, v) -> v == null ? 1 : v + 1);
+                }
 
                 z += 16;
             }

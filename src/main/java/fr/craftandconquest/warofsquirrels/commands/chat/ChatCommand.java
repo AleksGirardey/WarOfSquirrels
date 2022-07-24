@@ -7,11 +7,9 @@ import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 
 public abstract class ChatCommand extends CommandBuilder {
     public abstract String commandName();
@@ -24,7 +22,7 @@ public abstract class ChatCommand extends CommandBuilder {
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         player.setChatTarget(BroadCastTarget.valueOf(commandName().toUpperCase()));
-        player.sendMessage(new TextComponent("Chat toggle to " + commandName().toUpperCase()).withStyle(ChatFormatting.GOLD));
+        player.sendMessage(ChatText.Colored("Chat toggle to " + commandName().toUpperCase(), ChatFormatting.GOLD), true);
 
         return 0;
     }

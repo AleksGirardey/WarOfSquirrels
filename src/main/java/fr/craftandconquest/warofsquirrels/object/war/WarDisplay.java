@@ -3,9 +3,11 @@ package fr.craftandconquest.warofsquirrels.object.war;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.ComponentContents;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.bossevents.CustomBossEvent;
 import net.minecraft.server.bossevents.CustomBossEvents;
@@ -40,8 +42,8 @@ public class WarDisplay {
         City attacker = war.getCityAttacker();
         City defender = war.getCityDefender();
 
-        attackerPointsBar = CreateWarBoss(new TextComponent(attacker.getDisplayName() + "[0]"), BossEvent.BossBarColor.BLUE);
-        defenderPointsBar = CreateWarBoss(new TextComponent(defender.getDisplayName() + "[0]"), BossEvent.BossBarColor.RED);
+        attackerPointsBar = CreateWarBoss(ChatText.Colored(attacker.getDisplayName() + "[0]", ChatFormatting.BLUE), BossEvent.BossBarColor.BLUE);
+        defenderPointsBar = CreateWarBoss(ChatText.Colored(defender.getDisplayName() + "[0]", ChatFormatting.RED), BossEvent.BossBarColor.RED);
 
         attackerTeam = CreatePlayerTeam(warKey + "_attacker", attacker.getDisplayName(), attacker.tag, ChatFormatting.BLUE);
         defenderTeam = CreatePlayerTeam(warKey + "_defender", defender.getDisplayName(), defender.tag, ChatFormatting.RED);
@@ -54,10 +56,10 @@ public class WarDisplay {
         PlayerTeam team = scoreboard.addPlayerTeam(teamName);
 
         team.setColor(color);
-        team.setPlayerPrefix(new TextComponent("[" + prefix + "] "));
+        team.setPlayerPrefix(MutableComponent.create(ComponentContents.EMPTY).append("[" + prefix + "] "));
         team.setCollisionRule(Team.CollisionRule.PUSH_OTHER_TEAMS);
         team.setAllowFriendlyFire(false);
-        team.setDisplayName(new TextComponent(displayName));
+        team.setDisplayName(MutableComponent.create(ComponentContents.EMPTY).append(displayName));
 
         return team;
     }
@@ -76,11 +78,11 @@ public class WarDisplay {
     public void UpdateScore() {
         int score = targetWar.getAttackersPoints();
         attackerPointsBar.setValue(score);
-        attackerPointsBar.setName(new TextComponent(targetWar.getCityAttacker().getDisplayName() + " [" + score + "]"));
+        attackerPointsBar.setName(MutableComponent.create(ComponentContents.EMPTY).append(targetWar.getCityAttacker().getDisplayName() + " [" + score + "]"));
 
         score = targetWar.getDefendersPoints();
         defenderPointsBar.setValue(score);
-        defenderPointsBar.setName(new TextComponent(targetWar.getCityDefender().getDisplayName() + " [" + score + "]"));
+        defenderPointsBar.setName(MutableComponent.create(ComponentContents.EMPTY).append(targetWar.getCityDefender().getDisplayName() + " [" + score + "]"));
     }
 
     public void AddAttacker(FullPlayer player) {

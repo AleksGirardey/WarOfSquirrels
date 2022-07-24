@@ -8,8 +8,8 @@ import fr.craftandconquest.warofsquirrels.utils.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 
 public class PlayerInfoCommand extends CommandBuilder {
     @Override
@@ -24,7 +24,7 @@ public class PlayerInfoCommand extends CommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        MutableComponent component = new TextComponent("");
+        MutableComponent component = MutableComponent.create(ComponentContents.EMPTY);
 
         component.withStyle(ChatFormatting.GREEN);
 

@@ -34,7 +34,7 @@ public class AdminSetPlayerJoin extends AdminCommandBuilder {
         try {
             DateFormat.getDateInstance().parse(StringArgumentType.getString(context, dateArgumentName));
         } catch (ParseException e) {
-            player.sendMessage(ChatText.Error("Couldn't parse date : " + e.getLocalizedMessage()));
+            player.sendMessage(ChatText.Error("Couldn't parse date : " + e.getLocalizedMessage()), true);
             return false;
         }
 

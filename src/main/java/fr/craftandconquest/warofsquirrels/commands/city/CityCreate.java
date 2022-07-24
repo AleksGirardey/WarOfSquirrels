@@ -47,7 +47,7 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
         if (super.CanDoIt(player) && party.size() >= minPartySize && party.createCityCheck()) return true;
 
         player.sendMessage(
-                ChatText.Error("You need to be in a party of at least " + minPartySize + " wanderers to create a new city"));
+                ChatText.Error("You need to be in a party of at least " + minPartySize + " wanderers to create a new city"), true);
         return false;
     }
 
@@ -60,7 +60,7 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
         z = player.getPlayerEntity().chunkPosition().z;
 
         if (!player.isWhitelistCityCreator() && !player.isAdminMode()) {
-            player.sendMessage(ChatText.Error("You cannot create a city. Please refer to Discord for rules."));
+            player.sendMessage(ChatText.Error("You cannot create a city. Please refer to Discord for rules."), true);
             return false;
         }
 
@@ -76,7 +76,7 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
         } else
             message = ChatText.Error("Leave your city first !");
 
-        player.sendMessage(message);
+        player.sendMessage(message, true);
         return false;
     }
 

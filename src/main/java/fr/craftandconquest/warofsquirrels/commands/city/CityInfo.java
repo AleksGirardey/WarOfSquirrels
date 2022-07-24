@@ -43,7 +43,7 @@ public class CityInfo extends CommandBuilder implements ICityExtractor {
         }
 
         if (city == null) {
-            player.sendMessage(ChatText.Error("You do not belong to a city or the one in argument doesn't exist."));
+            player.sendMessage(ChatText.Error("You do not belong to a city or the one in argument doesn't exist."), true);
         }
 
         return city != null;

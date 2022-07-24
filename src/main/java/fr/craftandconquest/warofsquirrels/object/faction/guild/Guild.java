@@ -15,8 +15,8 @@ import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 
 import java.util.*;
 
@@ -72,10 +72,8 @@ public class Guild extends Upgradable implements IPermission, IChannelTarget, IU
     public boolean addMember(FullPlayer player) {
         if (!register(player)) return false;
 
-        MutableComponent messageToTarget = new TextComponent("You joined guild '" + displayName + "'.")
-                .withStyle(ChatFormatting.GREEN);
-        MutableComponent messageToGuild = new TextComponent(player.getDisplayName() + " joined the guild.")
-                .withStyle(ChatFormatting.GREEN);
+        MutableComponent messageToTarget = ChatText.Colored("You joined guild '" + displayName + "'.", ChatFormatting.GREEN);
+        MutableComponent messageToGuild = ChatText.Colored(player.getDisplayName() + " joined the guild.", ChatFormatting.GREEN);
 
         player.sendMessage(messageToTarget);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null, messageToGuild, true);
@@ -196,7 +194,7 @@ public class Guild extends Upgradable implements IPermission, IChannelTarget, IU
     }
 
     public void displayInfo(FullPlayer player) {
-        MutableComponent message = new TextComponent("");
+        MutableComponent message = MutableComponent.create(ComponentContents.EMPTY);
 
         //CityRank rank = WarOfSquirrels.instance.getConfig().getCityRankMap().get(cityUpgrade.getLevel().getCurrentLevel());
 

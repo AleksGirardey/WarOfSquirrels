@@ -6,8 +6,8 @@ import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.upgrade.Upgrade;
 import fr.craftandconquest.warofsquirrels.object.upgrade.UpgradeInfo;
 import lombok.Getter;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.Container;
 
 public class BastionUpgrade {
@@ -274,7 +274,7 @@ public class BastionUpgrade {
     }
 
     public MutableComponent displayInfo() {
-        MutableComponent message = new TextComponent("");
+        MutableComponent message = MutableComponent.create(ComponentContents.EMPTY);
 
         message.append("  Level [" + getLevel().getCurrentLevel() + "/4]\n");
         message.append("  Village [" + getVillage().getCurrentLevel() + "/4]\n");

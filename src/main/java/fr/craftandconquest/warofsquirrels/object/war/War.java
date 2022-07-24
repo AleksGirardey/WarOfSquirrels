@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -87,7 +86,7 @@ public class War implements IChannelTarget {
         attackersLimit = defenders.size() + 1;
         attackersParty.forEach(this::AddAttacker);
 
-        MutableComponent worldAnnounce = new TextComponent("The war horns roar. ");
+        MutableComponent worldAnnounce = ChatText.Colored("The war horns roar. ", ChatFormatting.WHITE);
         MutableComponent attackerName = ChatText.Colored(attacker.getDisplayName(), ChatFormatting.BLUE);
         MutableComponent defenderName = ChatText.Colored(defender.getDisplayName(), ChatFormatting.RED);
         worldAnnounce.append(attackerName).append(" is attacking ").append(defenderName).append(" on territory ").append(targetTerritory.getDisplayName());
@@ -448,7 +447,7 @@ public class War implements IChannelTarget {
     }
 
     public void displayInfo(FullPlayer player) {
-        MutableComponent message = new TextComponent("===| " + this.tag + " |===\n");
+        MutableComponent message = ChatText.Colored("===| " + this.tag + " |===\n", ChatFormatting.WHITE);
 
         message.append(ChatText.Colored("Attackers [" + cityAttacker.getDisplayName() + "] : " + Utils.getStringFromPlayerList(attackers), ChatFormatting.BLUE));
         message.append(ChatText.Colored("\nDefenders [" + cityDefender.getDisplayName() + "] : " + Utils.getStringFromPlayerList(defenders), ChatFormatting.RED));

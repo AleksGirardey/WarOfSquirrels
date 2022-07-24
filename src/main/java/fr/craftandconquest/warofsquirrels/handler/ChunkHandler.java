@@ -1,12 +1,10 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
-import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
-import fr.craftandconquest.warofsquirrels.object.faction.guild.Guild;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
+import fr.craftandconquest.warofsquirrels.object.faction.guild.Guild;
 import fr.craftandconquest.warofsquirrels.object.faction.guild.IEstablishment;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
@@ -15,7 +13,8 @@ import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector2;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.ComponentContents;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -217,7 +216,7 @@ public class ChunkHandler extends Handler<Chunk> {
         newHB.setRespawnPoint(position);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(newHB.getRelatedCity(), null,
-                new TextComponent(String.format("Fortification '%s' homeblock is now set to [%d;%d;%d]",
+                MutableComponent.create(ComponentContents.EMPTY).append(String.format("Fortification '%s' homeblock is now set to [%d;%d;%d]",
                         newHB.getFortification().getDisplayName(),
                         (int) position.x,
                         (int) position.y,

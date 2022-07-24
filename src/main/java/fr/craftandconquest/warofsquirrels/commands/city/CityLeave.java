@@ -27,6 +27,6 @@ public class CityLeave extends CityCommandBuilder {
 
     @Override
     protected MutableComponent ErrorMessage() {
-        return ChatText.Error("Vous ne pouvez pas quitter votre ville.");
+        return ChatText.Error("You cannot leave your city.");
     }
 }

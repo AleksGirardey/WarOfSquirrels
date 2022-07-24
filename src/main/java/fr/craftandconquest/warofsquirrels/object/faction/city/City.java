@@ -26,8 +26,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.*;
@@ -87,12 +87,10 @@ public class City extends Upgradable implements IPermission, IFortification, ICh
         player.setResident(false);
         player.setCityJoinDate(new Date());
 
-        MutableComponent messageToTarget = new TextComponent("You joined " + displayName + ".")
-                .withStyle(ChatFormatting.GREEN);
-        player.sendMessage(messageToTarget);
+        MutableComponent messageToTarget = ChatText.Colored("You joined " + displayName + ".", ChatFormatting.GREEN);
+        MutableComponent messageToCity = ChatText.Colored(player.getDisplayName() + " joined the city.", ChatFormatting.GREEN);
 
-        MutableComponent messageToCity = new TextComponent(player.getDisplayName() + " joined the city.")
-                .withStyle(ChatFormatting.GREEN);
+        player.sendMessage(messageToTarget);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(this, null, messageToCity, true);
         WarOfSquirrels.instance.getBroadCastHandler().AddPlayerToTarget(this, player);
         return true;
@@ -251,7 +249,7 @@ public class City extends Upgradable implements IPermission, IFortification, ICh
 
     @Override
     public void displayInfo(FullPlayer player) {
-        MutableComponent message = new TextComponent("");
+        MutableComponent message = MutableComponent.create(ComponentContents.EMPTY);
 
         CityRank rank = WarOfSquirrels.instance.getConfig().getCityRankMap().get(cityUpgrade.getLevel().getCurrentLevel());
 

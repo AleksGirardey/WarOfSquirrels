@@ -24,7 +24,7 @@ public class AdminSetSpawn extends AdminCommandBuilder {
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (player.getLastDimensionKey().equals(WarOfSquirrels.SPAWN)) return true;
 
-        player.sendMessage(ChatText.Error("You cannot set server spawn in an other dimension than spawn dimension"));
+        player.sendMessage(ChatText.Error("You cannot set server spawn in an other dimension than spawn dimension"), true);
         return false;
     }
 

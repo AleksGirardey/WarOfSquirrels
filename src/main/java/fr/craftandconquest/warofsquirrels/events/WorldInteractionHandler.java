@@ -10,13 +10,7 @@ import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Utils;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
-import net.minecraft.commands.arguments.ComponentArgument;
-import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
-import net.minecraft.server.commands.TitleCommand;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -38,18 +32,16 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.entity.EntityMobGriefingEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.logging.log4j.core.jmx.Server;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -114,9 +106,8 @@ public class WorldInteractionHandler {
 
         if (!canConstruct) {
             event.setCanceled(true);
-            player.sendMessage(new TextComponent("You cannot destroy here")
-                    .withStyle(ChatFormatting.BOLD)
-                    .withStyle(ChatFormatting.RED));
+            player.sendMessage(ChatText.Colored("You cannot destroy here", ChatFormatting.RED)
+                    .withStyle(ChatFormatting.BOLD));
         }
     }
 
@@ -158,7 +149,7 @@ public class WorldInteractionHandler {
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void OnPlayerInteractEvent(PlayerInteractEvent event) {
-        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
+        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getEntity().getUUID());
         InteractType type;
 
         if (event instanceof PlayerInteractEvent.LeftClickBlock)
@@ -183,7 +174,7 @@ public class WorldInteractionHandler {
             if (item.isEdible()) return;
 
             if (item == Items.FEATHER) {
-                Utils.displayInfoFeather(event.getPlayer(), event.getPlayer().getOnPos(), event.getWorld().dimension());
+                Utils.displayInfoFeather(event.getEntity(), event.getEntity().getOnPos(), event.getLevel().dimension());
                 event.setCanceled(true);
             } else if (item == Items.BOW || item == Items.CROSSBOW || item == Items.SHIELD || player.isAdminMode()) {
                 return;
@@ -198,10 +189,6 @@ public class WorldInteractionHandler {
     private void OnPlayerInteract(FullPlayer player, PlayerInteractEvent event, InteractType type) {
         if (type == InteractType.LeftClick) { return; }
         if (type == InteractType.RightClickEntity) {
-            PlayerInteractEvent.EntityInteract eventEntity = (PlayerInteractEvent.EntityInteract) event;
-
-            if (eventEntity.getEntity() instanceof Player) return;
-
             if (WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(PermissionHandler.Rights.INTERACT,
                     new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
                     Chunk.DimensionToId(player.getLastDimensionKey()),
@@ -209,7 +196,7 @@ public class WorldInteractionHandler {
                 return;
             }
 
-            event.getPlayer().sendMessage(ChatText.Error("You do not have the permission to interact with this entity"), Util.NIL_UUID);
+            event.getEntity().sendSystemMessage(ChatText.Error("You do not have the permission to interact with this entity"));
             event.setCanceled(true);
         } else if (type == InteractType.RightClickBlock) {
             boolean isSwitch = false;
@@ -217,7 +204,7 @@ public class WorldInteractionHandler {
             PlayerInteractEvent.RightClickBlock blockEvent = (PlayerInteractEvent.RightClickBlock) event;
 
             for (TagKey<Block> tag : switchTags) {
-                if (event.getWorld().getBlockState(blockEvent.getPos()).is(tag)) {
+                if (event.getLevel().getBlockState(blockEvent.getPos()).is(tag)) {
                     isSwitch = true;
                     break;
                 }
@@ -226,8 +213,8 @@ public class WorldInteractionHandler {
             if (!isSwitch) {
                 String lastDimensionId = Chunk.DimensionToId(player.getLastDimensionKey());
 
-                if (IsContainer(blockEvent.getWorld(), blockEvent.getPos(), null)) {
-                    if (!OnPlayerContainer(event.getPlayer(), event.getPos(), lastDimensionId)) {
+                if (IsContainer(blockEvent.getLevel(), blockEvent.getPos(), null)) {
+                    if (!OnPlayerContainer(event.getEntity(), event.getPos(), lastDimensionId)) {
                         player.sendMessage(ChatText.Error("You do not have permission to open this container."));
                         event.setCanceled(true);
                     }
@@ -238,7 +225,7 @@ public class WorldInteractionHandler {
         }
 
         boolean chunkInWar = WarOfSquirrels.instance.getWarHandler().Contains(WarOfSquirrels.instance.getChunkHandler().getChunk(
-                new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()), event.getWorld().dimension()).getRelatedCity());
+                new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()), event.getLevel().dimension()).getRelatedCity());
 
         if (CanOverpassSwitchPermission(event.getItemStack(), chunkInWar)) return;
 
@@ -249,7 +236,7 @@ public class WorldInteractionHandler {
             return;
         }
 
-        event.getPlayer().sendMessage(ChatText.Error("You do not have the permission to interact with this block"), Util.NIL_UUID);
+        event.getEntity().sendSystemMessage(ChatText.Error("You do not have the permission to interact with this block"));
         event.setCanceled(true);
     }
 
@@ -272,7 +259,7 @@ public class WorldInteractionHandler {
 
         if (!(event.getSource().getEntity() instanceof ServerPlayer sourcePlayer)) return;
 
-        if (event.getEntityLiving() instanceof Monster) { return; }
+        if (event.getEntity() instanceof Monster) { return; }
 
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(sourcePlayer.getUUID());
 
@@ -307,10 +294,10 @@ public class WorldInteractionHandler {
 
         player = WarOfSquirrels.instance.getPlayerHandler().get(sourcePlayer.getUUID());
 
-        if (event.getEntityLiving() instanceof Monster) {
+        if (event.getEntity() instanceof Monster) {
             player.setMonsterKillCount(player.getMonsterKillCount() + 1);
         }
-        else if (event.getEntityLiving() instanceof Mob) {
+        else if (event.getEntity() instanceof Mob) {
             player.setMobKillCount(player.getMobKillCount() + 1);
         }
     }
@@ -355,7 +342,9 @@ public class WorldInteractionHandler {
             player.sendMessage(ChatText.Error("You cannot farm this."));
             return;
         }
-        if (event instanceof BlockEvent.BlockToolInteractEvent toolEvent) {
+        if (event instanceof BlockEvent.BlockToolModificationEvent toolEvent) {
+            if (toolEvent.getPlayer() == null) return;
+
             player = WarOfSquirrels.instance.getPlayerHandler().get(toolEvent.getPlayer().getUUID());
             if (player.isAdminMode()) return;
 

@@ -32,7 +32,7 @@ public class ServerEvents {
     @SubscribeEvent
     public void PlayerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event) {
         List<BroadCastTarget> targets = new ArrayList<>();
-        Player playerEntity = event.getPlayer();
+        Player playerEntity = event.getEntity();
 
         PlayerHandler playerHandler = WarOfSquirrels.instance.getPlayerHandler();
         BroadCastHandler broadCastHandler = WarOfSquirrels.instance.getBroadCastHandler();
@@ -48,11 +48,11 @@ public class ServerEvents {
         } else {
             player = playerHandler.get(playerEntity.getUUID());
             player.setChatTarget(BroadCastTarget.GENERAL);
-            player.setLastDimension(event.getPlayer().getCommandSenderWorld().dimension().location().getPath());
+            player.setLastDimension(event.getEntity().getCommandSenderWorld().dimension().location().getPath());
             player.lastPosition = new Vector3(
-                    (float) event.getPlayer().getBlockX(),
-                    (float) event.getPlayer().getBlockY(),
-                    (float) event.getPlayer().getBlockZ());
+                    (float) event.getEntity().getBlockX(),
+                    (float) event.getEntity().getBlockY(),
+                    (float) event.getEntity().getBlockZ());
         }
 
         broadCastHandler.AddPlayerToWorldAnnounce(player);
@@ -86,7 +86,7 @@ public class ServerEvents {
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void PlayerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event) {
-        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
+        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getEntity().getUUID());
 
         if (player == null) return;
 

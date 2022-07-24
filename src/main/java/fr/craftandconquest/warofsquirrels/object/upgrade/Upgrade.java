@@ -8,8 +8,8 @@ import fr.craftandconquest.warofsquirrels.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -115,9 +115,9 @@ public abstract class Upgrade {
     }
 
     public MutableComponent asString() {
-        MutableComponent title = new TextComponent("");
-        MutableComponent entryComponent = new TextComponent("");
-        MutableComponent extra = new TextComponent("");
+        MutableComponent title = MutableComponent.create(ComponentContents.EMPTY);
+        MutableComponent entryComponent = MutableComponent.create(ComponentContents.EMPTY);
+        MutableComponent extra = MutableComponent.create(ComponentContents.EMPTY);
         int count = 0;
 
         title.withStyle(ChatFormatting.DARK_GREEN)

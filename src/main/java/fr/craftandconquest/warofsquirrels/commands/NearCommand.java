@@ -22,7 +22,7 @@ public class NearCommand extends CommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        player.sendMessage(ChatText.Success("Nearest homeblock is at " + Utils.NearestHomeBlock(player.getLastChunkX(), player.getLastChunkZ())));
+        player.sendMessage(ChatText.Success("Nearest HomeBlock is at " + Utils.NearestHomeBlock(player.getLastChunkX(), player.getLastChunkZ())));
         return 0;
     }
 

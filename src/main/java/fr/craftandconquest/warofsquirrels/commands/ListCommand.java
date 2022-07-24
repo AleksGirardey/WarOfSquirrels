@@ -26,7 +26,6 @@ public class ListCommand extends CommandBuilder {
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         player.sendMessage(ChatText.Success(Arrays.toString(WarOfSquirrels.server.getPlayerList().getPlayerNamesArray())));
-        //player.sendMessage(ChatText.Success(Arrays.toString(WarOfSquirrels.server.getPlayerList().getPlayers().toArray())));
         player.sendMessage(Utils.getSortedPlayerList());
         return 0;
     }

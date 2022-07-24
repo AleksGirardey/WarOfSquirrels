@@ -28,7 +28,7 @@ public class CityDelete extends CityMayorCommandBuilder implements IAdminCommand
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (player.getCity().getFaction() != null) {
             if (player.getCity().getFaction().getCapital().equals(player.getCity())) {
-                player.sendMessage(ChatText.Error("You cannot delete your faction capital."));
+                player.sendMessage(ChatText.Error("You cannot delete your faction capital."), true);
                 return false;
             }
         }

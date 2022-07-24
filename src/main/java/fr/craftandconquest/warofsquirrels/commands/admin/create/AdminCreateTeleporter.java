@@ -26,7 +26,7 @@ public class AdminCreateTeleporter extends AdminCommandBuilder {
         if (WarOfSquirrels.instance.getCuboHandler().getPoints(player) != null)
             return true;
 
-        player.sendMessage(ChatText.Error("Set boundaries first (/cubo)"));
+        player.sendMessage(ChatText.Error("Set boundaries first (/cubo)"), true);
         return false;
     }
 

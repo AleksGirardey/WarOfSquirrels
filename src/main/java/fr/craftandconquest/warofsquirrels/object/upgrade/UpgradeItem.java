@@ -4,14 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -84,6 +83,6 @@ public class UpgradeItem {
     }
 
     public MutableComponent asString() {
-        return item == null ? new TranslatableComponent(itemTag.location().toString()) : new TranslatableComponent(item.getDescriptionId()); //+ "." + item.getRegistryName()
+        return MutableComponent.create(item == null ? new TranslatableContents(itemTag.location().toString()) : new TranslatableContents(item.getDescriptionId())); //+ "." + item.getRegistryName()
     }
 }

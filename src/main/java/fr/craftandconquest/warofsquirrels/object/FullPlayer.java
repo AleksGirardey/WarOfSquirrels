@@ -152,10 +152,14 @@ public class FullPlayer extends RegistryObject implements IPermission, IScoreUpd
     }
 
     public boolean sendMessage(MutableComponent message) {
+        return sendMessage(message, false);
+    }
+
+    public boolean sendMessage(MutableComponent message, boolean isAnnounce) {
         Player player = getPlayerEntity();
 
         if (player != null) {
-            player.sendMessage(message, Util.NIL_UUID);
+            player.displayClientMessage(message, isAnnounce);
             return true;
         }
 

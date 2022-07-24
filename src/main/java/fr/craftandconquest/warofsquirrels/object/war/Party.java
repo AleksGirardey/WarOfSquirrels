@@ -5,9 +5,8 @@ import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.Util;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +60,7 @@ public class Party implements IChannelTarget {
     }
 
     public void Send(String text) {
-        Send(new TextComponent(text));
+        Send(MutableComponent.create(ComponentContents.EMPTY).append(text));
     }
 
     public boolean contains(FullPlayer player) {

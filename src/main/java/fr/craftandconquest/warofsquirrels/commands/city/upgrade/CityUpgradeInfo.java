@@ -9,8 +9,8 @@ import fr.craftandconquest.warofsquirrels.object.upgrade.city.CityUpgrade;
 import lombok.AllArgsConstructor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 
 @AllArgsConstructor
 public class CityUpgradeInfo extends CityMayorOrAssistantCommandBuilder {
@@ -30,7 +30,7 @@ public class CityUpgradeInfo extends CityMayorOrAssistantCommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        MutableComponent message = new TextComponent("");
+        MutableComponent message = MutableComponent.create(ComponentContents.EMPTY);
 
         City city = player.getCity();
 
