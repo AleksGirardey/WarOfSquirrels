@@ -1,7 +1,7 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.RegistryObject;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
@@ -24,6 +24,7 @@ public abstract class Handler<T extends RegistryObject> implements OnSaveListene
     protected final Map<UUID, T> dataMap = new HashMap<>();
 
     protected Handler(String prefix, Logger logger) {
+        InitVariables();
         PrefixLogger = prefix;
         Logger = logger;
         dataArray = new ArrayList<>();
@@ -34,6 +35,8 @@ public abstract class Handler<T extends RegistryObject> implements OnSaveListene
 
         Log();
     }
+
+    protected abstract void InitVariables();
 
     protected boolean Setup() {
         File file = new File(getConfigDir());
@@ -76,7 +79,8 @@ public abstract class Handler<T extends RegistryObject> implements OnSaveListene
     }
 
     protected boolean Populate() {
-        dataArray.iterator().forEachRemaining(this::add);
+        dataArray.forEach(this::add);
+        Save();
         return true;
     }
 
@@ -93,9 +97,6 @@ public abstract class Handler<T extends RegistryObject> implements OnSaveListene
             added = true;
         }
 
-        if (added)
-            Save();
-
         return added;
     }
 
@@ -105,11 +106,9 @@ public abstract class Handler<T extends RegistryObject> implements OnSaveListene
 
     protected boolean Load() {
         String errorMessage = MessageFormat.format("{0} Couldn't load Json data.", PrefixLogger);
-        ObjectMapper mapper = new ObjectMapper();
-
         try {
             if (new BufferedReader(new FileReader(getConfigPath())).readLine() != null) {
-                dataArray = mapper.readValue(configFile, new TypeReference<List<T>>(){});
+                CustomLoad(configFile);
                 if (!Populate()) {
                     Logger.error(errorMessage + " (Populate)");
                     return false;
@@ -121,6 +120,8 @@ public abstract class Handler<T extends RegistryObject> implements OnSaveListene
         }
         return true;
     }
+
+    protected abstract void CustomLoad(File configFile) throws IOException;
 
     public void updateDependencies() {
         dataArray.forEach(RegistryObject::updateDependencies);
@@ -156,4 +157,10 @@ public abstract class Handler<T extends RegistryObject> implements OnSaveListene
 
     @Override
     public String Name() { return PrefixLogger; }
+
+    protected static <T> List<T> jsonArrayToList(File json, Class<T> elementClass) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        CollectionType listType = mapper.getTypeFactory().constructCollectionType(ArrayList.class, elementClass);
+        return mapper.readValue(json, listType);
+    }
 }

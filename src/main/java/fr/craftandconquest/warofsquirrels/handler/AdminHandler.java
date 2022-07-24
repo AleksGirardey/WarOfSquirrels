@@ -1,5 +1,6 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
@@ -13,22 +14,22 @@ import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 
 public class AdminHandler extends Handler<AdminCubo> {
-    protected static String DirName = "/WorldData";
-    protected static String JsonName = "/AdminHandler.json";
 
-    private final Map<String, AdminCubo> adminCuboMap = new HashMap<>();
+    private Map<String, AdminCubo> adminCuboMap;
 
     public AdminHandler(Logger logger) {
         super("[WoS][AdminHandler]", logger);
+    }
 
-        if (!Init()) return;
-        if (!Load()) return;
-
-        Log();
+    @Override
+    protected void InitVariables() {
+        adminCuboMap = new HashMap<>();
     }
 
     public AdminCubo CreateTeleporter(FullPlayer player, String name) {
@@ -106,13 +107,17 @@ public class AdminHandler extends Handler<AdminCubo> {
 
     @Override
     protected boolean add(AdminCubo value) {
-        if (!dataArray.contains(value))
-            dataArray.add(value);
+        super.add(value);
 
         if (!adminCuboMap.containsKey(value.getDisplayName()))
             adminCuboMap.put(value.getDisplayName(), value);
 
         return true;
+    }
+
+    @Override
+    protected void CustomLoad(File configFile) throws IOException {
+        dataArray = jsonArrayToList(configFile, AdminCubo.class);
     }
 
     @Override
@@ -126,16 +131,6 @@ public class AdminHandler extends Handler<AdminCubo> {
     public void Log() {
         Logger.info(MessageFormat.format("{0} Admin cubo generated : {1}",
                 PrefixLogger, dataArray.size()));
-    }
-
-    @Override
-    public String getConfigDir() {
-        return WarOfSquirrels.warOfSquirrelsConfigDir + DirName;
-    }
-
-    @Override
-    protected String getConfigPath() {
-        return getConfigDir() + JsonName;
     }
 
     @Override

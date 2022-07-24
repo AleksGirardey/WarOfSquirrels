@@ -41,7 +41,7 @@ public class Bastion extends Upgradable implements IFortification, IUpdate {
     @JsonIgnore @Getter
     private City city;
 
-    public void SetCity(City city) {
+    public void setCity(City city) {
         this.city = city;
         if (city != null)
             this.cityUuid = city.getUuid();
@@ -150,6 +150,11 @@ public class Bastion extends Upgradable implements IFortification, IUpdate {
     }
 
     @Override
+    public int Size() {
+        return 0;
+    }
+
+    @Override
     public void updateDependencies() {
         city = WarOfSquirrels.instance.getCityHandler().get(cityUuid);
 
@@ -191,4 +196,7 @@ public class Bastion extends Upgradable implements IFortification, IUpdate {
 
     @JsonIgnore @Override
     public Score getScore() { return score; }
+
+    @Override
+    public String getDisplayName() { return displayName; }
 }

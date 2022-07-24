@@ -1,20 +1,29 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
 import fr.craftandconquest.warofsquirrels.object.faction.Diplomacy;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class DiplomacyHandler extends Handler<Diplomacy> {
-    private final Map<Faction, List<Diplomacy>> diplomacyMap = new HashMap<>();
+    private Map<Faction, List<Diplomacy>> diplomacyMap;
 
     public DiplomacyHandler(Logger logger) {
         super("[WoS][DiplomacyHandler]", logger);
+    }
+
+    @Override
+    protected void InitVariables() {
+        diplomacyMap = new HashMap<>();
     }
 
     @Override
@@ -27,6 +36,11 @@ public class DiplomacyHandler extends Handler<Diplomacy> {
             diplomacyMap.get(value.getFaction()).add(value);
 
         return true;
+    }
+
+    @Override
+    protected void CustomLoad(File configFile) throws IOException {
+        dataArray = jsonArrayToList(configFile, Diplomacy.class);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package fr.craftandconquest.warofsquirrels.utils;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
@@ -71,6 +72,17 @@ public class Utils {
         int value = NearestHomeBlock(posX, posZ);
 
         return (value == -1 || value >= WarOfSquirrels.instance.getConfig().getDistanceCities());
+    }
+
+    public static boolean CanPlaceGuild(int posX, int posZ, ResourceKey<Level> dimension) {
+        ChunkHandler handler = WarOfSquirrels.instance.getChunkHandler();
+
+        Chunk chunkTop = handler.getChunk(posX, posZ + 1, dimension);
+        Chunk chunkBot = handler.getChunk(posX, posZ - 1, dimension);
+        Chunk chunkLeft = handler.getChunk(posX - 1, posZ, dimension);
+        Chunk chunkRight = handler.getChunk(posX + 1, posZ, dimension);
+
+        return chunkTop == null && chunkBot == null && chunkLeft == null && chunkRight == null;
     }
 
     @Nullable

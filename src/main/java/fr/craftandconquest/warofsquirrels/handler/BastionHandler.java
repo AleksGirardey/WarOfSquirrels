@@ -12,26 +12,26 @@ import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 
 public class BastionHandler extends UpdatableHandler<Bastion> {
-    private final Map<City, List<Bastion>> bastionByCities;
+    private Map<City, List<Bastion>> bastionByCities;
 
     public BastionHandler(Logger logger) {
         super("[WoS][BastionHandler]", logger);
+    }
+
+    @Override
+    protected void InitVariables() {
         bastionByCities = new HashMap<>();
-
-        if (!Init()) return;
-        if (!Load()) return;
-
-        Log();
     }
 
     @Override
     protected boolean add(Bastion bastion) {
-        if (!dataArray.contains(bastion))
-            dataArray.add(bastion);
+        super.add(bastion);
 
         City related = bastion.getRelatedCity();
         if (!bastionByCities.containsKey(related))
@@ -39,6 +39,11 @@ public class BastionHandler extends UpdatableHandler<Bastion> {
         bastionByCities.get(related).add(bastion);
 
         return true;
+    }
+
+    @Override
+    protected void CustomLoad(File configFile) throws IOException {
+        dataArray = jsonArrayToList(configFile, Bastion.class);
     }
 
     public boolean deleteCity(City city) {
@@ -56,6 +61,7 @@ public class BastionHandler extends UpdatableHandler<Bastion> {
     public boolean Delete(Bastion bastion) {
         if (!WarOfSquirrels.instance.getCuboHandler().deleteBastion(bastion)) return false;
         if (!WarOfSquirrels.instance.getChunkHandler().delete(bastion)) return false;
+        if (!WarOfSquirrels.instance.getInfluenceHandler().delete(bastion)) return false;
         if (!WarOfSquirrels.instance.getTerritoryHandler().delete(bastion)) return false;
 
         bastionByCities.get(bastion.getRelatedCity()).remove(bastion);
@@ -66,8 +72,7 @@ public class BastionHandler extends UpdatableHandler<Bastion> {
 
     @Override
     public void Log() {
-        Logger.info(MessageFormat.format("{0} Bastions generated : {1}",
-                PrefixLogger, dataArray.size()));
+        Logger.info(MessageFormat.format("{0} Bastions generated : {1}", PrefixLogger, dataArray.size()));
     }
     @Override
     public void spreadPermissionDelete(IPermission target) { }
@@ -77,7 +82,7 @@ public class BastionHandler extends UpdatableHandler<Bastion> {
 
         bastion.setUuid(UUID.randomUUID());
         bastion.setDisplayName(territory.getDisplayName() + "'s bastion");
-        bastion.SetCity(city);
+        bastion.setCity(city);
         bastion.setProtected(true);
         bastion.setTerritoryPosition(new Vector2(territory.getPosX(), territory.getPosZ()));
         bastion.setBastionUpgrade(new BastionUpgrade());
@@ -86,6 +91,7 @@ public class BastionHandler extends UpdatableHandler<Bastion> {
         add(bastion);
 
         Chunk chunk = WarOfSquirrels.instance.getChunkHandler().CreateChunk((int) chunkPosition.x, (int) chunkPosition.y, bastion, Level.OVERWORLD);
+
         chunk.setHomeBlock(true);
         chunk.setRespawnPoint(playerPosition);
 

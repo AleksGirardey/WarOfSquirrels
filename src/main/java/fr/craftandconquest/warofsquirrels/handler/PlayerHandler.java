@@ -4,21 +4,36 @@ import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.object.FakePlayer;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
+import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
+import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 
 public class PlayerHandler extends UpdatableHandler<FullPlayer> {
-    private final Map<String, FullPlayer> playersByName = new HashMap<>();
-    private final Map<FullPlayer, Timer> reincarnation = new HashMap<>();
+    private Map<String, FullPlayer> playersByName;
+    private Map<FullPlayer, Timer> reincarnation;
+    private List<FullPlayer> playersOnSpeed;
 
     public PlayerHandler(Logger logger) {
         super("[WoS][PlayerHandler]", logger);
+    }
+
+    @Override
+    protected void InitVariables() {
+        playersByName = new HashMap<>();
+        reincarnation = new HashMap<>();
+        playersOnSpeed = new ArrayList<>();
     }
 
     public void updateScore() {
@@ -33,6 +48,11 @@ public class PlayerHandler extends UpdatableHandler<FullPlayer> {
 
         playersByName.put(player.getDisplayName(), player);
         return true;
+    }
+
+    @Override
+    protected void CustomLoad(File configFile) throws IOException {
+        dataArray = jsonArrayToList(configFile, FullPlayer.class);
     }
 
     public FullPlayer CreatePlayer(Player playerEntity) {
@@ -50,8 +70,7 @@ public class PlayerHandler extends UpdatableHandler<FullPlayer> {
 
         player.setChatTarget(BroadCastTarget.GENERAL);
 
-        playersByName.put(player.getDisplayName(), player);
-        dataArray.add(player);
+        add(player);
 
         LogPlayerCreation(player);
 
@@ -146,5 +165,17 @@ public class PlayerHandler extends UpdatableHandler<FullPlayer> {
 
     public FullPlayer get(String displayName) {
         return playersByName.get(displayName);
+    }
+
+    public void OnTerritoryChange(FullPlayer player, Territory newTerritory) {
+        if (playersOnSpeed.contains(player)) {
+            player.getPlayerEntity().removeEffect(MobEffects.MOVEMENT_SPEED);
+            playersOnSpeed.remove(player);
+        }
+
+        if (newTerritory.getFortification() == null || newTerritory.getFortification().getFortificationType() != IFortification.FortificationType.BASTION
+                || ((Bastion) newTerritory.getFortification()).getBastionUpgrade().getRoad().getCurrentLevel() < 4) return;
+
+        player.getPlayerEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED));
     }
 }

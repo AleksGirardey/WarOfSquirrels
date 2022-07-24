@@ -5,6 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
@@ -37,12 +38,18 @@ public class CityDelete extends CityMayorCommandBuilder implements IAdminCommand
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         City city = player.getCity();
+        Faction faction = city.getFaction();
+
+        if (!WarOfSquirrels.instance.getCityHandler().Delete(city)) return -1;
+
 
         MutableComponent message = ChatText.Colored("[BREAKING NEWS] " + city.getDisplayName() + " has fallen !",
                 ChatFormatting.GOLD);
-        WarOfSquirrels.instance.getCityHandler().Delete(city);
 
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
+
+        if (faction != null && faction.getCities().size() <= 0)
+            WarOfSquirrels.instance.getFactionHandler().Delete(faction);
 
         return 0;
     }

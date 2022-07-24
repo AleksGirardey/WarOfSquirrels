@@ -1,7 +1,9 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.cuboide.VectorCubo;
 import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
@@ -19,16 +21,24 @@ import net.minecraft.network.chat.MutableComponent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class CuboHandler extends Handler<Cubo> {
-    private final Map<FullPlayer, Pair<Vector3, Vector3>> points = new HashMap<>();
-    private final Map<String, Cubo> cuboMapFromName = new HashMap<>();
+    private Map<FullPlayer, Pair<Vector3, Vector3>> points = new HashMap<>();
+    private Map<String, Cubo> cuboMapFromName = new HashMap<>();
 
     public CuboHandler(Logger logger) {
         super("[WoS][CuboHandler]", logger);
+    }
+
+    @Override
+    protected void InitVariables() {
+        points = new HashMap<>();
+        cuboMapFromName = new HashMap<>();
     }
 
     public Cubo CreateCubo(FullPlayer player, String name) {
@@ -75,6 +85,11 @@ public class CuboHandler extends Handler<Cubo> {
             cuboMapFromName.put(value.getDisplayName(), value);
 
         return true;
+    }
+
+    @Override
+    protected void CustomLoad(File configFile) throws IOException {
+        dataArray = jsonArrayToList(configFile, Cubo.class);
     }
 
     public boolean Delete(String name) {

@@ -1,11 +1,12 @@
 package fr.craftandconquest.warofsquirrels.handler.guild;
 
-import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.UpdatableHandler;
 import fr.craftandconquest.warofsquirrels.object.faction.guild.GuildShop;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 
 public class GuildShopHandler extends UpdatableHandler<GuildShop> {
@@ -14,8 +15,16 @@ public class GuildShopHandler extends UpdatableHandler<GuildShop> {
     }
 
     @Override
+    protected void InitVariables() { }
+
+    @Override
+    protected void CustomLoad(File configFile) throws IOException {
+        dataArray = jsonArrayToList(configFile, GuildShop.class);
+    }
+
+    @Override
     public void Log() {
-        WarOfSquirrels.instance.debugLog(MessageFormat.format("{0} Guild shop generated : {1}", PrefixLogger, dataArray.size()));
+        Logger.info(MessageFormat.format("{0} Guild shop generated : {1}", PrefixLogger, dataArray.size()));
     }
 
     @Override

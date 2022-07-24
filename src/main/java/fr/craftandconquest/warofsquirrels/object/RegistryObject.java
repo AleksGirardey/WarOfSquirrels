@@ -13,6 +13,5 @@ import java.util.UUID;
 public abstract class RegistryObject {
     @JsonProperty @Getter @Setter protected UUID uuid;
     @JsonProperty @Getter @Setter protected String displayName;
-
     public abstract void updateDependencies();
 }

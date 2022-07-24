@@ -1,7 +1,5 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.config.ConfigData;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
@@ -14,12 +12,12 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.CheckForNull;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class TerritoryHandler extends UpdatableHandler<Territory> {
     private final static List<String> defaultTerritoryName = new ArrayList<>() {{
@@ -141,31 +139,30 @@ public class TerritoryHandler extends UpdatableHandler<Territory> {
         add("Malor");
     }};
 
-    private final Map<Faction, List<Territory>> territoriesByFaction;
-    private final Territory[][] territories;
+    private Map<Faction, List<Territory>> territoriesByFaction;
+    private Territory[][] territories;
 
     public TerritoryHandler(Logger logger) {
+        super("[WoS][TerritoryHandler]", logger);
+
+        //WarOfSquirrels.instance.debugLog("Territories : " + (territories != null ? "NOT NULL" : "NULL"));
+    }
+
+    @Override
+    protected void InitVariables() {
         int sizeMap = WarOfSquirrels.instance.config.getConfiguration().getMapSize() /
                 WarOfSquirrels.instance.config.getConfiguration().getTerritorySize();
         territories = new Territory[sizeMap][sizeMap];
         territoriesByFaction = new HashMap<>();
-        this.PrefixLogger = "";
-        this.Logger = logger;
-
-        if (!Init()) return;
-        if (!Load()) return;
-
-        Log();
     }
 
     @Override
     protected boolean Load() {
         String errorMessage = String.format("%s Couldn't load Json data.", PrefixLogger);
-        ObjectMapper mapper = new ObjectMapper();
 
         try {
             if (new BufferedReader(new FileReader(getConfigPath())).readLine() != null) {
-                dataArray = mapper.readValue(configFile, new TypeReference<>(){});
+                dataArray = jsonArrayToList(configFile, Territory.class);
                 if (!Populate()) {
                     Logger.error(errorMessage + " (Populate)");
                     return false;
@@ -178,6 +175,11 @@ public class TerritoryHandler extends UpdatableHandler<Territory> {
             return false;
         }
         return true;
+    }
+
+    @Override
+    protected void CustomLoad(File configFile) throws IOException {
+        dataArray = jsonArrayToList(configFile, Territory.class);
     }
 
     private void Generate() {
@@ -198,15 +200,11 @@ public class TerritoryHandler extends UpdatableHandler<Territory> {
                     return;
             }
         }
+        Save();
     }
 
-    @Override
-    protected boolean Populate() {
-        dataArray.iterator().forEachRemaining(this::add);
-        return true;
-    }
 
-    public boolean add(Territory territory) {
+    public boolean addPopulated(Territory territory) {
         if (!dataArray.contains(territory)) {
             if (dataArray.size() == 0)
                 dataArray = new ArrayList<>();
@@ -218,6 +216,11 @@ public class TerritoryHandler extends UpdatableHandler<Territory> {
         int posZ = territory.getPosZ() + offset;
 
         territories[posX][posZ] = territory;
+
+        if (territory.getFaction() == null) return true;
+
+        if (territoriesByFaction == null) territoriesByFaction = new HashMap<>();
+
         if (!territoriesByFaction.containsKey(territory.getFaction()))
             territoriesByFaction.put(territory.getFaction(), new ArrayList<>());
         if (!territoriesByFaction.get(territory.getFaction()).contains(territory))
@@ -232,8 +235,6 @@ public class TerritoryHandler extends UpdatableHandler<Territory> {
 
         if (!add(territory))
             return null;
-
-        Save();
         LogTerritoryCreation(territory);
 
         return territory;
@@ -259,17 +260,8 @@ public class TerritoryHandler extends UpdatableHandler<Territory> {
 
     @Override
     public void Log() {
-        AtomicReference<Double> sum = new AtomicReference<>((double) 0);
-        dataArray.forEach(t -> sum.updateAndGet(v -> v + t.getBiome().sum));
-
-        double v = sum.get() * 1/100;
-        v = Math.sqrt(v);
-
         Logger.info(MessageFormat.format("{0} Territories generated : {1}",
                 PrefixLogger, dataArray.size()));
-
-        Logger.info(MessageFormat.format("{0} Ecart type river : {1}",
-                PrefixLogger, v));
     }
 
     @Override
@@ -413,7 +405,7 @@ public class TerritoryHandler extends UpdatableHandler<Territory> {
     @Override
     public void updateDependencies() {
         dataArray.forEach(Territory::updateDependencies);
-        dataArray.forEach(this::add);
+        dataArray.forEach(this::addPopulated);
     }
 
     @Override

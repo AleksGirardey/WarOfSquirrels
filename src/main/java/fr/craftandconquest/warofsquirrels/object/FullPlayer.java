@@ -43,6 +43,7 @@ public class FullPlayer extends RegistryObject implements IPermission, IScoreUpd
     @JsonProperty @Getter @Setter private String lastDimension;
     @JsonProperty @Getter @Setter private int remainingTp;
     @JsonProperty @Getter @Setter private boolean whitelistCityCreator = false;
+    @JsonProperty @Getter @Setter private boolean whitelistGuildCreator = false;
     @JsonProperty @Getter @Setter private Date cityJoinDate;
 
     // Data
@@ -189,4 +190,7 @@ public class FullPlayer extends RegistryObject implements IPermission, IScoreUpd
     public void updateScore() {
         score.UpdateScore();
     }
+
+    @Override
+    public String getDisplayName() { return displayName; }
 }

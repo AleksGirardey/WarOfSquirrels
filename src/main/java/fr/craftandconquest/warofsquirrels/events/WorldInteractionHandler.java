@@ -21,8 +21,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.monster.Evoker;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -36,10 +40,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.common.ToolActions;
+import net.minecraftforge.event.entity.EntityMobGriefingEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -375,6 +381,15 @@ public class WorldInteractionHandler {
     @SubscribeEvent
     public void OnCropsTrampled(BlockEvent.FarmlandTrampleEvent event) {
         event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void OnMobGriefing(EntityMobGriefingEvent event) {
+        Entity entity = event.getEntity();
+
+        if (entity instanceof Villager || entity instanceof Sheep || entity instanceof Evoker) return;
+
+        event.setResult(Event.Result.DENY);
     }
 
     private boolean ShouldWeCheck(FullPlayer player, Vector3 target) {

@@ -1,5 +1,9 @@
 package fr.craftandconquest.warofsquirrels.handler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
+import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
+import fr.craftandconquest.warofsquirrels.object.faction.Bastion;
 import fr.craftandconquest.warofsquirrels.object.faction.Faction;
 import fr.craftandconquest.warofsquirrels.object.faction.IFortification;
 import fr.craftandconquest.warofsquirrels.object.faction.Influence;
@@ -8,6 +12,8 @@ import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import fr.craftandconquest.warofsquirrels.object.world.Territory;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,11 +21,17 @@ import java.util.List;
 import java.util.Map;
 
 public class InfluenceHandler extends Handler<Influence> {
-    private final Map<City, Map<Territory, Influence>> cityInfluenceMap = new HashMap<>();
-    private final Map<Faction, Map<Territory, Influence>> factionInfluenceMap = new HashMap<>();
+    private Map<City, Map<Territory, Influence>> cityInfluenceMap;
+    private Map<Faction, Map<Territory, Influence>> factionInfluenceMap;
 
     public InfluenceHandler(Logger logger) {
         super("[WoS][InfluenceHandler]", logger);
+    }
+
+    @Override
+    protected void InitVariables() {
+        cityInfluenceMap = new HashMap<>();
+        factionInfluenceMap = new HashMap<>();
     }
 
     @Override
@@ -29,6 +41,11 @@ public class InfluenceHandler extends Handler<Influence> {
         if (value.getFaction() != null)
             return AddFactionInfluence(value);
         return AddCityInfluence(value);
+    }
+
+    @Override
+    protected void CustomLoad(File configFile) throws IOException {
+        dataArray = jsonArrayToList(configFile, Influence.class);
     }
 
     private boolean AddCityInfluence(Influence value) {
@@ -73,6 +90,8 @@ public class InfluenceHandler extends Handler<Influence> {
 
     @Override
     public boolean Delete(Influence value) {
+        if (value == null) return false;
+
         super.Delete(value);
 
         if (value.getFaction() != null) {
@@ -86,12 +105,28 @@ public class InfluenceHandler extends Handler<Influence> {
         return true;
     }
 
+    public boolean delete(Faction faction, Territory territory) {
+        return Delete(get(faction, territory));
+    }
+
+    public boolean delete(Bastion bastion) {
+        Faction faction = bastion.getFaction();
+        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(bastion);
+
+        return delete(faction, territory);
+    }
+
     public boolean delete(City city) {
         List<Influence> toBeDeleted = new ArrayList<>();
         Faction faction = city.getFaction();
 
         if (faction != null) {
-            Delete(faction);
+            List<Bastion> bastions = WarOfSquirrels.instance.getBastionHandler().get(city);
+
+            for (Bastion bastion : bastions) {
+                delete(bastion);
+            }
+            delete(faction, WarOfSquirrels.instance.getTerritoryHandler().get(city));
         } else {
             if (cityInfluenceMap.containsKey(city)) {
                 toBeDeleted.addAll(cityInfluenceMap.get(city).values());

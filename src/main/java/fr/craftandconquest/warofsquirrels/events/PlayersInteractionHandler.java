@@ -37,8 +37,9 @@ public class PlayersInteractionHandler {
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
-        WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID())
-                .setLastDimension(event.getTo().location().getPath());
+        FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
+        if (player != null)
+            player.setLastDimension(event.getTo().location().getPath());
     }
 
     @OnlyIn(Dist.DEDICATED_SERVER)
@@ -57,6 +58,7 @@ public class PlayersInteractionHandler {
                 Math.round(playerEntity.getBlockY()),
                 Math.round(playerEntity.getBlockZ()));
 
+        Vector3 lastPosition = player.lastPosition;
         player.lastPosition = newPosition;
         ResourceKey<Level> dimensionId = playerEntity.getCommandSenderWorld().dimension();
 
@@ -93,7 +95,7 @@ public class PlayersInteractionHandler {
 
                 if (level == null) return;*/
 
-                player.getPlayerEntity().moveTo(new Vec3(player.lastPosition.x, player.lastPosition.y, player.lastPosition.z));
+                player.getPlayerEntity().moveTo(new Vec3(lastPosition.x, lastPosition.y, lastPosition.z));
                 player.sendMessage(ChatText.Error("You cannot walk into this battlefield."));
             }
         }
@@ -125,38 +127,40 @@ public class PlayersInteractionHandler {
 
         if (oldTerritory != newTerritory) {
             player.sendMessage(ChatText.Colored("~~| " + newTerritory.getDisplayName() + " |~~", ChatFormatting.DARK_GREEN));
+            WarOfSquirrels.instance.getPlayerHandler().OnTerritoryChange(player, newTerritory);
         }
 
         Chunk lastChunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), dimensionId);
         Chunk newChunk = WarOfSquirrels.instance.getChunkHandler().getChunk(event.getNewPos().chunk().x, event.getNewPos().chunk().z, dimensionId);
 
+        String place = null;
+
         if (lastChunk != null) {
             if (newChunk != null) {
+                if (lastChunk == newChunk) return;
+
                 if (lastChunk.getRelatedCity() != newChunk.getRelatedCity()) {
-                    String place = newChunk.getFortification().getDisplayName();
+                    place = newChunk.getFortification().getDisplayName();
 
                     if (newChunk.getFortification().getFortificationType() == IFortification.FortificationType.BASTION) {
                         place += (" - " + newChunk.getFortification().getRelatedCity().getDisplayName());
                     }
-
-                    player.sendMessage(ChatText.Colored("~~| " + place + " |~~", ChatFormatting.GOLD));
-                } else {
-                    if (newChunk.getHomeBlock())
-                        player.sendMessage(ChatText.Colored("~~| " + newChunk.getFortification().getDisplayName() + " HomeBlock |~~", ChatFormatting.GOLD));
                 }
             } else {
-                player.sendMessage(ChatText.Colored("~~| Wilderness |~~", ChatFormatting.GOLD));
+                place = "Wilderness";
             }
         } else {
             if (newChunk != null) {
-                String place = newChunk.getFortification().getDisplayName();
+                place = newChunk.getFortification().getDisplayName();
 
                 if (newChunk.getFortification().getFortificationType() == IFortification.FortificationType.BASTION) {
                     place += (" - " + newChunk.getFortification().getRelatedCity().getDisplayName());
                 }
-                player.sendMessage(ChatText.Colored("~~| " + place + " |~~", ChatFormatting.GOLD));
             }
         }
+
+        if (place != null)
+            player.sendMessage(ChatText.Colored("~~| " + place + (newChunk != null && newChunk.getHomeBlock() ? " HomeBlock" : "") +" |~~", ChatFormatting.GOLD));
     }
 
     @OnlyIn(Dist.DEDICATED_SERVER)
@@ -255,7 +259,9 @@ public class PlayersInteractionHandler {
         if (WarOfSquirrels.instance.getWarHandler().getWar(territory) == null) return;
 
         float value = event.getOriginalSpeed();
-        value += value * territory.getBiome().ratioBreakingSpeed();
+        value -= value * territory.getBiome().ratioBreakingSpeed();
+
+        player.sendMessage(ChatText.Error("Old: " + event.getOriginalSpeed() + " vs New: " + value));
 
         event.setNewSpeed(value);
     }

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WarHandler {
-
     private final List<War> wars = new ArrayList<>();
 
     public WarHandler() {}
@@ -185,7 +184,7 @@ public class WarHandler {
 
     public void CancelWars() {
         for (War war : wars) {
-            war.getTimer().cancel();
+            war.Cancel();
         }
     }
 

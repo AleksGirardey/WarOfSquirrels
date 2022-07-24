@@ -46,12 +46,7 @@ public class FactionClaimCommand extends FactionCommandAssistant implements ITer
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Territory territory = ExtractTerritory(player);
-
         territory.SetFaction(player.getCity().getFaction());
-
-        int posX = territory.getPosX();
-        int posZ = territory.getPosZ();
-        int territorySize = WarOfSquirrels.instance.getConfig().getTerritorySize();
 
         MutableComponent message = ChatText.Colored("Faction '" + territory.getFaction().getDisplayName() + "'"
                 + " claimed territory  '" + territory.getDisplayName() + "'", ChatFormatting.GOLD);
@@ -60,7 +55,6 @@ public class FactionClaimCommand extends FactionCommandAssistant implements ITer
         Vector3 position = new Vector3(entity.getBlockX(), entity.getBlockY(), entity.getBlockZ());
 
         WarOfSquirrels.instance.getBastionHandler().Create(territory, player.getCity(), Utils.FromWorldToChunk(entity.getBlockX(), entity.getBlockZ()), position);
-//        WarOfSquirrels.instance.getInfluenceHandler().ResetOthersInfluence(territory);
 
         WarOfSquirrels.instance.getBastionHandler().Save();
         WarOfSquirrels.instance.getTerritoryHandler().Save();

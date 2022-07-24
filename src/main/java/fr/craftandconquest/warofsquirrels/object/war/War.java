@@ -265,7 +265,7 @@ public class War implements IChannelTarget {
             text = ChatText.Colored(cityAttacker.getDisplayName()
                     + " failed to win his attack against "
                     + cityDefender.getDisplayName()
-                    + "(" + attackersPoints + " - " + defendersPoints, ChatFormatting.GOLD);
+                    + " (" + attackersPoints + " - " + defendersPoints + ")", ChatFormatting.GOLD);
 
             Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(cityAttacker);
             WarOfSquirrels.instance.getInfluenceHandler().get(territory.getFaction(), territory).SubInfluence(pointsToRemove);
@@ -276,7 +276,7 @@ public class War implements IChannelTarget {
             text = ChatText.Colored(cityAttacker.getDisplayName()
                     + " won his attack against "
                     + cityDefender.getDisplayName()
-                    + "(" + attackersPoints + " - " + defendersPoints, ChatFormatting.GOLD);
+                    + " (" + attackersPoints + " - " + defendersPoints + ")", ChatFormatting.GOLD);
 
             Influence influence = WarOfSquirrels.instance.getInfluenceHandler().get(targetTerritory.getFaction(), targetTerritory);
             influence.SubInfluence(pointsToRemove + WarOfSquirrels.instance.getTerritoryHandler().getDamageFromEnemy(targetTerritory, cityAttacker.getFaction()));
@@ -591,5 +591,10 @@ public class War implements IChannelTarget {
         War war = (War) obj;
 
         return war.getUuid().equals(this.uuid);
+    }
+
+    public void Cancel() {
+        warDisplay.Clear();
+        getTimer().cancel();
     }
 }

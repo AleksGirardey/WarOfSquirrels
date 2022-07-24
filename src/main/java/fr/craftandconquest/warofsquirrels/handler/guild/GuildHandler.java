@@ -9,25 +9,25 @@ import fr.craftandconquest.warofsquirrels.object.faction.guild.Guild;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 
 public class GuildHandler extends UpdatableHandler<Guild> implements IUpdate {
-    private final Map<Faction, List<Guild>> guildByFaction;
+    private Map<Faction, List<Guild>> guildByFaction;
     public GuildHandler(Logger logger) {
-        super("GuildHandler", logger);
+        super("[WoS][GuildHandler]", logger);
+    }
+
+    @Override
+    protected void InitVariables() {
         guildByFaction = new HashMap<>();
-
-        if (!Init()) return;
-        if (!Load()) return;
-
-        Log();
     }
 
     @Override
     protected boolean add(Guild value) {
-        if (!dataArray.contains(value))
-            dataArray.add(value);
+        super.add(value);
 
         Faction related = value.getCityHeadQuarter().getFaction();
 
@@ -36,6 +36,11 @@ public class GuildHandler extends UpdatableHandler<Guild> implements IUpdate {
         guildByFaction.get(related).add(value);
 
         return false;
+    }
+
+    @Override
+    protected void CustomLoad(File configFile) throws IOException {
+        dataArray = jsonArrayToList(configFile, Guild.class);
     }
 
     @Override

@@ -6,6 +6,8 @@ import fr.craftandconquest.warofsquirrels.object.faction.guild.GuildBranch;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 
 public class GuildBranchHandler extends UpdatableHandler<GuildBranch> {
@@ -14,8 +16,16 @@ public class GuildBranchHandler extends UpdatableHandler<GuildBranch> {
     }
 
     @Override
+    protected void InitVariables() { }
+
+    @Override
+    protected void CustomLoad(File configFile) throws IOException {
+        dataArray = jsonArrayToList(configFile, GuildBranch.class);
+    }
+
+    @Override
     public void Log() {
-        WarOfSquirrels.instance.debugLog(MessageFormat.format("{0} Guild branch generated : {1}", PrefixLogger, dataArray.size()));
+        Logger.info(MessageFormat.format("{0} Guild branch generated : {1}", PrefixLogger, dataArray.size()));
     }
 
     @Override
