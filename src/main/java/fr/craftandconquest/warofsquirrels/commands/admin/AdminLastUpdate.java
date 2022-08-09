@@ -1,17 +1,21 @@
-package fr.craftandconquest.warofsquirrels.commands;
+package fr.craftandconquest.warofsquirrels.commands.admin;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
-import fr.craftandconquest.warofsquirrels.utils.Utils;
+import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.MutableComponent;
 
-public class ListCommand extends CommandBuilder {
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class AdminLastUpdate extends AdminCommandBuilder{
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("list").executes(this);
+        return Commands.literal("lastupdate").executes(this);
     }
 
     @Override
@@ -21,12 +25,9 @@ public class ListCommand extends CommandBuilder {
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        player.sendMessage(Utils.getSortedPlayerList());
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        player.sendMessage(ChatText.Success("Last update on : " +
+                dateFormat.format(new Date(WarOfSquirrels.instance.getConfig().getLastUpdateDate()))));
         return 0;
-    }
-
-    @Override
-    protected MutableComponent ErrorMessage() {
-        return null;
     }
 }

@@ -9,7 +9,6 @@ import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class AdminWhitelistCity extends AdminCommandBuilder implements IPlayerExtractor {

@@ -156,6 +156,9 @@ public class Config {
                 1000, // influenceMax;
                 150, // AttackCost;
 
+                /* Info */
+                0,
+
                 initRanks, defaultPermissions, defaultNaturePermission);
     }
 }

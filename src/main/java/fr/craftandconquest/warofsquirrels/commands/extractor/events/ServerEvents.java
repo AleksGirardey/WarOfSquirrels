@@ -1,4 +1,4 @@
-package fr.craftandconquest.warofsquirrels.events;
+package fr.craftandconquest.warofsquirrels.commands.extractor.events;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.PlayerHandler;

@@ -23,7 +23,6 @@ public class FactionCommandRegister implements ICommandRegister {
                 .then(factionClaimCommand.register())
                 .then(factionCreateCommand.register())
                 .then(factionDeleteCommand.register())
-                .then(factionSetCommand.register())
-        );
+                .then(factionSetCommand.register()));
     }
 }

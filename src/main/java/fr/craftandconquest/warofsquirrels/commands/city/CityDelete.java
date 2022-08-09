@@ -42,7 +42,6 @@ public class CityDelete extends CityMayorCommandBuilder implements IAdminCommand
 
         if (!WarOfSquirrels.instance.getCityHandler().Delete(city)) return -1;
 
-
         MutableComponent message = ChatText.Colored("[BREAKING NEWS] " + city.getDisplayName() + " has fallen !",
                 ChatFormatting.GOLD);
 

@@ -272,7 +272,7 @@ public class PermissionHandler {
         AdminCubo adminCubo = WarOfSquirrels.instance.getAdminHandler().get(position, dimensionId);
         boolean isThereAdminCubo = adminCubo != null;
 
-        if (isThereAdminCubo) return new Permission(false, false, true, false, false);
+        if (isThereAdminCubo) return adminCubo.getPermission();
 
         Cubo cubo = WarOfSquirrels.instance.getCuboHandler().getCubo(position);
         boolean isThereCubo = cubo != null;

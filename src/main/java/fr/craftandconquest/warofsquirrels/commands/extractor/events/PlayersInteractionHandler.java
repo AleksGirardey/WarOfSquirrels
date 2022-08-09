@@ -1,7 +1,8 @@
-package fr.craftandconquest.warofsquirrels.events;
+package fr.craftandconquest.warofsquirrels.commands.extractor.events;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.WarHandler;
+import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.IChannelTarget;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
@@ -64,16 +65,22 @@ public class PlayersInteractionHandler {
         List<AdminCubo> cubos = WarOfSquirrels.instance.getAdminHandler().getAll(newPosition, dimensionId);
 
         for (AdminCubo cubo : cubos) {
-            if (cubo != null && cubo.isTeleport()) {
-                AdminCubo target = WarOfSquirrels.instance.getAdminHandler().get(cubo.getLinkedPortal());
+            if (cubo != null)
+            {
+                if (cubo.isTeleport()) {
+                    AdminCubo target = WarOfSquirrels.instance.getAdminHandler().get(cubo.getLinkedPortal());
 
-                if (target != null) {
-                    SpawnTeleporter tp = new SpawnTeleporter(target.getRespawnPoint());
-                    ServerLevel level = WarOfSquirrels.server.getLevel(target.getDimensionKey());
+                    if (target != null) {
+                        SpawnTeleporter tp = new SpawnTeleporter(target.getRespawnPoint());
+                        ServerLevel level = WarOfSquirrels.server.getLevel(target.getDimensionKey());
 
-                    if (level == null) return;
+                        if (level == null) return;
 
-                    player.getPlayerEntity().changeDimension(level, tp);
+                        if (cubo.isClearInventoryOnTp() && !player.isAdminMode())
+                            player.getPlayerEntity().getInventory().clearContent();
+
+                        player.getPlayerEntity().changeDimension(level, tp);
+                    }
                 }
             }
         }
@@ -114,7 +121,7 @@ public class PlayersInteractionHandler {
 
         ResourceKey<Level> dimensionId = event.getEntity().getCommandSenderWorld().dimension();
 
-        if (dimensionId != Level.OVERWORLD) return;
+        //if (dimensionId != Level.OVERWORLD) return;
 
         Territory oldTerritory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(new Vector2(event.getOldPos().chunk().x, event.getOldPos().chunk().z));
         Territory newTerritory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(new Vector2(event.getNewPos().chunk().x, event.getNewPos().chunk().z));
@@ -168,6 +175,9 @@ public class PlayersInteractionHandler {
         if (!(event.getEntity() instanceof Player target) || !(event.getSource().getEntity() instanceof Player))
             return;
         FullPlayer fullPlayerTarget = WarOfSquirrels.instance.getPlayerHandler().get(target.getUUID());
+
+        if (event.getEntity().level == WarOfSquirrels.server.getLevel(WarOfSquirrels.SPAWN))
+            event.setCanceled(true);
 
         if (WarOfSquirrels.instance.getPlayerHandler().isInReincarnation(fullPlayerTarget))
             event.setAmount(10000);
@@ -226,14 +236,16 @@ public class PlayersInteractionHandler {
     public void OnChatEvent(ServerChatEvent event) {
         if (event.getPlayer() == null) return;
 
-        Component message = event.getComponent();
+        Component message = event.getMessage();
         FullPlayer sender = WarOfSquirrels.instance.getPlayerHandler().get(event.getPlayer().getUUID());
 
         IChannelTarget target = null;
 
         event.setCanceled(true);
 
-        switch (sender.getChatTarget()) {
+        BroadCastTarget chatTarget = sender.getChatTarget();
+
+        switch (chatTarget) {
             case GENERAL -> { WarOfSquirrels.instance.getBroadCastHandler().getWorldChannel().SendMessage(sender, message.copy()); return; }
             case CITY -> target = sender.getCity();
             case FACTION -> target = sender.getCity().getFaction();
@@ -261,8 +273,6 @@ public class PlayersInteractionHandler {
 
         float value = event.getOriginalSpeed();
         value -= value * territory.getBiome().ratioBreakingSpeed();
-
-        player.sendMessage(ChatText.Error("Old: " + event.getOriginalSpeed() + " vs New: " + value));
 
         event.setNewSpeed(value);
     }

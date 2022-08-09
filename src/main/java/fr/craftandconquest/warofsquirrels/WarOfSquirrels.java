@@ -1,10 +1,10 @@
 package fr.craftandconquest.warofsquirrels;
 
 import fr.craftandconquest.warofsquirrels.commands.register.CommandRegisterManager;
-import fr.craftandconquest.warofsquirrels.events.PlayersInteractionHandler;
-import fr.craftandconquest.warofsquirrels.events.RespawnEvents;
-import fr.craftandconquest.warofsquirrels.events.ServerEvents;
-import fr.craftandconquest.warofsquirrels.events.WorldInteractionHandler;
+import fr.craftandconquest.warofsquirrels.commands.extractor.events.PlayersInteractionHandler;
+import fr.craftandconquest.warofsquirrels.commands.extractor.events.RespawnEvents;
+import fr.craftandconquest.warofsquirrels.commands.extractor.events.ServerEvents;
+import fr.craftandconquest.warofsquirrels.commands.extractor.events.WorldInteractionHandler;
 import fr.craftandconquest.warofsquirrels.handler.*;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastHandler;
 import fr.craftandconquest.warofsquirrels.handler.guild.GuildBranchHandler;
@@ -181,6 +181,7 @@ public class WarOfSquirrels {
         UpdateHandler.OnSaveUpdate.add(influenceHandler);
         UpdateHandler.OnSaveUpdate.add(territoryHandler);
         UpdateHandler.OnSaveUpdate.add(bastionHandler);
+        UpdateHandler.OnSaveUpdate.add(adminHandler);
     }
 
     public void debugLog(String message) {

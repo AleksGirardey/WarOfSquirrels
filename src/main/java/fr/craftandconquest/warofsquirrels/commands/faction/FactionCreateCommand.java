@@ -36,7 +36,8 @@ public class FactionCreateCommand extends CityMayorCommandBuilder implements ITe
         Influence influence = WarOfSquirrels.instance.getInfluenceHandler().get(player.getCity(), territory);
 
         boolean hasFaction = player.getCity().getFaction() != null;
-        boolean hasEnoughInfluence = influence != null && influence.getValue() >= WarOfSquirrels.instance.getConfig().getBaseInfluenceRequired();
+        //boolean hasEnoughInfluence = influence != null && influence.getValue() >= WarOfSquirrels.instance.getConfig().getBaseInfluenceRequired();
+        boolean hasEnoughInfluence = true;
 
         if (hasFaction) {
             player.sendMessage(ChatText.Error("You already got a faction."));

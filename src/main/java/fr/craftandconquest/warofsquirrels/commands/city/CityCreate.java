@@ -11,7 +11,6 @@ import fr.craftandconquest.warofsquirrels.handler.ChunkHandler;
 import fr.craftandconquest.warofsquirrels.handler.CityHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.channels.CityChannel;
-import fr.craftandconquest.warofsquirrels.object.faction.Influence;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.war.Party;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
@@ -85,7 +84,6 @@ public class CityCreate extends PartyCommandLeader implements IAdminCommand, ITe
         String cityName = context.getArgument(cityNameArgument, String.class);
         CityHandler cih = WarOfSquirrels.instance.getCityHandler();
         ChunkHandler chh = WarOfSquirrels.instance.getChunkHandler();
-//        Territory territory = WarOfSquirrels.instance.getTerritoryHandler().get(player.getPlayerEntity().getBlockX(), player.getPlayerEntity().getBlockZ());
         Territory territory = ExtractTerritory(player);
 
         if (territory == null) return -1;

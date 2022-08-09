@@ -79,6 +79,9 @@ public class ConfigData {
     @Getter @Setter private int influenceMax;
     @Getter @Setter private int attackCost;
 
+    /* Info */
+    @Getter @Setter private long lastUpdateDate;
+
     @JsonProperty("CityRanks")
     @Getter
     @Setter

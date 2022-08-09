@@ -3,7 +3,6 @@ package fr.craftandconquest.warofsquirrels.commands.war;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
-import fr.craftandconquest.warofsquirrels.commands.city.CityAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.city.CityMayorOrAssistantCommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.extractor.IPlayerExtractor;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;

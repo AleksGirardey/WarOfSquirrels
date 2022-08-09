@@ -1,4 +1,4 @@
-package fr.craftandconquest.warofsquirrels.events;
+package fr.craftandconquest.warofsquirrels.commands.extractor.events;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
@@ -38,6 +38,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -162,7 +163,6 @@ public class WorldInteractionHandler {
             type = InteractType.RightClickEntity;
         else { return; }
 
-        // If player exist then we are in cubo mode and we need to register the block and cancel interaction
         if (WarOfSquirrels.instance.getCuboHandler().playerExists(player)) {
             WarOfSquirrels.instance.getCuboHandler().set(player, new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
                     type == InteractType.LeftClick);
@@ -369,6 +369,13 @@ public class WorldInteractionHandler {
     @OnlyIn(Dist.DEDICATED_SERVER)
     @SubscribeEvent
     public void OnCropsTrampled(BlockEvent.FarmlandTrampleEvent event) {
+        event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void OnExplosion(ExplosionEvent.Start event) {
+        if (event.getExplosion().getDamageSource().getEntity() instanceof Monster) return;
+
         event.setCanceled(true);
     }
 

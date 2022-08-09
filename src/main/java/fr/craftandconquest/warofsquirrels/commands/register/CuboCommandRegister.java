@@ -17,6 +17,7 @@ public class CuboCommandRegister extends CommandBuilder implements ICommandRegis
     private final CuboCreate cuboCreate = new CuboCreate();
     private final CuboDelete cuboDelete = new CuboDelete();
     private final CuboAdd cuboAdd = new CuboAdd();
+    private final CuboRemove cuboRemove = new CuboRemove();
     private final CuboSet cuboSet = new CuboSet();
 
     @Override
@@ -28,6 +29,7 @@ public class CuboCommandRegister extends CommandBuilder implements ICommandRegis
                 .then(cuboCreate.register())
                 .then(cuboDelete.register())
                 .then(cuboAdd.register())
+                .then(cuboRemove.register())
                 .then(cuboSet.register()));
     }
 

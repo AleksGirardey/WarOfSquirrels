@@ -28,11 +28,11 @@ public interface IPermissionExtractor {
         return perm;
     }
 
-    default RequiredArgumentBuilder<CommandSourceStack, Boolean> getPermissionRegister(Command<CommandSourceStack> citySetPerm) {
+    default RequiredArgumentBuilder<CommandSourceStack, Boolean> getPermissionRegister(Command<CommandSourceStack> command) {
         return Commands.argument(buildArgumentName, BoolArgumentType.bool())
                 .then(Commands.argument(containerArgumentName, BoolArgumentType.bool())
                         .then(Commands.argument(switchArgumentName, BoolArgumentType.bool())
                                 .then(Commands.argument(farmArgumentName, BoolArgumentType.bool())
-                                        .then(Commands.argument(interactArgumentName, BoolArgumentType.bool()).executes(citySetPerm)))));
+                                        .then(Commands.argument(interactArgumentName, BoolArgumentType.bool()).executes(command)))));
     }
 }

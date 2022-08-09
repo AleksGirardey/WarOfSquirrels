@@ -45,6 +45,7 @@ public class City extends Upgradable implements IPermission, IFortification, ICh
     @JsonProperty @Getter @Setter private Map<PermissionRelation, Permission> defaultPermission;
     @JsonProperty @Getter @Setter private List<CustomPermission> customPermissionList = new ArrayList<>();
     @JsonProperty @Getter @Setter CityUpgrade cityUpgrade;
+    @JsonProperty @Getter @Setter boolean ignore;
 
     @JsonIgnore @Getter private FullPlayer owner;
     @JsonIgnore private Faction faction = null;
@@ -198,7 +199,7 @@ public class City extends Upgradable implements IPermission, IFortification, ICh
 
     @JsonIgnore @Override
     public int getInfluenceGeneratedDistantNeighbour(boolean gotAttacked, boolean gotDefeated) {
-        int base = gotAttacked ? 0 : 0;
+        int base = 0;
         int upgrade = gotDefeated ? 0 : getCityUpgrade().getInfluenceGeneratedDistantNeighbour();
 
         return base + upgrade;
@@ -221,11 +222,6 @@ public class City extends Upgradable implements IPermission, IFortification, ICh
 
     @JsonIgnore
     public FortificationType getFortificationType() { return FortificationType.CITY; }
-
-    @JsonIgnore
-    public int getAmountBastions() {
-        return WarOfSquirrels.instance.getBastionHandler().get(this).size();
-    }
 
     @JsonIgnore
     public List<FullPlayer> getOnlinePlayers() {

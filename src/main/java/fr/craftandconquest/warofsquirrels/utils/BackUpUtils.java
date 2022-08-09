@@ -19,7 +19,7 @@ public class BackUpUtils {
         if (!dir.exists())
             if (!dir.mkdir()) return;
 
-        File source = new File(WarOfSquirrels.warOfSquirrelsConfigDir + "/WorldData");
+        File source = new File(WarOfSquirrels.warOfSquirrelsConfigDir + "/GameData");
         File destination = new File(backUpDest);
 
         if (!source.exists()) return;

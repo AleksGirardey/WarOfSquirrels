@@ -6,6 +6,7 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
 import fr.craftandconquest.warofsquirrels.object.cuboide.VectorCubo;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
+import fr.craftandconquest.warofsquirrels.object.permission.Permission;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import fr.craftandconquest.warofsquirrels.utils.Vector3;
 import net.minecraft.resources.ResourceKey;
@@ -68,6 +69,8 @@ public class AdminHandler extends Handler<AdminCubo> {
         cubo.setUuid(UUID.randomUUID());
         cubo.setDisplayName(name);
         cubo.setVector(vector);
+        cubo.setPermission(new Permission(false, false, true, false, false));
+        cubo.setClearInventoryOnTp(false);
 
         return cubo;
     }

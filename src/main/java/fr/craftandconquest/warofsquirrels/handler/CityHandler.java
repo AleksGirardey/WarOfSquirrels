@@ -85,7 +85,9 @@ public class CityHandler extends UpdatableHandler<City> {
         if (!WarOfSquirrels.instance.getCuboHandler().deleteCity(city)) return false;
         if (!WarOfSquirrels.instance.getChunkHandler().delete(city)) return false;
 
-        city.getCitizens().forEach(this::RemoveCitizen);
+        List<FullPlayer> citizens = List.copyOf(city.getCitizens());
+
+        citizens.forEach(this::RemoveCitizen);
         city.getOwner().setCity(null);
 
         super.Delete(city);
@@ -174,11 +176,19 @@ public class CityHandler extends UpdatableHandler<City> {
 
     public void updateScore() {
         for (City city : dataArray)
-            city.updateScore();
+            if (!city.isIgnore())
+                city.updateScore();
     }
 
     @Override
     protected String getDirName() {
         return super.getDirName() + "/Faction/City";
+    }
+
+    @Override
+    public void update() {
+        for (City city : dataArray)
+            if (!city.isIgnore())
+                city.update();
     }
 }

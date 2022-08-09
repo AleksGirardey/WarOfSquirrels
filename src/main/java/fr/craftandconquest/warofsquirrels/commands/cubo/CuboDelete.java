@@ -49,7 +49,7 @@ public class CuboDelete extends CityCommandBuilder implements IAdminCommand {
         String cuboName = context.getArgument(argumentName, String.class);
 
         if (WarOfSquirrels.instance.getCuboHandler().Delete(cuboName)) {
-            player.sendMessage(ChatText.Success("cubo " + cuboName + " has been destroyed."));
+            player.sendMessage(ChatText.Success("Cubo " + cuboName + " has been destroyed."));
         }
 
         return 0;

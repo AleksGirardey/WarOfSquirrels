@@ -49,6 +49,8 @@ public class UpdateHandler {
 //        WarOfSquirrels.instance.getLoanHandler().update();
 
         ScoreUpdate();
+        WarOfSquirrels.instance.getConfig().setLastUpdateDate(new Date().getTime());
+        WarOfSquirrels.instance.config.Save();
         MutableComponent message = ChatText.Colored("A new day begin..", ChatFormatting.GOLD);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastWorldAnnounce(message);
     }
@@ -67,8 +69,8 @@ public class UpdateHandler {
 
     public void CreateDailyUpdate() {
         long delay = DelayBeforeReset();
-//        long period = 1000L * 60L * 60L * 24L;
-        long period = 1000L * 60L * 60L * 4L;
+        long period = 1000L * 60L * 60L * 24L;
+//        long period = 1000L * 60L * 60L * 4L;
         delay *= 1000;
 
         currentDailyUpdateTimer = new Timer("Daily Update Timer");

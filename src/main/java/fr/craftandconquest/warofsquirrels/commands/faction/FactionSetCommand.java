@@ -13,7 +13,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
 
 public class FactionSetCommand extends CommandBuilder {
-    private static final FactionSetPerm factionSetPerm = new FactionSetPerm();
+    //private static final FactionSetPerm factionSetPerm = new FactionSetPerm();
     private static final FactionSetCapital factionSetCapital = new FactionSetCapital();
     private static final FactionSetAlly factionSetAlly = new FactionSetAlly();
     private static final FactionSetEnemy factionSetEnemy = new FactionSetEnemy();
@@ -23,7 +23,7 @@ public class FactionSetCommand extends CommandBuilder {
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("set")
                 .executes(this)
-                .then(factionSetPerm.register())
+                //.then(factionSetPerm.register())
                 .then(factionSetCapital.register())
                 .then(factionSetAlly.register())
                 .then(factionSetEnemy.register())

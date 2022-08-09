@@ -22,6 +22,7 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
     private final AdminTerritory adminTerritory = new AdminTerritory();
     private final AdminSet adminSet = new AdminSet();
     private final AdminPoints adminPoints = new AdminPoints();
+    private final AdminLastUpdate adminLastUpdate = new AdminLastUpdate();
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -34,6 +35,7 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
                 .then(adminTerritory.register())
                 .then(adminSet.register())
                 .then(adminPoints.register())
+                .then(adminLastUpdate.register())
                 .executes(this));
     }
 
