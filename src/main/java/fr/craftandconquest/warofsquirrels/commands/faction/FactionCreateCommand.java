@@ -37,15 +37,15 @@ public class FactionCreateCommand extends CityMayorCommandBuilder implements ITe
 
         boolean hasFaction = player.getCity().getFaction() != null;
         //boolean hasEnoughInfluence = influence != null && influence.getValue() >= WarOfSquirrels.instance.getConfig().getBaseInfluenceRequired();
-        boolean hasEnoughInfluence = true;
+        boolean hasCityLevel = player.getCity().getCityUpgrade().getLevel().getCurrentLevel() >= 2;
 
         if (hasFaction) {
             player.sendMessage(ChatText.Error("You already got a faction."));
             return false;
         }
 
-        if (!hasEnoughInfluence) {
-            player.sendMessage(ChatText.Error("You do not have enough influence on your capital territory"));
+        if (!hasCityLevel) {
+            player.sendMessage(ChatText.Error("Your city need to be level 2."));
             return false;
         }
 

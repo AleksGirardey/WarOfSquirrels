@@ -173,17 +173,21 @@ public class War implements IChannelTarget {
         warDisplay.UpdateScore();
     }
 
+    public int ComputeKillPoint(int size) {
+        return 500 / (4 * size);
+    }
+
     public void AddDefenderKillPoints() {
-        AddDefenderPoints(166 / (3 * attackers.size()));
+        AddDefenderPoints(ComputeKillPoint(attackers.size()));
     }
 
     public void AddAttackerKillPoints() {
-        AddAttackerPoints(166 / (3 * defenders.size()));
+        AddAttackerPoints(ComputeKillPoint(defenders.size()));
     }
 
     public void AddAttackerTargetKillPoints() {
         if (!targetAlreadyDead) {
-            AddAttackerPoints(650);
+            AddAttackerPoints(350);
             targetAlreadyDead = true;
         } else {
             AddAttackerKillPoints();

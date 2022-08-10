@@ -125,7 +125,7 @@ public class Config {
         return new ConfigData(
                 /* Claiming */
                 4, // minPartySizeToCreateCity;
-                15, // distanceCities;
+                8, // distanceCities;
                 10, // distanceOutpost;
 
                 /* Influence */
@@ -151,7 +151,7 @@ public class Config {
                 new Vector3(11 , 86, -2),
 
                 /* War */
-                120, // preparationPhase;
+                180, // preparationPhase;
                 120, // rollbackPhase;
                 1000, // influenceMax;
                 150, // AttackCost;
