@@ -217,7 +217,7 @@ public class Territory extends RegistryObject implements IUpdate {
     }
 
     @JsonIgnore
-    public String getDisplayName() {
+    public String getExtendedDisplayName() {
         String prefix = "";
 
         if (biome.isCompleteTrait()) prefix = " " + biome.getBiomePrefix();

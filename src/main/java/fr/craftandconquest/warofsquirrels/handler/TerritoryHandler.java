@@ -255,7 +255,7 @@ public class TerritoryHandler extends UpdatableHandler<Territory> {
     }
 
     public void LogTerritoryCreation(Territory territory) {
-        Logger.info(PrefixLogger + " " + territory.getDisplayName() + " created" + (territory.getBiome().isHasRiver() ? " with river." : ""));
+        Logger.info(PrefixLogger + " " + territory.getExtendedDisplayName() + " created" + (territory.getBiome().isHasRiver() ? " with river." : ""));
     }
 
     @Override
@@ -327,12 +327,6 @@ public class TerritoryHandler extends UpdatableHandler<Territory> {
         if (west != null && !west.equals(territory)) neighbors.add(west);
 
         return neighbors;
-    }
-
-    public Territory get(String name) {
-        return dataArray.stream()
-                .filter(t -> t.getDisplayName().equals(name))
-                .findFirst().orElse(null);
     }
 
     public Territory get(IFortification fortification) {

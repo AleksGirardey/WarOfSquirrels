@@ -295,7 +295,7 @@ public class Utils {
 
         if (territory != null) {
             message.append(MessageFormat.format("==| Territory {0} [{1};{2}] |==\n  Owner : {3}\n",
-                    territory.getDisplayName(), territory.getPosX(), territory.getPosZ(),
+                    territory.getExtendedDisplayName(), territory.getPosX(), territory.getPosZ(),
                     (territory.getFaction() == null ? "None" : (territory.getFaction().getDisplayName() + (territory.isHasFallen() ? " (Has fallen)" : "")))));
             message.append("  Biome(s):\n");
             message.append(territory.getBiome().asComponent());

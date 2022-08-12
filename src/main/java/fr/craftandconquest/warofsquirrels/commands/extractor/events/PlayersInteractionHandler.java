@@ -121,19 +121,19 @@ public class PlayersInteractionHandler {
 
         ResourceKey<Level> dimensionId = event.getEntity().getCommandSenderWorld().dimension();
 
-        //if (dimensionId != Level.OVERWORLD) return;
+        if (dimensionId == Level.OVERWORLD) {
+            Territory oldTerritory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(new Vector2(event.getOldPos().chunk().x, event.getOldPos().chunk().z));
+            Territory newTerritory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(new Vector2(event.getNewPos().chunk().x, event.getNewPos().chunk().z));
 
-        Territory oldTerritory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(new Vector2(event.getOldPos().chunk().x, event.getOldPos().chunk().z));
-        Territory newTerritory = WarOfSquirrels.instance.getTerritoryHandler().getFromChunkPos(new Vector2(event.getNewPos().chunk().x, event.getNewPos().chunk().z));
+            if (newTerritory == null) {
+                WarOfSquirrels.instance.debugLog("Out of bounds ? [" + player.getPlayerEntity().getBlockX() + ";" + player.getPlayerEntity().getBlockY() + ";" + player.getPlayerEntity().getBlockZ() + "]");
+                return;
+            }
 
-        if (newTerritory == null) {
-            WarOfSquirrels.instance.debugLog("Out of bounds ? [" + player.getPlayerEntity().getBlockX() + ";" + player.getPlayerEntity().getBlockY() + ";" + player.getPlayerEntity().getBlockZ() + "]");
-            return;
-        }
-
-        if (oldTerritory != newTerritory) {
-            player.sendMessage(ChatText.Colored("~~| " + newTerritory.getDisplayName() + " |~~", ChatFormatting.DARK_GREEN));
-            WarOfSquirrels.instance.getPlayerHandler().OnTerritoryChange(player, newTerritory);
+            if (oldTerritory != newTerritory) {
+                player.sendMessage(ChatText.Colored("~~| " + newTerritory.getExtendedDisplayName() + " |~~", ChatFormatting.DARK_GREEN));
+                WarOfSquirrels.instance.getPlayerHandler().OnTerritoryChange(player, newTerritory);
+            }
         }
 
         Chunk lastChunk = WarOfSquirrels.instance.getChunkHandler().getChunk(player.getLastChunkX(), player.getLastChunkZ(), dimensionId);
