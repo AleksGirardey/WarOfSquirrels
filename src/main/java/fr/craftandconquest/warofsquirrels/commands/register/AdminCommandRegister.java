@@ -9,6 +9,7 @@ import fr.craftandconquest.warofsquirrels.commands.admin.points.AdminPoints;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
@@ -25,11 +26,13 @@ public class AdminCommandRegister extends CommandBuilder implements ICommandRegi
     private final AdminLastUpdate adminLastUpdate = new AdminLastUpdate();
 
     @Override
-    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {}
+
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
         dispatcher.register(Commands.literal("admin")
                 .then(adminChunkInfoCommand.register())
                 .then(adminForceDailyUpdate.register())
-                .then(adminCreate.register())
+                .then(adminCreate.register(context))
                 .then(adminTp.register())
                 .then(adminWhitelist.register())
                 .then(adminTerritory.register())

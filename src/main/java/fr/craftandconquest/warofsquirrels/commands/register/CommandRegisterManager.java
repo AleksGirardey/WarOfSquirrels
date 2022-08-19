@@ -1,7 +1,9 @@
 package fr.craftandconquest.warofsquirrels.commands.register;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContextBuilder;
 import fr.craftandconquest.warofsquirrels.commands.*;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 
 public class CommandRegisterManager {
@@ -19,12 +21,12 @@ public class CommandRegisterManager {
     private final PouetCommand pouetCommand = new PouetCommand();
     private final NearCommand nearCommand = new NearCommand();
 
-    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
         cityCommandRegister.register(dispatcher);
         warCommandRegister.register(dispatcher);
         factionCommandRegister.register(dispatcher);
         partyCommandRegister.register(dispatcher);
-        adminCommandRegister.register(dispatcher);
+        adminCommandRegister.register(dispatcher, context);
         chatCommandRegister.register(dispatcher);
         cuboCommandRegister.register(dispatcher);
         playerCommandRegister.register(dispatcher);

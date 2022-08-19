@@ -81,6 +81,7 @@ public class WarOfSquirrels {
     private UpdateHandler updateHandler;
     @Getter private AdminHandler adminHandler;
     @Getter private BastionHandler bastionHandler;
+    @Getter private RewardHandler rewardHandler;
 
     @Getter private GuildHandler guildHandler;
     @Getter private GuildBranchHandler guildBranchHandler;
@@ -106,7 +107,7 @@ public class WarOfSquirrels {
 
     @SubscribeEvent
     public void OnRegisterCommand(RegisterCommandsEvent event) {
-        commandRegisterManager.register(event.getDispatcher());
+        commandRegisterManager.register(event.getDispatcher(), event.getBuildContext());
 
         isModInit = true;
 
@@ -142,6 +143,7 @@ public class WarOfSquirrels {
         guildHandler = new GuildHandler(LOGGER);
         guildBranchHandler = new GuildBranchHandler(LOGGER);
         guildShopHandler = new GuildShopHandler(LOGGER);
+        rewardHandler = new RewardHandler(LOGGER);
 
         AddSaveListeners();
 
