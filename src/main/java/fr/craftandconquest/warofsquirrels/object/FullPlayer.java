@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.broadcast.BroadCastTarget;
+import fr.craftandconquest.warofsquirrels.object.admin.CustomReward;
 import fr.craftandconquest.warofsquirrels.object.faction.guild.Guild;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
 import fr.craftandconquest.warofsquirrels.object.permission.IPermission;
@@ -25,9 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -67,6 +66,7 @@ public class FullPlayer extends RegistryObject implements IPermission, IScoreUpd
     @JsonIgnore @Getter private Guild guild;
     @JsonIgnore public Vector3 lastPosition;
     @JsonIgnore @Getter @Setter private BroadCastTarget chatTarget;
+    @JsonIgnore @Getter private List<CustomReward> rewards = new ArrayList<>();
 
     public void setCity(City city) {
         cityUuid = city != null ? city.getUuid() : null;

@@ -1,8 +1,9 @@
-package fr.craftandconquest.warofsquirrels.commands.extractor.events;
+package fr.craftandconquest.warofsquirrels.events;
 
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.handler.PermissionHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.admin.CustomReward;
 import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
 import fr.craftandconquest.warofsquirrels.object.cuboide.Cubo;
 import fr.craftandconquest.warofsquirrels.object.world.Chunk;
@@ -163,13 +164,16 @@ public class WorldInteractionHandler {
             type = InteractType.RightClickEntity;
         else { return; }
 
+        Vector3 click = new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
+
         if (WarOfSquirrels.instance.getCuboHandler().playerExists(player)) {
-            WarOfSquirrels.instance.getCuboHandler().set(player, new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
+            WarOfSquirrels.instance.getCuboHandler().set(player, click,
                     type == InteractType.LeftClick);
             event.setCanceled(true);
         }
 
         if (type == InteractType.RightClickItem) {
+            CustomReward reward;
             Item item = event.getItemStack().getItem();
             if (item.isEdible()) return;
 
@@ -177,6 +181,16 @@ public class WorldInteractionHandler {
                 Utils.displayInfoFeather(event.getEntity(), event.getEntity().getOnPos(), event.getLevel().dimension());
                 event.setCanceled(true);
             } else if (item == Items.BOW || item == Items.CROSSBOW || item == Items.SHIELD || player.isAdminMode()) {
+                return;
+            } else if ((reward = WarOfSquirrels.instance.getRewardHandler().contains(click)) != null) {
+                if (reward.CanAddRewardedPlayer()) {
+                    if (reward.AddRewardedPlayer(player)) {
+                        player.getRewards().add(reward);
+                        player.sendMessage(ChatText.Success("You obtain a new reward !"));
+                    }
+                } else {
+                    player.sendMessage(ChatText.Error("No reward available"));
+                }
                 return;
             }
         }

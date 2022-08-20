@@ -15,6 +15,7 @@ public class CommandRegisterManager {
     private final ChatCommandRegister chatCommandRegister = new ChatCommandRegister();
     private final CuboCommandRegister cuboCommandRegister = new CuboCommandRegister();
     private final PlayerCommandRegister playerCommandRegister = new PlayerCommandRegister();
+    private final RewardCommandRegister rewardCommandRegister = new RewardCommandRegister();
     private final AcceptCommand acceptCommand = new AcceptCommand();
     private final RefuseCommand refuseCommand = new RefuseCommand();
     private final ListCommand listCommand = new ListCommand();
@@ -30,6 +31,7 @@ public class CommandRegisterManager {
         chatCommandRegister.register(dispatcher);
         cuboCommandRegister.register(dispatcher);
         playerCommandRegister.register(dispatcher);
+        rewardCommandRegister.register(dispatcher);
 
         dispatcher.register(acceptCommand.register());
         dispatcher.register(refuseCommand.register());

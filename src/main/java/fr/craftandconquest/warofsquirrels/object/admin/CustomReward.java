@@ -9,6 +9,10 @@ import fr.craftandconquest.warofsquirrels.object.RegistryObject;
 import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
 import fr.craftandconquest.warofsquirrels.object.upgrade.UpgradeItem;
 import lombok.*;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +54,36 @@ public class CustomReward extends RegistryObject {
         return rewardedPlayers.size() < rewardedQuantity;
     }
 
-    public void AddRewardedPlayer(FullPlayer player) {
-        rewardedPlayerUuids.add(player.getUuid());
+    public boolean AddRewardedPlayer(FullPlayer player) {
+        if (rewardedPlayers.contains(player)) return false;
+
         rewardedPlayers.add(player);
+        rewardedPlayerUuids.add(player.getUuid());
+
+        return true;
+    }
+
+    public boolean claim(FullPlayer player) {
+        if (rewardedPlayers.contains(player)) {
+            claimedPlayers.add(player);
+            claimedPlayerUuids.add(player.getUuid());
+
+            dropReward(player);
+
+            return true;
+        }
+        return false;
+    }
+
+    public void dropReward(FullPlayer player) {
+        ItemStack stack = new ItemStack(reward.getItem(), rewardQuantity);
+        ServerPlayer serverPlayer = (ServerPlayer) player.getPlayerEntity();
+        ItemEntity entity = serverPlayer.drop(stack, false);
+
+        if (entity != null) {
+            entity.setNoPickUpDelay();
+            entity.setOwner(serverPlayer.getUUID());
+        }
     }
 
     public void Reset() {
@@ -65,7 +96,13 @@ public class CustomReward extends RegistryObject {
     @Override
     public void updateDependencies() {
         adminCubo = WarOfSquirrels.instance.getAdminHandler().get(adminCuboUuid);
-        for (UUID uuid : rewardedPlayerUuids) rewardedPlayers.add(WarOfSquirrels.instance.getPlayerHandler().get(uuid));
         for (UUID uuid : claimedPlayerUuids) claimedPlayers.add(WarOfSquirrels.instance.getPlayerHandler().get(uuid));
+        for (UUID uuid : rewardedPlayerUuids) {
+            FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(uuid);
+
+            rewardedPlayers.add(player);
+            if (!claimedPlayerUuids.contains(uuid))
+                player.getRewards().add(this);
+        }
     }
 }
