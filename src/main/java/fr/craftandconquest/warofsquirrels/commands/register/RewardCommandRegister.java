@@ -8,10 +8,13 @@ import fr.craftandconquest.warofsquirrels.commands.CommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.reward.RewardClaim;
 import fr.craftandconquest.warofsquirrels.commands.reward.RewardReset;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
+import fr.craftandconquest.warofsquirrels.object.admin.CustomReward;
 import fr.craftandconquest.warofsquirrels.utils.ChatText;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.MutableComponent;
+
+import java.util.List;
 
 public class RewardCommandRegister extends CommandBuilder implements ICommandRegister {
     private final static RewardClaim rewardClaim = new RewardClaim();
@@ -38,9 +41,10 @@ public class RewardCommandRegister extends CommandBuilder implements ICommandReg
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         MutableComponent message = ChatText.Success("=== Rewards ===\n");
+        List<CustomReward> rewards = WarOfSquirrels.instance.getRewardHandler().getAll(player.getLastDimensionKey());
 
-        message.append(" - There is " + WarOfSquirrels.instance.getRewardHandler().getAll(player.getLastDimensionKey()).size()
-                + " rewards available in this world.");
+        message.append(" - There is " + rewards.size() + " rewards available in this world." +
+                "\nYou can access " + (int) rewards.stream().filter(reward -> !reward.getRewardedPlayers().contains(player) && reward.CanAddRewardedPlayer()).count() + " of them.");
         message.append(" - You can claim " + player.getRewards().size() + " using /reward claim");
         return 0;
     }
