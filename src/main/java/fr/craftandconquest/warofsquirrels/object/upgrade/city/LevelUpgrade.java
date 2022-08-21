@@ -23,19 +23,26 @@ public class LevelUpgrade extends Upgrade {
     static {
         LevelUpgrade upgradeLevelZero = new LevelUpgrade(0,0, 0, new HashMap<>());
         LevelUpgrade upgradeLevelOne = new LevelUpgrade(1, 0, 0, new HashMap<>() {{
-            put(new UpgradeItem(Items.COBBLESTONE), 384);
-            put(new UpgradeItem(ItemTags.PLANKS), 384);
+            put(new UpgradeItem(Items.COBBLESTONE), 768);
+            put(new UpgradeItem(ItemTags.PLANKS), 640);
             put(new UpgradeItem(Items.IRON_INGOT), 64);
         }});
-        LevelUpgrade upgradeLevelTwo = new LevelUpgrade(2, 7, 2, new HashMap<>() {{
-            put(new UpgradeItem(Items.COBBLESTONE), 768);
-            put(new UpgradeItem(ItemTags.PLANKS), 384);
+        LevelUpgrade upgradeLevelTwo = new LevelUpgrade(2, 3, 2, new HashMap<>() {{
+            put(new UpgradeItem(Items.COBBLESTONE), 1024);
+            put(new UpgradeItem(ItemTags.PLANKS), 1024);
+            put(new UpgradeItem(Items.DEEPSLATE_BRICKS), 1024);
+            put(new UpgradeItem(Items.COPPER_INGOT), 448);
             put(new UpgradeItem(Items.IRON_INGOT), 256);
         }});
-        LevelUpgrade upgradeLevelThree = new LevelUpgrade(3, 14, 6, new HashMap<>() {{
+        LevelUpgrade upgradeLevelThree = new LevelUpgrade(3, 7, 6, new HashMap<>() {{
+            put(new UpgradeItem(Items.POLISHED_DEEPSLATE), 1920);
             put(new UpgradeItem(Items.COBBLESTONE), 1728);
             put(new UpgradeItem(ItemTags.PLANKS), 768);
             put(new UpgradeItem(Items.IRON_INGOT), 512);
+            put(new UpgradeItem(Items.COPPER_INGOT), 448);
+            put(new UpgradeItem(Items.GOLD_INGOT), 384);
+            put(new UpgradeItem(Items.BRICKS), 384);
+            put(new UpgradeItem(Items.QUARTZ_BLOCK), 320);
             put(new UpgradeItem(Items.DIAMOND), 64);
         }});
 

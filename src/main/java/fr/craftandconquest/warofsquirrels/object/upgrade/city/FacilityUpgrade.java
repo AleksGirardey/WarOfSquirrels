@@ -25,20 +25,24 @@ public class FacilityUpgrade extends Upgrade {
         FacilityUpgrade one = new FacilityUpgrade(1, 0, new HashMap<>() {{
             put(new UpgradeItem(ItemTags.SLABS), 768);
             put(new UpgradeItem(ItemTags.FENCES), 256);
-            put(new UpgradeItem(Items.MAP), 1);
             put(new UpgradeItem(Items.IRON_SHOVEL), 8);
+            put(new UpgradeItem(Items.MAP), 1);
         }});
 
         FacilityUpgrade two = new FacilityUpgrade(2, 2, new HashMap<>() {{
             put(new UpgradeItem(ItemTags.SLABS), 1152);
             put(new UpgradeItem(ItemTags.FENCES), 384);
+            put(new UpgradeItem(Items.WHITE_CONCRETE_POWDER), 384);
             put(new UpgradeItem(Items.RAIL), 128);
         }});
 
-        FacilityUpgrade three = new FacilityUpgrade(3, 5, new HashMap<>() {{
+        FacilityUpgrade three = new FacilityUpgrade(3, 4, new HashMap<>() {{
             put(new UpgradeItem(Items.REDSTONE), 1024);
+            put(new UpgradeItem(Items.WHITE_CONCRETE_POWDER), 896);
             put(new UpgradeItem(Items.RAIL), 768);
+            put(new UpgradeItem(Items.COPPER_INGOT), 640);
             put(new UpgradeItem(Items.POWERED_RAIL), 256);
+            put(new UpgradeItem(Items.MINECART), 27);
         }});
 
         defaultFacilityUpgrade = new HashMap<>() {{

@@ -7,6 +7,7 @@ import fr.craftandconquest.warofsquirrels.object.faction.Upgradable;
 import fr.craftandconquest.warofsquirrels.object.upgrade.Upgrade;
 import fr.craftandconquest.warofsquirrels.object.upgrade.UpgradeItem;
 import lombok.Getter;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
@@ -24,31 +25,37 @@ public class PalaceUpgrade extends Upgrade {
         }});
 
         PalaceUpgrade one = new PalaceUpgrade(1, 0, 0, new HashMap<>() {{
+            put(new UpgradeItem(Items.GLASS), 256);
+            put(new UpgradeItem(ItemTags.WOOL), 128);
             put(new UpgradeItem(Items.GOLD_BLOCK), 18);
             put(new UpgradeItem(Items.LAPIS_BLOCK), 4);
             put(new UpgradeItem(Items.EMERALD_BLOCK), 1);
         }});
 
         PalaceUpgrade two = new PalaceUpgrade(2, 5, 3, new HashMap<>() {{
-            put(new UpgradeItem(Items.GOLD_BLOCK), 64);
-            put(new UpgradeItem(Items.LAPIS_BLOCK), 16);
-            put(new UpgradeItem(Items.EMERALD_BLOCK), 16);
-            put(new UpgradeItem(Items.DIAMOND_BLOCK), 12);
+            put(new UpgradeItem(Items.GOLD_BLOCK), 256);
+            put(new UpgradeItem(Items.LAPIS_BLOCK), 256);
+            put(new UpgradeItem(Items.EMERALD_BLOCK), 256);
+            put(new UpgradeItem(Items.DIAMOND_BLOCK), 32);
             put(new UpgradeItem(Items.GHAST_TEAR), 8);
+            put(new UpgradeItem(Items.TUBE_CORAL_BLOCK), 4);
+            put(new UpgradeItem(Items.BRAIN_CORAL_BLOCK), 4);
+            put(new UpgradeItem(Items.BUBBLE_CORAL_BLOCK), 4);
+            put(new UpgradeItem(Items.FIRE_CORAL_BLOCK), 4);
+            put(new UpgradeItem(Items.HORN_CORAL_BLOCK), 4);
         }});
 
-        PalaceUpgrade three = new PalaceUpgrade(3, 14, 8, new HashMap<>() {{
-            put(new UpgradeItem(Items.DARK_PRISMARINE), 32);
-            put(new UpgradeItem(Items.NETHERITE_INGOT), 64);
-            put(new UpgradeItem(Items.EMERALD_BLOCK), 1);
-            put(new UpgradeItem(Items.GOLD_BLOCK), 128);
-            put(new UpgradeItem(Items.LAPIS_BLOCK), 32);
-            put(new UpgradeItem(Items.EMERALD_BLOCK), 32);
-            put(new UpgradeItem(Items.DIAMOND_BLOCK), 16);
+        PalaceUpgrade three = new PalaceUpgrade(3, 10, 8, new HashMap<>() {{
+            put(new UpgradeItem(Items.GOLD_BLOCK), 256);
+            put(new UpgradeItem(Items.EMERALD_BLOCK), 256);
+            put(new UpgradeItem(Items.LAPIS_BLOCK), 256);
+            put(new UpgradeItem(Items.DIAMOND_BLOCK), 64);
             put(new UpgradeItem(Items.PURPUR_BLOCK), 32);
             put(new UpgradeItem(Items.DRAGON_BREATH), 1);
+            put(new UpgradeItem(Items.END_CRYSTAL), 1);
             put(new UpgradeItem(Items.DRAGON_HEAD), 1);
             put(new UpgradeItem(Items.NETHER_STAR), 1);
+            put(new UpgradeItem(Items.TOTEM_OF_UNDYING), 1);
         }});
 
         defaultPalaceUpgrade = new HashMap<>() {{

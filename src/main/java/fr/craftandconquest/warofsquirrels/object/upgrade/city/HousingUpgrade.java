@@ -20,6 +20,7 @@ public class HousingUpgrade extends Upgrade {
     static {
         HousingUpgrade zero = new HousingUpgrade(0, 0, new HashMap<>() {{
             put(new UpgradeItem(Items.COBBLESTONE), 320);
+            put(new UpgradeItem(Items.ANDESITE), 320);
             put(new UpgradeItem(ItemTags.PLANKS), 128);
         }});
 
@@ -28,6 +29,7 @@ public class HousingUpgrade extends Upgrade {
             put(new UpgradeItem(ItemTags.LOGS), 128);
             put(new UpgradeItem(ItemTags.WOOL), 128);
             put(new UpgradeItem(Items.GLASS), 64);
+            put(new UpgradeItem(Items.LANTERN), 64);
         }});
 
         HousingUpgrade two = new HousingUpgrade(2, 1, new HashMap<>() {{
@@ -35,13 +37,17 @@ public class HousingUpgrade extends Upgrade {
             put(new UpgradeItem(ItemTags.LOGS), 384);
             put(new UpgradeItem(ItemTags.WOOL), 256);
             put(new UpgradeItem(Items.GLASS), 128);
+            put(new UpgradeItem(Items.AMETHYST_BLOCK), 64);
+            put(new UpgradeItem(Items.POLISHED_DIORITE), 64);
             put(new UpgradeItem(Items.DIAMOND), 48);
         }});
 
         HousingUpgrade three = new HousingUpgrade(3, 2, new HashMap<>() {{
-            put(new UpgradeItem(Items.STONE_BRICKS), 3456);
-            put(new UpgradeItem(ItemTags.LOGS), 640);
+            put(new UpgradeItem(Items.STONE_BRICKS), 3072);
+            put(new UpgradeItem(ItemTags.LOGS), 1280);
+            put(new UpgradeItem(ItemTags.WOOL_CARPETS), 640);
             put(new UpgradeItem(Items.BRICKS), 512);
+            put(new UpgradeItem(Items.COAL), 448);
             put(new UpgradeItem(Items.DIAMOND), 64);
         }});
 

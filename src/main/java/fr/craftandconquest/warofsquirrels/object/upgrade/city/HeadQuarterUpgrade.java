@@ -25,27 +25,30 @@ public class HeadQuarterUpgrade extends Upgrade {
         }});
 
         HeadQuarterUpgrade one = new HeadQuarterUpgrade(1, 0, new HashMap<>() {{
+            put(new UpgradeItem(ItemTags.PLANKS), 192);
+            put(new UpgradeItem(Items.COBBLESTONE), 192);
             put(new UpgradeItem(Items.BOOK), 1);
             put(new UpgradeItem(Items.MAP), 1);
             put(new UpgradeItem(ItemTags.BANNERS), 1);
-            put(new UpgradeItem(ItemTags.PLANKS), 192);
-            put(new UpgradeItem(Items.COBBLESTONE), 192);
         }});
 
         HeadQuarterUpgrade two = new HeadQuarterUpgrade(2, 1, new HashMap<>() {{
-            put(new UpgradeItem(Items.GUNPOWDER), 128);
-            put(new UpgradeItem(Items.BONE), 128);
-            put(new UpgradeItem(Items.ROTTEN_FLESH), 128);
-            put(new UpgradeItem(Items.ENDER_PEARL), 16);
-            put(new UpgradeItem(Items.REDSTONE), 256);
+            put(new UpgradeItem(Items.REDSTONE), 512);
+            put(new UpgradeItem(Items.GUNPOWDER), 256);
+            put(new UpgradeItem(Items.BONE), 256);
+            put(new UpgradeItem(Items.ROTTEN_FLESH), 256);
+            put(new UpgradeItem(Items.ENDER_PEARL), 64);
             put(new UpgradeItem(ItemTags.BANNERS), 5);
         }});
 
-        HeadQuarterUpgrade three = new HeadQuarterUpgrade(2, 8, new HashMap<>() {{
+        HeadQuarterUpgrade three = new HeadQuarterUpgrade(2, 6, new HashMap<>() {{
+            put(new UpgradeItem(Items.REDSTONE), 1024);
             put(new UpgradeItem(Items.GUNPOWDER), 512);
             put(new UpgradeItem(Items.ENDER_PEARL), 256);
-            put(new UpgradeItem(Items.REDSTONE), 1024);
-            put(new UpgradeItem(Items.OBSIDIAN), 72);
+            put(new UpgradeItem(Items.FIRE_CHARGE), 256);
+            put(new UpgradeItem(Items.BLAZE_ROD), 256);
+            put(new UpgradeItem(Items.OBSIDIAN), 192);
+            put(new UpgradeItem(Items.CHEST_MINECART), 24);
             put(new UpgradeItem(Items.FLINT_AND_STEEL), 5);
         }});
 
