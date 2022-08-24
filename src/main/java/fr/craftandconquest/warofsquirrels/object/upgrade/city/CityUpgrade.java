@@ -121,7 +121,7 @@ public class CityUpgrade {
         if (info == null) return;
 
         if (info.isHasBeenComplete()) {
-            info.setDaysBeforeLevelUp(Math.min(0, info.getDaysBeforeLevelUp() - 1));
+            info.setDaysBeforeLevelUp(Math.max(0, info.getDaysBeforeLevelUp() - 1));
             if (info.getDaysBeforeLevelUp() <= 0) {
                 info.LevelUp();
                 SetNextTarget(type);
@@ -255,15 +255,36 @@ public class CityUpgrade {
     }
 
     public MutableComponent asString(UpgradeType type) {
+        UpgradeInfo targetInfo = null;
+        MutableComponent message = null;
+
         switch (type) {
-            case Level -> { return currentLevelUpgrade.asString(); }
-            case Housing -> { return currentHousingUpgrade.asString(); }
-            case Facility -> { return currentFacilityUpgrade.asString(); }
-            case HeadQuarter -> { return currentHeadQuarterUpgrade.asString(); }
-            case Palace -> { return currentPalaceUpgrade.asString(); }
+            case Level -> {
+                targetInfo = level;
+                message = currentLevelUpgrade.asString();
+            }
+            case Housing -> {
+                targetInfo = housing;
+                message = currentHousingUpgrade.asString();
+            }
+            case Facility -> {
+                targetInfo = facility;
+                message = currentFacilityUpgrade.asString();
+            }
+            case HeadQuarter -> {
+                targetInfo = headQuarter;
+                message = currentHeadQuarterUpgrade.asString();
+            }
+            case Palace -> {
+                targetInfo = palace;
+                message = currentPalaceUpgrade.asString();
+            }
         }
 
-        return asString();
+        if (message != null && targetInfo != null && targetInfo.getDaysBeforeLevelUp() > 0)
+            message.append("Days left before completing upgrade : " + targetInfo.getDaysBeforeLevelUp());
+
+        return message == null ? asString() : message;
     }
 
     public MutableComponent asString() {

@@ -105,7 +105,7 @@ public class BastionUpgrade {
         }
 
         if (info.isHasBeenComplete()) {
-            info.setDaysBeforeLevelUp(Math.min(0, info.getDaysBeforeLevelUp() - 1));
+            info.setDaysBeforeLevelUp(Math.max(0, info.getDaysBeforeLevelUp() - 1));
             if (info.getDaysBeforeLevelUp() <= 0) {
                 info.LevelUp();
                 SetNextTarget(type);
