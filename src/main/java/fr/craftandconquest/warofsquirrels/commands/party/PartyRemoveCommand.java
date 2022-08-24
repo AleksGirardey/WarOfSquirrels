@@ -20,18 +20,18 @@ public class PartyRemoveCommand extends PartyCommandLeader implements IPlayerExt
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands
                 .literal("remove")
-                .then(getPlayerRegister()
+                .then(getArgumentRegister()
                         .executes(this));
     }
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer target = getPlayer(context);
+        FullPlayer target = getArgument(context);
         Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
         MutableComponent message;
 
         if (target == null)
-            message = ChatText.Error("Player '" + getRawPlayer(context) + "' does not exist.");
+            message = ChatText.Error("Player '" + getRawArgument(context) + "' does not exist.");
         else if (!party.contains(player))
             message = ChatText.Error("Player do not belong to your party.");
         else if (target == player)
@@ -45,7 +45,7 @@ public class PartyRemoveCommand extends PartyCommandLeader implements IPlayerExt
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer target = getPlayer(context);
+        FullPlayer target = getArgument(context);
         Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
 
         MutableComponent messageToParty =

@@ -1,7 +1,6 @@
 package fr.craftandconquest.warofsquirrels.commands.register;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContextBuilder;
 import fr.craftandconquest.warofsquirrels.commands.*;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -16,6 +15,7 @@ public class CommandRegisterManager {
     private final CuboCommandRegister cuboCommandRegister = new CuboCommandRegister();
     private final PlayerCommandRegister playerCommandRegister = new PlayerCommandRegister();
     private final RewardCommandRegister rewardCommandRegister = new RewardCommandRegister();
+    private final ScoreCommandRegister scoreCommandRegister = new ScoreCommandRegister();
     private final AcceptCommand acceptCommand = new AcceptCommand();
     private final RefuseCommand refuseCommand = new RefuseCommand();
     private final ListCommand listCommand = new ListCommand();
@@ -32,6 +32,7 @@ public class CommandRegisterManager {
         cuboCommandRegister.register(dispatcher);
         playerCommandRegister.register(dispatcher);
         rewardCommandRegister.register(dispatcher);
+        scoreCommandRegister.register(dispatcher);
 
         dispatcher.register(acceptCommand.register());
         dispatcher.register(refuseCommand.register());

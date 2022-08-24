@@ -88,7 +88,6 @@ public class Utils {
     @Nullable
     public static ReSpawnPoint NearestSpawnPoint(Player playerEntity) {
         FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(playerEntity.getUUID());
-        ResourceKey<Level> dimension = player.getLastDimensionKey();
 
         if (player.getCity() == null) return null;
 
@@ -107,7 +106,7 @@ public class Utils {
 
         spawnPoint = new Vec3(spawn.x, spawn.y, spawn.z);
 
-        return new ReSpawnPoint(dimension, new BlockPos(spawnPoint));
+        return new ReSpawnPoint(Level.OVERWORLD, new BlockPos(spawnPoint));
     }
 
     public static int NearestHomeBlock(int posX, int posZ) {

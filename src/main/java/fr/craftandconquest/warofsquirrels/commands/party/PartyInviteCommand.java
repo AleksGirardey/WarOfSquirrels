@@ -18,16 +18,16 @@ import java.util.List;
 public class PartyInviteCommand extends PartyCommandLeader implements IPlayerExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("invite").then(getPlayerRegister().executes(this));
+        return Commands.literal("invite").then(getArgumentRegister().executes(this));
     }
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer target = getPlayer(context);
+        FullPlayer target = getArgument(context);
         MutableComponent message;
 
         if (target == null)
-            message = ChatText.Error("Player '" + getRawPlayer(context).getDisplayName() + "' doesn't exist nor connected.");
+            message = ChatText.Error("Player '" + getRawArgument(context) + "' doesn't exist nor connected.");
         else if (WarOfSquirrels.instance.getPartyHandler().getFromPlayer(target) != null)
             message = ChatText.Error("Player already belongs to a party.");
         else
@@ -39,7 +39,7 @@ public class PartyInviteCommand extends PartyCommandLeader implements IPlayerExt
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer target = getPlayer(context);
+        FullPlayer target = getArgument(context);
         Party party = WarOfSquirrels.instance.getPartyHandler().getPartyFromLeader(player);
 
         MutableComponent messageToParty =

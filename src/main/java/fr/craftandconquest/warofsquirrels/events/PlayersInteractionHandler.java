@@ -58,6 +58,8 @@ public class PlayersInteractionHandler {
                 Math.round(playerEntity.getBlockY()),
                 Math.round(playerEntity.getBlockZ()));
 
+        if (player.lastPosition.equals(newPosition)) return;
+
         Vector3 lastPosition = player.lastPosition;
         player.lastPosition = newPosition;
         ResourceKey<Level> dimensionId = playerEntity.getCommandSenderWorld().dimension();

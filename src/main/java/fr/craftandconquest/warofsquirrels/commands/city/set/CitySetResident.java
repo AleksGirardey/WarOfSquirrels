@@ -20,14 +20,14 @@ public class CitySetResident extends CityMayorOrAssistantCommandBuilder implemen
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("resident").then(getPlayerRegister().executes(this));
+        return Commands.literal("resident").then(getArgumentRegister().executes(this));
     }
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (player.isAdminMode()) return true;
 
-        FullPlayer argument = getPlayer(context);
+        FullPlayer argument = getArgument(context);
 
         if (argument == null) {
             player.sendMessage(ChatText.Error("Player doest not exist"));
@@ -39,7 +39,7 @@ public class CitySetResident extends CityMayorOrAssistantCommandBuilder implemen
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer newResident = getPlayer(context);
+        FullPlayer newResident = getArgument(context);
 
         newResident.setResident(true);
 

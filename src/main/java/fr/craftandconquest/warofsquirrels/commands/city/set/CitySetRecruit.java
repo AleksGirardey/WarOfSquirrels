@@ -19,7 +19,7 @@ public class CitySetRecruit extends CityMayorOrAssistantCommandBuilder implement
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("recruit")
-                .then(getPlayerRegister().executes(this));
+                .then(getArgumentRegister().executes(this));
     }
 
     @Override
@@ -31,14 +31,14 @@ public class CitySetRecruit extends CityMayorOrAssistantCommandBuilder implement
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (IsAdmin(player)) return true;
 
-        FullPlayer argument = getPlayer(context);
+        FullPlayer argument = getArgument(context);
 
         return argument.getCity() == player.getCity() && player.getCity().getOwner() != argument;
     }
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer newRecruit = getPlayer(context);
+        FullPlayer newRecruit = getArgument(context);
 
         newRecruit.setResident(false);
 

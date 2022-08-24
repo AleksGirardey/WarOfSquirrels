@@ -19,7 +19,7 @@ public class AdminPointsAddPlayer extends AdminCommandBuilder implements IPlayer
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("player")
                 .then(Commands.argument(amountArgument, IntegerArgumentType.integer())
-                        .then(getPlayerRegister().executes(this)));
+                        .then(getArgumentRegister().executes(this)));
     }
 
     @Override
@@ -29,7 +29,7 @@ public class AdminPointsAddPlayer extends AdminCommandBuilder implements IPlayer
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer target = getPlayer(context);
+        FullPlayer target = getArgument(context);
         int amount = IntegerArgumentType.getInteger(context, amountArgument);
 
         target.getScore().AddScore(amount);

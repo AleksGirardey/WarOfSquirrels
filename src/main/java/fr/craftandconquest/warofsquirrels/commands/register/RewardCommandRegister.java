@@ -43,9 +43,18 @@ public class RewardCommandRegister extends CommandBuilder implements ICommandReg
         MutableComponent message = ChatText.Success("=== Rewards ===\n");
         List<CustomReward> rewards = WarOfSquirrels.instance.getRewardHandler().getAll(player.getLastDimensionKey());
 
+        List<CustomReward> playerRewards = player.getRewards().stream().filter(r -> r.getRewardedPlayers().contains(player)).toList();
+
+        if (playerRewards.size() != player.getRewards().size()) {
+            player.getRewards().clear();
+            player.getRewards().addAll(playerRewards);
+        }
+
         message.append(" - There is " + rewards.size() + " rewards available in this world." +
                 "\nYou can access " + (int) rewards.stream().filter(reward -> !reward.getRewardedPlayers().contains(player) && reward.CanAddRewardedPlayer()).count() + " of them.");
-        message.append(" - You can claim " + player.getRewards().size() + " using /reward claim");
+        message.append("\n - You can claim " + playerRewards.size() + " using /reward claim");
+
+        player.sendMessage(message);
         return 0;
     }
 

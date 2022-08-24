@@ -19,13 +19,13 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.monster.Evoker;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -37,6 +37,7 @@ import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.entity.EntityMobGriefingEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.ExplosionEvent;
@@ -172,8 +173,24 @@ public class WorldInteractionHandler {
             event.setCanceled(true);
         }
 
+        CustomReward reward = WarOfSquirrels.instance.getRewardHandler().contains(click);
+
+        if (reward != null) {
+            if (reward.CanAddRewardedPlayer()) {
+                if (reward.AddRewardedPlayer(player)) {
+                    player.getRewards().add(reward);
+                    player.sendMessage(ChatText.Success("You obtain a new reward !"));
+                } else {
+                    player.sendMessage(ChatText.Success("You cannot claim this reward again"));
+                }
+            } else {
+                player.sendMessage(ChatText.Error("No reward available"));
+            }
+            event.setCanceled(true);
+            return;
+        }
+
         if (type == InteractType.RightClickItem) {
-            CustomReward reward;
             Item item = event.getItemStack().getItem();
             if (item.isEdible()) return;
 
@@ -181,16 +198,6 @@ public class WorldInteractionHandler {
                 Utils.displayInfoFeather(event.getEntity(), event.getEntity().getOnPos(), event.getLevel().dimension());
                 event.setCanceled(true);
             } else if (item == Items.BOW || item == Items.CROSSBOW || item == Items.SHIELD || player.isAdminMode()) {
-                return;
-            } else if ((reward = WarOfSquirrels.instance.getRewardHandler().contains(click)) != null) {
-                if (reward.CanAddRewardedPlayer()) {
-                    if (reward.AddRewardedPlayer(player)) {
-                        player.getRewards().add(reward);
-                        player.sendMessage(ChatText.Success("You obtain a new reward !"));
-                    }
-                } else {
-                    player.sendMessage(ChatText.Error("No reward available"));
-                }
                 return;
             }
         }
@@ -233,6 +240,20 @@ public class WorldInteractionHandler {
                         event.setCanceled(true);
                     }
                     return;
+                } else if (event.getEntity().getMainHandItem().getItem() instanceof HangingEntityItem ||
+                        event.getEntity().getMainHandItem().getItem() instanceof ArmorStandItem) {
+
+                    boolean canConstruct = WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
+                            PermissionHandler.Rights.BUILD,
+                            new Vector3(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ()),
+                            Chunk.DimensionToId(player.getLastDimensionKey()),
+                            player);
+
+                    if (!canConstruct) {
+                        player.sendMessage(ChatText.Error("You cannot build here").withStyle(ChatFormatting.BOLD));
+                        event.setCanceled(true);
+                        return;
+                    }
                 }
                 return;
             }
@@ -264,6 +285,30 @@ public class WorldInteractionHandler {
         }
 
         return false;
+    }
+
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    @SubscribeEvent
+    public void OnEntityAttack(AttackEntityEvent event) {
+        if (event.getTarget() instanceof HangingEntity || event.getTarget() instanceof ArmorStand) {
+            FullPlayer player = WarOfSquirrels.instance.getPlayerHandler().get(event.getEntity().getUUID());
+
+            if (player.isAdminMode()) return;
+
+            boolean canBuild = WarOfSquirrels.instance.getPermissionHandler().hasRightsTo(
+                    PermissionHandler.Rights.BUILD,
+                    new Vector3(
+                            event.getTarget().getBlockX(),
+                            event.getTarget().getBlockY(),
+                            event.getTarget().getBlockZ()),
+                    Chunk.DimensionToId(event.getEntity().getCommandSenderWorld().dimension()),
+                    player);
+
+            if (!canBuild) {
+                event.setCanceled(true);
+                player.sendMessage(ChatText.Error("You do not have permission to do this."));
+            }
+        }
     }
 
     @OnlyIn(Dist.DEDICATED_SERVER)

@@ -1,5 +1,6 @@
 package fr.craftandconquest.warofsquirrels.object.scoring;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,6 +49,9 @@ public class Score {
     public void ResetScoreLifePoints() {
         scoreLifePoints = 0;
     }
+
+    @JsonIgnore
+    public int getAllScore() { return globalScore + todayScore + todayWarScore; }
 
     @Override
     public String toString() {

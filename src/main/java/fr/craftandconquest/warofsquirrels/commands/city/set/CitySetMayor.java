@@ -6,7 +6,6 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.IAdminCommand;
 import fr.craftandconquest.warofsquirrels.commands.city.CityMayorCommandBuilder;
-import fr.craftandconquest.warofsquirrels.commands.extractor.ICityExtractor;
 import fr.craftandconquest.warofsquirrels.commands.extractor.IPlayerExtractor;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.faction.city.City;
@@ -17,10 +16,10 @@ import net.minecraft.commands.Commands;
 
 import java.util.List;
 
-public class CitySetMayor extends CityMayorCommandBuilder implements IAdminCommand, IPlayerExtractor, ICityExtractor {
+public class CitySetMayor extends CityMayorCommandBuilder implements IAdminCommand, IPlayerExtractor {
     private static final CitySetMayor CMD_NO_CITY = new CitySetMayor(false);
     private static final CitySetMayor CMD_CITY = new CitySetMayor(true);
-
+    private final static String cityArgumentName = "city";
     private CitySetMayor(boolean cityArg) {
         hasCityArg = cityArg;
     }
@@ -32,8 +31,10 @@ public class CitySetMayor extends CityMayorCommandBuilder implements IAdminComma
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("mayor")
-                .then(getPlayerRegister().executes(CMD_NO_CITY)
-                        .then(getArgumentRegister().executes(CMD_CITY)));
+                .then(getArgumentRegister()
+                        .executes(CMD_NO_CITY)
+                        .then(Commands.argument(cityArgumentName, StringArgumentType.string())
+                                .executes(CMD_CITY)));
     }
 
     @Override
@@ -46,7 +47,8 @@ public class CitySetMayor extends CityMayorCommandBuilder implements IAdminComma
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        return IsAdmin(player) || (player.getCity() != null && getPlayer(context).getCity().equals(player.getCity()));
+        return IsAdmin(player) ||
+                (player.getCity() != null && getArgument(context).getCity().equals(player.getCity()));
     }
 
     @Override
@@ -55,8 +57,8 @@ public class CitySetMayor extends CityMayorCommandBuilder implements IAdminComma
         if (!hasCityArg)
             city = player.getCity();
         else
-            city = getArgument(context);
-        FullPlayer newMayor = getPlayer(context);
+            city = WarOfSquirrels.instance.getCityHandler().get(StringArgumentType.getString(context, cityArgumentName));
+        FullPlayer newMayor = getArgument(context);
         FullPlayer oldMayor = city.getOwner();
 
         if (hasCityArg) {
@@ -85,9 +87,6 @@ public class CitySetMayor extends CityMayorCommandBuilder implements IAdminComma
 
         return 0;
     }
-
-    @Override
-    public boolean isSuggestionFactionRestricted() { return false; }
 
     @Override
     public List<PlayerExtractorType> getTargetSuggestionTypes() {

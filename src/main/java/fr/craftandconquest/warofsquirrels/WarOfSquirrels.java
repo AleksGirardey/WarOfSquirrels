@@ -185,6 +185,7 @@ public class WarOfSquirrels {
         UpdateHandler.OnSaveUpdate.add(territoryHandler);
         UpdateHandler.OnSaveUpdate.add(bastionHandler);
         UpdateHandler.OnSaveUpdate.add(adminHandler);
+        UpdateHandler.OnSaveUpdate.add(rewardHandler);
     }
 
     public void debugLog(String message) {

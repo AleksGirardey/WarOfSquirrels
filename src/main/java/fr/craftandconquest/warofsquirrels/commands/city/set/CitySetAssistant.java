@@ -20,7 +20,7 @@ public class CitySetAssistant extends CityMayorCommandBuilder implements IAdminC
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("assistant")
-                .then(getPlayerRegister().executes(this));
+                .then(getArgumentRegister().executes(this));
     }
 
     @Override
@@ -32,14 +32,14 @@ public class CitySetAssistant extends CityMayorCommandBuilder implements IAdminC
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (IsAdmin(player)) return true;
 
-        FullPlayer argument = getPlayer(context);
+        FullPlayer argument = getArgument(context);
 
         return argument.getCity() == player.getCity() && player.getCity().getOwner() != argument;
     }
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer newAssistant = getPlayer(context);
+        FullPlayer newAssistant = getArgument(context);
 
         newAssistant.setAssistant(true);
 

@@ -18,7 +18,7 @@ public class RewardClaim extends CommandBuilder {
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        if (player.getRewards().size() <= 0) {
+        if (player.getRewards().size() == 0) {
             player.sendMessage(ChatText.Error("You do not have rewards to claim"));
             return false;
         }

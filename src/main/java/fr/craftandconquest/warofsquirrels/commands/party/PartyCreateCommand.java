@@ -21,7 +21,7 @@ public class PartyCreateCommand extends CommandBuilder {
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
         if (WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player) == null) return true;
 
-        player.sendMessage(ChatText.Error("Vous appartenez déjà à un groupe."));
+        player.sendMessage(ChatText.Error("You already belongs to a party."));
         return false;
     }
 
@@ -29,7 +29,7 @@ public class PartyCreateCommand extends CommandBuilder {
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         WarOfSquirrels.instance.getPartyHandler().CreateParty(player);
 
-        player.sendMessage(ChatText.Success("Vous appartenez désormais à un groupe."));
+        player.sendMessage(ChatText.Success("Your party had been created."));
         return 0;
     }
 

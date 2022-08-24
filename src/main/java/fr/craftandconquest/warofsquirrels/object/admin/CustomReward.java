@@ -8,11 +8,13 @@ import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.RegistryObject;
 import fr.craftandconquest.warofsquirrels.object.cuboide.AdminCubo;
 import fr.craftandconquest.warofsquirrels.object.upgrade.UpgradeItem;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +27,8 @@ public class CustomReward extends RegistryObject {
     @JsonProperty @Getter @Setter protected UpgradeItem reward;
     @JsonProperty @Getter @Setter protected int rewardQuantity;
     @JsonProperty @Getter @Setter private UUID adminCuboUuid;
-    @JsonProperty private List<UUID> claimedPlayerUuids;
-    @JsonProperty private List<UUID> rewardedPlayerUuids;
+    @JsonProperty private List<UUID> claimedPlayerUuids = new ArrayList<>();
+    @JsonProperty private List<UUID> rewardedPlayerUuids = new ArrayList<>();
 
     @JsonIgnore @Getter @Setter protected AdminCubo adminCubo;
     @JsonIgnore @Getter @Setter private List<FullPlayer> rewardedPlayers = new ArrayList<>();

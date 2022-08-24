@@ -14,12 +14,12 @@ import java.util.List;
 public class AdminWhitelistCity extends AdminCommandBuilder implements IPlayerExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("city").then(getPlayerRegister().executes(this));
+        return Commands.literal("city").then(getArgumentRegister().executes(this));
     }
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        if (getPlayer(context) == null) {
+        if (getArgument(context) == null) {
             player.sendMessage(ChatText.Error("Wrong player"));
             return false;
         }
@@ -28,7 +28,7 @@ public class AdminWhitelistCity extends AdminCommandBuilder implements IPlayerEx
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer target = getPlayer(context);
+        FullPlayer target = getArgument(context);
 
         target.setWhitelistCityCreator(!target.isWhitelistCityCreator());
 

@@ -15,15 +15,15 @@ import java.util.List;
 public class CityRemove extends CityMayorOrAssistantCommandBuilder implements IPlayerExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("remove").then(getPlayerRegister().executes(this));
+        return Commands.literal("remove").then(getArgumentRegister().executes(this));
     }
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer target = getPlayer(context);
+        FullPlayer target = getArgument(context);
 
         if (target == null || target.getCity() == null || target.getCity().getOwner().equals(target) || !target.getCity().equals(player.getCity())) {
-            MutableComponent message = ChatText.Error("Player '").append(getRawPlayer(context).getDisplayName()).append("' does not exist nor cannot be expelled from your city.");
+            MutableComponent message = ChatText.Error("Player '").append(getRawArgument(context)).append("' does not exist nor cannot be expelled from your city.");
             player.sendMessage(message, true);
             return false;
         }
@@ -32,7 +32,7 @@ public class CityRemove extends CityMayorOrAssistantCommandBuilder implements IP
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer target = getPlayer(context);
+        FullPlayer target = getArgument(context);
 
         player.getCity().removeCitizen(target, true);
         return 0;

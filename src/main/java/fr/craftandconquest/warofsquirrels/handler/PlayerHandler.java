@@ -86,9 +86,7 @@ public class PlayerHandler extends UpdatableHandler<FullPlayer> {
         fake.lastPosition = new Vector3(0, 0, 0);
         fake.setLastDimension(Level.OVERWORLD.location().getPath());
 
-        playersByName.put(name, fake);
-        dataArray.add(fake);
-
+        add(fake);
         LogPlayerCreation(fake);
 
         return fake;

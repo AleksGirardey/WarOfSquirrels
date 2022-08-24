@@ -69,6 +69,7 @@ public class RewardHandler extends Handler<CustomReward> {
                 ++claimCount;
         }
 
+        player.getRewards().clear();
         return claimCount;
     }
 }

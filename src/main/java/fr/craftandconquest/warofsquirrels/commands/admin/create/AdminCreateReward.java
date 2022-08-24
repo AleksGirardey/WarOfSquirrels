@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.craftandconquest.warofsquirrels.WarOfSquirrels;
 import fr.craftandconquest.warofsquirrels.commands.admin.AdminCommandBuilder;
 import fr.craftandconquest.warofsquirrels.commands.extractor.IAdminCuboExtractor;
+import fr.craftandconquest.warofsquirrels.handler.RewardHandler;
 import fr.craftandconquest.warofsquirrels.object.FullPlayer;
 import fr.craftandconquest.warofsquirrels.object.admin.CustomReward;
 import fr.craftandconquest.warofsquirrels.object.upgrade.UpgradeItem;
@@ -19,7 +20,7 @@ import java.util.Collections;
 
 public class AdminCreateReward extends AdminCommandBuilder implements IAdminCuboExtractor {
     private static final String rewardedQuantityName = "rewardedQuantity";
-    private static final String rewardName = "rewardedQuantity";
+    private static final String rewardName = "reward";
     private static final String rewardQuantityName = "quantity";
 
     @Override
@@ -30,7 +31,8 @@ public class AdminCreateReward extends AdminCommandBuilder implements IAdminCubo
                 .then(getArgumentRegister()
                         .then(Commands.argument(rewardedQuantityName, IntegerArgumentType.integer())
                                 .then(Commands.argument(rewardName, ItemArgument.item(context))
-                                        .then(Commands.argument(rewardQuantityName, IntegerArgumentType.integer())))));
+                                        .then(Commands.argument(rewardQuantityName, IntegerArgumentType.integer())
+                                                .executes(this)))));
     }
 
     @Override
@@ -53,7 +55,10 @@ public class AdminCreateReward extends AdminCommandBuilder implements IAdminCubo
                 Collections.emptyList(),
                 Collections.emptyList());
 
-        WarOfSquirrels.instance.getRewardHandler().add(reward);
+        RewardHandler handler = WarOfSquirrels.instance.getRewardHandler();
+
+        if (handler.add(reward))
+            handler.Save();
 
         player.sendMessage(ChatText.Success("Reward created !"));
 

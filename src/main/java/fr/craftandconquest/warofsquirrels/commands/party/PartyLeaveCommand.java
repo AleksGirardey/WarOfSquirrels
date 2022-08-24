@@ -29,8 +29,8 @@ public class PartyLeaveCommand extends PartyCommandBuilder {
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         Party party = WarOfSquirrels.instance.getPartyHandler().getFromPlayer(player);
 
-        MutableComponent messageToParty = ChatText.Colored(player.getDisplayName() + " a quitté le groupe.", ChatFormatting.GOLD);
-        MutableComponent messageToPlayer = ChatText.Colored("Vous avez quitté votre groupe.", ChatFormatting.GOLD);
+        MutableComponent messageToParty = ChatText.Colored(player.getDisplayName() + " left the party.", ChatFormatting.GOLD);
+        MutableComponent messageToPlayer = ChatText.Colored("You left your party.", ChatFormatting.GOLD);
 
         party.remove(player);
         WarOfSquirrels.instance.getBroadCastHandler().RemovePlayerFromTarget(party, player);
@@ -41,6 +41,6 @@ public class PartyLeaveCommand extends PartyCommandBuilder {
 
     @Override
     protected MutableComponent ErrorMessage() {
-        return ChatText.Error("Vous ne pouvez pas quitter un groupe dont vous êtes le chef.");
+        return ChatText.Error("You cannot leave the party as leader.");
     }
 }

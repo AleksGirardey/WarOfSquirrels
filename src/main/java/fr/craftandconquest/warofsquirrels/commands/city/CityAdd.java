@@ -15,17 +15,17 @@ import java.util.List;
 public class CityAdd extends CityMayorOrAssistantCommandBuilder implements IPlayerExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("add").then(getPlayerRegister().executes(this));
+        return Commands.literal("add").then(getArgumentRegister().executes(this));
     }
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer target = getPlayer(context);
+        FullPlayer target = getArgument(context);
         MutableComponent message;
         boolean ret = true;
 
         if (target == null) {
-            message = ChatText.Error("Player " + getRawPlayer(context).getDisplayName() + " do not exist.");
+            message = ChatText.Error("Player " + getRawArgument(context) + " do not exist.");
             ret = false;
         } else if (target.getCity() != null) {
             message = ChatText.Error("Player " + target.getDisplayName() + " already belong to a city.");
@@ -44,7 +44,7 @@ public class CityAdd extends CityMayorOrAssistantCommandBuilder implements IPlay
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer target = getPlayer(context);
+        FullPlayer target = getArgument(context);
         player.getCity().addCitizen(target);
         return 0;
     }

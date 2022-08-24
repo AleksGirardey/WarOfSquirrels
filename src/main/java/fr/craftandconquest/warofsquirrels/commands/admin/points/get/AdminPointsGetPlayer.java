@@ -14,7 +14,7 @@ import java.util.List;
 public class AdminPointsGetPlayer extends AdminCommandBuilder implements IPlayerExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("player").then(getPlayerRegister().executes(this));
+        return Commands.literal("player").then(getArgumentRegister().executes(this));
     }
 
     @Override
@@ -24,7 +24,7 @@ public class AdminPointsGetPlayer extends AdminCommandBuilder implements IPlayer
 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer target = getPlayer(context);
+        FullPlayer target = getArgument(context);
 
         player.sendMessage(ChatText.Success("Player '" + target + "' has a score of " + target.getScore().getGlobalScore() + " (+" + target.getScore().getTodayScore() + ")"));
 

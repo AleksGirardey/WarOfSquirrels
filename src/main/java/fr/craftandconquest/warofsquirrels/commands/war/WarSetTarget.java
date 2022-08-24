@@ -17,12 +17,12 @@ import java.util.List;
 public class WarSetTarget extends CityMayorOrAssistantCommandBuilder implements IPlayerExtractor {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("target").then(getPlayerRegister().executes(this));
+        return Commands.literal("target").then(getArgumentRegister().executes(this));
     }
 
     @Override
     protected boolean SpecialCheck(FullPlayer player, CommandContext<CommandSourceStack> context) {
-        FullPlayer target = getPlayer(context);
+        FullPlayer target = getArgument(context);
         War war = WarOfSquirrels.instance.getWarHandler().getWar(player);
         return target != null
                 && war.getState().equals(War.WarState.Preparation)
@@ -34,7 +34,7 @@ public class WarSetTarget extends CityMayorOrAssistantCommandBuilder implements 
     @Override
     protected int ExecCommand(FullPlayer player, CommandContext<CommandSourceStack> context) {
         War war = WarOfSquirrels.instance.getWarHandler().getWar(player);
-        FullPlayer target = getPlayer(context);
+        FullPlayer target = getArgument(context);
 
         war.setTarget(target);
         WarOfSquirrels.instance.getBroadCastHandler().BroadCastMessage(
